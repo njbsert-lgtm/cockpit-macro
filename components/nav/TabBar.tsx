@@ -1,0 +1,118 @@
+"use client";
+
+import { Suspense } from "react";
+import Link from "next/link";
+import { usePathname, useSearchParams } from "next/navigation";
+import { ZONE_PARAM } from "@/lib/zone-param";
+
+type Tab = { href: string; label: string; disabled?: boolean };
+
+const TABS: Tab[] = [
+  { href: "/bulletin", label: "Bulletin" },
+  { href: "/macro", label: "Macro" },
+  { href: "/marches", label: "Marchés" },
+  { href: "/veille", label: "Veille", disabled: true },
+];
+
+function TabLink({
+  tab,
+  active,
+  qs,
+  variant,
+}: {
+  tab: (typeof TABS)[number];
+  active: boolean;
+  qs: string;
+  variant: "mobile" | "desktop";
+}) {
+  const base =
+    variant === "mobile"
+      ? "flex flex-1 flex-col items-center gap-1 py-2.5 font-mono text-[10.5px] uppercase tracking-wide"
+      : "px-3.5 py-2.5 font-mono text-[12px] uppercase tracking-wide border-b-2";
+
+  if (tab.disabled) {
+    return (
+      <span
+        className={`${base} cursor-not-allowed text-white/35`}
+        title="Disponible à l'étape 5"
+        aria-disabled="true"
+      >
+        {tab.label}
+        <span className="ml-1 inline-block rounded-[2px] bg-white/15 px-1 font-mono text-[9px] text-white/60">
+          0
+        </span>
+      </span>
+    );
+  }
+
+  return (
+    <Link
+      href={`${tab.href}${qs ? `?${qs}` : ""}`}
+      className={`${base} focus-visible:outline-3 focus-visible:outline-offset-[-2px] focus-visible:outline-white ${
+        active
+          ? variant === "mobile"
+            ? "text-white"
+            : "border-white text-white"
+          : variant === "mobile"
+            ? "text-white/55"
+            : "border-transparent text-white/60 hover:text-white/85"
+      }`}
+      aria-current={active ? "page" : undefined}
+    >
+      {tab.label}
+    </Link>
+  );
+}
+
+function TabBarInner() {
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const zone = searchParams.get(ZONE_PARAM);
+  const qs = zone ? `${ZONE_PARAM}=${zone}` : "";
+
+  return (
+    <>
+      {/* Desktop : horizontale, sous la barre persistante. */}
+      <nav
+        aria-label="Navigation principale"
+        className="hidden border-b border-white/15 bg-deep px-4 md:block"
+      >
+        <div className="mx-auto flex max-w-[1060px] gap-1">
+          {TABS.map((tab) => (
+            <TabLink
+              key={tab.href}
+              tab={tab}
+              active={pathname.startsWith(tab.href)}
+              qs={qs}
+              variant="desktop"
+            />
+          ))}
+        </div>
+      </nav>
+
+      {/* Mobile : fixe en bas, jamais de hamburger. */}
+      <nav
+        aria-label="Navigation principale"
+        className="fixed inset-x-0 bottom-0 z-30 flex border-t border-white/15 bg-deep md:hidden"
+      >
+        {TABS.map((tab) => (
+          <TabLink
+            key={tab.href}
+            tab={tab}
+            active={pathname.startsWith(tab.href)}
+            qs={qs}
+            variant="mobile"
+          />
+        ))}
+      </nav>
+    </>
+  );
+}
+
+export function TabBar() {
+  return (
+    <Suspense fallback={null}>
+      <TabBarInner />
+    </Suspense>
+  );
+}

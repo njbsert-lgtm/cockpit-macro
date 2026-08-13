@@ -1,5 +1,8 @@
 import type { Metadata } from "next";
 import { Inter, Bricolage_Grotesque, IBM_Plex_Mono } from "next/font/google";
+import { PersistentBar } from "@/components/persistent-bar/PersistentBar";
+import { TabBar } from "@/components/nav/TabBar";
+import { Footer } from "@/components/Footer";
 import "./globals.css";
 
 const inter = Inter({
@@ -37,7 +40,10 @@ export default function RootLayout({
       <body
         className={`${inter.variable} ${bricolage.variable} ${plexMono.variable} font-sans antialiased`}
       >
-        {children}
+        <PersistentBar />
+        <TabBar />
+        <main>{children}</main>
+        <Footer />
       </body>
     </html>
   );
