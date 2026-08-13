@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cockpit macro &amp; géopolitique</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F2F3EF;
+  --card:#FFFFFF;
+  --ink:#14171C;
+  --ink-2:#333A45;
+  --mute:#5C6473;
+  --line:#D8DBD4;
+  --line-2:#E9EBE6;
+
+  --deep:#0E4553;      /* structure, bandeaux */
+  --ochre:#8A5D00;     /* tension / hausse */
+  --ochre-bg:#FBF3E0;
+  --rust:#A3382A;      /* risque / baisse */
+  --rust-bg:#FBEDEA;
+  --teal:#136055;      /* détente / désinflation */
+  --teal-bg:#E7F2EF;
+
+  --maxw:1060px;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+body{
+  margin:0;background:var(--paper);color:var(--ink);
+  font-family:"Inter",system-ui,-apple-system,sans-serif;
+  font-size:17px;line-height:1.62;font-weight:400;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 20px}
+h1,h2,h3,h4{font-family:"Bricolage Grotesque",system-ui,sans-serif;letter-spacing:-.02em;line-height:1.12;margin:0;color:var(--ink)}
+h2{font-size:clamp(25px,4.2vw,34px);font-weight:800;margin-bottom:10px}
+h3{font-size:clamp(18px,2.6vw,21px);font-weight:700;margin-bottom:8px}
+h4{font-size:16px;font-weight:700}
+p{margin:0 0 14px;max-width:68ch}
+.lede{font-size:clamp(17px,2.2vw,19px);color:var(--ink-2);max-width:64ch}
+b,strong{font-weight:600}
+.mono{font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums}
+.eyebrow{
+  font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.15em;
+  text-transform:uppercase;color:var(--mute);font-weight:600;margin:0 0 12px;
+}
+section.band{padding:50px 0;border-top:1px solid var(--line)}
+
+/* ============ EN-TÊTE ============ */
+header{background:var(--deep);color:#fff;padding:26px 0 30px}
+header .top{display:flex;flex-wrap:wrap;gap:10px 20px;justify-content:space-between;align-items:center;margin-bottom:26px}
+header .brand{font-family:"Bricolage Grotesque",sans-serif;font-weight:800;font-size:15px;letter-spacing:.1em;text-transform:uppercase;color:#fff}
+.freshness{
+  display:flex;align-items:center;gap:8px;
+  font-family:"IBM Plex Mono",monospace;font-size:11.5px;letter-spacing:.06em;
+  color:#CFE0E3;background:rgba(255,255,255,.1);padding:6px 11px;border-radius:2px;
+}
+.dot{width:7px;height:7px;border-radius:50%;background:#5FD3B2;flex:none}
+header h1{font-size:clamp(26px,5vw,42px);font-weight:800;color:#fff;max-width:20ch;letter-spacing:-.03em}
+header .sub{margin:16px 0 0;color:#D3E2E5;max-width:60ch;font-size:clamp(15.5px,2vw,17px)}
+.regime{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:rgba(255,255,255,.18);margin-top:28px}
+.regime div{background:var(--deep);padding:13px 14px}
+.regime dt{font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:#9FC0C6;margin-bottom:6px}
+.regime dd{margin:0;font-family:"Bricolage Grotesque",sans-serif;font-weight:700;font-size:15px;color:#fff;line-height:1.25}
+
+/* ============ TABLEAU DE BORD ============ */
+.grp{margin-top:30px}
+.grp-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap;
+  border-bottom:2px solid var(--ink);padding-bottom:8px;margin-bottom:6px}
+.grp-head h3{font-family:"IBM Plex Mono",monospace;font-size:13px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;margin:0}
+.grp-head .asof{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--mute);letter-spacing:.04em}
+.grp .note{font-size:14.5px;color:var(--mute);margin:8px 0 0;max-width:64ch}
+table.q{width:100%;border-collapse:collapse;margin-top:4px}
+table.q td{padding:9px 0;border-bottom:1px solid var(--line-2);vertical-align:baseline}
+table.q td:first-child{width:40%;padding-right:10px;font-weight:500}
+table.q td .sm{font-family:"IBM Plex Mono",monospace;font-size:11.5px;color:var(--mute);font-weight:400}
+table.q td.v{font-family:"IBM Plex Mono",monospace;font-size:14.5px;font-weight:600;text-align:right;white-space:nowrap;width:24%}
+table.q td.c{font-size:14px;color:var(--mute);width:36%;padding-left:16px;line-height:1.45}
+.pos{color:var(--teal)}
+.neg{color:var(--rust)}
+.hot{color:var(--ochre)}
+
+/* ============ FILTRES ============ */
+.filters{background:var(--card);border:1px solid var(--line);padding:18px;margin-top:24px}
+.frow{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:12px}
+.frow:last-child{margin-bottom:0}
+.flabel{
+  font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--mute);font-weight:600;width:118px;flex:none;
+}
+.fbtn{
+  font-family:"Inter",sans-serif;font-size:14px;font-weight:500;
+  padding:7px 13px;border:1px solid var(--line);background:var(--paper);color:var(--ink-2);
+  cursor:pointer;border-radius:2px;line-height:1.2;transition:background .13s,color .13s,border-color .13s;
+}
+.fbtn:hover{border-color:var(--mute)}
+.fbtn[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:#fff;font-weight:600}
+.fcount{font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--mute);margin-top:14px;letter-spacing:.04em}
+.empty{display:none;padding:28px;text-align:center;color:var(--mute);border:1px dashed var(--line);margin-top:20px}
+.empty.on{display:block}
+
+/* ============ FICHES NEWS ============ */
+.cards{display:grid;gap:16px;margin-top:20px}
+.card{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--ochre);padding:20px 20px 17px}
+.card[data-tone="cool"]{border-left-color:var(--teal)}
+.card[data-tone="hot"]{border-left-color:var(--rust)}
+.card.hide{display:none}
+.meta{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:11px}
+.tag{
+  font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.09em;text-transform:uppercase;
+  padding:3px 7px;border:1px solid var(--line);color:var(--mute);white-space:nowrap;font-weight:500;
+}
+.tag--m{background:var(--paper);color:var(--ink-2);border-color:var(--line)}
+.tag--hi{border-color:#8FBDB4;color:var(--teal);background:var(--teal-bg)}
+.tag--lo{border-color:#DEA79C;color:var(--rust);background:var(--rust-bg)}
+.card p{font-size:16px;margin-bottom:11px}
+.card p:last-child{margin-bottom:0}
+.fact{font-size:14.5px;color:var(--ink-2);background:var(--paper);padding:11px 13px;margin-bottom:13px;border-left:2px solid var(--line)}
+
+/* chaîne de transmission */
+.chain{display:flex;flex-wrap:wrap;align-items:center;gap:4px;margin:0 0 14px;
+  font-family:"IBM Plex Mono",monospace;font-size:11.5px;font-weight:500}
+.chain span{padding:6px 9px;background:var(--paper);border:1px solid var(--line);color:var(--ink-2);line-height:1.25}
+.chain span:first-child{background:var(--ink);color:#fff;border-color:var(--ink)}
+.chain span:last-child{background:var(--ochre-bg);border-color:#D9BE7E;color:var(--ochre);font-weight:600}
+.chain i{color:var(--mute);font-style:normal;padding:0 1px}
+
+/* ============ CANAUX ============ */
+.canals{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);margin-top:24px}
+.canal{background:var(--card);padding:18px}
+.canal .n{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ochre);font-weight:600;margin:0 0 7px}
+.canal h4{margin-bottom:6px}
+.canal p{font-size:14.8px;margin:0;color:var(--ink-2);line-height:1.55}
+
+/* ============ SCÉNARIOS ============ */
+.scen{background:var(--card);border:1px solid var(--line);margin-top:22px}
+.scen-tabs{display:flex;flex-wrap:wrap;border-bottom:1px solid var(--line)}
+.stab{
+  flex:1 1 200px;padding:14px 15px;background:var(--paper);border:0;border-right:1px solid var(--line);
+  cursor:pointer;text-align:left;font-family:"Inter",sans-serif;transition:background .13s;
+}
+.stab:last-child{border-right:0}
+.stab:hover{background:#E9EBE5}
+.stab[aria-selected="true"]{background:var(--card);box-shadow:inset 0 3px 0 var(--ink)}
+.stab .sname{display:block;font-family:"Bricolage Grotesque",sans-serif;font-weight:700;font-size:15.5px;color:var(--ink);margin-bottom:3px}
+.stab .sprob{display:block;font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.06em;color:var(--mute);font-weight:500}
+.stab[aria-selected="true"] .sprob{color:var(--ochre)}
+.spanel{padding:22px 20px;display:none}
+.spanel.on{display:block}
+.spanel .thesis{font-size:16.5px;color:var(--ink-2);max-width:70ch;margin-bottom:18px}
+.impacts{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:1px;background:var(--line);border:1px solid var(--line)}
+.imp{background:var(--card);padding:14px}
+.imp .k{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.11em;text-transform:uppercase;color:var(--mute);font-weight:600;margin-bottom:6px}
+.imp .d{font-family:"Bricolage Grotesque",sans-serif;font-weight:700;font-size:15px;margin-bottom:5px}
+.imp .d.up{color:var(--teal)}
+.imp .d.down{color:var(--rust)}
+.imp .d.flat{color:var(--mute)}
+.imp p{font-size:14px;color:var(--ink-2);margin:0;line-height:1.5}
+.watch{margin-top:16px;padding:13px 15px;background:var(--paper);border-left:3px solid var(--ink)}
+.watch .k{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.11em;text-transform:uppercase;color:var(--mute);font-weight:600;margin-bottom:5px}
+.watch p{margin:0;font-size:14.8px;color:var(--ink-2)}
+
+/* ============ LISTES / STRATÉGIES ============ */
+ul.plain{list-style:none;padding:0;margin:16px 0 0}
+ul.plain li{padding:13px 0;border-bottom:1px solid var(--line);font-size:16px;max-width:76ch;color:var(--ink-2)}
+ul.plain li b{color:var(--ink);font-family:"Bricolage Grotesque",sans-serif;font-weight:700}
+ul.plain li .hl{display:block;margin-top:5px;font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--ochre);font-weight:500}
+.strat{border-bottom:1px solid var(--line);padding:20px 0}
+.strat-top{display:flex;gap:12px;align-items:baseline;flex-wrap:wrap;margin-bottom:9px}
+.horizon{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ochre);border:1px solid #D9BE7E;background:var(--ochre-bg);padding:3px 8px;font-weight:600}
+.kill{margin-top:11px;padding:11px 14px;background:var(--rust-bg);border-left:3px solid var(--rust);font-size:14.8px;color:#5C2019}
+.kill b{display:block;font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--rust);margin-bottom:4px}
+
+/* ============ CALENDRIER / PIED ============ */
+.cal{width:100%;border-collapse:collapse;margin-top:18px}
+.cal td{padding:12px 0;border-bottom:1px solid var(--line);vertical-align:baseline;font-size:15.5px}
+.cal td:first-child{font-family:"IBM Plex Mono",monospace;font-size:12px;font-weight:600;color:var(--ochre);width:110px;white-space:nowrap;padding-right:14px;letter-spacing:.03em}
+.cal td:last-child{color:var(--mute);font-size:14px;padding-left:14px}
+footer{background:var(--deep);color:#D3E2E5;padding:40px 0 50px;margin-top:50px;font-size:14.8px}
+footer p{max-width:82ch;margin-bottom:12px}
+footer b{color:#fff}
+.disclaimer{border:1px solid rgba(255,255,255,.25);padding:15px 17px;margin-top:20px;font-size:14.5px}
+.disclaimer b{display:block;font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:#F0B9AE;margin-bottom:6px}
+
+/* ============ RESPONSIVE ============ */
+@media(max-width:820px){.regime{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:620px){
+  body{font-size:16px}
+  section.band{padding:38px 0}
+  table.q td.c{display:none}
+  table.q td:first-child{width:56%}
+  table.q td.v{width:44%}
+  .flabel{width:100%;margin-bottom:2px}
+  .chain{flex-direction:column;align-items:stretch;gap:0}
+  .chain span{border-bottom:0}
+  .chain span:last-child{border-bottom:1px solid #D9BE7E}
+  .chain i{padding:2px 0 2px 10px}
+  .chain i::before{content:"↓"}
+  .stab{flex:1 1 100%;border-right:0;border-bottom:1px solid var(--line)}
+}
+.chain i::before{content:"→"}
+:focus-visible{outline:3px solid var(--ochre);outline-offset:2px}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <div class="top">
+      <div class="brand">Cockpit macro &amp; géopolitique</div>
+      <div class="freshness"><span class="dot"></span><span>Données arrêtées au 13 août 2026</span></div>
+    </div>
+    <h1>Un choc d'offre énergétique greffé sur un boom d'investissement.</h1>
+    <p class="sub">Ormuz fixe l'inflation. L'inflation fixe les banques centrales. Les banques centrales fixent le taux d'actualisation. Et les bénéfices liés à l'IA sont, pour l'instant, assez forts pour absorber le tout.</p>
+    <dl class="regime">
+      <div><dt>Régime</dt><dd>Choc d'offre + capex IA</dd></div>
+      <div><dt>Inflation US</dt><dd>3,4 % · cœur 2,5 %</dd></div>
+      <div><dt>Biais Fed</dt><dd>Resserrement</dd></div>
+      <div><dt>Variable maîtresse</dt><dd>Brent / Ormuz</dd></div>
+    </dl>
+  </div>
+</header>
+
+<!-- ===== 1. INSTRUMENTS ===== -->
+<section class="band">
+  <div class="wrap">
+    <p class="eyebrow">1 — Instruments</p>
+    <h2>Performances depuis le 1<sup>er</sup> janvier</h2>
+    <p class="lede">Une seule lecture s'impose : les matières premières écrasent tout, les actions tiennent grâce aux bénéfices, les obligations ne rapportent rien. C'est la signature d'un choc d'offre, pas d'un cycle de croissance.</p>
+
+    <div class="grp">
+      <div class="grp-head"><h3>Actions</h3><span class="asof">au 31/07/2026 · prix, devise locale</span></div>
+      <table class="q">
+        <tr><td>Nikkei 225 <span class="sm">Japon</span></td><td class="v pos">+27,9 %</td><td class="c">Semis + IA, gouvernance, yen faible</td></tr>
+        <tr><td>Small caps US <span class="sm">Russell 2000</span></td><td class="v pos">≈ +20 %</td><td class="c">Rattrapage domestique, banques régionales</td></tr>
+        <tr><td>MSCI Marchés émergents</td><td class="v pos">≈ +18 %</td><td class="c">Corée, Taïwan — malgré un juillet difficile</td></tr>
+        <tr><td>Nasdaq 100</td><td class="v pos">+12,4 %</td><td class="c">Rendement total fin juillet</td></tr>
+        <tr><td>Euro Stoxx 50</td><td class="v pos">+9,7 %</td><td class="c">Records ; BPA Stoxx 600 ≈ +21 % a/a au T2</td></tr>
+        <tr><td>Stoxx Europe 600</td><td class="v pos">+9,5 %</td><td class="c">Rotation vers banques et industrielles</td></tr>
+        <tr><td>S&amp;P 500</td><td class="v pos">+9,4 %</td><td class="c">≈ +10,5 % en rendement total</td></tr>
+        <tr><td>FTSE 100</td><td class="v pos">+9,4 %</td><td class="c">Défense, banques, peu de tech</td></tr>
+        <tr><td>Hang Seng</td><td class="v">≈ +1 %</td><td class="c">Confiance investisseurs fragile</td></tr>
+        <tr><td>CSI 300 <span class="sm">Chine onshore</span></td><td class="v neg">−0,9 %</td><td class="c">Immobilier, demande interne molle</td></tr>
+        <tr><td>Nifty 50 <span class="sm">Inde</span></td><td class="v neg">−6,7 %</td><td class="c">Plus de 29 Md$ de sorties au S1, facture pétrolière</td></tr>
+      </table>
+    </div>
+
+    <div class="grp">
+      <div class="grp-head"><h3>Taux &amp; obligations</h3><span class="asof">au 12–13/08/2026</span></div>
+      <table class="q">
+        <tr><td>Fed funds <span class="sm">cible</span></td><td class="v">3,50 – 3,75 %</td><td class="c">Statu quo en juillet, 3 dissidences pour une hausse</td></tr>
+        <tr><td>BCE — taux de dépôt</td><td class="v">2,25 %</td><td class="c">Relevé en juin, première hausse en 3 ans</td></tr>
+        <tr><td>US 10 ans</td><td class="v">≈ 4,65 %</td><td class="c">Reflue après un CPI conforme</td></tr>
+        <tr><td>US 2 ans</td><td class="v">≈ 4,18 %</td><td class="c">Piloté par la probabilité de hausse</td></tr>
+        <tr><td>JGB 10 ans <span class="sm">Japon</span></td><td class="v hot">2,86 %</td><td class="c">+1,30 pt sur un an — la vraie rupture</td></tr>
+        <tr><td>Obligations US <em>investment grade</em></td><td class="v">≈ 0 à +1 %</td><td class="c">Rendement total YTD, S&amp;P US Aggregate</td></tr>
+      </table>
+    </div>
+
+    <div class="grp">
+      <div class="grp-head"><h3>Matières premières</h3><span class="asof">au 12–13/08/2026</span></div>
+      <table class="q">
+        <tr><td>Indice large matières premières</td><td class="v pos">≈ +39 %</td><td class="c">Au 31/07, tiré par l'énergie</td></tr>
+        <tr><td>Brent</td><td class="v pos">≈ +37 % · 88 $</td><td class="c">Pic ~113 $ (mars–mai), plancher ~61 $ fin 2025</td></tr>
+        <tr><td>WTI</td><td class="v pos">≈ +36 % · 83 $</td><td class="c">Prime de risque, pas déficit structurel</td></tr>
+        <tr><td>Cuivre</td><td class="v pos">6,57 $/lb</td><td class="c">+47 % sur un an, déficit de concentrés</td></tr>
+        <tr><td>Or</td><td class="v">≈ 0 à +2 % · 4 400 $</td><td class="c">Pic 5 405 $ le 29/01, puis −27 %, rebond en août</td></tr>
+        <tr><td>Argent</td><td class="v neg">≈ 63 $</td><td class="c">Négatif YTD après +137 % en 2025</td></tr>
+      </table>
+    </div>
+
+    <div class="grp">
+      <div class="grp-head"><h3>Devises</h3><span class="asof">au 13/08/2026</span></div>
+      <table class="q">
+        <tr><td>Indice dollar <span class="sm">DXY</span></td><td class="v">≈ 100 · +1,2 %</td><td class="c">Plus bas à 96,2 le 29/01, puis reprise</td></tr>
+        <tr><td>EUR/USD</td><td class="v neg">1,153</td><td class="c">Euro pénalisé par la facture énergétique</td></tr>
+        <tr><td>USD/JPY</td><td class="v neg">159,4</td><td class="c">Plus bas de 40 ans du yen, intervention conjointe</td></tr>
+        <tr><td>GBP/USD</td><td class="v">1,349</td><td class="c">Sans direction propre</td></tr>
+      </table>
+      <p class="note">Les valeurs précédées de « ≈ » sont des ordres de grandeur reconstitués à partir de sources publiques concordantes, pas des mesures exactes.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 2. TENDANCES ===== -->
+<section class="band">
+  <div class="wrap">
+    <p class="eyebrow">2 — Signal</p>
+    <h2>Cinq tendances longues</h2>
+    <p class="lede">Critère de sélection : une tendance longue modifie un flux physique, un bilan, ou une fonction de réaction de banque centrale. Tout le reste retourne à la moyenne en quelques semaines.</p>
+    <ul class="plain">
+      <li><b>La prime de risque géopolitique devient permanente.</b> Ormuz acheminait environ un cinquième de l'offre pétrolière mondiale. L'EIA anticipe des perturbations résiduelles d'environ 0,6 million de barils/jour jusqu'à fin 2027, même après un accord. Le marché n'efface pas cette prime, il l'intègre — dans l'énergie, l'assurance maritime, le fret et la défense.
+        <span class="hl">Le coût du capital des importateurs d'énergie monte durablement</span></li>
+      <li><b>La désinflation est terminée, le resserrement recommence partout.</b> La Fed est passée d'un biais baissier à un biais haussier. La BCE a relevé ses taux en juin malgré une croissance quasi nulle. La BoJ normalise. Trois grandes banques centrales resserrent simultanément dans une économie faible.
+        <span class="hl">Le filet de sécurité des banques centrales n'existe plus tant que le pétrole est haut</span></li>
+      <li><b>Le capex IA est un vrai moteur de bénéfices, mais concentré.</b> Les surprises de BPA au T2 sont les plus fortes depuis que FactSet mesure la donnée. C'est ce qui permet aux actions de monter avec des taux qui remontent. Mais le S&amp;P se paie environ 20× les bénéfices attendus, contre ~16× de moyenne longue.
+        <span class="hl">Marché porté par les bénéfices, pas par les multiples — donc binaire</span></li>
+      <li><b>Le Japon sort de trente ans d'anomalie.</b> Un JGB 10 ans à 2,86 %, en hausse de 1,30 point en un an, dans le pays le plus endetté du monde développé, avec un yen à 160. Le Japon est le premier créancier net de la planète.
+        <span class="hl">Un rapatriement de l'épargne japonaise ferait monter les taux longs partout</span></li>
+      <li><b>Recomposition des flux hors de Chine, sans gagnant évident.</b> Les capitaux quittent la Chine, mais l'Inde recule de 6,7 % : un importateur net de pétrole ne peut pas être le refuge d'un choc pétrolier. Le vrai bénéficiaire est la chaîne semi-conducteurs, pas la démographie.
+        <span class="hl">« Émergents » n'est plus une classe d'actifs cohérente</span></li>
+    </ul>
+  </div>
+</section>
+
+<!-- ===== 3. GRILLE DE LECTURE ===== -->
+<section class="band">
+  <div class="wrap">
+    <p class="eyebrow">3 — Méthode</p>
+    <h2>Comment une nouvelle devient un prix</h2>
+    <p class="lede">Une information ne bouge un marché que si elle traverse au moins un des canaux ci-dessous. Sinon, c'est du bruit — durée de vie typique : trois à cinq séances.</p>
+    <div class="canals">
+      <div class="canal"><p class="n">Canal 1</p><h4>Le taux réel</h4><p>Taux nominal moins inflation anticipée. C'est le dénominateur de toute valorisation. Une nouvelle qui monte le taux réel fait baisser mécaniquement les actifs à flux lointains : tech non rentable, obligations longues, or.</p></div>
+      <div class="canal"><p class="n">Canal 2</p><h4>La nature du choc</h4><p>Choc d'<b>offre</b> : inflation ↑ et croissance ↓ ensemble, actions et obligations baissent de concert. Choc de <b>demande</b> : les deux baissent ensemble et les obligations redeviennent une couverture. C'est la première question à poser.</p></div>
+      <div class="canal"><p class="n">Canal 3</p><h4>La fonction de réaction</h4><p>Ce qui compte n'est pas la nouvelle mais ce que la banque centrale va en faire. Un mauvais chiffre d'emploi est haussier si l'on craignait une hausse de taux, baissier si l'on craignait une récession. Même fait, signe opposé.</p></div>
+      <div class="canal"><p class="n">Canal 4</p><h4>Le dollar</h4><p>Presque toutes les matières premières se cotent en dollars et une large part de la dette émergente s'y libelle. Un dollar fort resserre les conditions financières mondiales sans qu'aucune banque centrale n'ait rien décidé.</p></div>
+      <div class="canal"><p class="n">Canal 5</p><h4>Le positionnement</h4><p>Le canal le plus négligé. L'ampleur d'un mouvement dépend de qui est déjà positionné dans le mauvais sens. Une nouvelle mineure sur un consensus saturé produit un mouvement violent ; une nouvelle majeure déjà anticipée n'en produit aucun.</p></div>
+      <div class="canal"><p class="n">Test final</p><h4>Flux ou déclaration ?</h4><p>La géopolitique ne compte durablement que si elle déplace une molécule, un navire ou un bilan. Une menace, un sommet : bruit. Un blocage de détroit, un embargo appliqué, une saisie d'actifs : signal.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 4. NEWS FILTRABLES ===== -->
+<section class="band">
+  <div class="wrap">
+    <p class="eyebrow">4 — Décodage</p>
+    <h2>Les nouvelles d'ampleur</h2>
+    <p class="lede">Filtrez par nature de la nouvelle et par marché touché. Chaque fiche affiche sa chaîne de transmission, son horizon et le niveau de confiance dans l'interprétation.</p>
+
+    <div class="filters">
+      <div class="frow" role="group" aria-label="Filtrer par nature">
+        <span class="flabel">Nature</span>
+        <button class="fbtn" data-f="nature" data-v="all" aria-pressed="true">Tout</button>
+        <button class="fbtn" data-f="nature" data-v="geo" aria-pressed="false">Géopolitique</button>
+        <button class="fbtn" data-f="nature" data-v="macro" aria-pressed="false">Macroéconomie</button>
+        <button class="fbtn" data-f="nature" data-v="cb" aria-pressed="false">Politique monétaire</button>
+        <button class="fbtn" data-f="nature" data-v="corp" aria-pressed="false">Entreprises</button>
+      </div>
+      <div class="frow" role="group" aria-label="Filtrer par marché">
+        <span class="flabel">Marché touché</span>
+        <button class="fbtn" data-f="mkt" data-v="all" aria-pressed="true">Tout</button>
+        <button class="fbtn" data-f="mkt" data-v="eq" aria-pressed="false">Actions</button>
+        <button class="fbtn" data-f="mkt" data-v="fi" aria-pressed="false">Obligations</button>
+        <button class="fbtn" data-f="mkt" data-v="fx" aria-pressed="false">Devises</button>
+        <button class="fbtn" data-f="mkt" data-v="cm" aria-pressed="false">Matières premières</button>
+      </div>
+      <p class="fcount" id="fcount" aria-live="polite">7 nouvelles affichées</p>
+    </div>
+
+    <div class="cards" id="cards">
+
+      <article class="card" data-tone="hot" data-nature="geo" data-mkt="cm eq fi fx">
+        <div class="meta"><span class="tag">Géopolitique</span><span class="tag tag--m">Matières premières · Actions · Obligations · Devises</span><span class="tag">Horizon : trimestres</span><span class="tag tag--hi">Confiance haute</span></div>
+        <h3>Ormuz reste fermé, les négociations piétinent</h3>
+        <p class="fact">Le Brent oscille autour de 88 $ après un pic à ~113 $. Téhéran conditionne la réouverture à la levée du blocus naval américain ; Washington durcit sanctions et blocus. L'AIE chiffre le déficit du trimestre à 1,8 million de barils/jour. L'EIA n'attend un retour près des niveaux d'avant-conflit qu'au début 2027.</p>
+        <div class="chain"><span>Blocage physique</span><i></i><span>Prix énergie</span><i></i><span>Inflation totale</span><i></i><span>Taux directeurs</span><i></i><span>Prime de risque actions</span></div>
+        <p><b>Ce que ça implique.</b> C'est la variable maîtresse : elle entre dans le modèle avant toutes les autres. Tant que le détroit est contraint, la Fed ne peut pas baisser, l'or ne peut pas s'envoler, et l'Europe comme l'Inde paient la facture. Un accord crédible ferait reculer le Brent et déclencherait une rotation violente de l'énergie vers la duration et les émergents importateurs.</p>
+        <p><b>Le piège.</b> Le marché a réagi trois fois à des rumeurs d'accord — Oman, Qatar, Pakistan — sans qu'aucune ne se matérialise. Ne traitez pas les titres ; traitez les transits effectifs et les primes d'assurance maritime.</p>
+      </article>
+
+      <article class="card" data-tone="cool" data-nature="macro" data-mkt="fi eq fx">
+        <div class="meta"><span class="tag">Macroéconomie</span><span class="tag tag--m">Obligations · Actions · Devises</span><span class="tag">Horizon : semaines</span><span class="tag tag--hi">Confiance haute</span></div>
+        <h3>CPI de juillet à 3,4 %, cœur à 2,5 %</h3>
+        <p class="fact">Hausse de 0,1 % sur le mois, 3,4 % sur un an, conforme au consensus. Le cœur ralentit à 2,5 %, plus bas depuis mars 2021. L'essence recule de 2,9 % sur le mois mais reste 24,6 % au-dessus d'il y a un an. Les futures donnaient ~43 % de probabilité de hausse en septembre avant la publication.</p>
+        <div class="chain"><span>Cœur qui décélère</span><i></i><span>Probabilité de hausse ↓</span><i></i><span>Taux 2 ans ↓</span><i></i><span>Dollar ↓ · Actions ↑</span></div>
+        <p><b>Ce que ça implique.</b> Le chiffre valide la thèse « choc d'offre transitoire, pas de spirale ». Un cœur à 2,5 % signifie que le pétrole ne s'est pas propagé aux salaires et aux services. C'est ce qui autorise les actions à monter malgré une Fed en biais de resserrement.</p>
+        <p><b>La nuance qui compte.</b> Les salaires progressent à 3,2 %, sous l'inflation, pour le quatrième mois consécutif. Une inflation contenue par l'érosion du pouvoir d'achat n'est pas une bonne inflation. Surveillez les volumes de consommation, pas seulement les prix.</p>
+      </article>
+
+      <article class="card" data-nature="cb" data-mkt="fi eq fx">
+        <div class="meta"><span class="tag">Politique monétaire</span><span class="tag tag--m">Obligations · Actions · Devises</span><span class="tag">Horizon : trimestres</span><span class="tag">Confiance moyenne</span></div>
+        <h3>La Fed de Kevin Warsh, un régime différent</h3>
+        <p class="fact">Statu quo en juillet à 3,50–3,75 %, neuf voix pour, trois pour une hausse de 25 pb. Beth Hammack (Cleveland) plaide publiquement pour agir maintenant. J.P. Morgan attend désormais une première hausse en décembre, une hausse en septembre restant possible. Des rapports évoquent une réduction du nombre de réunions du FOMC.</p>
+        <div class="chain"><span>Nouvelle fonction de réaction</span><i></i><span>Prime de terme</span><i></i><span>Pente de courbe</span><i></i><span>Multiples actions</span></div>
+        <p><b>Ce que ça implique.</b> Le changement n'est pas le niveau des taux, c'est la fonction de réaction. Une Fed prête à monter dans une économie molle pour défendre sa crédibilité accepte plus de dégâts sur la croissance. Cela plafonne les multiples et pentifie la courbe.</p>
+        <p><b>Le point d'attention.</b> Moins de réunions signifie moins de recalibrages, donc des ajustements plus violents à chaque échéance. Jackson Hole devient un événement de marché de premier ordre.</p>
+      </article>
+
+      <article class="card" data-tone="cool" data-nature="macro" data-mkt="fi cm fx eq">
+        <div class="meta"><span class="tag">Macroéconomie</span><span class="tag tag--m">Obligations · Matières premières · Devises</span><span class="tag">Horizon : mois</span><span class="tag tag--lo">Confiance faible</span></div>
+        <h3>Destructions nettes d'emplois en juillet aux États-Unis</h3>
+        <p class="fact">Le rapport du 7 août fait état d'une perte nette d'emplois sur le mois. Les rendements ont chuté, le dollar s'est affaibli, l'or a bondi de 2,4 % et l'argent de 3,3 % dans la séance.</p>
+        <div class="chain"><span>Emploi ↓</span><i></i><span>Anticipations de hausse ↓</span><i></i><span>Taux réels ↓</span><i></i><span>Or ↑ · Dollar ↓</span></div>
+        <p><b>Ce que ça implique.</b> Pour l'instant le marché lit ce chiffre comme une bonne nouvelle : moins de pression sur la Fed. C'est la lecture « fonction de réaction ». Elle bascule dès que le même chiffre est lu comme un signal de récession — et ce basculement est brutal, pas graduel.</p>
+        <p><b>Pourquoi la confiance est faible.</b> Un mois de données d'emploi ne fait pas une tendance, et les révisions sont fréquemment substantielles. Attendez le rapport d'août avant de conclure.</p>
+      </article>
+
+      <article class="card" data-nature="cb" data-mkt="fi eq fx">
+        <div class="meta"><span class="tag">Politique monétaire</span><span class="tag tag--m">Obligations · Actions · Devises</span><span class="tag">Horizon : trimestres</span><span class="tag tag--hi">Confiance haute</span></div>
+        <h3>La BCE resserre malgré une croissance atone</h3>
+        <p class="fact">Hausse en juin : refi à 2,40 %, dépôt à 2,25 %, marginal à 2,65 %. Première hausse depuis trois ans. Inflation zone euro repartie à ~3,2 % au printemps, croissance du T1 quasi nulle. La BCE chiffrait un scénario défavorable à +1,5 point d'inflation et −0,8 point de croissance à horizon 2028.</p>
+        <div class="chain"><span>Choc énergétique importé</span><i></i><span>BCE contrainte</span><i></i><span>Coût du crédit ↑</span><i></i><span>Demande ↓</span><i></i><span>Marges cycliques</span></div>
+        <p><b>Ce que ça implique.</b> Arbitrage inhabituel : freiner une économie déjà ralentie. C'est l'aveu que la BCE juge le risque de désancrage supérieur au risque de récession. Cela soutient l'euro à la marge, comprime les valorisations des secteurs endettés et favorise les banques.</p>
+        <p><b>Le paradoxe apparent.</b> Les actions européennes sont pourtant à des records. Explication : l'indice est surpondéré en banques (qui gagnent avec des taux hauts), en énergie (qui gagne avec le pétrole haut) et en défense. La macro est mauvaise, la composition sectorielle est bonne. Ne confondez pas les deux.</p>
+      </article>
+
+      <article class="card" data-tone="hot" data-nature="cb" data-mkt="fx fi eq">
+        <div class="meta"><span class="tag">Politique monétaire</span><span class="tag tag--m">Devises · Obligations · Actions</span><span class="tag">Horizon : années</span><span class="tag">Confiance moyenne</span></div>
+        <h3>Le yen près de 160, la Banque du Japon acculée</h3>
+        <p class="fact">USD/JPY à 159,4, après un plus bas de 40 ans qui a déclenché une intervention conjointe nippo-américaine. JGB 10 ans à 2,86 %. Plusieurs membres du conseil appellent à accélérer les hausses, une décision étant attendue en septembre. Le Nikkei gagne pourtant 27,9 % cette année.</p>
+        <div class="chain"><span>Yen faible</span><i></i><span>Inflation importée</span><i></i><span>BoJ resserre</span><i></i><span>Rendements JGB ↑</span><i></i><span>Dénouement du carry</span></div>
+        <p><b>Ce que ça implique.</b> Le Japon est pris en tenaille : un yen faible dope les exportateurs et le Nikkei, mais amplifie une facture énergétique déjà alourdie par Ormuz. Le resserrement de la BoJ est autant une politique de change qu'une politique de prix.</p>
+        <p><b>Le risque de queue.</b> Des décennies de capitaux japonais se sont investies à l'étranger, financées par des taux nuls. Si les rendements domestiques deviennent attractifs, ce capital rentre — et fait monter les taux longs américains et européens sans qu'aucune banque centrale occidentale n'ait bougé. Probabilité faible, impact systémique.</p>
+      </article>
+
+      <article class="card" data-nature="corp" data-mkt="eq">
+        <div class="meta"><span class="tag">Entreprises</span><span class="tag tag--m">Actions</span><span class="tag">Horizon : mois</span><span class="tag tag--hi">Confiance haute</span></div>
+        <h3>Une saison de résultats exceptionnelle, sur des valorisations tendues</h3>
+        <p class="fact">Aux États-Unis, 86 % de surprises positives sur les BPA au T2 contre 78 % de moyenne sur 5 ans, avec des surprises d'ampleur inédite depuis le début du suivi FactSet en 2008. En Europe, les bénéfices Stoxx 600 ressortent à ~+21 % sur un an contre 12,5 % attendus. Mais le S&amp;P se paie environ 20× les bénéfices attendus, contre ~16× de moyenne longue.</p>
+        <div class="chain"><span>BPA en hausse</span><i></i><span>Marché porté par les bénéfices</span><i></i><span>Aucun coussin de valorisation</span></div>
+        <p><b>Ce que ça implique.</b> Le marché de 2026 est un marché de bénéfices, pas de multiples — plus sain qu'en 2021, mais plus binaire. Tant que les BPA délivrent, les taux hauts sont absorbés. Le jour où la croissance des BPA IA ralentit, il n'y a rien en dessous.</p>
+        <p><b>Le signal de largeur.</b> Environ 75 % des composantes du Stoxx 600 sont au-dessus de leur moyenne à 200 jours et les banques régionales américaines surperforment nettement. La hausse n'est donc pas portée par une poignée de valeurs — c'est le meilleur argument haussier disponible.</p>
+      </article>
+
+    </div>
+    <div class="empty" id="empty">Aucune nouvelle ne correspond à ces deux filtres. Élargissez la sélection.</div>
+  </div>
+</section>
+
+<!-- ===== 5. SCÉNARIOS IRAN ===== -->
+<section class="band">
+  <div class="wrap">
+    <p class="eyebrow">5 — Arbre de décision · Énergie</p>
+    <h2>Trois issues pour le conflit iranien</h2>
+    <p class="lede">Le Brent est la variable qui commande l'inflation, donc les taux, donc les valorisations. Cliquez sur un scénario pour voir la réaction attendue de chaque classe d'actifs.</p>
+
+    <div class="scen" data-scen="iran">
+      <div class="scen-tabs" role="tablist" aria-label="Scénarios Iran">
+        <button class="stab" role="tab" aria-selected="false" data-p="iran-1"><span class="sname">La guerre se termine</span><span class="sprob">Désescalade · faible probabilité</span></button>
+        <button class="stab" role="tab" aria-selected="true" data-p="iran-2"><span class="sname">La guerre dure</span><span class="sprob">Enlisement · scénario central</span></button>
+        <button class="stab" role="tab" aria-selected="false" data-p="iran-3"><span class="sname">La guerre se durcit</span><span class="sprob">Escalade · probabilité modérée</span></button>
+      </div>
+
+      <div class="spanel" id="iran-1" role="tabpanel">
+        <p class="thesis">Accord vérifié sur Ormuz, transits normalisés, levée progressive du blocus. Le Brent revient vers 65–70 $ en quelques semaines. L'inflation totale décroche vers 2,5 % d'ici la fin de l'année, la Fed abandonne son biais haussier et rouvre la porte à une baisse. C'est le scénario le plus favorable aux actifs financiers — et le plus destructeur pour ceux qui ont couvert le risque énergétique.</p>
+        <div class="impacts">
+          <div class="imp"><p class="k">Actions</p><p class="d up">Hausse forte</p><p>Rotation brutale : sortie de l'énergie et de la défense, entrée sur la tech, la consommation, les importateurs. L'Inde et la zone euro surperforment.</p></div>
+          <div class="imp"><p class="k">Obligations</p><p class="d up">Hausse</p><p>Baisse des taux sur toute la courbe, la partie longue surperforme. Le meilleur scénario pour la duration.</p></div>
+          <div class="imp"><p class="k">Devises</p><p class="d flat">Dollar plus faible</p><p>Fin de la prime de refuge et de rendement. EUR/USD remonte, le yen se raffermit avec la facture énergétique japonaise.</p></div>
+          <div class="imp"><p class="k">Matières premières</p><p class="d down">Baisse marquée</p><p>Brent vers 65–70 $. L'or perd son support géopolitique mais gagne sur des taux réels plus bas : effet net incertain.</p></div>
+        </div>
+        <div class="watch"><p class="k">Signaux de confirmation</p><p>Nombre de transits quotidiens effectifs par le détroit, primes d'assurance de guerre en baisse, reprise des exportations des producteurs du Golfe, retrait effectif du blocus naval. Aucun communiqué ne remplace ces quatre mesures.</p></div>
+      </div>
+
+      <div class="spanel on" id="iran-2" role="tabpanel">
+        <p class="thesis">Statu quo prolongé : ni accord, ni escalade majeure. Le Brent oscille entre 80 et 95 $ au rythme des rumeurs. L'inflation totale reste autour de 3–3,5 %, le cœur continue de se détendre lentement. La Fed reste en attente avec un biais haussier, la BCE ne bouge plus. C'est le scénario le plus probable et, paradoxalement, le plus confortable pour les actions : pas de choc supplémentaire, des bénéfices qui délivrent.</p>
+        <div class="impacts">
+          <div class="imp"><p class="k">Actions</p><p class="d up">Hausse modérée</p><p>Poursuite de la tendance : les bénéfices portent le marché, les multiples ne s'étendent pas. Largeur maintenue, volatilité par à-coups sur les titres géopolitiques.</p></div>
+          <div class="imp"><p class="k">Obligations</p><p class="d flat">Sans direction</p><p>Le 10 ans reste ancré entre 4,4 et 4,9 %. Le portage rémunère, la duration longue ne paie pas. Préférence pour le 2–5 ans.</p></div>
+          <div class="imp"><p class="k">Devises</p><p class="d flat">Dollar ferme</p><p>DXY autour de 99–102. Le yen reste sous pression tant que le pétrole est haut, avec un risque d'intervention près de 160.</p></div>
+          <div class="imp"><p class="k">Matières premières</p><p class="d flat">Volatiles, sans tendance</p><p>Brent 80–95 $, allers-retours de 5 à 8 % sur les titres de presse. Le cuivre reste soutenu par son déficit propre, indépendamment d'Ormuz.</p></div>
+        </div>
+        <div class="watch"><p class="k">Signaux de confirmation</p><p>Nouveaux cycles rumeur-démenti sans changement des transits ; révisions de l'EIA maintenant le retour à la normale début 2027 ; cœur d'inflation qui continue de décélérer pendant que l'inflation totale stagne.</p></div>
+      </div>
+
+      <div class="spanel" id="iran-3" role="tabpanel">
+        <p class="thesis">Escalade : frappes élargies, attaques sur des infrastructures d'exportation, sortie totale de production du Golfe. Le Brent dépasse ses plus hauts de mars et vise 120 $ et au-delà. L'inflation totale repart vers 4,5–5 %. C'est le scénario où la Fed est forcée de monter alors que la croissance décroche : la stagflation véritable, pas la version atténuée que nous vivons.</p>
+        <div class="impacts">
+          <div class="imp"><p class="k">Actions</p><p class="d down">Baisse forte</p><p>Compression simultanée des multiples et des marges. Seules l'énergie, la défense et les producteurs de matières premières résistent. Les importateurs nets décrochent violemment.</p></div>
+          <div class="imp"><p class="k">Obligations</p><p class="d down">Baisse</p><p>Le piège du choc d'offre : les taux montent alors que les actions baissent. La couverture obligataire ne fonctionne pas. Seules les obligations indexées protègent.</p></div>
+          <div class="imp"><p class="k">Devises</p><p class="d up">Dollar plus fort</p><p>Refuge et rendement se combinent. Les devises des importateurs d'énergie souffrent le plus : yen, euro, roupie indienne.</p></div>
+          <div class="imp"><p class="k">Matières premières</p><p class="d up">Hausse forte</p><p>Brent au-delà de 120 $. L'or monte cette fois franchement, car la demande de refuge l'emporte sur les taux réels. Le gaz européen suit.</p></div>
+        </div>
+        <div class="watch"><p class="k">Signaux d'alerte précoce</p><p>Frappes sur des terminaux d'exportation ou des installations de traitement plutôt que sur des cibles militaires ; sorties d'assureurs maritimes du marché ; arrêts de production annoncés par les producteurs du Golfe ; libération coordonnée de réserves stratégiques, qui signale la panique plutôt que la solution.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 6. SCÉNARIOS IA ===== -->
+<section class="band">
+  <div class="wrap">
+    <p class="eyebrow">6 — Arbre de décision · Intelligence artificielle</p>
+    <h2>Trois issues pour le cycle IA</h2>
+    <p class="lede">Le marché actions de 2026 repose sur les bénéfices, pas sur les multiples. Il n'y a donc pas de coussin de valorisation : la trajectoire des profits et du capex est le seul pilier.</p>
+
+    <div class="scen" data-scen="ia">
+      <div class="scen-tabs" role="tablist" aria-label="Scénarios IA">
+        <button class="stab" role="tab" aria-selected="false" data-p="ia-1"><span class="sname">Les profits arrivent, le capex accélère</span><span class="sprob">Expansion · probabilité modérée</span></button>
+        <button class="stab" role="tab" aria-selected="true" data-p="ia-2"><span class="sname">Les profits tiennent, le capex plafonne</span><span class="sprob">Digestion · scénario central</span></button>
+        <button class="stab" role="tab" aria-selected="false" data-p="ia-3"><span class="sname">Les profits déçoivent, le capex ralentit</span><span class="sprob">Purge · probabilité faible à moyenne</span></button>
+      </div>
+
+      <div class="spanel" id="ia-1" role="tabpanel">
+        <p class="thesis">L'adoption se diffuse au-delà des fournisseurs d'infrastructure : les entreprises utilisatrices montrent des gains de marge mesurables, les carnets de commandes s'allongent, les dépenses des grands acheteurs de compute sont révisées à la hausse. Le cycle passe de « dépense spéculative » à « investissement à retour prouvé » — ce qui justifie une extension des multiples, pas seulement une croissance des bénéfices.</p>
+        <div class="impacts">
+          <div class="imp"><p class="k">Actions</p><p class="d up">Hausse forte, élargie</p><p>Le leadership s'étend des semi-conducteurs vers les logiciels, la santé, les services financiers. Les multiples s'étendent car le risque d'exécution recule.</p></div>
+          <div class="imp"><p class="k">Obligations</p><p class="d down">Sous pression</p><p>Croissance de productivité plus forte, taux neutre plus élevé, émission d'entreprises massive pour financer le capex. Les taux longs montent pour de bonnes raisons.</p></div>
+          <div class="imp"><p class="k">Devises</p><p class="d up">Dollar plus fort</p><p>Les capitaux se concentrent sur le marché américain. Les devises asiatiques exportatrices de composants suivent.</p></div>
+          <div class="imp"><p class="k">Matières premières</p><p class="d up">Cuivre et électricité</p><p>Le goulet d'étranglement de l'IA n'est plus la puce mais le mégawatt. Cuivre, uranium, gaz et infrastructure réseau sont les vrais bénéficiaires.</p></div>
+        </div>
+        <div class="watch"><p class="k">Comment mesurer l'adoption</p><p>Trois familles d'indicateurs, dans l'ordre de fiabilité : (1) revenus cloud et carnets de commandes contractés (<i>backlog</i>), publiés chaque trimestre — la donnée la plus dure ; (2) marges opérationnelles des entreprises utilisatrices hors secteur tech, et effectifs par unité de chiffre d'affaires ; (3) enquêtes d'utilisation en entreprise et statistiques de productivité du BLS, les plus lentes mais les seules qui valident la thèse macro.</p></div>
+      </div>
+
+      <div class="spanel on" id="ia-2" role="tabpanel">
+        <p class="thesis">Les fournisseurs d'infrastructure continuent de délivrer, mais les dépenses cessent d'accélérer : les grands acheteurs digèrent leurs capacités. La croissance des bénéfices reste positive et forte, sans plus surprendre à la hausse. C'est le scénario central, et le plus délicat à traiter : rien ne casse, mais la prime de surprise disparaît, et un marché à 20× les bénéfices attendus a besoin de surprises.</p>
+        <div class="impacts">
+          <div class="imp"><p class="k">Actions</p><p class="d flat">Hausse faible, dispersée</p><p>Le marché avance au rythme des bénéfices, sans extension de multiples. Écart croissant entre les sociétés qui monétisent et celles qui dépensent. Marché de sélection, pas d'indice.</p></div>
+          <div class="imp"><p class="k">Obligations</p><p class="d flat">Sans direction</p><p>Pas de choc de croissance ni de récession. Les taux restent pilotés par le pétrole et la Fed, pas par la technologie.</p></div>
+          <div class="imp"><p class="k">Devises</p><p class="d flat">Sans direction</p><p>Aucun flux dominant. Les devises restent pilotées par les différentiels de taux et l'énergie.</p></div>
+          <div class="imp"><p class="k">Matières premières</p><p class="d flat">Soutien maintenu</p><p>Le capex déjà engagé continue de tirer la demande de cuivre et d'électricité pendant plusieurs trimestres, même si les nouvelles commandes plafonnent.</p></div>
+        </div>
+        <div class="watch"><p class="k">Comment mesurer l'adoption</p><p>Le signal décisif est la <b>décélération du taux de croissance</b> du carnet de commandes, pas son niveau absolu. Un carnet qui progresse de 40 % après 90 % est un ralentissement, même s'il reste excellent. Surveillez aussi l'écart entre le capex annoncé et le capex effectivement décaissé : c'est là que les révisions se voient en premier.</p></div>
+      </div>
+
+      <div class="spanel" id="ia-3" role="tabpanel">
+        <p class="thesis">Les entreprises utilisatrices ne parviennent pas à démontrer un retour sur investissement, les projets sont reportés, les grands acheteurs de compute révisent leurs dépenses à la baisse. Les fournisseurs, dont les valorisations intègrent une croissance élevée durable, se dégonflent. Comme le marché de 2026 n'a aucun coussin de valorisation, la correction est portée intégralement par les multiples.</p>
+        <div class="impacts">
+          <div class="imp"><p class="k">Actions</p><p class="d down">Baisse forte</p><p>Correction concentrée sur les semi-conducteurs, l'infrastructure et les fournisseurs d'énergie associés. Les valeurs défensives, la santé et les services aux collectivités surperforment nettement.</p></div>
+          <div class="imp"><p class="k">Obligations</p><p class="d up">Hausse</p><p>Enfin une couverture qui fonctionne : c'est un choc de <b>demande</b>, pas d'offre. Les taux baissent pendant que les actions baissent. La duration longue est l'actif gagnant.</p></div>
+          <div class="imp"><p class="k">Devises</p><p class="d flat">Yen plus fort</p><p>Aversion au risque classique : le yen et le franc suisse se raffermissent. Le dollar est ambigu, tiraillé entre refuge et baisse des taux.</p></div>
+          <div class="imp"><p class="k">Matières premières</p><p class="d down">Cuivre en baisse</p><p>Le cuivre perd sa prime IA et retombe sur ses fondamentaux miniers. L'or monte, porté par la baisse des taux réels et l'aversion au risque.</p></div>
+        </div>
+        <div class="watch"><p class="k">Signaux d'alerte précoce</p><p>Premier trimestre où un grand acheteur de compute révise son capex à la baisse ; allongement des délais de paiement dans la chaîne d'approvisionnement ; annulations dans les carnets de commandes plutôt que simples reports ; contrats de centres de données renégociés ou abandonnés. Ces signaux apparaissent dans les documents financiers un à deux trimestres avant les cours.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 7. STRATÉGIES ===== -->
+<section class="band">
+  <div class="wrap">
+    <p class="eyebrow">7 — Positionnement</p>
+    <h2>Comment s'exposer à ces tendances</h2>
+    <p class="lede">Chaque thèse est accompagnée de ce qui l'invaliderait. Une thèse sans condition de sortie n'est pas une stratégie, c'est une opinion.</p>
+
+    <div class="strat">
+      <div class="strat-top"><h3>Actifs réels contre inflation d'offre</h3><span class="horizon">1–3 ans</span></div>
+      <p>Dans un choc d'offre, les obligations nominales ne protègent pas — leçon coûteuse de 2022, qui se rejoue. Les protections efficaces sont celles dont les flux sont indexés sur les prix qui montent : énergie et infrastructure énergétique, obligations indexées sur l'inflation, matières premières via des producteurs plutôt que des contrats à terme.</p>
+      <div class="kill"><b>Ce qui invalide</b>Une réouverture vérifiée d'Ormuz avec normalisation des transits et des primes d'assurance. Le Brent revient vers 65–70 $ et tout le raisonnement s'inverse en quelques semaines.</div>
+    </div>
+
+    <div class="strat">
+      <div class="strat-top"><h3>Duration courte, pentification de la courbe</h3><span class="horizon">6–18 mois</span></div>
+      <p>Le portage sur la partie 2–5 ans rémunère plus de 4 % avec un risque de duration limité. Le segment long est exposé à deux forces contraires simultanées : primes de terme en hausse et normalisation japonaise. La rémunération pour porter de la duration longue est insuffisante.</p>
+      <div class="kill"><b>Ce qui invalide</b>Un retournement net de l'emploi américain. Si la lecture bascule de « moins de hausses » à « récession », les taux longs s'effondrent et la duration devient l'actif le plus performant.</div>
+    </div>
+
+    <div class="strat">
+      <div class="strat-top"><h3>Actions : pouvoir de fixation des prix, pas croissance longue</h3><span class="horizon">1–2 ans</span></div>
+      <p>Avec un taux réel élevé, les sociétés dont la valeur repose sur des flux lointains sont pénalisées mécaniquement. Ce qui fonctionne : marges brutes stables face à des coûts en hausse, endettement faible, capacité à répercuter les prix. Cela recoupe une part de l'énergie, de la défense, des banques et des leaders d'infrastructure IA à carnets visibles.</p>
+      <div class="kill"><b>Ce qui invalide</b>Un ralentissement du capex IA. Les bénéfices sont le seul pilier du marché ; une révision à la baisse retirerait le soutien fondamental sans coussin de valorisation en dessous.</div>
+    </div>
+
+    <div class="strat">
+      <div class="strat-top"><h3>Diversifier hors du bloc dollar-tech</h3><span class="horizon">2–5 ans</span></div>
+      <p>2026 valide la diversification : matières premières ≈ +39 %, petites capitalisations ≈ +20 %, émergents ≈ +18 %, grandes capitalisations américaines ≈ +10 %. Discriminez par exposition au pétrole : privilégiez les exportateurs nets, pénalisez les importateurs nets.</p>
+      <div class="kill"><b>Ce qui invalide</b>Un choc de demande mondial. Dans une récession globale, les corrélations convergent vers 1 : seuls les emprunts d'État de qualité et le cash protègent.</div>
+    </div>
+
+    <div class="strat">
+      <div class="strat-top"><h3>Or : allocation structurelle, jamais tactique</h3><span class="horizon">5 ans et plus</span></div>
+      <p>L'or a fait un aller-retour spectaculaire : 5 405 $ fin janvier, −27 % ensuite, retour vers 4 400 $. Personne ne l'a traité correctement en tactique. Sa justification est structurelle — achats des banques centrales, fragmentation des réserves, dette souveraine. Une position stable, rebalancée mécaniquement, capte cette prime.</p>
+      <div class="kill"><b>Ce qui invalide</b>Une remontée durable des taux réels au-delà de 2,5 % sans stress souverain associé. L'or n'a pas de coupon : c'est son seul vrai concurrent.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 8. BRUIT ===== -->
+<section class="band">
+  <div class="wrap">
+    <p class="eyebrow">8 — Filtre</p>
+    <h2>Ce qu'il faut cesser de suivre</h2>
+    <p class="lede">Ces catégories occupent une part disproportionnée du flux d'information et n'ont, statistiquement, aucun pouvoir explicatif au-delà de quelques séances.</p>
+    <ul class="plain">
+      <li><b>Les rumeurs d'accord sur Ormuz.</b> Quatre cycles rumeur-démenti depuis juin, dont un mémorandum signé le 17 juin puis effondré en quelques jours. Le seul indicateur exploitable est le nombre de transits effectifs et le coût de l'assurance de guerre.</li>
+      <li><b>Les records d'indices.</b> Le S&amp;P a inscrit 25 records cette année, après 39 l'an dernier et 57 en 2024. Un record est la conséquence normale d'un marché haussier, pas une information.</li>
+      <li><b>Les déclarations sans mécanisme.</b> Une menace, un sommet, une conférence de presse ne déplacent rien tant qu'ils ne modifient pas un flux physique, une règle ou un bilan.</li>
+      <li><b>Les prévisions de prix des maisons de courtage.</b> Les fourchettes 2026 sur le Brent allaient de 59 $ à 118 $ selon les émetteurs. Mesurez l'incertitude avec, ne vous y ancrez jamais.</li>
+      <li><b>La performance mensuelle d'un actif isolé.</b> Le KOSPI a perdu plus de 20 % sur le seul mois de juillet ; l'argent est passé de premier à dernier du classement en sept mois. Ce sont des ajustements de positionnement, pas des changements de tendance.</li>
+      <li><b>Les débats sur la bulle IA.</b> La question exploitable n'est pas « bulle ou pas », mais « les carnets de commandes et les bénéfices trimestriels confirment-ils les dépenses annoncées ». C'est mesurable chaque trimestre.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ===== 9. CALENDRIER ===== -->
+<section class="band">
+  <div class="wrap">
+    <p class="eyebrow">9 — Points de bascule</p>
+    <h2>Ce qui décide de la suite</h2>
+    <table class="cal">
+      <tr><td>Fin août</td><td>Symposium de Jackson Hole, discours de Kevin Warsh</td><td>Recalibre toute la courbe américaine</td></tr>
+      <tr><td>Fin août</td><td>Indice PCE, mesure d'inflation préférée de la Fed</td><td>Confirme ou infirme le message du CPI</td></tr>
+      <tr><td>Début sept.</td><td>Rapport sur l'emploi d'août</td><td>Tranche entre ralentissement et récession</td></tr>
+      <tr><td>9 sept.</td><td>Perspectives énergétiques à court terme, EIA</td><td>Révision des hypothèses de transits Ormuz</td></tr>
+      <tr><td>15–16 sept.</td><td>Réunion du FOMC</td><td>Hausse ou statu quo, probabilités partagées</td></tr>
+      <tr><td>Septembre</td><td>Décision de la Banque du Japon</td><td>Le pivot le plus sous-évalué du calendrier</td></tr>
+      <tr><td>En continu</td><td>Transits effectifs par Ormuz, primes d'assurance de guerre</td><td>La seule donnée qui compte sur le dossier iranien</td></tr>
+    </table>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <p><b>Méthodologie.</b> Les performances actions sont des performances prix en devise locale au 31 juillet 2026, sauf mention. Les niveaux de taux, matières premières et devises sont ceux des 12–13 août 2026. Les performances de classes d'actifs larges sont des rendements totaux arrondis issus de synthèses de gestionnaires. Les chiffres précédés de « ≈ » sont des ordres de grandeur reconstitués à partir de sources publiques concordantes, pas des mesures exactes.</p>
+    <p><b>Probabilités des scénarios.</b> Les mentions « scénario central », « probabilité modérée » ou « faible » sont des jugements qualitatifs explicites, pas des probabilités calculées. Elles servent à hiérarchiser la préparation, pas à parier.</p>
+    <p><b>Sources principales.</b> Bureau of Labor Statistics, Réserve fédérale, Banque centrale européenne, EIA et AIE, S&amp;P Dow Jones Indices, FactSet, J.P. Morgan Wealth Management, LPL Research, Trading Economics, Reuters.</p>
+    <div class="disclaimer">
+      <b>Avertissement</b>
+      Ce document est un support d'analyse, pas un conseil en investissement. Il ne tient compte d'aucune situation patrimoniale, fiscale ou d'horizon particulier. Les stratégies décrites comportent un risque de perte en capital. Pour toute décision engageant votre épargne, consultez un conseiller réglementé.
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  /* ---- Filtres des nouvelles ---- */
+  var state = {nature:'all', mkt:'all'};
+  var cards = Array.prototype.slice.call(document.querySelectorAll('#cards .card'));
+  var countEl = document.getElementById('fcount');
+  var emptyEl = document.getElementById('empty');
+
+  function apply(){
+    var n = 0;
+    cards.forEach(function(c){
+      var okN = state.nature === 'all' || c.dataset.nature === state.nature;
+      var okM = state.mkt === 'all' || (' '+c.dataset.mkt+' ').indexOf(' '+state.mkt+' ') > -1;
+      var show = okN && okM;
+      c.classList.toggle('hide', !show);
+      if(show) n++;
+    });
+    countEl.textContent = n === 0 ? 'Aucune nouvelle affichée'
+      : (n === 1 ? '1 nouvelle affichée' : n + ' nouvelles affichées');
+    emptyEl.classList.toggle('on', n === 0);
+  }
+
+  document.querySelectorAll('.fbtn').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var f = btn.dataset.f;
+      state[f] = btn.dataset.v;
+      document.querySelectorAll('.fbtn[data-f="'+f+'"]').forEach(function(b){
+        b.setAttribute('aria-pressed', String(b === btn));
+      });
+      apply();
+    });
+  });
+  apply();
+
+  /* ---- Onglets de scénarios ---- */
+  document.querySelectorAll('.scen').forEach(function(block){
+    var tabs = Array.prototype.slice.call(block.querySelectorAll('.stab'));
+    function select(tab){
+      tabs.forEach(function(t){
+        var on = t === tab;
+        t.setAttribute('aria-selected', String(on));
+        var panel = document.getElementById(t.dataset.p);
+        if(panel) panel.classList.toggle('on', on);
+      });
+    }
+    tabs.forEach(function(t, i){
+      t.addEventListener('click', function(){ select(t); });
+      t.addEventListener('keydown', function(e){
+        var d = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0;
+        if(!d) return;
+        e.preventDefault();
+        var next = tabs[(i + d + tabs.length) % tabs.length];
+        next.focus(); select(next);
+      });
+    });
+  });
+})();
+</script>
+</body>
+</html>
