@@ -1,0 +1,5590 @@
+{
+  "instruments": [
+    {
+      "id": "ndx",
+      "label": "Nasdaq 100",
+      "assetClass": "equity",
+      "zones": [
+        "us",
+        "global"
+      ],
+      "unit": "index",
+      "ytdBasis": 21400,
+      "note": "Rendement total fin juillet, porté par les BPA des méga-caps IA."
+    },
+    {
+      "id": "spx",
+      "label": "S&P 500",
+      "assetClass": "equity",
+      "zones": [
+        "us",
+        "global"
+      ],
+      "unit": "index",
+      "ytdBasis": 5450,
+      "note": "≈ +10,5 % en rendement total, largeur maintenue."
+    },
+    {
+      "id": "sx5e",
+      "label": "Euro Stoxx 50",
+      "assetClass": "equity",
+      "zones": [
+        "ez",
+        "global"
+      ],
+      "unit": "index",
+      "ytdBasis": 4950,
+      "note": "Records ; BPA Stoxx 600 ≈ +21 % a/a au T2, surpondération banques/énergie/défense."
+    },
+    {
+      "id": "ukx",
+      "label": "FTSE 100",
+      "assetClass": "equity",
+      "zones": [
+        "uk",
+        "global"
+      ],
+      "unit": "index",
+      "ytdBasis": 8100,
+      "note": "Défense, banques, peu de tech."
+    },
+    {
+      "id": "cac",
+      "label": "CAC 40",
+      "assetClass": "equity",
+      "zones": [
+        "fr",
+        "ez",
+        "global"
+      ],
+      "unit": "index",
+      "ytdBasis": 7550,
+      "note": "Rotation vers banques et industrielles, sensible à la prime OAT."
+    },
+    {
+      "id": "nky",
+      "label": "Nikkei 225",
+      "assetClass": "equity",
+      "zones": [
+        "jp",
+        "global"
+      ],
+      "unit": "index",
+      "ytdBasis": 39900,
+      "note": "Semis + IA, gouvernance, yen faible."
+    },
+    {
+      "id": "hsi",
+      "label": "Hang Seng",
+      "assetClass": "equity",
+      "zones": [
+        "cn",
+        "em",
+        "global"
+      ],
+      "unit": "index",
+      "ytdBasis": 20100,
+      "note": "Confiance investisseurs fragile."
+    },
+    {
+      "id": "csi300",
+      "label": "CSI 300",
+      "assetClass": "equity",
+      "zones": [
+        "cn",
+        "em",
+        "global"
+      ],
+      "unit": "index",
+      "ytdBasis": 3650,
+      "note": "Immobilier, demande interne molle."
+    },
+    {
+      "id": "nifty50",
+      "label": "Nifty 50",
+      "assetClass": "equity",
+      "zones": [
+        "in",
+        "em",
+        "global"
+      ],
+      "unit": "index",
+      "ytdBasis": 23650,
+      "note": "Plus de 29 Md$ de sorties au S1, facture pétrolière. Flux Twelve Data instable sur cette ligne."
+    },
+    {
+      "id": "us10y",
+      "label": "US 10 ans",
+      "assetClass": "rates",
+      "zones": [
+        "us",
+        "global"
+      ],
+      "unit": "percent",
+      "ytdBasis": 4.35,
+      "note": "Reflue après un CPI conforme."
+    },
+    {
+      "id": "de10y",
+      "label": "Bund 10 ans",
+      "assetClass": "rates",
+      "zones": [
+        "de",
+        "ez",
+        "global"
+      ],
+      "unit": "percent",
+      "ytdBasis": 2.35,
+      "note": "Ancre de la courbe euro."
+    },
+    {
+      "id": "fr10y",
+      "label": "OAT 10 ans",
+      "assetClass": "rates",
+      "zones": [
+        "fr",
+        "ez",
+        "global"
+      ],
+      "unit": "percent",
+      "ytdBasis": 3.1,
+      "note": "Prime de risque souverain français."
+    },
+    {
+      "id": "spread-us10y-bund10y",
+      "label": "Spread US 10 ans − Bund 10 ans",
+      "assetClass": "rates",
+      "zones": [
+        "us",
+        "ez",
+        "global"
+      ],
+      "unit": "percent",
+      "ytdBasis": null,
+      "note": "Divergence de politique monétaire et de croissance transatlantique. Pilote l'EUR/USD."
+    },
+    {
+      "id": "spread-oat10y-bund10y",
+      "label": "Spread OAT 10 ans − Bund 10 ans",
+      "assetClass": "rates",
+      "zones": [
+        "fr",
+        "ez",
+        "global"
+      ],
+      "unit": "percent",
+      "ytdBasis": null,
+      "note": "Prime de risque souverain français — signal de défiance budgétaire, pas de divergence de croissance."
+    },
+    {
+      "id": "brent",
+      "label": "Brent",
+      "assetClass": "commodity",
+      "zones": [
+        "global"
+      ],
+      "unit": "usd",
+      "ytdBasis": 64.2,
+      "note": "Variable maîtresse : Ormuz contraint, prime de risque installée."
+    },
+    {
+      "id": "wti",
+      "label": "WTI",
+      "assetClass": "commodity",
+      "zones": [
+        "us",
+        "global"
+      ],
+      "unit": "usd",
+      "ytdBasis": 61.1,
+      "note": "Prime de risque, pas déficit structurel."
+    },
+    {
+      "id": "gold",
+      "label": "Or",
+      "assetClass": "commodity",
+      "zones": [
+        "global"
+      ],
+      "unit": "usd",
+      "ytdBasis": 4320,
+      "note": "Pic 5 405 $ le 29/01, puis −27 %, rebond en août."
+    },
+    {
+      "id": "silver",
+      "label": "Argent",
+      "assetClass": "commodity",
+      "zones": [
+        "global"
+      ],
+      "unit": "usd",
+      "ytdBasis": 64.8,
+      "note": "Négatif YTD après +137 % en 2025."
+    },
+    {
+      "id": "copper",
+      "label": "Cuivre",
+      "assetClass": "commodity",
+      "zones": [
+        "global"
+      ],
+      "unit": "usd",
+      "ytdBasis": 4.47,
+      "note": "+47 % sur un an, déficit de concentrés, goulet d'étranglement électrique de l'IA."
+    },
+    {
+      "id": "eurusd",
+      "label": "EUR/USD",
+      "assetClass": "fx",
+      "zones": [
+        "ez",
+        "us",
+        "global"
+      ],
+      "unit": "ratio",
+      "ytdBasis": 1.167,
+      "note": "Euro pénalisé par la facture énergétique."
+    },
+    {
+      "id": "usdjpy",
+      "label": "USD/JPY",
+      "assetClass": "fx",
+      "zones": [
+        "jp",
+        "us",
+        "global"
+      ],
+      "unit": "ratio",
+      "ytdBasis": 142.8,
+      "note": "Plus bas de 40 ans du yen, intervention conjointe."
+    },
+    {
+      "id": "gbpusd",
+      "label": "GBP/USD",
+      "assetClass": "fx",
+      "zones": [
+        "uk",
+        "us",
+        "global"
+      ],
+      "unit": "ratio",
+      "ytdBasis": 1.34,
+      "note": "Sans direction propre."
+    },
+    {
+      "id": "dxy",
+      "label": "Indice dollar (DXY)",
+      "assetClass": "fx",
+      "zones": [
+        "us",
+        "global"
+      ],
+      "unit": "index",
+      "ytdBasis": 98.8,
+      "note": "Plus bas à 96,2 le 29/01, puis reprise."
+    }
+  ],
+  "observations": [
+    {
+      "instrumentId": "ndx",
+      "date": "2026-07-27",
+      "value": 24000,
+      "source": "Twelve Data",
+      "fetchedAt": "2026-07-27T21:05:00Z"
+    },
+    {
+      "instrumentId": "ndx",
+      "date": "2026-07-28",
+      "value": 24050,
+      "source": "Twelve Data",
+      "fetchedAt": "2026-07-28T21:05:00Z"
+    },
+    {
+      "instrumentId": "ndx",
+      "date": "2026-07-29",
+      "value": 24020,
+      "source": "Twelve Data",
+      "fetchedAt": "2026-07-29T21:05:00Z"
+    },
+    {
+      "instrumentId": "ndx",
+      "date": "2026-07-30",
+      "value": 24400,
+      "source": "Twelve Data",
+      "fetchedAt": "2026-07-30T21:05:00Z"
+    },
+    {
+      "instrumentId": "ndx",
+      "date": "2026-07-31",
+      "value": 24700,
+      "source": "Twelve Data",
+      "fetchedAt": "2026-07-31T21:05:00Z"
+    },
+    {
+      "instrumentId": "ndx",
+      "date": "2026-08-03",
+      "value": 25550,
+      "source": "Twelve Data",
+      "fetchedAt": "2026-08-03T21:05:00Z"
+    },
+    {
+      "instrumentId": "ndx",
+      "date": "2026-08-04",
+      "value": 25500,
+      "source": "Twelve Data",
+      "fetchedAt": "2026-08-04T21:05:00Z"
+    },
+    {
+      "instrumentId": "ndx",
+      "date": "2026-08-05",
+      "value": 25300,
+      "source": "Twelve Data",
+      "fetchedAt": "2026-08-05T21:05:00Z"
+    },
+    {
+      "instrumentId": "ndx",
+      "date": "2026-08-06",
+      "value": 25150,
+      "source": "Twelve Data",
+      "fetchedAt": "2026-08-06T21:05:00Z"
+    },
+    {
+      "instrumentId": "ndx",
+      "date": "2026-08-07",
+      "value": 25200,
+      "source": "Twelve Data",
+      "fetchedAt": "2026-08-07T21:05:00Z"
+    },
+    {
+      "instrumentId": "ndx",
+      "date": "2026-08-10",
+      "value": 25100,
+      "source": "Twelve Data",
+      "fetchedAt": "2026-08-10T21:05:00Z"
+    },
+    {
+      "instrumentId": "ndx",
+      "date": "2026-08-11",
+      "value": 25000,
+      "source": "Twelve Data",
+      "fetchedAt": "2026-08-11T21:05:00Z"
+    },
+    {
+      "instrumentId": "ndx",
+      "date": "2026-08-12",
+      "value": 24950,
+      "source": "Twelve Data",
+      "fetchedAt": "2026-08-12T21:05:00Z"
+    },
+    {
+      "instrumentId": "ndx",
+      "date": "2026-08-13",
+      "value": 25000,
+      "source": "Twelve Data",
+      "fetchedAt": "2026-08-13T21:05:00Z"
+    },
+    {
+      "instrumentId": "spx",
+      "date": "2025-08-13",
+      "value": 5500,
+      "source": "Financial Modeling Prep",
+      "fetchedAt": "2025-08-13T21:05:00Z"
+    },
+    {
+      "instrumentId": "spx",
+      "date": "2025-12-31",
+      "value": 5450,
+      "source": "Financial Modeling Prep",
+      "fetchedAt": "2025-12-31T21:05:00Z"
+    },
+    {
+      "instrumentId": "spx",
+      "date": "2026-07-13",
+      "value": 5850,
+      "source": "Financial Modeling Prep",
+      "fetchedAt": "2026-07-13T21:05:00Z"
+    },
+    {
+      "instrumentId": "spx",
+      "date": "2026-07-27",
+      "value": 5960,
+      "source": "Financial Modeling Prep",
+      "fetchedAt": "2026-07-27T21:05:00Z"
+    },
+    {
+      "instrumentId": "spx",
+      "date": "2026-08-03",
+      "value": 6010,
+      "source": "Financial Modeling Prep",
+      "fetchedAt": "2026-08-03T21:05:00Z"
+    },
+    {
+      "instrumentId": "spx",
+      "date": "2026-08-10",
+      "value": 5985,
+      "source": "Financial Modeling Prep",
+      "fetchedAt": "2026-08-10T21:05:00Z"
+    },
+    {
+      "instrumentId": "spx",
+      "date": "2026-08-12",
+      "value": 5965,
+      "source": "Financial Modeling Prep",
+      "fetchedAt": "2026-08-12T21:05:00Z"
+    },
+    {
+      "instrumentId": "spx",
+      "date": "2026-08-13",
+      "value": 5965.4,
+      "source": "Financial Modeling Prep",
+      "fetchedAt": "2026-08-13T21:05:00Z"
+    },
+    {
+      "instrumentId": "sx5e",
+      "date": "2026-07-13",
+      "value": 5300,
+      "source": "Financial Modeling Prep",
+      "fetchedAt": "2026-07-13T21:05:00Z"
+    },
+    {
+      "instrumentId": "sx5e",
+      "date": "2026-07-27",
+      "value": 5380,
+      "source": "Financial Modeling Prep",
+      "fetchedAt": "2026-07-27T21:05:00Z"
+    },
+    {
+      "instrumentId": "sx5e",
+      "date": "2026-08-03",
+      "value": 5410,
+      "source": "Financial Modeling Prep",
+      "fetchedAt": "2026-08-03T21:05:00Z"
+    },
+    {
+      "instrumentId": "sx5e",
+      "date": "2026-08-10",
+      "value": 5430,
+      "source": "Financial Modeling Prep",
+      "fetchedAt": "2026-08-10T21:05:00Z"
+    },
+    {
+      "instrumentId": "sx5e",
+      "date": "2026-08-12",
+      "value": 5432,
+      "source": "Financial Modeling Prep",
+      "fetchedAt": "2026-08-12T20:05:00Z"
+    },
+    {
+      "instrumentId": "ukx",
+      "date": "2026-07-13",
+      "value": 8780,
+      "source": "Twelve Data",
+      "fetchedAt": "2026-07-13T21:05:00Z"
+    },
+    {
+      "instrumentId": "ukx",
+      "date": "2026-07-27",
+      "value": 8850,
+      "source": "Twelve Data",
+      "fetchedAt": "2026-07-27T21:05:00Z"
+    },
+    {
+      "instrumentId": "ukx",
+      "date": "2026-08-10",
+      "value": 8865,
+      "source": "Twelve Data",
+      "fetchedAt": "2026-08-10T21:05:00Z"
+    },
+    {
+      "instrumentId": "ukx",
+      "date": "2026-08-12",
+      "value": 8862,
+      "source": "Twelve Data",
+      "fetchedAt": "2026-08-12T17:35:00Z"
+    },
+    {
+      "instrumentId": "cac",
+      "date": "2026-07-13",
+      "value": 8150,
+      "source": "Financial Modeling Prep",
+      "fetchedAt": "2026-07-13T21:05:00Z"
+    },
+    {
+      "instrumentId": "cac",
+      "date": "2026-07-27",
+      "value": 8210,
+      "source": "Financial Modeling Prep",
+      "fetchedAt": "2026-07-27T21:05:00Z"
+    },
+    {
+      "instrumentId": "cac",
+      "date": "2026-08-06",
+      "value": 8180,
+      "source": "Financial Modeling Prep",
+      "fetchedAt": "2026-08-06T21:05:00Z"
+    },
+    {
+      "instrumentId": "cac",
+      "date": "2026-08-12",
+      "value": 8195,
+      "source": "Financial Modeling Prep",
+      "fetchedAt": "2026-08-12T16:35:00Z"
+    },
+    {
+      "instrumentId": "nky",
+      "date": "2026-07-13",
+      "value": 50200,
+      "source": "Twelve Data",
+      "fetchedAt": "2026-07-13T21:05:00Z"
+    },
+    {
+      "instrumentId": "nky",
+      "date": "2026-07-27",
+      "value": 50900,
+      "source": "Twelve Data",
+      "fetchedAt": "2026-07-27T21:05:00Z"
+    },
+    {
+      "instrumentId": "nky",
+      "date": "2026-08-06",
+      "value": 51050,
+      "source": "Twelve Data",
+      "fetchedAt": "2026-08-06T21:05:00Z"
+    },
+    {
+      "instrumentId": "nky",
+      "date": "2026-08-12",
+      "value": 51020,
+      "source": "Twelve Data",
+      "fetchedAt": "2026-08-12T06:10:00Z"
+    },
+    {
+      "instrumentId": "hsi",
+      "date": "2026-07-13",
+      "value": 20250,
+      "source": "Twelve Data",
+      "fetchedAt": "2026-07-13T21:05:00Z"
+    },
+    {
+      "instrumentId": "hsi",
+      "date": "2026-07-27",
+      "value": 20300,
+      "source": "Twelve Data",
+      "fetchedAt": "2026-07-27T21:05:00Z"
+    },
+    {
+      "instrumentId": "hsi",
+      "date": "2026-08-12",
+      "value": 20280,
+      "source": "Twelve Data",
+      "fetchedAt": "2026-08-12T08:10:00Z"
+    },
+    {
+      "instrumentId": "csi300",
+      "date": "2026-07-13",
+      "value": 3610,
+      "source": "Twelve Data",
+      "fetchedAt": "2026-07-13T21:05:00Z"
+    },
+    {
+      "instrumentId": "csi300",
+      "date": "2026-08-06",
+      "value": 3618,
+      "source": "Twelve Data",
+      "fetchedAt": "2026-08-06T21:05:00Z"
+    },
+    {
+      "instrumentId": "csi300",
+      "date": "2026-08-11",
+      "value": 3616,
+      "source": "Twelve Data",
+      "fetchedAt": "2026-08-11T07:10:00Z"
+    },
+    {
+      "instrumentId": "nifty50",
+      "date": "2026-07-13",
+      "value": 22150,
+      "source": "Twelve Data",
+      "fetchedAt": "2026-07-13T21:05:00Z"
+    },
+    {
+      "instrumentId": "nifty50",
+      "date": "2026-07-27",
+      "value": 22050,
+      "source": "Twelve Data",
+      "fetchedAt": "2026-07-27T21:05:00Z"
+    },
+    {
+      "instrumentId": "nifty50",
+      "date": "2026-08-06",
+      "value": 22080,
+      "source": "Twelve Data",
+      "fetchedAt": "2026-08-06T21:05:00Z"
+    },
+    {
+      "instrumentId": "nifty50",
+      "date": "2026-08-10",
+      "value": 22070,
+      "source": "Twelve Data",
+      "fetchedAt": "2026-08-10T11:40:00Z"
+    },
+    {
+      "instrumentId": "us10y",
+      "date": "2026-08-03",
+      "value": 4.72,
+      "source": "FRED",
+      "fetchedAt": "2026-08-03T21:05:00Z"
+    },
+    {
+      "instrumentId": "us10y",
+      "date": "2026-08-04",
+      "value": 4.7,
+      "source": "FRED",
+      "fetchedAt": "2026-08-04T21:05:00Z"
+    },
+    {
+      "instrumentId": "us10y",
+      "date": "2026-08-06",
+      "value": 4.68,
+      "source": "FRED",
+      "fetchedAt": "2026-08-06T21:05:00Z"
+    },
+    {
+      "instrumentId": "us10y",
+      "date": "2026-08-07",
+      "value": 4.66,
+      "source": "FRED",
+      "fetchedAt": "2026-08-07T21:05:00Z"
+    },
+    {
+      "instrumentId": "us10y",
+      "date": "2026-08-10",
+      "value": 4.67,
+      "source": "FRED",
+      "fetchedAt": "2026-08-10T21:05:00Z"
+    },
+    {
+      "instrumentId": "us10y",
+      "date": "2026-08-11",
+      "value": 4.66,
+      "source": "FRED",
+      "fetchedAt": "2026-08-11T21:05:00Z"
+    },
+    {
+      "instrumentId": "us10y",
+      "date": "2026-08-12",
+      "value": 4.65,
+      "source": "FRED",
+      "fetchedAt": "2026-08-12T21:05:00Z"
+    },
+    {
+      "instrumentId": "us10y",
+      "date": "2026-08-13",
+      "value": 4.65,
+      "source": "FRED",
+      "fetchedAt": "2026-08-13T20:05:00Z"
+    },
+    {
+      "instrumentId": "de10y",
+      "date": "2026-08-03",
+      "value": 2.55,
+      "source": "Bundesbank",
+      "fetchedAt": "2026-08-03T21:05:00Z"
+    },
+    {
+      "instrumentId": "de10y",
+      "date": "2026-08-04",
+      "value": 2.56,
+      "source": "Bundesbank",
+      "fetchedAt": "2026-08-04T21:05:00Z"
+    },
+    {
+      "instrumentId": "de10y",
+      "date": "2026-08-06",
+      "value": 2.57,
+      "source": "Bundesbank",
+      "fetchedAt": "2026-08-06T21:05:00Z"
+    },
+    {
+      "instrumentId": "de10y",
+      "date": "2026-08-07",
+      "value": 2.58,
+      "source": "Bundesbank",
+      "fetchedAt": "2026-08-07T21:05:00Z"
+    },
+    {
+      "instrumentId": "de10y",
+      "date": "2026-08-10",
+      "value": 2.6,
+      "source": "Bundesbank",
+      "fetchedAt": "2026-08-10T21:05:00Z"
+    },
+    {
+      "instrumentId": "de10y",
+      "date": "2026-08-11",
+      "value": 2.59,
+      "source": "Bundesbank",
+      "fetchedAt": "2026-08-11T21:05:00Z"
+    },
+    {
+      "instrumentId": "de10y",
+      "date": "2026-08-12",
+      "value": 2.61,
+      "source": "Bundesbank",
+      "fetchedAt": "2026-08-12T21:05:00Z"
+    },
+    {
+      "instrumentId": "de10y",
+      "date": "2026-08-13",
+      "value": 2.6,
+      "source": "Bundesbank",
+      "fetchedAt": "2026-08-13T18:05:00Z"
+    },
+    {
+      "instrumentId": "fr10y",
+      "date": "2026-08-03",
+      "value": 3.3,
+      "source": "Banque de France",
+      "fetchedAt": "2026-08-03T21:05:00Z"
+    },
+    {
+      "instrumentId": "fr10y",
+      "date": "2026-08-04",
+      "value": 3.32,
+      "source": "Banque de France",
+      "fetchedAt": "2026-08-04T21:05:00Z"
+    },
+    {
+      "instrumentId": "fr10y",
+      "date": "2026-08-06",
+      "value": 3.55,
+      "source": "Banque de France",
+      "fetchedAt": "2026-08-06T21:05:00Z"
+    },
+    {
+      "instrumentId": "fr10y",
+      "date": "2026-08-07",
+      "value": 3.75,
+      "source": "Banque de France",
+      "fetchedAt": "2026-08-07T21:05:00Z"
+    },
+    {
+      "instrumentId": "fr10y",
+      "date": "2026-08-10",
+      "value": 3.7,
+      "source": "Banque de France",
+      "fetchedAt": "2026-08-10T21:05:00Z"
+    },
+    {
+      "instrumentId": "fr10y",
+      "date": "2026-08-11",
+      "value": 3.68,
+      "source": "Banque de France",
+      "fetchedAt": "2026-08-11T21:05:00Z"
+    },
+    {
+      "instrumentId": "fr10y",
+      "date": "2026-08-12",
+      "value": 3.66,
+      "source": "Banque de France",
+      "fetchedAt": "2026-08-12T21:05:00Z"
+    },
+    {
+      "instrumentId": "fr10y",
+      "date": "2026-08-13",
+      "value": 3.64,
+      "source": "Banque de France",
+      "fetchedAt": "2026-08-13T18:05:00Z"
+    },
+    {
+      "instrumentId": "spread-us10y-bund10y",
+      "date": "2026-08-03",
+      "value": 2.17,
+      "source": "FRED / Bundesbank",
+      "fetchedAt": "2026-08-03T21:05:00Z"
+    },
+    {
+      "instrumentId": "spread-us10y-bund10y",
+      "date": "2026-08-04",
+      "value": 2.14,
+      "source": "FRED / Bundesbank",
+      "fetchedAt": "2026-08-04T21:05:00Z"
+    },
+    {
+      "instrumentId": "spread-us10y-bund10y",
+      "date": "2026-08-06",
+      "value": 2.11,
+      "source": "FRED / Bundesbank",
+      "fetchedAt": "2026-08-06T21:05:00Z"
+    },
+    {
+      "instrumentId": "spread-us10y-bund10y",
+      "date": "2026-08-07",
+      "value": 2.08,
+      "source": "FRED / Bundesbank",
+      "fetchedAt": "2026-08-07T21:05:00Z"
+    },
+    {
+      "instrumentId": "spread-us10y-bund10y",
+      "date": "2026-08-10",
+      "value": 2.07,
+      "source": "FRED / Bundesbank",
+      "fetchedAt": "2026-08-10T21:05:00Z"
+    },
+    {
+      "instrumentId": "spread-us10y-bund10y",
+      "date": "2026-08-11",
+      "value": 2.07,
+      "source": "FRED / Bundesbank",
+      "fetchedAt": "2026-08-11T21:05:00Z"
+    },
+    {
+      "instrumentId": "spread-us10y-bund10y",
+      "date": "2026-08-12",
+      "value": 2.04,
+      "source": "FRED / Bundesbank",
+      "fetchedAt": "2026-08-12T21:05:00Z"
+    },
+    {
+      "instrumentId": "spread-us10y-bund10y",
+      "date": "2026-08-13",
+      "value": 2.05,
+      "source": "FRED / Bundesbank",
+      "fetchedAt": "2026-08-13T20:05:00Z"
+    },
+    {
+      "instrumentId": "spread-oat10y-bund10y",
+      "date": "2026-08-03",
+      "value": 0.75,
+      "source": "Banque de France / Bundesbank",
+      "fetchedAt": "2026-08-03T21:05:00Z"
+    },
+    {
+      "instrumentId": "spread-oat10y-bund10y",
+      "date": "2026-08-04",
+      "value": 0.76,
+      "source": "Banque de France / Bundesbank",
+      "fetchedAt": "2026-08-04T21:05:00Z"
+    },
+    {
+      "instrumentId": "spread-oat10y-bund10y",
+      "date": "2026-08-06",
+      "value": 0.98,
+      "source": "Banque de France / Bundesbank",
+      "fetchedAt": "2026-08-06T21:05:00Z"
+    },
+    {
+      "instrumentId": "spread-oat10y-bund10y",
+      "date": "2026-08-07",
+      "value": 1.17,
+      "source": "Banque de France / Bundesbank",
+      "fetchedAt": "2026-08-07T21:05:00Z"
+    },
+    {
+      "instrumentId": "spread-oat10y-bund10y",
+      "date": "2026-08-10",
+      "value": 1.1,
+      "source": "Banque de France / Bundesbank",
+      "fetchedAt": "2026-08-10T21:05:00Z"
+    },
+    {
+      "instrumentId": "spread-oat10y-bund10y",
+      "date": "2026-08-11",
+      "value": 1.09,
+      "source": "Banque de France / Bundesbank",
+      "fetchedAt": "2026-08-11T21:05:00Z"
+    },
+    {
+      "instrumentId": "spread-oat10y-bund10y",
+      "date": "2026-08-12",
+      "value": 1.05,
+      "source": "Banque de France / Bundesbank",
+      "fetchedAt": "2026-08-12T21:05:00Z"
+    },
+    {
+      "instrumentId": "spread-oat10y-bund10y",
+      "date": "2026-08-13",
+      "value": 1.04,
+      "source": "Banque de France / Bundesbank",
+      "fetchedAt": "2026-08-13T18:05:00Z"
+    },
+    {
+      "instrumentId": "brent",
+      "date": "2025-08-13",
+      "value": 66,
+      "source": "EIA",
+      "fetchedAt": "2025-08-13T21:05:00Z"
+    },
+    {
+      "instrumentId": "brent",
+      "date": "2025-12-31",
+      "value": 64.2,
+      "source": "EIA",
+      "fetchedAt": "2025-12-31T21:05:00Z"
+    },
+    {
+      "instrumentId": "brent",
+      "date": "2026-07-13",
+      "value": 91,
+      "source": "EIA",
+      "fetchedAt": "2026-07-13T21:05:00Z"
+    },
+    {
+      "instrumentId": "brent",
+      "date": "2026-07-27",
+      "value": 89.5,
+      "source": "EIA",
+      "fetchedAt": "2026-07-27T21:05:00Z"
+    },
+    {
+      "instrumentId": "brent",
+      "date": "2026-08-06",
+      "value": 87.8,
+      "source": "EIA",
+      "fetchedAt": "2026-08-06T21:05:00Z"
+    },
+    {
+      "instrumentId": "brent",
+      "date": "2026-08-12",
+      "value": 88.1,
+      "source": "EIA",
+      "fetchedAt": "2026-08-12T21:05:00Z"
+    },
+    {
+      "instrumentId": "brent",
+      "date": "2026-08-13",
+      "value": 88.3,
+      "source": "EIA",
+      "fetchedAt": "2026-08-13T19:05:00Z"
+    },
+    {
+      "instrumentId": "wti",
+      "date": "2026-07-13",
+      "value": 86,
+      "source": "EIA",
+      "fetchedAt": "2026-07-13T21:05:00Z"
+    },
+    {
+      "instrumentId": "wti",
+      "date": "2026-07-27",
+      "value": 84.5,
+      "source": "EIA",
+      "fetchedAt": "2026-07-27T21:05:00Z"
+    },
+    {
+      "instrumentId": "wti",
+      "date": "2026-08-06",
+      "value": 83.1,
+      "source": "EIA",
+      "fetchedAt": "2026-08-06T21:05:00Z"
+    },
+    {
+      "instrumentId": "wti",
+      "date": "2026-08-12",
+      "value": 83.4,
+      "source": "EIA",
+      "fetchedAt": "2026-08-12T19:05:00Z"
+    },
+    {
+      "instrumentId": "gold",
+      "date": "2025-12-31",
+      "value": 4320,
+      "source": "metals.dev",
+      "fetchedAt": "2025-12-31T21:05:00Z"
+    },
+    {
+      "instrumentId": "gold",
+      "date": "2026-01-29",
+      "value": 5405,
+      "source": "metals.dev",
+      "fetchedAt": "2026-01-29T21:05:00Z"
+    },
+    {
+      "instrumentId": "gold",
+      "date": "2026-04-15",
+      "value": 3950,
+      "source": "metals.dev",
+      "fetchedAt": "2026-04-15T21:05:00Z"
+    },
+    {
+      "instrumentId": "gold",
+      "date": "2026-07-13",
+      "value": 4250,
+      "source": "metals.dev",
+      "fetchedAt": "2026-07-13T21:05:00Z"
+    },
+    {
+      "instrumentId": "gold",
+      "date": "2026-08-06",
+      "value": 4380,
+      "source": "metals.dev",
+      "fetchedAt": "2026-08-06T21:05:00Z"
+    },
+    {
+      "instrumentId": "gold",
+      "date": "2026-08-12",
+      "value": 4402,
+      "source": "metals.dev",
+      "fetchedAt": "2026-08-12T19:05:00Z"
+    },
+    {
+      "instrumentId": "silver",
+      "date": "2025-12-31",
+      "value": 64.8,
+      "source": "metals.dev",
+      "fetchedAt": "2025-12-31T21:05:00Z"
+    },
+    {
+      "instrumentId": "silver",
+      "date": "2026-07-13",
+      "value": 60.5,
+      "source": "metals.dev",
+      "fetchedAt": "2026-07-13T21:05:00Z"
+    },
+    {
+      "instrumentId": "silver",
+      "date": "2026-08-06",
+      "value": 62.7,
+      "source": "metals.dev",
+      "fetchedAt": "2026-08-06T21:05:00Z"
+    },
+    {
+      "instrumentId": "silver",
+      "date": "2026-08-12",
+      "value": 63.1,
+      "source": "metals.dev",
+      "fetchedAt": "2026-08-12T19:05:00Z"
+    },
+    {
+      "instrumentId": "copper",
+      "date": "2025-12-31",
+      "value": 4.47,
+      "source": "Financial Modeling Prep",
+      "fetchedAt": "2025-12-31T21:05:00Z"
+    },
+    {
+      "instrumentId": "copper",
+      "date": "2026-07-13",
+      "value": 6.3,
+      "source": "Financial Modeling Prep",
+      "fetchedAt": "2026-07-13T21:05:00Z"
+    },
+    {
+      "instrumentId": "copper",
+      "date": "2026-08-06",
+      "value": 6.52,
+      "source": "Financial Modeling Prep",
+      "fetchedAt": "2026-08-06T21:05:00Z"
+    },
+    {
+      "instrumentId": "copper",
+      "date": "2026-08-12",
+      "value": 6.57,
+      "source": "Financial Modeling Prep",
+      "fetchedAt": "2026-08-12T19:05:00Z"
+    },
+    {
+      "instrumentId": "eurusd",
+      "date": "2025-08-13",
+      "value": 1.16,
+      "source": "Twelve Data",
+      "fetchedAt": "2025-08-13T21:05:00Z"
+    },
+    {
+      "instrumentId": "eurusd",
+      "date": "2025-12-31",
+      "value": 1.167,
+      "source": "Twelve Data",
+      "fetchedAt": "2025-12-31T21:05:00Z"
+    },
+    {
+      "instrumentId": "eurusd",
+      "date": "2026-07-13",
+      "value": 1.162,
+      "source": "Twelve Data",
+      "fetchedAt": "2026-07-13T21:05:00Z"
+    },
+    {
+      "instrumentId": "eurusd",
+      "date": "2026-07-27",
+      "value": 1.158,
+      "source": "Twelve Data",
+      "fetchedAt": "2026-07-27T21:05:00Z"
+    },
+    {
+      "instrumentId": "eurusd",
+      "date": "2026-08-06",
+      "value": 1.155,
+      "source": "Twelve Data",
+      "fetchedAt": "2026-08-06T21:05:00Z"
+    },
+    {
+      "instrumentId": "eurusd",
+      "date": "2026-08-12",
+      "value": 1.153,
+      "source": "Twelve Data",
+      "fetchedAt": "2026-08-12T20:05:00Z"
+    },
+    {
+      "instrumentId": "eurusd",
+      "date": "2026-08-13",
+      "value": 1.153,
+      "source": "Twelve Data",
+      "fetchedAt": "2026-08-13T20:05:00Z"
+    },
+    {
+      "instrumentId": "usdjpy",
+      "date": "2026-07-13",
+      "value": 156.8,
+      "source": "Twelve Data",
+      "fetchedAt": "2026-07-13T21:05:00Z"
+    },
+    {
+      "instrumentId": "usdjpy",
+      "date": "2026-07-27",
+      "value": 158.4,
+      "source": "Twelve Data",
+      "fetchedAt": "2026-07-27T21:05:00Z"
+    },
+    {
+      "instrumentId": "usdjpy",
+      "date": "2026-08-06",
+      "value": 159.1,
+      "source": "Twelve Data",
+      "fetchedAt": "2026-08-06T21:05:00Z"
+    },
+    {
+      "instrumentId": "usdjpy",
+      "date": "2026-08-12",
+      "value": 159.4,
+      "source": "Twelve Data",
+      "fetchedAt": "2026-08-12T20:05:00Z"
+    },
+    {
+      "instrumentId": "gbpusd",
+      "date": "2026-07-13",
+      "value": 1.352,
+      "source": "Twelve Data",
+      "fetchedAt": "2026-07-13T21:05:00Z"
+    },
+    {
+      "instrumentId": "gbpusd",
+      "date": "2026-07-27",
+      "value": 1.347,
+      "source": "Twelve Data",
+      "fetchedAt": "2026-07-27T21:05:00Z"
+    },
+    {
+      "instrumentId": "gbpusd",
+      "date": "2026-08-12",
+      "value": 1.349,
+      "source": "Twelve Data",
+      "fetchedAt": "2026-08-12T20:05:00Z"
+    },
+    {
+      "instrumentId": "dxy",
+      "date": "2025-12-31",
+      "value": 98.8,
+      "source": "Twelve Data",
+      "fetchedAt": "2025-12-31T21:05:00Z"
+    },
+    {
+      "instrumentId": "dxy",
+      "date": "2026-01-29",
+      "value": 96.2,
+      "source": "Twelve Data",
+      "fetchedAt": "2026-01-29T21:05:00Z"
+    },
+    {
+      "instrumentId": "dxy",
+      "date": "2026-07-13",
+      "value": 99.4,
+      "source": "Twelve Data",
+      "fetchedAt": "2026-07-13T21:05:00Z"
+    },
+    {
+      "instrumentId": "dxy",
+      "date": "2026-08-12",
+      "value": 100,
+      "source": "Twelve Data",
+      "fetchedAt": "2026-08-12T20:05:00Z"
+    }
+  ],
+  "macroIndicators": [
+    {
+      "id": "us-cpi",
+      "label": "Inflation totale",
+      "zone": "us",
+      "unit": "percent",
+      "frequency": "monthly",
+      "seriesKey": "CPIAUCSL",
+      "nextRelease": "2026-09-11"
+    },
+    {
+      "id": "us-cpi-core",
+      "label": "Inflation sous-jacente",
+      "zone": "us",
+      "unit": "percent",
+      "frequency": "monthly",
+      "seriesKey": "CPILFESL",
+      "nextRelease": "2026-09-11"
+    },
+    {
+      "id": "us-gdp",
+      "label": "Croissance du PIB",
+      "zone": "us",
+      "unit": "percent",
+      "frequency": "quarterly",
+      "seriesKey": "A191RL1Q225SBEA",
+      "nextRelease": "2026-09-30"
+    },
+    {
+      "id": "us-unemployment",
+      "label": "Taux de chômage",
+      "zone": "us",
+      "unit": "percent",
+      "frequency": "monthly",
+      "seriesKey": "UNRATE",
+      "nextRelease": "2026-09-04"
+    },
+    {
+      "id": "us-policy-rate",
+      "label": "Taux directeur (Fed funds)",
+      "zone": "us",
+      "unit": "percent",
+      "frequency": "monthly",
+      "seriesKey": "DFEDTARU",
+      "nextRelease": "2026-09-16"
+    },
+    {
+      "id": "us-pmi",
+      "label": "PMI composite",
+      "zone": "us",
+      "unit": "index",
+      "frequency": "monthly",
+      "seriesKey": "USPMI",
+      "nextRelease": "2026-09-03"
+    },
+    {
+      "id": "us-wages",
+      "label": "Salaires",
+      "zone": "us",
+      "unit": "percent",
+      "frequency": "monthly",
+      "seriesKey": "CES0500000003",
+      "nextRelease": "2026-09-04"
+    },
+    {
+      "id": "us-budget-balance",
+      "label": "Solde budgétaire",
+      "zone": "us",
+      "unit": "percent",
+      "frequency": "quarterly",
+      "seriesKey": "FYFSGDA188S",
+      "nextRelease": "2026-10-15"
+    },
+    {
+      "id": "us-debt-gdp",
+      "label": "Dette publique / PIB",
+      "zone": "us",
+      "unit": "percent",
+      "frequency": "quarterly",
+      "seriesKey": "GFDEGDQ188S",
+      "nextRelease": "2026-10-15"
+    },
+    {
+      "id": "us-current-account",
+      "label": "Balance courante",
+      "zone": "us",
+      "unit": "percent",
+      "frequency": "quarterly",
+      "seriesKey": "IEABC",
+      "nextRelease": "2026-09-24"
+    },
+    {
+      "id": "ez-cpi",
+      "label": "Inflation totale",
+      "zone": "ez",
+      "unit": "percent",
+      "frequency": "monthly",
+      "seriesKey": "ICP.M.U2.N.000000.4.ANR",
+      "nextRelease": "2026-09-02"
+    },
+    {
+      "id": "ez-cpi-core",
+      "label": "Inflation sous-jacente",
+      "zone": "ez",
+      "unit": "percent",
+      "frequency": "monthly",
+      "seriesKey": "ICP.M.U2.N.XEF000.4.ANR",
+      "nextRelease": "2026-09-02"
+    },
+    {
+      "id": "ez-gdp",
+      "label": "Croissance du PIB",
+      "zone": "ez",
+      "unit": "percent",
+      "frequency": "quarterly",
+      "seriesKey": "NAMQ_10_GDP",
+      "nextRelease": "2026-10-30"
+    },
+    {
+      "id": "ez-unemployment",
+      "label": "Taux de chômage",
+      "zone": "ez",
+      "unit": "percent",
+      "frequency": "monthly",
+      "seriesKey": "UNE_RT_M",
+      "nextRelease": "2026-09-03"
+    },
+    {
+      "id": "ez-policy-rate",
+      "label": "Taux directeur (BCE, dépôt)",
+      "zone": "ez",
+      "unit": "percent",
+      "frequency": "monthly",
+      "seriesKey": "ECB.MRR",
+      "nextRelease": "2026-09-11"
+    },
+    {
+      "id": "ez-pmi",
+      "label": "PMI composite",
+      "zone": "ez",
+      "unit": "index",
+      "frequency": "monthly",
+      "seriesKey": "EZPMI",
+      "nextRelease": "2026-09-03"
+    },
+    {
+      "id": "ez-wages",
+      "label": "Salaires",
+      "zone": "ez",
+      "unit": "percent",
+      "frequency": "quarterly",
+      "seriesKey": "LCI_LCI_R2_Q",
+      "nextRelease": "2026-10-14"
+    },
+    {
+      "id": "ez-budget-balance",
+      "label": "Solde budgétaire",
+      "zone": "ez",
+      "unit": "percent",
+      "frequency": "quarterly",
+      "seriesKey": "GOV_10DD_EDPT1",
+      "nextRelease": "2026-10-21"
+    },
+    {
+      "id": "ez-debt-gdp",
+      "label": "Dette publique / PIB",
+      "zone": "ez",
+      "unit": "percent",
+      "frequency": "quarterly",
+      "seriesKey": "GOV_10Q_GGDEBT",
+      "nextRelease": "2026-10-21"
+    },
+    {
+      "id": "ez-current-account",
+      "label": "Balance courante",
+      "zone": "ez",
+      "unit": "percent",
+      "frequency": "quarterly",
+      "seriesKey": "BOP_C6_Q",
+      "nextRelease": "2026-09-16"
+    },
+    {
+      "id": "fr-cpi",
+      "label": "Inflation totale",
+      "zone": "fr",
+      "unit": "percent",
+      "frequency": "monthly",
+      "seriesKey": "INSEE.001759970",
+      "nextRelease": "2026-09-11"
+    },
+    {
+      "id": "fr-cpi-core",
+      "label": "Inflation sous-jacente",
+      "zone": "fr",
+      "unit": "percent",
+      "frequency": "monthly",
+      "seriesKey": "INSEE.001759972",
+      "nextRelease": "2026-09-11"
+    },
+    {
+      "id": "fr-gdp",
+      "label": "Croissance du PIB",
+      "zone": "fr",
+      "unit": "percent",
+      "frequency": "quarterly",
+      "seriesKey": "INSEE.001688527",
+      "nextRelease": "2026-10-29"
+    },
+    {
+      "id": "fr-unemployment",
+      "label": "Taux de chômage",
+      "zone": "fr",
+      "unit": "percent",
+      "frequency": "monthly",
+      "seriesKey": "INSEE.001688526",
+      "nextRelease": "2026-09-10"
+    },
+    {
+      "id": "fr-pmi",
+      "label": "PMI composite",
+      "zone": "fr",
+      "unit": "index",
+      "frequency": "monthly",
+      "seriesKey": "FRPMI",
+      "nextRelease": "2026-09-03"
+    },
+    {
+      "id": "fr-wages",
+      "label": "Salaires",
+      "zone": "fr",
+      "unit": "percent",
+      "frequency": "quarterly",
+      "seriesKey": "INSEE.001769016",
+      "nextRelease": "2026-09-18"
+    },
+    {
+      "id": "fr-budget-balance",
+      "label": "Solde budgétaire",
+      "zone": "fr",
+      "unit": "percent",
+      "frequency": "quarterly",
+      "seriesKey": "INSEE.001769020",
+      "nextRelease": "2026-10-21"
+    },
+    {
+      "id": "fr-debt-gdp",
+      "label": "Dette publique / PIB",
+      "zone": "fr",
+      "unit": "percent",
+      "frequency": "quarterly",
+      "seriesKey": "INSEE.001769025",
+      "nextRelease": "2026-10-21"
+    },
+    {
+      "id": "de-cpi",
+      "label": "Inflation totale",
+      "zone": "de",
+      "unit": "percent",
+      "frequency": "monthly",
+      "seriesKey": "DE.CPI",
+      "nextRelease": "2026-09-12"
+    },
+    {
+      "id": "de-cpi-core",
+      "label": "Inflation sous-jacente",
+      "zone": "de",
+      "unit": "percent",
+      "frequency": "monthly",
+      "seriesKey": "DE.CPI.CORE",
+      "nextRelease": "2026-09-12"
+    },
+    {
+      "id": "de-gdp",
+      "label": "Croissance du PIB",
+      "zone": "de",
+      "unit": "percent",
+      "frequency": "quarterly",
+      "seriesKey": "DE.GDP",
+      "nextRelease": "2026-10-23"
+    },
+    {
+      "id": "de-unemployment",
+      "label": "Taux de chômage",
+      "zone": "de",
+      "unit": "percent",
+      "frequency": "monthly",
+      "seriesKey": "DE.UNEMPLOYMENT",
+      "nextRelease": "2026-09-01"
+    },
+    {
+      "id": "de-pmi",
+      "label": "PMI composite",
+      "zone": "de",
+      "unit": "index",
+      "frequency": "monthly",
+      "seriesKey": "DEPMI",
+      "nextRelease": "2026-09-03"
+    },
+    {
+      "id": "de-wages",
+      "label": "Salaires",
+      "zone": "de",
+      "unit": "percent",
+      "frequency": "quarterly",
+      "seriesKey": "DE.WAGES",
+      "nextRelease": "2026-11-26"
+    },
+    {
+      "id": "de-current-account",
+      "label": "Balance courante",
+      "zone": "de",
+      "unit": "percent",
+      "frequency": "quarterly",
+      "seriesKey": "DE.CA",
+      "nextRelease": "2026-09-09"
+    },
+    {
+      "id": "uk-cpi",
+      "label": "Inflation totale",
+      "zone": "uk",
+      "unit": "percent",
+      "frequency": "monthly",
+      "seriesKey": "ONS.D7G7",
+      "nextRelease": "2026-09-16"
+    },
+    {
+      "id": "uk-cpi-core",
+      "label": "Inflation sous-jacente",
+      "zone": "uk",
+      "unit": "percent",
+      "frequency": "monthly",
+      "seriesKey": "ONS.D7G8",
+      "nextRelease": "2026-09-16"
+    },
+    {
+      "id": "uk-gdp",
+      "label": "Croissance du PIB",
+      "zone": "uk",
+      "unit": "percent",
+      "frequency": "quarterly",
+      "seriesKey": "ONS.ABMI",
+      "nextRelease": "2026-09-11"
+    },
+    {
+      "id": "uk-unemployment",
+      "label": "Taux de chômage",
+      "zone": "uk",
+      "unit": "percent",
+      "frequency": "monthly",
+      "seriesKey": "ONS.MGSX",
+      "nextRelease": "2026-09-15"
+    },
+    {
+      "id": "uk-policy-rate",
+      "label": "Taux directeur (BoE)",
+      "zone": "uk",
+      "unit": "percent",
+      "frequency": "monthly",
+      "seriesKey": "BOE.BANKRATE",
+      "nextRelease": "2026-09-17"
+    },
+    {
+      "id": "uk-pmi",
+      "label": "PMI composite",
+      "zone": "uk",
+      "unit": "index",
+      "frequency": "monthly",
+      "seriesKey": "UKPMI",
+      "nextRelease": "2026-09-03"
+    },
+    {
+      "id": "uk-wages",
+      "label": "Salaires",
+      "zone": "uk",
+      "unit": "percent",
+      "frequency": "monthly",
+      "seriesKey": "ONS.KAC3",
+      "nextRelease": "2026-09-15"
+    },
+    {
+      "id": "uk-budget-balance",
+      "label": "Solde budgétaire",
+      "zone": "uk",
+      "unit": "percent",
+      "frequency": "quarterly",
+      "seriesKey": "ONS.PSAB",
+      "nextRelease": "2026-09-19"
+    },
+    {
+      "id": "jp-cpi",
+      "label": "Inflation totale",
+      "zone": "jp",
+      "unit": "percent",
+      "frequency": "monthly",
+      "seriesKey": "JP.CPI",
+      "nextRelease": "2026-09-18"
+    },
+    {
+      "id": "jp-cpi-core",
+      "label": "Inflation sous-jacente",
+      "zone": "jp",
+      "unit": "percent",
+      "frequency": "monthly",
+      "seriesKey": "JP.CPI.CORE",
+      "nextRelease": "2026-09-18"
+    },
+    {
+      "id": "jp-gdp",
+      "label": "Croissance du PIB",
+      "zone": "jp",
+      "unit": "percent",
+      "frequency": "quarterly",
+      "seriesKey": "JP.GDP",
+      "nextRelease": "2026-11-16"
+    },
+    {
+      "id": "jp-unemployment",
+      "label": "Taux de chômage",
+      "zone": "jp",
+      "unit": "percent",
+      "frequency": "monthly",
+      "seriesKey": "JP.UNEMPLOYMENT",
+      "nextRelease": "2026-09-30"
+    },
+    {
+      "id": "jp-policy-rate",
+      "label": "Taux directeur (BoJ)",
+      "zone": "jp",
+      "unit": "percent",
+      "frequency": "monthly",
+      "seriesKey": "BOJ.RATE",
+      "nextRelease": "2026-09-19"
+    },
+    {
+      "id": "jp-debt-gdp",
+      "label": "Dette publique / PIB",
+      "zone": "jp",
+      "unit": "percent",
+      "frequency": "quarterly",
+      "seriesKey": "JP.DEBT",
+      "nextRelease": "2026-09-25"
+    },
+    {
+      "id": "jp-current-account",
+      "label": "Balance courante",
+      "zone": "jp",
+      "unit": "percent",
+      "frequency": "quarterly",
+      "seriesKey": "JP.CA",
+      "nextRelease": "2026-09-08"
+    },
+    {
+      "id": "cn-cpi",
+      "label": "Inflation totale",
+      "zone": "cn",
+      "unit": "percent",
+      "frequency": "monthly",
+      "seriesKey": "CN.CPI",
+      "nextRelease": "2026-09-09"
+    },
+    {
+      "id": "cn-gdp",
+      "label": "Croissance du PIB",
+      "zone": "cn",
+      "unit": "percent",
+      "frequency": "quarterly",
+      "seriesKey": "CN.GDP",
+      "nextRelease": "2026-10-18"
+    },
+    {
+      "id": "cn-pmi",
+      "label": "PMI composite",
+      "zone": "cn",
+      "unit": "index",
+      "frequency": "monthly",
+      "seriesKey": "CNPMI",
+      "nextRelease": "2026-09-01"
+    },
+    {
+      "id": "cn-policy-rate",
+      "label": "Taux directeur (PBOC, LPR 1 an)",
+      "zone": "cn",
+      "unit": "percent",
+      "frequency": "monthly",
+      "seriesKey": "PBOC.LPR1Y",
+      "nextRelease": "2026-09-21"
+    },
+    {
+      "id": "cn-current-account",
+      "label": "Balance courante",
+      "zone": "cn",
+      "unit": "percent",
+      "frequency": "quarterly",
+      "seriesKey": "CN.CA",
+      "nextRelease": "2026-09-25"
+    },
+    {
+      "id": "es-cpi",
+      "label": "Inflation totale",
+      "zone": "es",
+      "unit": "percent",
+      "frequency": "monthly",
+      "seriesKey": "INE.ES.CPI",
+      "nextRelease": "2026-09-12"
+    },
+    {
+      "id": "es-gdp",
+      "label": "Croissance du PIB",
+      "zone": "es",
+      "unit": "percent",
+      "frequency": "quarterly",
+      "seriesKey": "INE.ES.GDP",
+      "nextRelease": "2026-10-30"
+    },
+    {
+      "id": "es-unemployment",
+      "label": "Taux de chômage",
+      "zone": "es",
+      "unit": "percent",
+      "frequency": "monthly",
+      "seriesKey": "INE.ES.UNEMPLOYMENT",
+      "nextRelease": "2026-09-25"
+    },
+    {
+      "id": "it-cpi",
+      "label": "Inflation totale",
+      "zone": "it",
+      "unit": "percent",
+      "frequency": "monthly",
+      "seriesKey": "ISTAT.IT.CPI",
+      "nextRelease": "2026-09-12"
+    },
+    {
+      "id": "it-gdp",
+      "label": "Croissance du PIB",
+      "zone": "it",
+      "unit": "percent",
+      "frequency": "quarterly",
+      "seriesKey": "ISTAT.IT.GDP",
+      "nextRelease": "2026-10-30"
+    },
+    {
+      "id": "it-debt-gdp",
+      "label": "Dette publique / PIB",
+      "zone": "it",
+      "unit": "percent",
+      "frequency": "quarterly",
+      "seriesKey": "ISTAT.IT.DEBT",
+      "nextRelease": "2026-10-21"
+    },
+    {
+      "id": "in-cpi",
+      "label": "Inflation totale",
+      "zone": "in",
+      "unit": "percent",
+      "frequency": "monthly",
+      "seriesKey": "IN.CPI",
+      "nextRelease": "2026-09-12"
+    },
+    {
+      "id": "in-gdp",
+      "label": "Croissance du PIB",
+      "zone": "in",
+      "unit": "percent",
+      "frequency": "quarterly",
+      "seriesKey": "IN.GDP",
+      "nextRelease": "2026-11-29"
+    },
+    {
+      "id": "in-policy-rate",
+      "label": "Taux directeur (RBI)",
+      "zone": "in",
+      "unit": "percent",
+      "frequency": "monthly",
+      "seriesKey": "RBI.REPO",
+      "nextRelease": "2026-10-07"
+    },
+    {
+      "id": "em-gdp",
+      "label": "Croissance du PIB",
+      "zone": "em",
+      "unit": "percent",
+      "frequency": "quarterly",
+      "seriesKey": "IMF.EM.GDP",
+      "nextRelease": "2026-10-15"
+    },
+    {
+      "id": "em-current-account",
+      "label": "Balance courante",
+      "zone": "em",
+      "unit": "percent",
+      "frequency": "quarterly",
+      "seriesKey": "IMF.EM.CA",
+      "nextRelease": "2026-10-15"
+    }
+  ],
+  "macroObservations": [
+    {
+      "instrumentId": "us-cpi",
+      "date": "2025-08-13",
+      "value": 2.9,
+      "source": "FRED",
+      "fetchedAt": "2025-08-13T13:30:00Z"
+    },
+    {
+      "instrumentId": "us-cpi",
+      "date": "2025-11-13",
+      "value": 3,
+      "source": "FRED",
+      "fetchedAt": "2025-11-13T13:30:00Z"
+    },
+    {
+      "instrumentId": "us-cpi",
+      "date": "2026-02-12",
+      "value": 3.1,
+      "source": "FRED",
+      "fetchedAt": "2026-02-12T13:30:00Z"
+    },
+    {
+      "instrumentId": "us-cpi",
+      "date": "2026-04-10",
+      "value": 3.2,
+      "source": "FRED",
+      "fetchedAt": "2026-04-10T13:30:00Z"
+    },
+    {
+      "instrumentId": "us-cpi",
+      "date": "2026-05-13",
+      "value": 3.2,
+      "source": "FRED",
+      "fetchedAt": "2026-05-13T13:30:00Z"
+    },
+    {
+      "instrumentId": "us-cpi",
+      "date": "2026-06-11",
+      "value": 3.3,
+      "source": "FRED",
+      "fetchedAt": "2026-06-11T13:30:00Z"
+    },
+    {
+      "instrumentId": "us-cpi",
+      "date": "2026-07-15",
+      "value": 3.4,
+      "source": "FRED",
+      "fetchedAt": "2026-07-15T13:30:00Z"
+    },
+    {
+      "instrumentId": "us-cpi",
+      "date": "2026-08-12",
+      "value": 3.4,
+      "source": "FRED",
+      "fetchedAt": "2026-08-12T12:30:00Z"
+    },
+    {
+      "instrumentId": "us-cpi-core",
+      "date": "2025-08-13",
+      "value": 3.2,
+      "source": "FRED",
+      "fetchedAt": "2025-08-13T13:30:00Z"
+    },
+    {
+      "instrumentId": "us-cpi-core",
+      "date": "2025-11-13",
+      "value": 3.1,
+      "source": "FRED",
+      "fetchedAt": "2025-11-13T13:30:00Z"
+    },
+    {
+      "instrumentId": "us-cpi-core",
+      "date": "2026-02-12",
+      "value": 3,
+      "source": "FRED",
+      "fetchedAt": "2026-02-12T13:30:00Z"
+    },
+    {
+      "instrumentId": "us-cpi-core",
+      "date": "2026-04-10",
+      "value": 2.9,
+      "source": "FRED",
+      "fetchedAt": "2026-04-10T13:30:00Z"
+    },
+    {
+      "instrumentId": "us-cpi-core",
+      "date": "2026-05-13",
+      "value": 2.8,
+      "source": "FRED",
+      "fetchedAt": "2026-05-13T13:30:00Z"
+    },
+    {
+      "instrumentId": "us-cpi-core",
+      "date": "2026-06-11",
+      "value": 2.6,
+      "source": "FRED",
+      "fetchedAt": "2026-06-11T13:30:00Z"
+    },
+    {
+      "instrumentId": "us-cpi-core",
+      "date": "2026-07-15",
+      "value": 2.5,
+      "source": "FRED",
+      "fetchedAt": "2026-07-15T13:30:00Z"
+    },
+    {
+      "instrumentId": "us-cpi-core",
+      "date": "2026-08-12",
+      "value": 2.5,
+      "source": "FRED",
+      "fetchedAt": "2026-08-12T12:30:00Z"
+    },
+    {
+      "instrumentId": "us-gdp",
+      "date": "2025-01-30",
+      "value": 2.3,
+      "source": "FRED",
+      "fetchedAt": "2025-01-30T13:30:00Z"
+    },
+    {
+      "instrumentId": "us-gdp",
+      "date": "2025-04-30",
+      "value": 2.1,
+      "source": "FRED",
+      "fetchedAt": "2025-04-30T13:30:00Z"
+    },
+    {
+      "instrumentId": "us-gdp",
+      "date": "2025-07-30",
+      "value": 1.8,
+      "source": "FRED",
+      "fetchedAt": "2025-07-30T13:30:00Z"
+    },
+    {
+      "instrumentId": "us-gdp",
+      "date": "2025-10-30",
+      "value": 1.6,
+      "source": "FRED",
+      "fetchedAt": "2025-10-30T13:30:00Z"
+    },
+    {
+      "instrumentId": "us-gdp",
+      "date": "2026-01-29",
+      "value": 1.4,
+      "source": "FRED",
+      "fetchedAt": "2026-01-29T13:30:00Z"
+    },
+    {
+      "instrumentId": "us-gdp",
+      "date": "2026-04-30",
+      "value": 1.3,
+      "source": "FRED",
+      "fetchedAt": "2026-04-30T13:30:00Z"
+    },
+    {
+      "instrumentId": "us-unemployment",
+      "date": "2025-08-13",
+      "value": 4.1,
+      "source": "FRED",
+      "fetchedAt": "2025-08-13T13:30:00Z"
+    },
+    {
+      "instrumentId": "us-unemployment",
+      "date": "2025-11-13",
+      "value": 4.2,
+      "source": "FRED",
+      "fetchedAt": "2025-11-13T13:30:00Z"
+    },
+    {
+      "instrumentId": "us-unemployment",
+      "date": "2026-02-12",
+      "value": 4.2,
+      "source": "FRED",
+      "fetchedAt": "2026-02-12T13:30:00Z"
+    },
+    {
+      "instrumentId": "us-unemployment",
+      "date": "2026-04-10",
+      "value": 4.3,
+      "source": "FRED",
+      "fetchedAt": "2026-04-10T13:30:00Z"
+    },
+    {
+      "instrumentId": "us-unemployment",
+      "date": "2026-05-13",
+      "value": 4.3,
+      "source": "FRED",
+      "fetchedAt": "2026-05-13T13:30:00Z"
+    },
+    {
+      "instrumentId": "us-unemployment",
+      "date": "2026-06-11",
+      "value": 4.4,
+      "source": "FRED",
+      "fetchedAt": "2026-06-11T13:30:00Z"
+    },
+    {
+      "instrumentId": "us-unemployment",
+      "date": "2026-07-07",
+      "value": 4.5,
+      "source": "FRED",
+      "fetchedAt": "2026-07-07T13:30:00Z"
+    },
+    {
+      "instrumentId": "us-unemployment",
+      "date": "2026-08-07",
+      "value": 4.6,
+      "source": "FRED",
+      "fetchedAt": "2026-08-07T12:30:00Z"
+    },
+    {
+      "instrumentId": "us-policy-rate",
+      "date": "2025-08-13",
+      "value": 3.75,
+      "source": "FRED",
+      "fetchedAt": "2025-08-13T13:30:00Z"
+    },
+    {
+      "instrumentId": "us-policy-rate",
+      "date": "2025-12-10",
+      "value": 3.75,
+      "source": "FRED",
+      "fetchedAt": "2025-12-10T13:30:00Z"
+    },
+    {
+      "instrumentId": "us-policy-rate",
+      "date": "2026-03-18",
+      "value": 3.75,
+      "source": "FRED",
+      "fetchedAt": "2026-03-18T13:30:00Z"
+    },
+    {
+      "instrumentId": "us-policy-rate",
+      "date": "2026-06-10",
+      "value": 3.75,
+      "source": "FRED",
+      "fetchedAt": "2026-06-10T13:30:00Z"
+    },
+    {
+      "instrumentId": "us-policy-rate",
+      "date": "2026-07-29",
+      "value": 3.75,
+      "source": "FRED",
+      "fetchedAt": "2026-07-29T18:00:00Z"
+    },
+    {
+      "instrumentId": "us-pmi",
+      "date": "2025-08-13",
+      "value": 52.1,
+      "source": "S&P Global",
+      "fetchedAt": "2025-08-13T13:30:00Z"
+    },
+    {
+      "instrumentId": "us-pmi",
+      "date": "2025-11-13",
+      "value": 51.4,
+      "source": "S&P Global",
+      "fetchedAt": "2025-11-13T13:30:00Z"
+    },
+    {
+      "instrumentId": "us-pmi",
+      "date": "2026-02-12",
+      "value": 51.8,
+      "source": "S&P Global",
+      "fetchedAt": "2026-02-12T13:30:00Z"
+    },
+    {
+      "instrumentId": "us-pmi",
+      "date": "2026-04-10",
+      "value": 51.2,
+      "source": "S&P Global",
+      "fetchedAt": "2026-04-10T13:30:00Z"
+    },
+    {
+      "instrumentId": "us-pmi",
+      "date": "2026-06-11",
+      "value": 50.9,
+      "source": "S&P Global",
+      "fetchedAt": "2026-06-11T13:30:00Z"
+    },
+    {
+      "instrumentId": "us-pmi",
+      "date": "2026-07-24",
+      "value": 51.6,
+      "source": "S&P Global",
+      "fetchedAt": "2026-07-24T13:30:00Z"
+    },
+    {
+      "instrumentId": "us-pmi",
+      "date": "2026-08-01",
+      "value": 51.9,
+      "source": "S&P Global",
+      "fetchedAt": "2026-08-01T13:45:00Z"
+    },
+    {
+      "instrumentId": "us-wages",
+      "date": "2025-08-13",
+      "value": 3.9,
+      "source": "BLS",
+      "fetchedAt": "2025-08-13T13:30:00Z"
+    },
+    {
+      "instrumentId": "us-wages",
+      "date": "2025-11-13",
+      "value": 3.8,
+      "source": "BLS",
+      "fetchedAt": "2025-11-13T13:30:00Z"
+    },
+    {
+      "instrumentId": "us-wages",
+      "date": "2026-02-12",
+      "value": 3.6,
+      "source": "BLS",
+      "fetchedAt": "2026-02-12T13:30:00Z"
+    },
+    {
+      "instrumentId": "us-wages",
+      "date": "2026-04-10",
+      "value": 3.5,
+      "source": "BLS",
+      "fetchedAt": "2026-04-10T13:30:00Z"
+    },
+    {
+      "instrumentId": "us-wages",
+      "date": "2026-06-11",
+      "value": 3.3,
+      "source": "BLS",
+      "fetchedAt": "2026-06-11T13:30:00Z"
+    },
+    {
+      "instrumentId": "us-wages",
+      "date": "2026-07-07",
+      "value": 3.2,
+      "source": "BLS",
+      "fetchedAt": "2026-07-07T13:30:00Z"
+    },
+    {
+      "instrumentId": "us-wages",
+      "date": "2026-08-07",
+      "value": 3.2,
+      "source": "BLS",
+      "fetchedAt": "2026-08-07T12:30:00Z"
+    },
+    {
+      "instrumentId": "us-budget-balance",
+      "date": "2025-04-30",
+      "value": -6.1,
+      "source": "FRED",
+      "fetchedAt": "2025-04-30T13:30:00Z"
+    },
+    {
+      "instrumentId": "us-budget-balance",
+      "date": "2025-07-30",
+      "value": -6.3,
+      "source": "FRED",
+      "fetchedAt": "2025-07-30T13:30:00Z"
+    },
+    {
+      "instrumentId": "us-budget-balance",
+      "date": "2025-10-30",
+      "value": -6.6,
+      "source": "FRED",
+      "fetchedAt": "2025-10-30T13:30:00Z"
+    },
+    {
+      "instrumentId": "us-budget-balance",
+      "date": "2026-01-29",
+      "value": -6.8,
+      "source": "FRED",
+      "fetchedAt": "2026-01-29T13:30:00Z"
+    },
+    {
+      "instrumentId": "us-budget-balance",
+      "date": "2026-04-30",
+      "value": -7,
+      "source": "FRED",
+      "fetchedAt": "2026-04-30T13:30:00Z"
+    },
+    {
+      "instrumentId": "us-debt-gdp",
+      "date": "2025-04-30",
+      "value": 121,
+      "source": "FRED",
+      "fetchedAt": "2025-04-30T13:30:00Z"
+    },
+    {
+      "instrumentId": "us-debt-gdp",
+      "date": "2025-07-30",
+      "value": 122,
+      "source": "FRED",
+      "fetchedAt": "2025-07-30T13:30:00Z"
+    },
+    {
+      "instrumentId": "us-debt-gdp",
+      "date": "2025-10-30",
+      "value": 123,
+      "source": "FRED",
+      "fetchedAt": "2025-10-30T13:30:00Z"
+    },
+    {
+      "instrumentId": "us-debt-gdp",
+      "date": "2026-01-29",
+      "value": 124,
+      "source": "FRED",
+      "fetchedAt": "2026-01-29T13:30:00Z"
+    },
+    {
+      "instrumentId": "us-debt-gdp",
+      "date": "2026-04-30",
+      "value": 125,
+      "source": "FRED",
+      "fetchedAt": "2026-04-30T13:30:00Z"
+    },
+    {
+      "instrumentId": "us-current-account",
+      "date": "2025-04-30",
+      "value": -3.4,
+      "source": "FRED",
+      "fetchedAt": "2025-04-30T13:30:00Z"
+    },
+    {
+      "instrumentId": "us-current-account",
+      "date": "2025-07-30",
+      "value": -3.6,
+      "source": "FRED",
+      "fetchedAt": "2025-07-30T13:30:00Z"
+    },
+    {
+      "instrumentId": "us-current-account",
+      "date": "2025-10-30",
+      "value": -3.7,
+      "source": "FRED",
+      "fetchedAt": "2025-10-30T13:30:00Z"
+    },
+    {
+      "instrumentId": "us-current-account",
+      "date": "2026-01-29",
+      "value": -3.9,
+      "source": "FRED",
+      "fetchedAt": "2026-01-29T13:30:00Z"
+    },
+    {
+      "instrumentId": "us-current-account",
+      "date": "2026-04-30",
+      "value": -4,
+      "source": "FRED",
+      "fetchedAt": "2026-04-30T13:30:00Z"
+    },
+    {
+      "instrumentId": "ez-cpi",
+      "date": "2025-08-19",
+      "value": 2.2,
+      "source": "Eurostat",
+      "fetchedAt": "2025-08-19T13:30:00Z"
+    },
+    {
+      "instrumentId": "ez-cpi",
+      "date": "2025-11-18",
+      "value": 2.3,
+      "source": "Eurostat",
+      "fetchedAt": "2025-11-18T13:30:00Z"
+    },
+    {
+      "instrumentId": "ez-cpi",
+      "date": "2026-02-18",
+      "value": 2.6,
+      "source": "Eurostat",
+      "fetchedAt": "2026-02-18T13:30:00Z"
+    },
+    {
+      "instrumentId": "ez-cpi",
+      "date": "2026-04-17",
+      "value": 2.9,
+      "source": "Eurostat",
+      "fetchedAt": "2026-04-17T13:30:00Z"
+    },
+    {
+      "instrumentId": "ez-cpi",
+      "date": "2026-06-18",
+      "value": 3,
+      "source": "Eurostat",
+      "fetchedAt": "2026-06-18T13:30:00Z"
+    },
+    {
+      "instrumentId": "ez-cpi",
+      "date": "2026-07-17",
+      "value": 3.2,
+      "source": "Eurostat",
+      "fetchedAt": "2026-07-17T13:30:00Z"
+    },
+    {
+      "instrumentId": "ez-cpi",
+      "date": "2026-08-01",
+      "value": 3.2,
+      "source": "Eurostat",
+      "fetchedAt": "2026-08-01T09:00:00Z"
+    },
+    {
+      "instrumentId": "ez-cpi-core",
+      "date": "2025-08-19",
+      "value": 2.3,
+      "source": "Eurostat",
+      "fetchedAt": "2025-08-19T13:30:00Z"
+    },
+    {
+      "instrumentId": "ez-cpi-core",
+      "date": "2025-11-18",
+      "value": 2.3,
+      "source": "Eurostat",
+      "fetchedAt": "2025-11-18T13:30:00Z"
+    },
+    {
+      "instrumentId": "ez-cpi-core",
+      "date": "2026-02-18",
+      "value": 2.4,
+      "source": "Eurostat",
+      "fetchedAt": "2026-02-18T13:30:00Z"
+    },
+    {
+      "instrumentId": "ez-cpi-core",
+      "date": "2026-04-17",
+      "value": 2.5,
+      "source": "Eurostat",
+      "fetchedAt": "2026-04-17T13:30:00Z"
+    },
+    {
+      "instrumentId": "ez-cpi-core",
+      "date": "2026-06-18",
+      "value": 2.6,
+      "source": "Eurostat",
+      "fetchedAt": "2026-06-18T13:30:00Z"
+    },
+    {
+      "instrumentId": "ez-cpi-core",
+      "date": "2026-07-17",
+      "value": 2.7,
+      "source": "Eurostat",
+      "fetchedAt": "2026-07-17T13:30:00Z"
+    },
+    {
+      "instrumentId": "ez-cpi-core",
+      "date": "2026-08-01",
+      "value": 2.7,
+      "source": "Eurostat",
+      "fetchedAt": "2026-08-01T09:00:00Z"
+    },
+    {
+      "instrumentId": "ez-gdp",
+      "date": "2025-02-14",
+      "value": 0.9,
+      "source": "Eurostat",
+      "fetchedAt": "2025-02-14T13:30:00Z"
+    },
+    {
+      "instrumentId": "ez-gdp",
+      "date": "2025-05-15",
+      "value": 0.7,
+      "source": "Eurostat",
+      "fetchedAt": "2025-05-15T13:30:00Z"
+    },
+    {
+      "instrumentId": "ez-gdp",
+      "date": "2025-08-14",
+      "value": 0.5,
+      "source": "Eurostat",
+      "fetchedAt": "2025-08-14T13:30:00Z"
+    },
+    {
+      "instrumentId": "ez-gdp",
+      "date": "2025-11-14",
+      "value": 0.3,
+      "source": "Eurostat",
+      "fetchedAt": "2025-11-14T13:30:00Z"
+    },
+    {
+      "instrumentId": "ez-gdp",
+      "date": "2026-02-13",
+      "value": 0.2,
+      "source": "Eurostat",
+      "fetchedAt": "2026-02-13T13:30:00Z"
+    },
+    {
+      "instrumentId": "ez-gdp",
+      "date": "2026-05-15",
+      "value": 0.1,
+      "source": "Eurostat",
+      "fetchedAt": "2026-05-15T13:30:00Z"
+    },
+    {
+      "instrumentId": "ez-unemployment",
+      "date": "2025-08-13",
+      "value": 6.2,
+      "source": "Eurostat",
+      "fetchedAt": "2025-08-13T13:30:00Z"
+    },
+    {
+      "instrumentId": "ez-unemployment",
+      "date": "2025-11-13",
+      "value": 6.3,
+      "source": "Eurostat",
+      "fetchedAt": "2025-11-13T13:30:00Z"
+    },
+    {
+      "instrumentId": "ez-unemployment",
+      "date": "2026-02-12",
+      "value": 6.3,
+      "source": "Eurostat",
+      "fetchedAt": "2026-02-12T13:30:00Z"
+    },
+    {
+      "instrumentId": "ez-unemployment",
+      "date": "2026-04-10",
+      "value": 6.4,
+      "source": "Eurostat",
+      "fetchedAt": "2026-04-10T13:30:00Z"
+    },
+    {
+      "instrumentId": "ez-unemployment",
+      "date": "2026-06-11",
+      "value": 6.4,
+      "source": "Eurostat",
+      "fetchedAt": "2026-06-11T13:30:00Z"
+    },
+    {
+      "instrumentId": "ez-unemployment",
+      "date": "2026-08-01",
+      "value": 6.5,
+      "source": "Eurostat",
+      "fetchedAt": "2026-08-01T09:00:00Z"
+    },
+    {
+      "instrumentId": "ez-policy-rate",
+      "date": "2025-08-13",
+      "value": 2,
+      "source": "BCE",
+      "fetchedAt": "2025-08-13T13:30:00Z"
+    },
+    {
+      "instrumentId": "ez-policy-rate",
+      "date": "2025-12-10",
+      "value": 2,
+      "source": "BCE",
+      "fetchedAt": "2025-12-10T13:30:00Z"
+    },
+    {
+      "instrumentId": "ez-policy-rate",
+      "date": "2026-03-18",
+      "value": 2,
+      "source": "BCE",
+      "fetchedAt": "2026-03-18T13:30:00Z"
+    },
+    {
+      "instrumentId": "ez-policy-rate",
+      "date": "2026-06-05",
+      "value": 2.25,
+      "source": "BCE",
+      "fetchedAt": "2026-06-05T12:15:00Z"
+    },
+    {
+      "instrumentId": "ez-policy-rate",
+      "date": "2026-07-24",
+      "value": 2.25,
+      "source": "BCE",
+      "fetchedAt": "2026-07-24T13:30:00Z"
+    },
+    {
+      "instrumentId": "ez-pmi",
+      "date": "2025-08-13",
+      "value": 50.2,
+      "source": "S&P Global",
+      "fetchedAt": "2025-08-13T13:30:00Z"
+    },
+    {
+      "instrumentId": "ez-pmi",
+      "date": "2025-11-13",
+      "value": 49.8,
+      "source": "S&P Global",
+      "fetchedAt": "2025-11-13T13:30:00Z"
+    },
+    {
+      "instrumentId": "ez-pmi",
+      "date": "2026-02-12",
+      "value": 50.6,
+      "source": "S&P Global",
+      "fetchedAt": "2026-02-12T13:30:00Z"
+    },
+    {
+      "instrumentId": "ez-pmi",
+      "date": "2026-04-10",
+      "value": 50.9,
+      "source": "S&P Global",
+      "fetchedAt": "2026-04-10T13:30:00Z"
+    },
+    {
+      "instrumentId": "ez-pmi",
+      "date": "2026-06-11",
+      "value": 51.4,
+      "source": "S&P Global",
+      "fetchedAt": "2026-06-11T13:30:00Z"
+    },
+    {
+      "instrumentId": "ez-pmi",
+      "date": "2026-08-01",
+      "value": 51.8,
+      "source": "S&P Global",
+      "fetchedAt": "2026-08-01T09:00:00Z"
+    },
+    {
+      "instrumentId": "ez-wages",
+      "date": "2025-05-15",
+      "value": 4.1,
+      "source": "Eurostat",
+      "fetchedAt": "2025-05-15T13:30:00Z"
+    },
+    {
+      "instrumentId": "ez-wages",
+      "date": "2025-08-14",
+      "value": 3.8,
+      "source": "Eurostat",
+      "fetchedAt": "2025-08-14T13:30:00Z"
+    },
+    {
+      "instrumentId": "ez-wages",
+      "date": "2025-11-14",
+      "value": 3.5,
+      "source": "Eurostat",
+      "fetchedAt": "2025-11-14T13:30:00Z"
+    },
+    {
+      "instrumentId": "ez-wages",
+      "date": "2026-02-13",
+      "value": 3.3,
+      "source": "Eurostat",
+      "fetchedAt": "2026-02-13T13:30:00Z"
+    },
+    {
+      "instrumentId": "ez-wages",
+      "date": "2026-05-15",
+      "value": 3.1,
+      "source": "Eurostat",
+      "fetchedAt": "2026-05-15T13:30:00Z"
+    },
+    {
+      "instrumentId": "ez-budget-balance",
+      "date": "2025-04-22",
+      "value": -3.1,
+      "source": "Eurostat",
+      "fetchedAt": "2025-04-22T13:30:00Z"
+    },
+    {
+      "instrumentId": "ez-budget-balance",
+      "date": "2025-10-21",
+      "value": -3.2,
+      "source": "Eurostat",
+      "fetchedAt": "2025-10-21T13:30:00Z"
+    },
+    {
+      "instrumentId": "ez-budget-balance",
+      "date": "2026-04-22",
+      "value": -3.3,
+      "source": "Eurostat",
+      "fetchedAt": "2026-04-22T13:30:00Z"
+    },
+    {
+      "instrumentId": "ez-debt-gdp",
+      "date": "2025-04-22",
+      "value": 87.9,
+      "source": "Eurostat",
+      "fetchedAt": "2025-04-22T13:30:00Z"
+    },
+    {
+      "instrumentId": "ez-debt-gdp",
+      "date": "2025-10-21",
+      "value": 88.4,
+      "source": "Eurostat",
+      "fetchedAt": "2025-10-21T13:30:00Z"
+    },
+    {
+      "instrumentId": "ez-debt-gdp",
+      "date": "2026-04-22",
+      "value": 89.1,
+      "source": "Eurostat",
+      "fetchedAt": "2026-04-22T13:30:00Z"
+    },
+    {
+      "instrumentId": "ez-current-account",
+      "date": "2025-04-15",
+      "value": 2.6,
+      "source": "BCE",
+      "fetchedAt": "2025-04-15T13:30:00Z"
+    },
+    {
+      "instrumentId": "ez-current-account",
+      "date": "2025-07-15",
+      "value": 2.3,
+      "source": "BCE",
+      "fetchedAt": "2025-07-15T13:30:00Z"
+    },
+    {
+      "instrumentId": "ez-current-account",
+      "date": "2025-10-15",
+      "value": 1.9,
+      "source": "BCE",
+      "fetchedAt": "2025-10-15T13:30:00Z"
+    },
+    {
+      "instrumentId": "ez-current-account",
+      "date": "2026-01-15",
+      "value": 1.5,
+      "source": "BCE",
+      "fetchedAt": "2026-01-15T13:30:00Z"
+    },
+    {
+      "instrumentId": "ez-current-account",
+      "date": "2026-04-15",
+      "value": 1.2,
+      "source": "BCE",
+      "fetchedAt": "2026-04-15T13:30:00Z"
+    },
+    {
+      "instrumentId": "fr-cpi",
+      "date": "2025-08-13",
+      "value": 1,
+      "source": "INSEE",
+      "fetchedAt": "2025-08-13T13:30:00Z"
+    },
+    {
+      "instrumentId": "fr-cpi",
+      "date": "2025-11-13",
+      "value": 1.2,
+      "source": "INSEE",
+      "fetchedAt": "2025-11-13T13:30:00Z"
+    },
+    {
+      "instrumentId": "fr-cpi",
+      "date": "2026-02-12",
+      "value": 1.5,
+      "source": "INSEE",
+      "fetchedAt": "2026-02-12T13:30:00Z"
+    },
+    {
+      "instrumentId": "fr-cpi",
+      "date": "2026-04-10",
+      "value": 1.7,
+      "source": "INSEE",
+      "fetchedAt": "2026-04-10T13:30:00Z"
+    },
+    {
+      "instrumentId": "fr-cpi",
+      "date": "2026-06-11",
+      "value": 1.9,
+      "source": "INSEE",
+      "fetchedAt": "2026-06-11T13:30:00Z"
+    },
+    {
+      "instrumentId": "fr-cpi",
+      "date": "2026-07-15",
+      "value": 2.1,
+      "source": "INSEE",
+      "fetchedAt": "2026-07-15T13:30:00Z"
+    },
+    {
+      "instrumentId": "fr-cpi",
+      "date": "2026-08-13",
+      "value": 2.1,
+      "source": "INSEE",
+      "fetchedAt": "2026-08-13T07:45:00Z"
+    },
+    {
+      "instrumentId": "fr-cpi-core",
+      "date": "2025-08-13",
+      "value": 1.3,
+      "source": "INSEE",
+      "fetchedAt": "2025-08-13T13:30:00Z"
+    },
+    {
+      "instrumentId": "fr-cpi-core",
+      "date": "2025-11-13",
+      "value": 1.4,
+      "source": "INSEE",
+      "fetchedAt": "2025-11-13T13:30:00Z"
+    },
+    {
+      "instrumentId": "fr-cpi-core",
+      "date": "2026-02-12",
+      "value": 1.5,
+      "source": "INSEE",
+      "fetchedAt": "2026-02-12T13:30:00Z"
+    },
+    {
+      "instrumentId": "fr-cpi-core",
+      "date": "2026-04-10",
+      "value": 1.6,
+      "source": "INSEE",
+      "fetchedAt": "2026-04-10T13:30:00Z"
+    },
+    {
+      "instrumentId": "fr-cpi-core",
+      "date": "2026-06-11",
+      "value": 1.7,
+      "source": "INSEE",
+      "fetchedAt": "2026-06-11T13:30:00Z"
+    },
+    {
+      "instrumentId": "fr-cpi-core",
+      "date": "2026-07-15",
+      "value": 1.8,
+      "source": "INSEE",
+      "fetchedAt": "2026-07-15T13:30:00Z"
+    },
+    {
+      "instrumentId": "fr-cpi-core",
+      "date": "2026-08-13",
+      "value": 1.8,
+      "source": "INSEE",
+      "fetchedAt": "2026-08-13T07:45:00Z"
+    },
+    {
+      "instrumentId": "fr-gdp",
+      "date": "2025-02-27",
+      "value": 0.7,
+      "source": "INSEE",
+      "fetchedAt": "2025-02-27T13:30:00Z"
+    },
+    {
+      "instrumentId": "fr-gdp",
+      "date": "2025-05-30",
+      "value": 0.5,
+      "source": "INSEE",
+      "fetchedAt": "2025-05-30T13:30:00Z"
+    },
+    {
+      "instrumentId": "fr-gdp",
+      "date": "2025-08-28",
+      "value": 0.4,
+      "source": "INSEE",
+      "fetchedAt": "2025-08-28T13:30:00Z"
+    },
+    {
+      "instrumentId": "fr-gdp",
+      "date": "2025-10-29",
+      "value": 0.3,
+      "source": "INSEE",
+      "fetchedAt": "2025-10-29T13:30:00Z"
+    },
+    {
+      "instrumentId": "fr-gdp",
+      "date": "2026-02-27",
+      "value": 0.2,
+      "source": "INSEE",
+      "fetchedAt": "2026-02-27T13:30:00Z"
+    },
+    {
+      "instrumentId": "fr-gdp",
+      "date": "2026-05-29",
+      "value": 0.1,
+      "source": "INSEE",
+      "fetchedAt": "2026-05-29T13:30:00Z"
+    },
+    {
+      "instrumentId": "fr-unemployment",
+      "date": "2025-08-13",
+      "value": 7.3,
+      "source": "INSEE",
+      "fetchedAt": "2025-08-13T13:30:00Z"
+    },
+    {
+      "instrumentId": "fr-unemployment",
+      "date": "2025-11-13",
+      "value": 7.4,
+      "source": "INSEE",
+      "fetchedAt": "2025-11-13T13:30:00Z"
+    },
+    {
+      "instrumentId": "fr-unemployment",
+      "date": "2026-02-12",
+      "value": 7.5,
+      "source": "INSEE",
+      "fetchedAt": "2026-02-12T13:30:00Z"
+    },
+    {
+      "instrumentId": "fr-unemployment",
+      "date": "2026-04-10",
+      "value": 7.6,
+      "source": "INSEE",
+      "fetchedAt": "2026-04-10T13:30:00Z"
+    },
+    {
+      "instrumentId": "fr-unemployment",
+      "date": "2026-06-11",
+      "value": 7.6,
+      "source": "INSEE",
+      "fetchedAt": "2026-06-11T13:30:00Z"
+    },
+    {
+      "instrumentId": "fr-unemployment",
+      "date": "2026-08-11",
+      "value": 7.7,
+      "source": "INSEE",
+      "fetchedAt": "2026-08-11T07:45:00Z"
+    },
+    {
+      "instrumentId": "fr-pmi",
+      "date": "2025-08-13",
+      "value": 48.9,
+      "source": "S&P Global",
+      "fetchedAt": "2025-08-13T13:30:00Z"
+    },
+    {
+      "instrumentId": "fr-pmi",
+      "date": "2025-11-13",
+      "value": 47.8,
+      "source": "S&P Global",
+      "fetchedAt": "2025-11-13T13:30:00Z"
+    },
+    {
+      "instrumentId": "fr-pmi",
+      "date": "2026-02-12",
+      "value": 48.3,
+      "source": "S&P Global",
+      "fetchedAt": "2026-02-12T13:30:00Z"
+    },
+    {
+      "instrumentId": "fr-pmi",
+      "date": "2026-04-10",
+      "value": 48.7,
+      "source": "S&P Global",
+      "fetchedAt": "2026-04-10T13:30:00Z"
+    },
+    {
+      "instrumentId": "fr-pmi",
+      "date": "2026-06-11",
+      "value": 49.1,
+      "source": "S&P Global",
+      "fetchedAt": "2026-06-11T13:30:00Z"
+    },
+    {
+      "instrumentId": "fr-pmi",
+      "date": "2026-07-24",
+      "value": 49.4,
+      "source": "S&P Global",
+      "fetchedAt": "2026-07-24T13:30:00Z"
+    },
+    {
+      "instrumentId": "fr-pmi",
+      "date": "2026-08-01",
+      "value": 49.6,
+      "source": "S&P Global",
+      "fetchedAt": "2026-08-10T09:00:00Z"
+    },
+    {
+      "instrumentId": "fr-wages",
+      "date": "2025-06-18",
+      "value": 2.9,
+      "source": "INSEE",
+      "fetchedAt": "2025-06-18T13:30:00Z"
+    },
+    {
+      "instrumentId": "fr-wages",
+      "date": "2025-09-18",
+      "value": 2.7,
+      "source": "INSEE",
+      "fetchedAt": "2025-09-18T13:30:00Z"
+    },
+    {
+      "instrumentId": "fr-wages",
+      "date": "2025-12-18",
+      "value": 2.5,
+      "source": "INSEE",
+      "fetchedAt": "2025-12-18T13:30:00Z"
+    },
+    {
+      "instrumentId": "fr-wages",
+      "date": "2026-03-18",
+      "value": 2.4,
+      "source": "INSEE",
+      "fetchedAt": "2026-03-18T13:30:00Z"
+    },
+    {
+      "instrumentId": "fr-wages",
+      "date": "2026-06-18",
+      "value": 2.3,
+      "source": "INSEE",
+      "fetchedAt": "2026-06-18T13:30:00Z"
+    },
+    {
+      "instrumentId": "fr-budget-balance",
+      "date": "2025-04-22",
+      "value": -5.5,
+      "source": "INSEE",
+      "fetchedAt": "2025-04-22T13:30:00Z"
+    },
+    {
+      "instrumentId": "fr-budget-balance",
+      "date": "2025-10-21",
+      "value": -5.7,
+      "source": "INSEE",
+      "fetchedAt": "2025-10-21T13:30:00Z"
+    },
+    {
+      "instrumentId": "fr-budget-balance",
+      "date": "2026-04-22",
+      "value": -5.9,
+      "source": "INSEE",
+      "fetchedAt": "2026-04-22T13:30:00Z"
+    },
+    {
+      "instrumentId": "fr-debt-gdp",
+      "date": "2025-04-22",
+      "value": 113.8,
+      "source": "INSEE",
+      "fetchedAt": "2025-04-22T13:30:00Z"
+    },
+    {
+      "instrumentId": "fr-debt-gdp",
+      "date": "2025-10-21",
+      "value": 115.1,
+      "source": "INSEE",
+      "fetchedAt": "2025-10-21T13:30:00Z"
+    },
+    {
+      "instrumentId": "fr-debt-gdp",
+      "date": "2026-04-22",
+      "value": 116.4,
+      "source": "INSEE",
+      "fetchedAt": "2026-04-22T13:30:00Z"
+    },
+    {
+      "instrumentId": "de-cpi",
+      "date": "2025-08-13",
+      "value": 2,
+      "source": "Destatis",
+      "fetchedAt": "2025-08-13T13:30:00Z"
+    },
+    {
+      "instrumentId": "de-cpi",
+      "date": "2025-11-13",
+      "value": 2.1,
+      "source": "Destatis",
+      "fetchedAt": "2025-11-13T13:30:00Z"
+    },
+    {
+      "instrumentId": "de-cpi",
+      "date": "2026-02-12",
+      "value": 2.4,
+      "source": "Destatis",
+      "fetchedAt": "2026-02-12T13:30:00Z"
+    },
+    {
+      "instrumentId": "de-cpi",
+      "date": "2026-04-10",
+      "value": 2.6,
+      "source": "Destatis",
+      "fetchedAt": "2026-04-10T13:30:00Z"
+    },
+    {
+      "instrumentId": "de-cpi",
+      "date": "2026-06-11",
+      "value": 2.8,
+      "source": "Destatis",
+      "fetchedAt": "2026-06-11T13:30:00Z"
+    },
+    {
+      "instrumentId": "de-cpi",
+      "date": "2026-08-12",
+      "value": 2.9,
+      "source": "Destatis",
+      "fetchedAt": "2026-08-12T07:00:00Z"
+    },
+    {
+      "instrumentId": "de-cpi-core",
+      "date": "2025-08-13",
+      "value": 2.2,
+      "source": "Destatis",
+      "fetchedAt": "2025-08-13T13:30:00Z"
+    },
+    {
+      "instrumentId": "de-cpi-core",
+      "date": "2025-11-13",
+      "value": 2.2,
+      "source": "Destatis",
+      "fetchedAt": "2025-11-13T13:30:00Z"
+    },
+    {
+      "instrumentId": "de-cpi-core",
+      "date": "2026-02-12",
+      "value": 2.3,
+      "source": "Destatis",
+      "fetchedAt": "2026-02-12T13:30:00Z"
+    },
+    {
+      "instrumentId": "de-cpi-core",
+      "date": "2026-04-10",
+      "value": 2.4,
+      "source": "Destatis",
+      "fetchedAt": "2026-04-10T13:30:00Z"
+    },
+    {
+      "instrumentId": "de-cpi-core",
+      "date": "2026-06-11",
+      "value": 2.5,
+      "source": "Destatis",
+      "fetchedAt": "2026-06-11T13:30:00Z"
+    },
+    {
+      "instrumentId": "de-cpi-core",
+      "date": "2026-08-12",
+      "value": 2.5,
+      "source": "Destatis",
+      "fetchedAt": "2026-08-12T07:00:00Z"
+    },
+    {
+      "instrumentId": "de-gdp",
+      "date": "2025-02-25",
+      "value": 0.1,
+      "source": "Destatis",
+      "fetchedAt": "2025-02-25T13:30:00Z"
+    },
+    {
+      "instrumentId": "de-gdp",
+      "date": "2025-05-25",
+      "value": -0.1,
+      "source": "Destatis",
+      "fetchedAt": "2025-05-25T13:30:00Z"
+    },
+    {
+      "instrumentId": "de-gdp",
+      "date": "2025-08-22",
+      "value": -0.2,
+      "source": "Destatis",
+      "fetchedAt": "2025-08-22T13:30:00Z"
+    },
+    {
+      "instrumentId": "de-gdp",
+      "date": "2025-11-25",
+      "value": -0.1,
+      "source": "Destatis",
+      "fetchedAt": "2025-11-25T13:30:00Z"
+    },
+    {
+      "instrumentId": "de-gdp",
+      "date": "2026-02-25",
+      "value": 0,
+      "source": "Destatis",
+      "fetchedAt": "2026-02-25T13:30:00Z"
+    },
+    {
+      "instrumentId": "de-gdp",
+      "date": "2026-05-25",
+      "value": 0.1,
+      "source": "Destatis",
+      "fetchedAt": "2026-05-25T13:30:00Z"
+    },
+    {
+      "instrumentId": "de-unemployment",
+      "date": "2025-08-13",
+      "value": 6,
+      "source": "Bundesagentur für Arbeit",
+      "fetchedAt": "2025-08-13T13:30:00Z"
+    },
+    {
+      "instrumentId": "de-unemployment",
+      "date": "2025-11-13",
+      "value": 6.2,
+      "source": "Bundesagentur für Arbeit",
+      "fetchedAt": "2025-11-13T13:30:00Z"
+    },
+    {
+      "instrumentId": "de-unemployment",
+      "date": "2026-02-12",
+      "value": 6.3,
+      "source": "Bundesagentur für Arbeit",
+      "fetchedAt": "2026-02-12T13:30:00Z"
+    },
+    {
+      "instrumentId": "de-unemployment",
+      "date": "2026-04-10",
+      "value": 6.4,
+      "source": "Bundesagentur für Arbeit",
+      "fetchedAt": "2026-04-10T13:30:00Z"
+    },
+    {
+      "instrumentId": "de-unemployment",
+      "date": "2026-06-11",
+      "value": 6.4,
+      "source": "Bundesagentur für Arbeit",
+      "fetchedAt": "2026-06-11T13:30:00Z"
+    },
+    {
+      "instrumentId": "de-unemployment",
+      "date": "2026-08-01",
+      "value": 6.5,
+      "source": "Bundesagentur für Arbeit",
+      "fetchedAt": "2026-08-01T07:55:00Z"
+    },
+    {
+      "instrumentId": "de-pmi",
+      "date": "2025-08-13",
+      "value": 49.1,
+      "source": "S&P Global",
+      "fetchedAt": "2025-08-13T13:30:00Z"
+    },
+    {
+      "instrumentId": "de-pmi",
+      "date": "2025-11-13",
+      "value": 48.4,
+      "source": "S&P Global",
+      "fetchedAt": "2025-11-13T13:30:00Z"
+    },
+    {
+      "instrumentId": "de-pmi",
+      "date": "2026-02-12",
+      "value": 49.6,
+      "source": "S&P Global",
+      "fetchedAt": "2026-02-12T13:30:00Z"
+    },
+    {
+      "instrumentId": "de-pmi",
+      "date": "2026-04-10",
+      "value": 50.2,
+      "source": "S&P Global",
+      "fetchedAt": "2026-04-10T13:30:00Z"
+    },
+    {
+      "instrumentId": "de-pmi",
+      "date": "2026-06-11",
+      "value": 50.8,
+      "source": "S&P Global",
+      "fetchedAt": "2026-06-11T13:30:00Z"
+    },
+    {
+      "instrumentId": "de-pmi",
+      "date": "2026-08-01",
+      "value": 51.1,
+      "source": "S&P Global",
+      "fetchedAt": "2026-08-01T07:55:00Z"
+    },
+    {
+      "instrumentId": "de-wages",
+      "date": "2025-05-26",
+      "value": 4.3,
+      "source": "Destatis",
+      "fetchedAt": "2025-05-26T13:30:00Z"
+    },
+    {
+      "instrumentId": "de-wages",
+      "date": "2025-08-26",
+      "value": 4,
+      "source": "Destatis",
+      "fetchedAt": "2025-08-26T13:30:00Z"
+    },
+    {
+      "instrumentId": "de-wages",
+      "date": "2025-11-26",
+      "value": 3.7,
+      "source": "Destatis",
+      "fetchedAt": "2025-11-26T13:30:00Z"
+    },
+    {
+      "instrumentId": "de-wages",
+      "date": "2026-05-26",
+      "value": 3.3,
+      "source": "Destatis",
+      "fetchedAt": "2026-05-26T13:30:00Z"
+    },
+    {
+      "instrumentId": "de-current-account",
+      "date": "2025-04-09",
+      "value": 6.8,
+      "source": "Bundesbank",
+      "fetchedAt": "2025-04-09T13:30:00Z"
+    },
+    {
+      "instrumentId": "de-current-account",
+      "date": "2025-07-09",
+      "value": 6.5,
+      "source": "Bundesbank",
+      "fetchedAt": "2025-07-09T13:30:00Z"
+    },
+    {
+      "instrumentId": "de-current-account",
+      "date": "2025-10-09",
+      "value": 6.3,
+      "source": "Bundesbank",
+      "fetchedAt": "2025-10-09T13:30:00Z"
+    },
+    {
+      "instrumentId": "de-current-account",
+      "date": "2026-01-09",
+      "value": 6.1,
+      "source": "Bundesbank",
+      "fetchedAt": "2026-01-09T13:30:00Z"
+    },
+    {
+      "instrumentId": "de-current-account",
+      "date": "2026-04-09",
+      "value": 5.9,
+      "source": "Bundesbank",
+      "fetchedAt": "2026-04-09T13:30:00Z"
+    },
+    {
+      "instrumentId": "uk-cpi",
+      "date": "2025-08-13",
+      "value": 2.5,
+      "source": "ONS",
+      "fetchedAt": "2025-08-13T13:30:00Z"
+    },
+    {
+      "instrumentId": "uk-cpi",
+      "date": "2025-11-13",
+      "value": 2.6,
+      "source": "ONS",
+      "fetchedAt": "2025-11-13T13:30:00Z"
+    },
+    {
+      "instrumentId": "uk-cpi",
+      "date": "2026-02-12",
+      "value": 2.9,
+      "source": "ONS",
+      "fetchedAt": "2026-02-12T13:30:00Z"
+    },
+    {
+      "instrumentId": "uk-cpi",
+      "date": "2026-04-10",
+      "value": 3.1,
+      "source": "ONS",
+      "fetchedAt": "2026-04-10T13:30:00Z"
+    },
+    {
+      "instrumentId": "uk-cpi",
+      "date": "2026-06-11",
+      "value": 3.3,
+      "source": "ONS",
+      "fetchedAt": "2026-06-11T13:30:00Z"
+    },
+    {
+      "instrumentId": "uk-cpi",
+      "date": "2026-08-13",
+      "value": 3.4,
+      "source": "ONS",
+      "fetchedAt": "2026-08-13T06:00:00Z"
+    },
+    {
+      "instrumentId": "uk-cpi-core",
+      "date": "2025-08-13",
+      "value": 2.9,
+      "source": "ONS",
+      "fetchedAt": "2025-08-13T13:30:00Z"
+    },
+    {
+      "instrumentId": "uk-cpi-core",
+      "date": "2025-11-13",
+      "value": 2.9,
+      "source": "ONS",
+      "fetchedAt": "2025-11-13T13:30:00Z"
+    },
+    {
+      "instrumentId": "uk-cpi-core",
+      "date": "2026-02-12",
+      "value": 3,
+      "source": "ONS",
+      "fetchedAt": "2026-02-12T13:30:00Z"
+    },
+    {
+      "instrumentId": "uk-cpi-core",
+      "date": "2026-04-10",
+      "value": 3.1,
+      "source": "ONS",
+      "fetchedAt": "2026-04-10T13:30:00Z"
+    },
+    {
+      "instrumentId": "uk-cpi-core",
+      "date": "2026-06-11",
+      "value": 3.2,
+      "source": "ONS",
+      "fetchedAt": "2026-06-11T13:30:00Z"
+    },
+    {
+      "instrumentId": "uk-cpi-core",
+      "date": "2026-08-13",
+      "value": 3.2,
+      "source": "ONS",
+      "fetchedAt": "2026-08-13T06:00:00Z"
+    },
+    {
+      "instrumentId": "uk-gdp",
+      "date": "2025-02-13",
+      "value": 1,
+      "source": "ONS",
+      "fetchedAt": "2025-02-13T13:30:00Z"
+    },
+    {
+      "instrumentId": "uk-gdp",
+      "date": "2025-05-15",
+      "value": 0.8,
+      "source": "ONS",
+      "fetchedAt": "2025-05-15T13:30:00Z"
+    },
+    {
+      "instrumentId": "uk-gdp",
+      "date": "2025-08-14",
+      "value": 0.6,
+      "source": "ONS",
+      "fetchedAt": "2025-08-14T13:30:00Z"
+    },
+    {
+      "instrumentId": "uk-gdp",
+      "date": "2025-11-13",
+      "value": 0.5,
+      "source": "ONS",
+      "fetchedAt": "2025-11-13T13:30:00Z"
+    },
+    {
+      "instrumentId": "uk-gdp",
+      "date": "2026-02-13",
+      "value": 0.4,
+      "source": "ONS",
+      "fetchedAt": "2026-02-13T13:30:00Z"
+    },
+    {
+      "instrumentId": "uk-gdp",
+      "date": "2026-05-14",
+      "value": 0.4,
+      "source": "ONS",
+      "fetchedAt": "2026-05-14T13:30:00Z"
+    },
+    {
+      "instrumentId": "uk-unemployment",
+      "date": "2025-08-13",
+      "value": 4.3,
+      "source": "ONS",
+      "fetchedAt": "2025-08-13T13:30:00Z"
+    },
+    {
+      "instrumentId": "uk-unemployment",
+      "date": "2025-11-13",
+      "value": 4.4,
+      "source": "ONS",
+      "fetchedAt": "2025-11-13T13:30:00Z"
+    },
+    {
+      "instrumentId": "uk-unemployment",
+      "date": "2026-02-12",
+      "value": 4.5,
+      "source": "ONS",
+      "fetchedAt": "2026-02-12T13:30:00Z"
+    },
+    {
+      "instrumentId": "uk-unemployment",
+      "date": "2026-04-10",
+      "value": 4.6,
+      "source": "ONS",
+      "fetchedAt": "2026-04-10T13:30:00Z"
+    },
+    {
+      "instrumentId": "uk-unemployment",
+      "date": "2026-06-11",
+      "value": 4.7,
+      "source": "ONS",
+      "fetchedAt": "2026-06-11T13:30:00Z"
+    },
+    {
+      "instrumentId": "uk-unemployment",
+      "date": "2026-08-12",
+      "value": 4.7,
+      "source": "ONS",
+      "fetchedAt": "2026-08-12T06:00:00Z"
+    },
+    {
+      "instrumentId": "uk-policy-rate",
+      "date": "2025-08-13",
+      "value": 4,
+      "source": "Bank of England",
+      "fetchedAt": "2025-08-13T13:30:00Z"
+    },
+    {
+      "instrumentId": "uk-policy-rate",
+      "date": "2025-12-10",
+      "value": 3.75,
+      "source": "Bank of England",
+      "fetchedAt": "2025-12-10T13:30:00Z"
+    },
+    {
+      "instrumentId": "uk-policy-rate",
+      "date": "2026-03-18",
+      "value": 3.75,
+      "source": "Bank of England",
+      "fetchedAt": "2026-03-18T13:30:00Z"
+    },
+    {
+      "instrumentId": "uk-policy-rate",
+      "date": "2026-06-18",
+      "value": 3.75,
+      "source": "Bank of England",
+      "fetchedAt": "2026-06-18T13:30:00Z"
+    },
+    {
+      "instrumentId": "uk-policy-rate",
+      "date": "2026-08-06",
+      "value": 3.75,
+      "source": "Bank of England",
+      "fetchedAt": "2026-08-06T11:00:00Z"
+    },
+    {
+      "instrumentId": "uk-pmi",
+      "date": "2025-08-13",
+      "value": 51,
+      "source": "S&P Global",
+      "fetchedAt": "2025-08-13T13:30:00Z"
+    },
+    {
+      "instrumentId": "uk-pmi",
+      "date": "2025-11-13",
+      "value": 50.2,
+      "source": "S&P Global",
+      "fetchedAt": "2025-11-13T13:30:00Z"
+    },
+    {
+      "instrumentId": "uk-pmi",
+      "date": "2026-02-12",
+      "value": 50.6,
+      "source": "S&P Global",
+      "fetchedAt": "2026-02-12T13:30:00Z"
+    },
+    {
+      "instrumentId": "uk-pmi",
+      "date": "2026-04-10",
+      "value": 51,
+      "source": "S&P Global",
+      "fetchedAt": "2026-04-10T13:30:00Z"
+    },
+    {
+      "instrumentId": "uk-pmi",
+      "date": "2026-06-11",
+      "value": 51.4,
+      "source": "S&P Global",
+      "fetchedAt": "2026-06-11T13:30:00Z"
+    },
+    {
+      "instrumentId": "uk-pmi",
+      "date": "2026-08-01",
+      "value": 51.7,
+      "source": "S&P Global",
+      "fetchedAt": "2026-08-01T08:30:00Z"
+    },
+    {
+      "instrumentId": "uk-wages",
+      "date": "2025-08-13",
+      "value": 5.1,
+      "source": "ONS",
+      "fetchedAt": "2025-08-13T13:30:00Z"
+    },
+    {
+      "instrumentId": "uk-wages",
+      "date": "2025-11-13",
+      "value": 4.8,
+      "source": "ONS",
+      "fetchedAt": "2025-11-13T13:30:00Z"
+    },
+    {
+      "instrumentId": "uk-wages",
+      "date": "2026-02-12",
+      "value": 4.5,
+      "source": "ONS",
+      "fetchedAt": "2026-02-12T13:30:00Z"
+    },
+    {
+      "instrumentId": "uk-wages",
+      "date": "2026-04-10",
+      "value": 4.3,
+      "source": "ONS",
+      "fetchedAt": "2026-04-10T13:30:00Z"
+    },
+    {
+      "instrumentId": "uk-wages",
+      "date": "2026-06-11",
+      "value": 4.1,
+      "source": "ONS",
+      "fetchedAt": "2026-06-11T13:30:00Z"
+    },
+    {
+      "instrumentId": "uk-wages",
+      "date": "2026-08-12",
+      "value": 4,
+      "source": "ONS",
+      "fetchedAt": "2026-08-12T06:00:00Z"
+    },
+    {
+      "instrumentId": "uk-budget-balance",
+      "date": "2025-04-22",
+      "value": -4.9,
+      "source": "ONS",
+      "fetchedAt": "2025-04-22T13:30:00Z"
+    },
+    {
+      "instrumentId": "uk-budget-balance",
+      "date": "2025-10-22",
+      "value": -5.1,
+      "source": "ONS",
+      "fetchedAt": "2025-10-22T13:30:00Z"
+    },
+    {
+      "instrumentId": "uk-budget-balance",
+      "date": "2026-04-22",
+      "value": -5.3,
+      "source": "ONS",
+      "fetchedAt": "2026-04-22T13:30:00Z"
+    },
+    {
+      "instrumentId": "jp-cpi",
+      "date": "2025-08-13",
+      "value": 3,
+      "source": "Bureau of Statistics Japan",
+      "fetchedAt": "2025-08-13T13:30:00Z"
+    },
+    {
+      "instrumentId": "jp-cpi",
+      "date": "2025-11-13",
+      "value": 3.2,
+      "source": "Bureau of Statistics Japan",
+      "fetchedAt": "2025-11-13T13:30:00Z"
+    },
+    {
+      "instrumentId": "jp-cpi",
+      "date": "2026-02-12",
+      "value": 3.5,
+      "source": "Bureau of Statistics Japan",
+      "fetchedAt": "2026-02-12T13:30:00Z"
+    },
+    {
+      "instrumentId": "jp-cpi",
+      "date": "2026-04-10",
+      "value": 3.7,
+      "source": "Bureau of Statistics Japan",
+      "fetchedAt": "2026-04-10T13:30:00Z"
+    },
+    {
+      "instrumentId": "jp-cpi",
+      "date": "2026-06-11",
+      "value": 3.8,
+      "source": "Bureau of Statistics Japan",
+      "fetchedAt": "2026-06-11T13:30:00Z"
+    },
+    {
+      "instrumentId": "jp-cpi",
+      "date": "2026-08-08",
+      "value": 3.9,
+      "source": "Bureau of Statistics Japan",
+      "fetchedAt": "2026-08-08T23:30:00Z"
+    },
+    {
+      "instrumentId": "jp-cpi-core",
+      "date": "2025-08-13",
+      "value": 2.7,
+      "source": "Bureau of Statistics Japan",
+      "fetchedAt": "2025-08-13T13:30:00Z"
+    },
+    {
+      "instrumentId": "jp-cpi-core",
+      "date": "2025-11-13",
+      "value": 2.8,
+      "source": "Bureau of Statistics Japan",
+      "fetchedAt": "2025-11-13T13:30:00Z"
+    },
+    {
+      "instrumentId": "jp-cpi-core",
+      "date": "2026-02-12",
+      "value": 3,
+      "source": "Bureau of Statistics Japan",
+      "fetchedAt": "2026-02-12T13:30:00Z"
+    },
+    {
+      "instrumentId": "jp-cpi-core",
+      "date": "2026-04-10",
+      "value": 3.1,
+      "source": "Bureau of Statistics Japan",
+      "fetchedAt": "2026-04-10T13:30:00Z"
+    },
+    {
+      "instrumentId": "jp-cpi-core",
+      "date": "2026-06-11",
+      "value": 3.2,
+      "source": "Bureau of Statistics Japan",
+      "fetchedAt": "2026-06-11T13:30:00Z"
+    },
+    {
+      "instrumentId": "jp-cpi-core",
+      "date": "2026-08-08",
+      "value": 3.3,
+      "source": "Bureau of Statistics Japan",
+      "fetchedAt": "2026-08-08T23:30:00Z"
+    },
+    {
+      "instrumentId": "jp-gdp",
+      "date": "2025-02-17",
+      "value": 0.6,
+      "source": "Cabinet Office Japan",
+      "fetchedAt": "2025-02-17T13:30:00Z"
+    },
+    {
+      "instrumentId": "jp-gdp",
+      "date": "2025-05-16",
+      "value": 0.5,
+      "source": "Cabinet Office Japan",
+      "fetchedAt": "2025-05-16T13:30:00Z"
+    },
+    {
+      "instrumentId": "jp-gdp",
+      "date": "2025-08-15",
+      "value": 0.4,
+      "source": "Cabinet Office Japan",
+      "fetchedAt": "2025-08-15T13:30:00Z"
+    },
+    {
+      "instrumentId": "jp-gdp",
+      "date": "2025-11-17",
+      "value": 0.5,
+      "source": "Cabinet Office Japan",
+      "fetchedAt": "2025-11-17T13:30:00Z"
+    },
+    {
+      "instrumentId": "jp-gdp",
+      "date": "2026-05-18",
+      "value": 0.6,
+      "source": "Cabinet Office Japan",
+      "fetchedAt": "2026-05-18T13:30:00Z"
+    },
+    {
+      "instrumentId": "jp-unemployment",
+      "date": "2025-08-13",
+      "value": 2.4,
+      "source": "Bureau of Statistics Japan",
+      "fetchedAt": "2025-08-13T13:30:00Z"
+    },
+    {
+      "instrumentId": "jp-unemployment",
+      "date": "2025-11-13",
+      "value": 2.4,
+      "source": "Bureau of Statistics Japan",
+      "fetchedAt": "2025-11-13T13:30:00Z"
+    },
+    {
+      "instrumentId": "jp-unemployment",
+      "date": "2026-02-12",
+      "value": 2.5,
+      "source": "Bureau of Statistics Japan",
+      "fetchedAt": "2026-02-12T13:30:00Z"
+    },
+    {
+      "instrumentId": "jp-unemployment",
+      "date": "2026-04-10",
+      "value": 2.5,
+      "source": "Bureau of Statistics Japan",
+      "fetchedAt": "2026-04-10T13:30:00Z"
+    },
+    {
+      "instrumentId": "jp-unemployment",
+      "date": "2026-06-11",
+      "value": 2.5,
+      "source": "Bureau of Statistics Japan",
+      "fetchedAt": "2026-06-11T13:30:00Z"
+    },
+    {
+      "instrumentId": "jp-unemployment",
+      "date": "2026-07-29",
+      "value": 2.5,
+      "source": "Bureau of Statistics Japan",
+      "fetchedAt": "2026-07-29T23:30:00Z"
+    },
+    {
+      "instrumentId": "jp-policy-rate",
+      "date": "2025-08-13",
+      "value": 0.5,
+      "source": "Bank of Japan",
+      "fetchedAt": "2025-08-13T13:30:00Z"
+    },
+    {
+      "instrumentId": "jp-policy-rate",
+      "date": "2025-12-19",
+      "value": 0.75,
+      "source": "Bank of Japan",
+      "fetchedAt": "2025-12-19T13:30:00Z"
+    },
+    {
+      "instrumentId": "jp-policy-rate",
+      "date": "2026-03-19",
+      "value": 0.75,
+      "source": "Bank of Japan",
+      "fetchedAt": "2026-03-19T13:30:00Z"
+    },
+    {
+      "instrumentId": "jp-policy-rate",
+      "date": "2026-06-17",
+      "value": 1,
+      "source": "Bank of Japan",
+      "fetchedAt": "2026-06-17T13:30:00Z"
+    },
+    {
+      "instrumentId": "jp-policy-rate",
+      "date": "2026-07-31",
+      "value": 1,
+      "source": "Bank of Japan",
+      "fetchedAt": "2026-07-31T03:00:00Z"
+    },
+    {
+      "instrumentId": "jp-debt-gdp",
+      "date": "2025-06-25",
+      "value": 249,
+      "source": "Ministry of Finance Japan",
+      "fetchedAt": "2025-06-25T13:30:00Z"
+    },
+    {
+      "instrumentId": "jp-debt-gdp",
+      "date": "2025-09-25",
+      "value": 251,
+      "source": "Ministry of Finance Japan",
+      "fetchedAt": "2025-09-25T13:30:00Z"
+    },
+    {
+      "instrumentId": "jp-debt-gdp",
+      "date": "2025-12-25",
+      "value": 253,
+      "source": "Ministry of Finance Japan",
+      "fetchedAt": "2025-12-25T13:30:00Z"
+    },
+    {
+      "instrumentId": "jp-debt-gdp",
+      "date": "2026-03-25",
+      "value": 255,
+      "source": "Ministry of Finance Japan",
+      "fetchedAt": "2026-03-25T13:30:00Z"
+    },
+    {
+      "instrumentId": "jp-debt-gdp",
+      "date": "2026-06-25",
+      "value": 257,
+      "source": "Ministry of Finance Japan",
+      "fetchedAt": "2026-06-25T13:30:00Z"
+    },
+    {
+      "instrumentId": "jp-current-account",
+      "date": "2025-04-08",
+      "value": 4.2,
+      "source": "Ministry of Finance Japan",
+      "fetchedAt": "2025-04-08T13:30:00Z"
+    },
+    {
+      "instrumentId": "jp-current-account",
+      "date": "2025-07-08",
+      "value": 4,
+      "source": "Ministry of Finance Japan",
+      "fetchedAt": "2025-07-08T13:30:00Z"
+    },
+    {
+      "instrumentId": "jp-current-account",
+      "date": "2025-10-08",
+      "value": 3.8,
+      "source": "Ministry of Finance Japan",
+      "fetchedAt": "2025-10-08T13:30:00Z"
+    },
+    {
+      "instrumentId": "jp-current-account",
+      "date": "2026-01-08",
+      "value": 3.6,
+      "source": "Ministry of Finance Japan",
+      "fetchedAt": "2026-01-08T13:30:00Z"
+    },
+    {
+      "instrumentId": "jp-current-account",
+      "date": "2026-04-08",
+      "value": 3.5,
+      "source": "Ministry of Finance Japan",
+      "fetchedAt": "2026-04-08T13:30:00Z"
+    },
+    {
+      "instrumentId": "cn-cpi",
+      "date": "2025-08-13",
+      "value": 0.2,
+      "source": "National Bureau of Statistics China",
+      "fetchedAt": "2025-08-13T13:30:00Z"
+    },
+    {
+      "instrumentId": "cn-cpi",
+      "date": "2025-11-13",
+      "value": 0,
+      "source": "National Bureau of Statistics China",
+      "fetchedAt": "2025-11-13T13:30:00Z"
+    },
+    {
+      "instrumentId": "cn-cpi",
+      "date": "2026-02-12",
+      "value": -0.3,
+      "source": "National Bureau of Statistics China",
+      "fetchedAt": "2026-02-12T13:30:00Z"
+    },
+    {
+      "instrumentId": "cn-cpi",
+      "date": "2026-04-10",
+      "value": -0.1,
+      "source": "National Bureau of Statistics China",
+      "fetchedAt": "2026-04-10T13:30:00Z"
+    },
+    {
+      "instrumentId": "cn-cpi",
+      "date": "2026-06-11",
+      "value": 0.1,
+      "source": "National Bureau of Statistics China",
+      "fetchedAt": "2026-06-11T13:30:00Z"
+    },
+    {
+      "instrumentId": "cn-cpi",
+      "date": "2026-08-09",
+      "value": 0.3,
+      "source": "National Bureau of Statistics China",
+      "fetchedAt": "2026-08-09T01:30:00Z"
+    },
+    {
+      "instrumentId": "cn-gdp",
+      "date": "2025-04-16",
+      "value": 5.3,
+      "source": "National Bureau of Statistics China",
+      "fetchedAt": "2025-04-16T13:30:00Z"
+    },
+    {
+      "instrumentId": "cn-gdp",
+      "date": "2025-07-15",
+      "value": 5,
+      "source": "National Bureau of Statistics China",
+      "fetchedAt": "2025-07-15T13:30:00Z"
+    },
+    {
+      "instrumentId": "cn-gdp",
+      "date": "2025-10-18",
+      "value": 4.8,
+      "source": "National Bureau of Statistics China",
+      "fetchedAt": "2025-10-18T13:30:00Z"
+    },
+    {
+      "instrumentId": "cn-gdp",
+      "date": "2026-01-19",
+      "value": 4.6,
+      "source": "National Bureau of Statistics China",
+      "fetchedAt": "2026-01-19T13:30:00Z"
+    },
+    {
+      "instrumentId": "cn-gdp",
+      "date": "2026-04-16",
+      "value": 4.5,
+      "source": "National Bureau of Statistics China",
+      "fetchedAt": "2026-04-16T13:30:00Z"
+    },
+    {
+      "instrumentId": "cn-pmi",
+      "date": "2025-08-13",
+      "value": 50.1,
+      "source": "National Bureau of Statistics China",
+      "fetchedAt": "2025-08-13T13:30:00Z"
+    },
+    {
+      "instrumentId": "cn-pmi",
+      "date": "2025-11-13",
+      "value": 49.8,
+      "source": "National Bureau of Statistics China",
+      "fetchedAt": "2025-11-13T13:30:00Z"
+    },
+    {
+      "instrumentId": "cn-pmi",
+      "date": "2026-02-12",
+      "value": 49.5,
+      "source": "National Bureau of Statistics China",
+      "fetchedAt": "2026-02-12T13:30:00Z"
+    },
+    {
+      "instrumentId": "cn-pmi",
+      "date": "2026-04-10",
+      "value": 49.9,
+      "source": "National Bureau of Statistics China",
+      "fetchedAt": "2026-04-10T13:30:00Z"
+    },
+    {
+      "instrumentId": "cn-pmi",
+      "date": "2026-06-11",
+      "value": 50.2,
+      "source": "National Bureau of Statistics China",
+      "fetchedAt": "2026-06-11T13:30:00Z"
+    },
+    {
+      "instrumentId": "cn-pmi",
+      "date": "2026-08-01",
+      "value": 50.3,
+      "source": "National Bureau of Statistics China",
+      "fetchedAt": "2026-08-01T01:45:00Z"
+    },
+    {
+      "instrumentId": "cn-policy-rate",
+      "date": "2025-08-20",
+      "value": 3,
+      "source": "PBOC",
+      "fetchedAt": "2025-08-20T13:30:00Z"
+    },
+    {
+      "instrumentId": "cn-policy-rate",
+      "date": "2025-12-20",
+      "value": 2.9,
+      "source": "PBOC",
+      "fetchedAt": "2025-12-20T13:30:00Z"
+    },
+    {
+      "instrumentId": "cn-policy-rate",
+      "date": "2026-04-21",
+      "value": 2.9,
+      "source": "PBOC",
+      "fetchedAt": "2026-04-21T13:30:00Z"
+    },
+    {
+      "instrumentId": "cn-policy-rate",
+      "date": "2026-08-20",
+      "value": 2.8,
+      "source": "PBOC",
+      "fetchedAt": "2026-08-20T01:30:00Z"
+    },
+    {
+      "instrumentId": "cn-current-account",
+      "date": "2025-04-25",
+      "value": 1.9,
+      "source": "State Administration of Foreign Exchange",
+      "fetchedAt": "2025-04-25T13:30:00Z"
+    },
+    {
+      "instrumentId": "cn-current-account",
+      "date": "2025-07-25",
+      "value": 1.7,
+      "source": "State Administration of Foreign Exchange",
+      "fetchedAt": "2025-07-25T13:30:00Z"
+    },
+    {
+      "instrumentId": "cn-current-account",
+      "date": "2025-10-25",
+      "value": 1.6,
+      "source": "State Administration of Foreign Exchange",
+      "fetchedAt": "2025-10-25T13:30:00Z"
+    },
+    {
+      "instrumentId": "cn-current-account",
+      "date": "2026-01-25",
+      "value": 1.5,
+      "source": "State Administration of Foreign Exchange",
+      "fetchedAt": "2026-01-25T13:30:00Z"
+    },
+    {
+      "instrumentId": "cn-current-account",
+      "date": "2026-04-25",
+      "value": 1.4,
+      "source": "State Administration of Foreign Exchange",
+      "fetchedAt": "2026-04-25T13:30:00Z"
+    },
+    {
+      "instrumentId": "es-cpi",
+      "date": "2025-08-13",
+      "value": 2.4,
+      "source": "INE",
+      "fetchedAt": "2025-08-13T13:30:00Z"
+    },
+    {
+      "instrumentId": "es-cpi",
+      "date": "2026-02-12",
+      "value": 2.7,
+      "source": "INE",
+      "fetchedAt": "2026-02-12T13:30:00Z"
+    },
+    {
+      "instrumentId": "es-cpi",
+      "date": "2026-06-11",
+      "value": 2.9,
+      "source": "INE",
+      "fetchedAt": "2026-06-11T13:30:00Z"
+    },
+    {
+      "instrumentId": "es-cpi",
+      "date": "2026-08-12",
+      "value": 3,
+      "source": "INE",
+      "fetchedAt": "2026-08-12T07:00:00Z"
+    },
+    {
+      "instrumentId": "es-gdp",
+      "date": "2025-02-27",
+      "value": 1.9,
+      "source": "INE",
+      "fetchedAt": "2025-02-27T13:30:00Z"
+    },
+    {
+      "instrumentId": "es-gdp",
+      "date": "2025-08-28",
+      "value": 1.6,
+      "source": "INE",
+      "fetchedAt": "2025-08-28T13:30:00Z"
+    },
+    {
+      "instrumentId": "es-gdp",
+      "date": "2026-05-29",
+      "value": 1.3,
+      "source": "INE",
+      "fetchedAt": "2026-05-29T13:30:00Z"
+    },
+    {
+      "instrumentId": "es-unemployment",
+      "date": "2025-08-13",
+      "value": 10.6,
+      "source": "INE",
+      "fetchedAt": "2025-08-13T13:30:00Z"
+    },
+    {
+      "instrumentId": "es-unemployment",
+      "date": "2026-02-12",
+      "value": 10.4,
+      "source": "INE",
+      "fetchedAt": "2026-02-12T13:30:00Z"
+    },
+    {
+      "instrumentId": "es-unemployment",
+      "date": "2026-06-11",
+      "value": 10.1,
+      "source": "INE",
+      "fetchedAt": "2026-06-11T13:30:00Z"
+    },
+    {
+      "instrumentId": "es-unemployment",
+      "date": "2026-08-01",
+      "value": 10,
+      "source": "INE",
+      "fetchedAt": "2026-08-01T07:00:00Z"
+    },
+    {
+      "instrumentId": "it-cpi",
+      "date": "2025-08-13",
+      "value": 1.6,
+      "source": "ISTAT",
+      "fetchedAt": "2025-08-13T13:30:00Z"
+    },
+    {
+      "instrumentId": "it-cpi",
+      "date": "2026-02-12",
+      "value": 1.9,
+      "source": "ISTAT",
+      "fetchedAt": "2026-02-12T13:30:00Z"
+    },
+    {
+      "instrumentId": "it-cpi",
+      "date": "2026-06-11",
+      "value": 2.1,
+      "source": "ISTAT",
+      "fetchedAt": "2026-06-11T13:30:00Z"
+    },
+    {
+      "instrumentId": "it-cpi",
+      "date": "2026-08-12",
+      "value": 2.2,
+      "source": "ISTAT",
+      "fetchedAt": "2026-08-12T07:00:00Z"
+    },
+    {
+      "instrumentId": "it-gdp",
+      "date": "2025-02-27",
+      "value": 0.6,
+      "source": "ISTAT",
+      "fetchedAt": "2025-02-27T13:30:00Z"
+    },
+    {
+      "instrumentId": "it-gdp",
+      "date": "2025-08-28",
+      "value": 0.5,
+      "source": "ISTAT",
+      "fetchedAt": "2025-08-28T13:30:00Z"
+    },
+    {
+      "instrumentId": "it-gdp",
+      "date": "2026-05-29",
+      "value": 0.4,
+      "source": "ISTAT",
+      "fetchedAt": "2026-05-29T13:30:00Z"
+    },
+    {
+      "instrumentId": "it-debt-gdp",
+      "date": "2025-04-22",
+      "value": 136.2,
+      "source": "ISTAT",
+      "fetchedAt": "2025-04-22T13:30:00Z"
+    },
+    {
+      "instrumentId": "it-debt-gdp",
+      "date": "2025-10-21",
+      "value": 137,
+      "source": "ISTAT",
+      "fetchedAt": "2025-10-21T13:30:00Z"
+    },
+    {
+      "instrumentId": "it-debt-gdp",
+      "date": "2026-04-22",
+      "value": 137.9,
+      "source": "ISTAT",
+      "fetchedAt": "2026-04-22T13:30:00Z"
+    },
+    {
+      "instrumentId": "in-cpi",
+      "date": "2025-08-13",
+      "value": 4.9,
+      "source": "MOSPI",
+      "fetchedAt": "2025-08-13T13:30:00Z"
+    },
+    {
+      "instrumentId": "in-cpi",
+      "date": "2026-02-12",
+      "value": 5.3,
+      "source": "MOSPI",
+      "fetchedAt": "2026-02-12T13:30:00Z"
+    },
+    {
+      "instrumentId": "in-cpi",
+      "date": "2026-06-11",
+      "value": 5.8,
+      "source": "MOSPI",
+      "fetchedAt": "2026-06-11T13:30:00Z"
+    },
+    {
+      "instrumentId": "in-cpi",
+      "date": "2026-08-12",
+      "value": 6.1,
+      "source": "MOSPI",
+      "fetchedAt": "2026-08-12T12:30:00Z"
+    },
+    {
+      "instrumentId": "in-gdp",
+      "date": "2025-02-28",
+      "value": 6.8,
+      "source": "MOSPI",
+      "fetchedAt": "2025-02-28T13:30:00Z"
+    },
+    {
+      "instrumentId": "in-gdp",
+      "date": "2025-08-29",
+      "value": 6.5,
+      "source": "MOSPI",
+      "fetchedAt": "2025-08-29T13:30:00Z"
+    },
+    {
+      "instrumentId": "in-gdp",
+      "date": "2026-05-30",
+      "value": 6.1,
+      "source": "MOSPI",
+      "fetchedAt": "2026-05-30T13:30:00Z"
+    },
+    {
+      "instrumentId": "in-policy-rate",
+      "date": "2025-08-13",
+      "value": 6,
+      "source": "Reserve Bank of India",
+      "fetchedAt": "2025-08-13T13:30:00Z"
+    },
+    {
+      "instrumentId": "in-policy-rate",
+      "date": "2025-12-05",
+      "value": 6.25,
+      "source": "Reserve Bank of India",
+      "fetchedAt": "2025-12-05T13:30:00Z"
+    },
+    {
+      "instrumentId": "in-policy-rate",
+      "date": "2026-04-09",
+      "value": 6.25,
+      "source": "Reserve Bank of India",
+      "fetchedAt": "2026-04-09T13:30:00Z"
+    },
+    {
+      "instrumentId": "in-policy-rate",
+      "date": "2026-08-07",
+      "value": 6.5,
+      "source": "Reserve Bank of India",
+      "fetchedAt": "2026-08-07T09:00:00Z"
+    },
+    {
+      "instrumentId": "em-gdp",
+      "date": "2025-04-15",
+      "value": 4.1,
+      "source": "FMI (WEO)",
+      "fetchedAt": "2025-04-15T13:30:00Z"
+    },
+    {
+      "instrumentId": "em-gdp",
+      "date": "2025-10-15",
+      "value": 3.9,
+      "source": "FMI (WEO)",
+      "fetchedAt": "2025-10-15T13:30:00Z"
+    },
+    {
+      "instrumentId": "em-gdp",
+      "date": "2026-04-15",
+      "value": 3.7,
+      "source": "FMI (WEO)",
+      "fetchedAt": "2026-04-15T13:30:00Z"
+    },
+    {
+      "instrumentId": "em-current-account",
+      "date": "2025-04-15",
+      "value": 0.6,
+      "source": "FMI (WEO)",
+      "fetchedAt": "2025-04-15T13:30:00Z"
+    },
+    {
+      "instrumentId": "em-current-account",
+      "date": "2025-10-15",
+      "value": 0.4,
+      "source": "FMI (WEO)",
+      "fetchedAt": "2025-10-15T13:30:00Z"
+    },
+    {
+      "instrumentId": "em-current-account",
+      "date": "2026-04-15",
+      "value": 0.2,
+      "source": "FMI (WEO)",
+      "fetchedAt": "2026-04-15T13:30:00Z"
+    }
+  ],
+  "trends": [
+    {
+      "id": "prime-risque-permanente",
+      "title": "La prime de risque géopolitique devient permanente",
+      "thesis": "Ormuz acheminait environ un cinquième de l'offre pétrolière mondiale. L'EIA anticipe des perturbations résiduelles d'environ 0,6 million de barils/jour jusqu'à fin 2027, même après un accord. Le marché n'efface pas cette prime, il l'intègre — dans l'énergie, l'assurance maritime, le fret et la défense. Le coût du capital des importateurs d'énergie monte durablement.",
+      "zones": [
+        "global",
+        "ez",
+        "fr",
+        "jp",
+        "in"
+      ],
+      "assetClasses": [
+        "commodity",
+        "fx",
+        "equity"
+      ],
+      "status": "maintient",
+      "statusHistory": [
+        {
+          "date": "2026-07-05",
+          "status": "renforce",
+          "editionSlug": "2026-S27",
+          "why": "Premier constat du déficit de 1,8 Mb/j chiffré par l'AIE, aucun signe de désescalade."
+        },
+        {
+          "date": "2026-07-12",
+          "status": "renforce",
+          "editionSlug": "2026-S28",
+          "why": "Ormuz reste fermé après l'épisode de blocage du 9 juillet ; les primes d'assurance de guerre grimpent encore."
+        },
+        {
+          "date": "2026-08-09",
+          "status": "maintient",
+          "editionSlug": "2026-S32",
+          "why": "Le Brent oscille désormais entre 85 et 90 $ sans nouvelle jambe haussière — la prime s'est installée plutôt qu'elle ne continue de monter."
+        }
+      ],
+      "invalidatedBy": "Une réouverture vérifiée d'Ormuz avec normalisation des transits et recul durable des primes d'assurance maritime."
+    },
+    {
+      "id": "desinflation-terminee",
+      "title": "La désinflation est terminée, le resserrement recommence partout",
+      "thesis": "La Fed est passée d'un biais baissier à un biais haussier. La BCE a relevé ses taux en juin malgré une croissance quasi nulle. La BoJ normalise. Trois grandes banques centrales resserrent simultanément dans une économie faible. Le filet de sécurité des banques centrales n'existe plus tant que le pétrole est haut.",
+      "zones": [
+        "global",
+        "us",
+        "ez",
+        "jp"
+      ],
+      "assetClasses": [
+        "rates",
+        "equity",
+        "fx"
+      ],
+      "status": "renforce",
+      "statusHistory": [
+        {
+          "date": "2026-07-05",
+          "status": "maintient",
+          "editionSlug": "2026-S27",
+          "why": "La BCE vient de relever ses taux en juin, la Fed est en pause avec un biais haussier depuis juillet."
+        },
+        {
+          "date": "2026-08-02",
+          "status": "renforce",
+          "editionSlug": "2026-S31",
+          "why": "La BoJ relève à 1,00 % le 31 juillet et plusieurs membres appellent à accélérer ; trois banques centrales resserrent désormais de façon synchronisée."
+        }
+      ],
+      "invalidatedBy": "Un retournement net de l'emploi américain qui forcerait la Fed à rouvrir la porte à une baisse."
+    },
+    {
+      "id": "capex-ia-benefices",
+      "title": "Le capex IA est un vrai moteur de bénéfices, mais concentré",
+      "thesis": "Les surprises de BPA au T2 sont les plus fortes depuis que FactSet mesure la donnée. C'est ce qui permet aux actions de monter avec des taux qui remontent. Mais le S&P se paie environ 20× les bénéfices attendus, contre ~16× de moyenne longue. Marché porté par les bénéfices, pas par les multiples — donc binaire.",
+      "zones": [
+        "global",
+        "us"
+      ],
+      "assetClasses": [
+        "equity"
+      ],
+      "status": "maintient",
+      "statusHistory": [
+        {
+          "date": "2026-07-19",
+          "status": "renforce",
+          "editionSlug": "2026-S29",
+          "why": "86 % de surprises positives de BPA au T2, un record sur la période suivie par FactSet."
+        },
+        {
+          "date": "2026-08-09",
+          "status": "maintient",
+          "editionSlug": "2026-S32",
+          "why": "Les carnets de commandes progressent encore mais le rythme de progression ralentit — la thèse tient sans nouvelle confirmation forte."
+        }
+      ],
+      "invalidatedBy": "Un premier trimestre où un grand acheteur de compute révise son capex à la baisse."
+    },
+    {
+      "id": "japon-anomalie",
+      "title": "Le Japon sort de trente ans d'anomalie",
+      "thesis": "Un JGB 10 ans au-dessus de 2,80 %, en nette hausse sur un an, dans le pays le plus endetté du monde développé, avec un yen proche de ses plus bas de 40 ans. Le Japon est le premier créancier net de la planète : un rapatriement de l'épargne japonaise ferait monter les taux longs partout.",
+      "zones": [
+        "global",
+        "jp",
+        "us",
+        "ez"
+      ],
+      "assetClasses": [
+        "rates",
+        "fx"
+      ],
+      "status": "renforce",
+      "statusHistory": [
+        {
+          "date": "2026-07-12",
+          "status": "maintient",
+          "editionSlug": "2026-S28",
+          "why": "Le yen s'approche de 158, sans franchir de seuil qui justifierait un changement de statut."
+        },
+        {
+          "date": "2026-08-02",
+          "status": "renforce",
+          "editionSlug": "2026-S31",
+          "why": "USD/JPY dépasse 159 après le rapport d'emploi américain, intervention conjointe évoquée, hausse de la BoJ actée."
+        }
+      ],
+      "invalidatedBy": "Une stabilisation durable du yen sous 150 sans intervention, qui retirerait la pression sur la BoJ."
+    },
+    {
+      "id": "recomposition-flux-hors-chine",
+      "title": "Recomposition des flux hors de Chine, sans gagnant évident",
+      "thesis": "Les capitaux quittent la Chine, mais l'Inde recule cette année : un importateur net de pétrole ne peut pas être le refuge d'un choc pétrolier. Le vrai bénéficiaire est la chaîne semi-conducteurs, pas la démographie. « Émergents » n'est plus une classe d'actifs cohérente.",
+      "zones": [
+        "global",
+        "cn",
+        "in",
+        "em"
+      ],
+      "assetClasses": [
+        "equity",
+        "fx"
+      ],
+      "status": "maintient",
+      "statusHistory": [
+        {
+          "date": "2026-07-05",
+          "status": "maintient",
+          "editionSlug": "2026-S27",
+          "why": "Le CSI 300 reste plat sur l'année, le Nifty 50 recule sur fond de sorties de capitaux et de facture pétrolière."
+        }
+      ],
+      "invalidatedBy": "Un retour net des flux vers la Chine onshore ou une stabilisation claire de la roupie indienne."
+    }
+  ],
+  "editions": [
+    {
+      "slug": "2026-S27",
+      "kind": "hebdo",
+      "date": "2026-07-05",
+      "isoWeek": "2026-S27",
+      "parentWeek": null,
+      "comparesTo": null,
+      "trigger": null,
+      "regimeStatement": "Un choc d'offre énergétique greffé sur un boom d'investissement.",
+      "keyIndicators": [
+        {
+          "label": "Régime",
+          "value": "Choc d'offre + capex IA"
+        },
+        {
+          "label": "Inflation US",
+          "value": "3,3 % · cœur 2,6 %"
+        },
+        {
+          "label": "Biais Fed",
+          "value": "Neutre à haussier"
+        },
+        {
+          "label": "Variable maîtresse",
+          "value": "Brent / Ormuz"
+        }
+      ],
+      "zones": [
+        "global",
+        "us",
+        "ez",
+        "jp",
+        "cn"
+      ],
+      "blocks": {
+        "whatChanged": "Première édition de l'archive : pas de comparaison possible, donc pas de delta à décrire. Le régime de référence est posé ici — choc d'offre pétrolier plus cycle de capex IA — et servira de point zéro aux éditions suivantes.",
+        "whatConfirmed": "Le déficit pétrolier chiffré par l'AIE (1,8 Mb/j) confirme que le blocage d'Ormuz n'est pas un non-événement de marché. Les surprises de BPA du début de saison confirment que le capex IA continue de se traduire en bénéfices, pas seulement en promesses.",
+        "scenarioRevisions": "Toutes les branches sont initialisées à cette édition : Iran — enlisement en scénario central, fin du conflit en probabilité faible, durcissement en probabilité modérée. Taux directeurs — statu quo prolongé en scénario central. IA — profits tiennent/capex plafonne en scénario central.",
+        "whatIGotWrong": "Rien à corriger : c'est l'édition fondatrice de l'archive.",
+        "whatIWatch": "(1) Nombre de transits effectifs par le détroit d'Ormuz — validerait ou invaliderait toute désescalade. (2) Réunion de la Fed du 29 juillet — le ton sur une hausse en septembre. (3) Rythme des surprises de BPA sur la deuxième moitié de la saison de résultats."
+      },
+      "trendRefs": [
+        "prime-risque-permanente",
+        "desinflation-terminee",
+        "recomposition-flux-hors-chine"
+      ],
+      "instrumentRefs": [
+        "brent",
+        "ndx",
+        "spx"
+      ],
+      "sources": [
+        {
+          "label": "EIA — Short-Term Energy Outlook",
+          "url": "https://www.eia.gov/outlooks/steo/"
+        },
+        {
+          "label": "FactSet Earnings Insight",
+          "url": "https://insight.factset.com/"
+        }
+      ]
+    },
+    {
+      "slug": "2026-S28-E1",
+      "kind": "speciale",
+      "date": "2026-07-09",
+      "isoWeek": "2026-S28",
+      "parentWeek": "2026-S28",
+      "comparesTo": "2026-S27",
+      "trigger": "Géopolitique — modification d'un flux physique : nouveau blocage naval à l'entrée du détroit d'Ormuz, transits suspendus 48 h.",
+      "regimeStatement": "Le choc d'offre se durcit : blocage physique confirmé, pas seulement une menace.",
+      "keyIndicators": [
+        {
+          "label": "Brent",
+          "value": "≈ 92 $ (+4,5 % en 2 séances)"
+        },
+        {
+          "label": "Transits Ormuz",
+          "value": "Suspendus 48 h"
+        },
+        {
+          "label": "Régime",
+          "value": "Choc d'offre en accélération"
+        },
+        {
+          "label": "Biais Fed",
+          "value": "Neutre à haussier"
+        }
+      ],
+      "zones": [
+        "global",
+        "ez",
+        "fr",
+        "jp"
+      ],
+      "blocks": {
+        "whatChanged": "Contrairement au 5 juillet, il ne s'agit plus d'une prime de risque théorique : des tankers ont été retenus à l'entrée du détroit pendant 48 h. Le Brent gagne plus de 4 % en deux séances, franchissant le seuil de déclenchement d'une édition spéciale.",
+        "scenarioRevisions": "Iran — enlisement reste central mais la probabilité de durcissement est relevée de faible à modérée : un blocage physique, même bref, change la distribution des risques par rapport à un simple cycle rumeur-démenti.",
+        "whatIWatch": "Le déblocage a-t-il été négocié ou simplement temporaire faute de moyens ? Les primes d'assurance de guerre restent-elles élevées après la reprise des transits ? Toute nouvelle suspension serait le signal d'alerte précoce du scénario de durcissement."
+      },
+      "trendRefs": [
+        "prime-risque-permanente"
+      ],
+      "instrumentRefs": [
+        "brent",
+        "wti"
+      ],
+      "sources": [
+        {
+          "label": "AIE — Oil Market Report",
+          "url": "https://www.iea.org/reports/oil-market-report"
+        }
+      ]
+    },
+    {
+      "slug": "2026-S28",
+      "kind": "hebdo",
+      "date": "2026-07-12",
+      "isoWeek": "2026-S28",
+      "parentWeek": null,
+      "comparesTo": "2026-S27",
+      "trigger": null,
+      "regimeStatement": "Le choc d'offre énergétique se confirme, le capex IA absorbe le choc pour l'instant.",
+      "keyIndicators": [
+        {
+          "label": "Régime",
+          "value": "Choc d'offre confirmé"
+        },
+        {
+          "label": "Brent",
+          "value": "≈ 91 $"
+        },
+        {
+          "label": "Biais Fed",
+          "value": "Neutre à haussier"
+        },
+        {
+          "label": "Variable maîtresse",
+          "value": "Brent / Ormuz"
+        }
+      ],
+      "zones": [
+        "global",
+        "us",
+        "ez",
+        "fr",
+        "jp"
+      ],
+      "blocks": {
+        "whatChanged": "Depuis le 5 juillet : un blocage physique avéré (voir l'édition spéciale du 9 juillet), pas seulement une prime théorique. C'est le changement de lecture le plus important de la semaine — la thèse du choc d'offre est désormais confirmée par un fait, pas seulement par un prix.",
+        "whatConfirmed": "Le marché actions absorbe toujours le choc énergétique grâce aux bénéfices : le S&P et le Nasdaq 100 tiennent leurs niveaux malgré le Brent au-dessus de 90 $.",
+        "scenarioRevisions": "Aucune révision supplémentaire cette semaine au-delà de celle actée dans l'édition spéciale du 9 juillet (durcissement Iran : faible → modérée).",
+        "whatIGotWrong": "L'édition du 5 juillet traitait le risque de blocage physique comme un scénario de queue à surveiller « d'ici la prochaine édition ». Il s'est matérialisé en quatre jours — le rythme d'escalade est plus rapide que ce que nous avions anticipé.",
+        "whatIWatch": "(1) Une nouvelle suspension des transits, qui confirmerait le durcissement. (2) La réunion de la Fed du 29 juillet. (3) Le rythme des surprises de BPA sur la suite de la saison.",
+        "specialsRecap": "Une seule spéciale cette semaine (S28-E1, 9 juillet) : le blocage de 48 h à Ormuz. Avec le recul de trois jours, les transits ont repris sans nouvel épisode — à ce stade, ni confirmé comme tournant durable, ni révélé comme du bruit pur."
+      },
+      "trendRefs": [
+        "prime-risque-permanente",
+        "capex-ia-benefices"
+      ],
+      "instrumentRefs": [
+        "brent",
+        "ndx",
+        "spx"
+      ],
+      "sources": [
+        {
+          "label": "AIE — Oil Market Report",
+          "url": "https://www.iea.org/reports/oil-market-report"
+        },
+        {
+          "label": "FactSet Earnings Insight",
+          "url": "https://insight.factset.com/"
+        }
+      ]
+    },
+    {
+      "slug": "2026-S29",
+      "kind": "hebdo",
+      "date": "2026-07-19",
+      "isoWeek": "2026-S29",
+      "parentWeek": null,
+      "comparesTo": "2026-S28",
+      "trigger": null,
+      "regimeStatement": "Saison de résultats exceptionnelle, valorisations tendues, aucun coussin en dessous.",
+      "keyIndicators": [
+        {
+          "label": "Régime",
+          "value": "Bénéfices sans coussin de valorisation"
+        },
+        {
+          "label": "S&P 500 fwd P/E",
+          "value": "≈ 20×"
+        },
+        {
+          "label": "Surprises BPA US",
+          "value": "86 % positives"
+        },
+        {
+          "label": "Biais Fed",
+          "value": "Neutre à haussier"
+        }
+      ],
+      "zones": [
+        "global",
+        "us",
+        "ez"
+      ],
+      "blocks": {
+        "whatChanged": "Depuis le 12 juillet, rien n'a modifié la thèse macro — Ormuz reste stable après le blocage de début juillet. Le changement de cette semaine est ailleurs : la saison de résultats confirme que le marché est désormais un marché de bénéfices, sans coussin de multiples.",
+        "whatConfirmed": "86 % de surprises positives de BPA aux États-Unis, un record sur la période suivie par FactSet ; les bénéfices Stoxx 600 ressortent à +21 % sur un an contre 12,5 % attendus.",
+        "scenarioRevisions": "IA — aucune révision de vraisemblance, mais le constat renforce le scénario central « profits tiennent, capex plafonne » : les BPA délivrent sans (encore) de signe d'accélération du capex.",
+        "whatIGotWrong": "Rien à signaler cette semaine.",
+        "whatIWatch": "(1) La largeur du marché — est-ce que la hausse reste portée par une poignée de valeurs ou s'élargit-elle ? (2) Le S&P au-dessus de 20× les bénéfices attendus : tout accroc sur les BPA se paierait cash. (3) Le rapport sur l'emploi du 7 août."
+      },
+      "trendRefs": [
+        "capex-ia-benefices"
+      ],
+      "instrumentRefs": [
+        "spx",
+        "sx5e"
+      ],
+      "sources": [
+        {
+          "label": "FactSet Earnings Insight",
+          "url": "https://insight.factset.com/"
+        }
+      ]
+    },
+    {
+      "slug": "2026-S31",
+      "kind": "hebdo",
+      "date": "2026-08-02",
+      "isoWeek": "2026-S31",
+      "parentWeek": null,
+      "comparesTo": "2026-S29",
+      "trigger": null,
+      "regimeStatement": "Trois banques centrales resserrent en même temps, dans une économie qui montre ses premiers signes de fatigue.",
+      "keyIndicators": [
+        {
+          "label": "Régime",
+          "value": "Resserrement synchronisé"
+        },
+        {
+          "label": "Emploi US (juillet)",
+          "value": "Pertes nettes"
+        },
+        {
+          "label": "BoJ",
+          "value": "1,00 % — hausse actée"
+        },
+        {
+          "label": "Variable maîtresse",
+          "value": "Brent / Ormuz"
+        }
+      ],
+      "zones": [
+        "global",
+        "us",
+        "jp",
+        "ez"
+      ],
+      "blocks": {
+        "whatChanged": "Il n'y a pas eu d'édition la semaine du 20 juillet — rien n'avait franchi de seuil et la semaine a été volontairement silencieuse. Depuis le 19 juillet en revanche, deux faits changent la lecture : un rapport d'emploi américain en pertes nettes pour la première fois depuis longtemps, et une BoJ qui relève son taux à 1,00 % en assumant un ton plus offensif.",
+        "whatConfirmed": "La thèse du choc d'offre transitoire (pas de spirale salaires-prix) continue d'être validée par un cœur d'inflation qui se détend pendant que l'inflation totale reste élevée.",
+        "scenarioRevisions": "Taux directeurs — la branche « statu quo prolongé » reste centrale, mais la lecture du rapport d'emploi est encore ambiguë (voir bloc suivant). Iran — enlisement reste central, aucun élément nouveau ne justifie de bouger les probabilités cette semaine.",
+        "whatIGotWrong": "Nous avions écrit le 12 juillet que le marché du travail américain n'était surveillé qu'en toile de fond. Le rapport du 7 août aurait dû être anticipé comme un risque de première ligne dès cette édition, pas découvert a posteriori.",
+        "whatIWatch": "(1) Le rapport d'emploi d'août — confirme-t-il un ralentissement ou une récession ? (2) La réunion du FOMC des 15-16 septembre. (3) Les débats internes à la BoJ sur le rythme des prochaines hausses."
+      },
+      "trendRefs": [
+        "desinflation-terminee",
+        "japon-anomalie"
+      ],
+      "instrumentRefs": [
+        "us10y",
+        "usdjpy",
+        "nky"
+      ],
+      "sources": [
+        {
+          "label": "Bureau of Labor Statistics",
+          "url": "https://www.bls.gov/"
+        },
+        {
+          "label": "Bank of Japan",
+          "url": "https://www.boj.or.jp/en/"
+        }
+      ]
+    },
+    {
+      "slug": "2026-S32-E1",
+      "kind": "speciale",
+      "date": "2026-08-03",
+      "isoWeek": "2026-S32",
+      "parentWeek": "2026-S32",
+      "comparesTo": "2026-S31",
+      "trigger": "Actions — Nasdaq 100 : +4,7 % sur 2 séances glissantes (seuil ±3,0 %).",
+      "regimeStatement": "Le marché de bénéfices se remet à accélérer, sans nouvelle donnée fondamentale pour l'expliquer.",
+      "keyIndicators": [
+        {
+          "label": "Nasdaq 100",
+          "value": "+4,7 % / 2 séances"
+        },
+        {
+          "label": "Déclencheur",
+          "value": "eq-ndx-3pct"
+        },
+        {
+          "label": "Sens",
+          "value": "Hausse"
+        },
+        {
+          "label": "Régime",
+          "value": "Inchangé"
+        }
+      ],
+      "zones": [
+        "global",
+        "us"
+      ],
+      "blocks": {
+        "whatChanged": "Le Nasdaq 100 gagne 4,7 % sur les deux dernières séances, bien au-delà du seuil de 3 % qui déclenche cette édition. Aucune donnée macro majeure n'est sortie sur la période : le mouvement est porté par un rattrapage post-résultats sur les valeurs d'infrastructure IA, pas par un changement de régime.",
+        "scenarioRevisions": "IA — aucune révision : le mouvement est un effet de flux et de positionnement (canal 5), pas un changement de thèse sur l'adoption ou les carnets de commandes.",
+        "whatIWatch": "Est-ce que le mouvement s'étend au-delà des méga-caps IA (largeur) ou reste-t-il concentré ? Une extension confirmerait un vrai regain d'appétit pour le risque ; une concentration confirmerait un simple rattrapage technique."
+      },
+      "trendRefs": [
+        "capex-ia-benefices"
+      ],
+      "instrumentRefs": [
+        "ndx"
+      ],
+      "sources": [
+        {
+          "label": "Twelve Data",
+          "url": "https://twelvedata.com/"
+        }
+      ]
+    },
+    {
+      "slug": "2026-S32-E2",
+      "kind": "speciale",
+      "date": "2026-08-07",
+      "isoWeek": "2026-S32",
+      "parentWeek": "2026-S32",
+      "comparesTo": "2026-S32-E1",
+      "trigger": "Spread OAT 10 ans − Bund 10 ans : +41 bps sur 2 séances glissantes (seuil ±30 bps).",
+      "regimeStatement": "La prime de risque souverain français s'écarte nettement — un signal distinct du reste de la courbe euro.",
+      "keyIndicators": [
+        {
+          "label": "Spread OAT-Bund",
+          "value": "≈ 117 bps"
+        },
+        {
+          "label": "Déclencheur",
+          "value": "spread-oat-bund-30bp"
+        },
+        {
+          "label": "Sens",
+          "value": "Écartement"
+        },
+        {
+          "label": "Bund 10 ans",
+          "value": "Stable, ≈ 2,57 %"
+        }
+      ],
+      "zones": [
+        "global",
+        "ez",
+        "fr"
+      ],
+      "blocks": {
+        "whatChanged": "Le spread OAT-Bund passe d'environ 76 à 117 points de base en deux séances. Le Bund reste stable sur la même période (2,56 à 2,58 %) : c'est bien la jambe française qui bouge, pas la jambe allemande. Ce n'est donc pas une divergence de politique monétaire mais un signal de défiance spécifique sur le risque souverain français.",
+        "scenarioRevisions": "Aucun scénario formel dans le cahier des charges ne couvre le risque souverain français ; à noter comme facteur transversal pour la révision de la branche « statu quo prolongé » des taux directeurs — un écartement de ce type peut compliquer la transmission de la politique de la BCE sans que celle-ci ait bougé.",
+        "whatIWatch": "Le spread se stabilise-t-il sous 100 bps dans les prochaines séances (épisode isolé) ou continue-t-il de s'écarter (signal de défiance installé) ? Aucune annonce budgétaire ou politique majeure n'a encore été identifiée comme déclencheur direct — à documenter dans la prochaine hebdo."
+      },
+      "trendRefs": [],
+      "instrumentRefs": [
+        "spread-oat10y-bund10y",
+        "fr10y",
+        "de10y"
+      ],
+      "sources": [
+        {
+          "label": "Banque de France",
+          "url": "https://www.banque-france.fr/"
+        },
+        {
+          "label": "Bundesbank",
+          "url": "https://www.bundesbank.de/"
+        }
+      ]
+    },
+    {
+      "slug": "2026-S32",
+      "kind": "hebdo",
+      "date": "2026-08-09",
+      "isoWeek": "2026-S32",
+      "parentWeek": null,
+      "comparesTo": "2026-S31",
+      "trigger": null,
+      "regimeStatement": "Le régime de fond ne bouge pas ; deux à-coups distincts — actions US et souverain français — se sont produits en parallèle sans lien entre eux.",
+      "keyIndicators": [
+        {
+          "label": "Régime",
+          "value": "Choc d'offre + capex IA"
+        },
+        {
+          "label": "Inflation US",
+          "value": "3,4 % · cœur 2,5 %"
+        },
+        {
+          "label": "Biais Fed",
+          "value": "Resserrement"
+        },
+        {
+          "label": "Spread OAT-Bund",
+          "value": "≈ 105 bps"
+        }
+      ],
+      "zones": [
+        "global",
+        "us",
+        "ez",
+        "fr"
+      ],
+      "blocks": {
+        "whatChanged": "Depuis le 2 août : le CPI de juillet est sorti conforme au consensus (3,4 %, cœur 2,5 %), ce qui n'était pas encore connu à la dernière hebdo. C'est la principale mise à jour de fond de la semaine — les deux spéciales ci-dessous sont traitées séparément car elles relèvent de dynamiques de marché, pas d'un changement de lecture macro.",
+        "whatConfirmed": "Le cœur d'inflation continue de décélérer (2,5 %, plus bas depuis mars 2021) pendant que l'inflation totale reste élevée à cause de l'énergie — exactement la signature attendue d'un choc d'offre, pas d'une spirale salaires-prix.",
+        "scenarioRevisions": "Taux directeurs — la branche « hausse » est relevée de faible à modérée : la Fed de Kevin Warsh affiche trois dissidences pour une hausse dès juillet, et J.P. Morgan anticipe désormais une première hausse en décembre. En miroir, la branche « retour aux baisses » est abaissée de modérée à faible : le choc pétrolier ne laisse aucune marge de baisse tant que l'inflation totale reste au-dessus de 3 %.",
+        "whatIGotWrong": "Nous avons initialement traité le spread OAT-Bund (S32-E2) comme un possible signal transversal sur la transmission de la politique de la BCE. Avec quelques séances de recul, rien n'indique que le Bund ou la politique de la BCE soient concernés : c'est un sujet français isolé, à suivre comme tel plutôt que comme un signal euro-area.",
+        "whatIWatch": "(1) Le spread OAT-Bund se stabilise-t-il sous 100 bps ? (2) Le symposium de Jackson Hole fin août. (3) L'indice PCE fin août, qui confirmera ou non le message du CPI.",
+        "specialsRecap": "Deux spéciales cette semaine, sans lien entre elles. S32-E1 (3 août, Nasdaq 100 +4,7 %/2 séances) : rattrapage technique sur les valeurs IA, sans nouvelle donnée fondamentale — avec le recul, du bruit de positionnement plutôt qu'un changement de régime. S32-E2 (7 août, spread OAT-Bund +41 bps/2 séances) : mouvement confirmé comme spécifique au risque souverain français, pas une divergence de politique monétaire euro-area."
+      },
+      "trendRefs": [
+        "desinflation-terminee",
+        "capex-ia-benefices"
+      ],
+      "instrumentRefs": [
+        "ndx",
+        "spread-oat10y-bund10y",
+        "us10y"
+      ],
+      "sources": [
+        {
+          "label": "Bureau of Labor Statistics",
+          "url": "https://www.bls.gov/"
+        },
+        {
+          "label": "Federal Reserve",
+          "url": "https://www.federalreserve.gov/"
+        }
+      ]
+    },
+    {
+      "slug": "2026-S33-E1",
+      "kind": "speciale",
+      "date": "2026-08-13",
+      "isoWeek": "2026-S33",
+      "parentWeek": "2026-S33",
+      "comparesTo": "2026-S32",
+      "trigger": "Inflation sous-jacente publiée — Royaume-Uni : cœur à 3,2 %, écart de 0,3 pt au consensus (seuil ≥ 0,3 pt).",
+      "regimeStatement": "Le Royaume-Uni rejoint la liste des économies où le cœur d'inflation surprend à la hausse, pas à la baisse.",
+      "keyIndicators": [
+        {
+          "label": "CPI cœur UK",
+          "value": "3,2 % (consensus 2,9 %)"
+        },
+        {
+          "label": "Écart au consensus",
+          "value": "+0,3 pt"
+        },
+        {
+          "label": "BoE — taux directeur",
+          "value": "3,75 %, statu quo"
+        },
+        {
+          "label": "Régime",
+          "value": "Inchangé, risque à surveiller"
+        }
+      ],
+      "zones": [
+        "global",
+        "uk"
+      ],
+      "blocks": {
+        "whatChanged": "Le cœur d'inflation britannique ressort à 3,2 % contre un consensus à 2,9 %, un écart de 0,3 point qui franchit le seuil de déclenchement. C'est la première surprise d'inflation sous-jacente à la hausse depuis le début du suivi de cette archive — jusqu'ici, les surprises étaient plutôt du côté de la désinflation (cœur US, cœur zone euro).",
+        "scenarioRevisions": "Aucune révision de la famille « taux directeurs » : cette famille est calibrée sur la Fed et n'a pas de branche dédiée au Royaume-Uni. À noter pour la prochaine hebdo : la BoE, longtemps en retrait du débat, redevient une variable à surveiller activement.",
+        "whatIWatch": "(1) La prochaine réunion de la BoE le 17 septembre — statu quo ou changement de ton. (2) Si le cœur d'inflation britannique continue de surprendre à la hausse sur les deux prochains mois, ce serait un cas à part dans le tableau des banques centrales qui resserrent déjà partout ailleurs."
+      },
+      "trendRefs": [
+        "desinflation-terminee"
+      ],
+      "instrumentRefs": [],
+      "sources": [
+        {
+          "label": "Office for National Statistics",
+          "url": "https://www.ons.gov.uk/"
+        }
+      ]
+    }
+  ],
+  "alertRules": [
+    {
+      "id": "eq-ndx-3pct",
+      "label": "Nasdaq 100 — ±3,0 % / 2 séances",
+      "target": {
+        "kind": "instrument",
+        "instrumentId": "ndx"
+      },
+      "measure": "percent",
+      "threshold": 3,
+      "windowSessions": 2,
+      "cooldownSessions": 5,
+      "enabled": true
+    },
+    {
+      "id": "eq-spx-3pct",
+      "label": "S&P 500 — ±3,0 % / 2 séances",
+      "target": {
+        "kind": "instrument",
+        "instrumentId": "spx"
+      },
+      "measure": "percent",
+      "threshold": 3,
+      "windowSessions": 2,
+      "cooldownSessions": 5,
+      "enabled": true
+    },
+    {
+      "id": "eq-sx5e-3pct",
+      "label": "Euro Stoxx 50 — ±3,0 % / 2 séances",
+      "target": {
+        "kind": "instrument",
+        "instrumentId": "sx5e"
+      },
+      "measure": "percent",
+      "threshold": 3,
+      "windowSessions": 2,
+      "cooldownSessions": 5,
+      "enabled": true
+    },
+    {
+      "id": "eq-ukx-3pct",
+      "label": "FTSE 100 — ±3,0 % / 2 séances",
+      "target": {
+        "kind": "instrument",
+        "instrumentId": "ukx"
+      },
+      "measure": "percent",
+      "threshold": 3,
+      "windowSessions": 2,
+      "cooldownSessions": 5,
+      "enabled": true
+    },
+    {
+      "id": "eq-cac-3pct",
+      "label": "CAC 40 — ±3,0 % / 2 séances",
+      "target": {
+        "kind": "instrument",
+        "instrumentId": "cac"
+      },
+      "measure": "percent",
+      "threshold": 3,
+      "windowSessions": 2,
+      "cooldownSessions": 5,
+      "enabled": true
+    },
+    {
+      "id": "eq-nky-3pct",
+      "label": "Nikkei 225 — ±3,0 % / 2 séances",
+      "target": {
+        "kind": "instrument",
+        "instrumentId": "nky"
+      },
+      "measure": "percent",
+      "threshold": 3,
+      "windowSessions": 2,
+      "cooldownSessions": 5,
+      "enabled": true
+    },
+    {
+      "id": "eq-hsi-3pct",
+      "label": "Hang Seng — ±3,0 % / 2 séances",
+      "target": {
+        "kind": "instrument",
+        "instrumentId": "hsi"
+      },
+      "measure": "percent",
+      "threshold": 3,
+      "windowSessions": 2,
+      "cooldownSessions": 5,
+      "enabled": true
+    },
+    {
+      "id": "us10y-40bp",
+      "label": "US 10 ans — ±40 bps / 1 semaine",
+      "target": {
+        "kind": "instrument",
+        "instrumentId": "us10y"
+      },
+      "measure": "basisPoints",
+      "threshold": 40,
+      "windowSessions": 5,
+      "cooldownSessions": 5,
+      "enabled": true
+    },
+    {
+      "id": "spread-us-bund-30bp",
+      "label": "Spread US 10 ans − Bund 10 ans — ±30 bps / 2 séances",
+      "target": {
+        "kind": "spread",
+        "longLegId": "us10y",
+        "shortLegId": "de10y"
+      },
+      "measure": "basisPoints",
+      "threshold": 30,
+      "windowSessions": 2,
+      "cooldownSessions": 5,
+      "enabled": true
+    },
+    {
+      "id": "spread-oat-bund-30bp",
+      "label": "Spread OAT 10 ans − Bund 10 ans — ±30 bps / 2 séances",
+      "target": {
+        "kind": "spread",
+        "longLegId": "fr10y",
+        "shortLegId": "de10y"
+      },
+      "measure": "basisPoints",
+      "threshold": 30,
+      "windowSessions": 2,
+      "cooldownSessions": 5,
+      "enabled": true
+    },
+    {
+      "id": "eurusd-3pct",
+      "label": "EUR/USD — ±3,0 % / 2 séances",
+      "target": {
+        "kind": "instrument",
+        "instrumentId": "eurusd"
+      },
+      "measure": "percent",
+      "threshold": 3,
+      "windowSessions": 2,
+      "cooldownSessions": 5,
+      "enabled": true
+    },
+    {
+      "id": "brent-8pct",
+      "label": "Brent — ±8 % / 2 séances",
+      "target": {
+        "kind": "instrument",
+        "instrumentId": "brent"
+      },
+      "measure": "percent",
+      "threshold": 8,
+      "windowSessions": 2,
+      "cooldownSessions": 5,
+      "enabled": true
+    }
+  ],
+  "alertEvents": [
+    {
+      "ruleId": "eq-ndx-3pct",
+      "firedAt": "2026-08-03T21:05:00Z",
+      "direction": "up",
+      "observed": 4.71,
+      "fromValue": 24700,
+      "toValue": 25550,
+      "fromDate": "2026-07-31",
+      "toDate": "2026-08-03",
+      "status": "promu",
+      "editionSlug": "2026-S32-E1"
+    },
+    {
+      "ruleId": "spread-oat-bund-30bp",
+      "firedAt": "2026-08-07T21:05:00Z",
+      "direction": "up",
+      "observed": 41,
+      "fromValue": 0.76,
+      "toValue": 1.17,
+      "fromDate": "2026-08-04",
+      "toDate": "2026-08-07",
+      "status": "promu",
+      "editionSlug": "2026-S32-E2"
+    }
+  ],
+  "scenarioVersions": [
+    {
+      "likelihoodChangedFrom": null,
+      "why": "",
+      "familyId": "rates",
+      "branchId": "rates-statu-quo",
+      "version": 1,
+      "date": "2026-07-05",
+      "editionSlug": "2026-S27",
+      "likelihood": "central",
+      "thesis": "Statu quo prolongé : la Fed reste en attente, ni hausse ni baisse, le temps de voir si le choc pétrolier se propage aux anticipations d'inflation.",
+      "impacts": {
+        "eq": {
+          "direction": "up",
+          "label": "Hausse modérée",
+          "text": "Les bénéfices portent le marché sans extension de multiples."
+        },
+        "fi": {
+          "direction": "flat",
+          "label": "Sans direction",
+          "text": "Le 10 ans reste ancré, le portage rémunère plus que la duration longue."
+        },
+        "fx": {
+          "direction": "flat",
+          "label": "Dollar ferme",
+          "text": "Aucun choc de politique monétaire dans un sens ou l'autre."
+        },
+        "cm": {
+          "direction": "flat",
+          "label": "Volatiles, sans tendance",
+          "text": "Le pétrole reste piloté par Ormuz, pas par la Fed."
+        }
+      },
+      "watchSignals": "Le cœur d'inflation continue-t-il de décélérer pendant que l'inflation totale reste élevée ?"
+    },
+    {
+      "likelihoodChangedFrom": null,
+      "why": "",
+      "familyId": "rates",
+      "branchId": "rates-statu-quo",
+      "version": 2,
+      "date": "2026-08-09",
+      "editionSlug": "2026-S32",
+      "likelihood": "central",
+      "thesis": "Statu quo prolongé reste central, mais la marge s'est réduite des deux côtés : la branche hausse et la branche baisse ont toutes deux bougé cette semaine, resserrant l'intervalle autour du statu quo sans le remettre en cause.",
+      "impacts": {
+        "eq": {
+          "direction": "up",
+          "label": "Hausse modérée",
+          "text": "Inchangé : les bénéfices portent toujours le marché."
+        },
+        "fi": {
+          "direction": "flat",
+          "label": "Sans direction",
+          "text": "Le 10 ans reste entre 4,4 et 4,9 %, comme anticipé."
+        },
+        "fx": {
+          "direction": "flat",
+          "label": "Dollar ferme",
+          "text": "DXY toujours proche de 100, cohérent avec la thèse initiale."
+        },
+        "cm": {
+          "direction": "flat",
+          "label": "Volatiles, sans tendance",
+          "text": "Toujours piloté par Ormuz plutôt que par la Fed."
+        }
+      },
+      "watchSignals": "Le rapport d'emploi d'août — un ralentissement net ferait basculer la lecture vers la branche baisse."
+    },
+    {
+      "likelihoodChangedFrom": null,
+      "why": "",
+      "familyId": "rates",
+      "branchId": "rates-hausse",
+      "version": 1,
+      "date": "2026-07-05",
+      "editionSlug": "2026-S27",
+      "likelihood": "faible",
+      "thesis": "Une hausse nécessiterait que le choc pétrolier commence à désancrer les anticipations d'inflation — pas observé à ce stade.",
+      "impacts": {
+        "eq": {
+          "direction": "down",
+          "label": "Compression des multiples",
+          "text": "Un taux réel plus élevé pénalise mécaniquement les flux lointains."
+        },
+        "fi": {
+          "direction": "down",
+          "label": "Baisse",
+          "text": "Toute la courbe se tend, la partie longue souffre le plus."
+        },
+        "fx": {
+          "direction": "up",
+          "label": "Dollar plus fort",
+          "text": "Un resserrement inattendu attire les flux de rendement."
+        },
+        "cm": {
+          "direction": "flat",
+          "label": "Ambigu",
+          "text": "L'or est tiraillé entre taux réels en hausse et crédibilité anti-inflation renforcée."
+        }
+      },
+      "watchSignals": "Une inflation totale qui repasse au-dessus de 4 % sans justification énergétique évidente."
+    },
+    {
+      "likelihoodChangedFrom": "faible",
+      "why": "La Fed de Kevin Warsh affiche trois dissidences pour une hausse dès la réunion de juillet, et J.P. Morgan a révisé son scénario central vers une première hausse en décembre. Le changement n'est pas dans les chiffres d'inflation mais dans la fonction de réaction de la Fed elle-même.",
+      "familyId": "rates",
+      "branchId": "rates-hausse",
+      "version": 2,
+      "date": "2026-08-09",
+      "editionSlug": "2026-S32",
+      "likelihood": "moderee",
+      "thesis": "Une Fed prête à monter dans une économie molle pour défendre sa crédibilité est désormais documentée par le vote de juillet, pas seulement une hypothèse. Le scénario central reste le statu quo, mais l'écart s'est réduit.",
+      "impacts": {
+        "eq": {
+          "direction": "down",
+          "label": "Compression des multiples",
+          "text": "Plafonne les multiples, pentifie la courbe — inchangé sur le fond."
+        },
+        "fi": {
+          "direction": "down",
+          "label": "Baisse",
+          "text": "La prime de terme se reconstitue déjà sur la partie longue."
+        },
+        "fx": {
+          "direction": "up",
+          "label": "Dollar plus fort",
+          "text": "Le marché commence à price une partie du scénario décembre."
+        },
+        "cm": {
+          "direction": "flat",
+          "label": "Ambigu",
+          "text": "Inchangé : taux réels contre crédibilité anti-inflation."
+        }
+      },
+      "watchSignals": "Jackson Hole fin août — un ton explicitement plus dur de Kevin Warsh confirmerait la trajectoire vers décembre."
+    },
+    {
+      "likelihoodChangedFrom": null,
+      "why": "",
+      "familyId": "rates",
+      "branchId": "rates-baisses",
+      "version": 1,
+      "date": "2026-07-05",
+      "editionSlug": "2026-S27",
+      "likelihood": "moderee",
+      "thesis": "Un retour aux baisses suppose soit un accord vérifié sur Ormuz qui fait refluer l'inflation totale, soit une détérioration nette du marché du travail.",
+      "impacts": {
+        "eq": {
+          "direction": "up",
+          "label": "Hausse forte",
+          "text": "Rotation vers les valeurs sensibles à la duration et à la consommation."
+        },
+        "fi": {
+          "direction": "up",
+          "label": "Hausse",
+          "text": "Meilleur scénario pour la duration longue."
+        },
+        "fx": {
+          "direction": "down",
+          "label": "Dollar plus faible",
+          "text": "Fin de la prime de rendement relative."
+        },
+        "cm": {
+          "direction": "down",
+          "label": "Baisse pour l'énergie",
+          "text": "Sauf choc de demande, où l'or profiterait des taux réels plus bas."
+        }
+      },
+      "watchSignals": "Un accord vérifié sur Ormuz ou un rapport d'emploi américain nettement négatif."
+    },
+    {
+      "likelihoodChangedFrom": "moderee",
+      "why": "Le CPI de juillet confirme une inflation totale à 3,4 %, sans recul, malgré un cœur qui décélère. Tant que le Brent reste au-dessus de 85 $, la Fed n'a structurellement aucune marge pour baisser, quelle que soit l'évolution de l'emploi.",
+      "familyId": "rates",
+      "branchId": "rates-baisses",
+      "version": 2,
+      "date": "2026-08-09",
+      "editionSlug": "2026-S32",
+      "likelihood": "faible",
+      "thesis": "Le canal qui aurait pu déclencher cette branche (un accord sur Ormuz) ne s'est pas matérialisé ; le second canal (choc de demande via l'emploi) reste ambigu après le rapport de juillet. La branche recule au profit du statu quo.",
+      "impacts": {
+        "eq": {
+          "direction": "up",
+          "label": "Hausse forte",
+          "text": "Inchangé si le scénario se matérialisait, mais probabilité réduite."
+        },
+        "fi": {
+          "direction": "up",
+          "label": "Hausse",
+          "text": "Inchangé sur le fond."
+        },
+        "fx": {
+          "direction": "down",
+          "label": "Dollar plus faible",
+          "text": "Inchangé sur le fond."
+        },
+        "cm": {
+          "direction": "down",
+          "label": "Baisse pour l'énergie",
+          "text": "Inchangé sur le fond."
+        }
+      },
+      "watchSignals": "Le rapport d'emploi d'août reste le signal le plus susceptible de faire remonter cette branche."
+    },
+    {
+      "likelihoodChangedFrom": null,
+      "why": "",
+      "familyId": "iran",
+      "branchId": "iran-enlisement",
+      "version": 1,
+      "date": "2026-07-05",
+      "editionSlug": "2026-S27",
+      "likelihood": "central",
+      "thesis": "Statu quo prolongé : ni accord, ni escalade majeure. Le Brent oscille entre 80 et 95 $ au rythme des rumeurs. C'est le scénario le plus probable et, paradoxalement, le plus confortable pour les actions.",
+      "impacts": {
+        "eq": {
+          "direction": "up",
+          "label": "Hausse modérée",
+          "text": "Les bénéfices portent le marché, les multiples ne s'étendent pas."
+        },
+        "fi": {
+          "direction": "flat",
+          "label": "Sans direction",
+          "text": "Le 10 ans reste ancré entre 4,4 et 4,9 %."
+        },
+        "fx": {
+          "direction": "flat",
+          "label": "Dollar ferme",
+          "text": "DXY autour de 99-102."
+        },
+        "cm": {
+          "direction": "flat",
+          "label": "Volatiles, sans tendance",
+          "text": "Brent 80-95 $, allers-retours sur les titres de presse."
+        }
+      },
+      "watchSignals": "Nouveaux cycles rumeur-démenti sans changement des transits effectifs par le détroit."
+    },
+    {
+      "likelihoodChangedFrom": null,
+      "why": "Quatrième cycle rumeur-démenti recensé depuis juin, sans changement des transits effectifs. Le scénario central se confirme plutôt qu'il n'évolue.",
+      "familyId": "iran",
+      "branchId": "iran-enlisement",
+      "version": 2,
+      "date": "2026-08-02",
+      "editionSlug": "2026-S31",
+      "likelihood": "central",
+      "thesis": "Inchangé sur le fond ; le nombre de cycles rumeur-démenti sans conséquence physique renforce la confiance dans ce scénario central plutôt que de la remettre en cause.",
+      "impacts": {
+        "eq": {
+          "direction": "up",
+          "label": "Hausse modérée",
+          "text": "Inchangé."
+        },
+        "fi": {
+          "direction": "flat",
+          "label": "Sans direction",
+          "text": "Inchangé."
+        },
+        "fx": {
+          "direction": "flat",
+          "label": "Dollar ferme",
+          "text": "Inchangé."
+        },
+        "cm": {
+          "direction": "flat",
+          "label": "Volatiles, sans tendance",
+          "text": "Inchangé."
+        }
+      },
+      "watchSignals": "Le cœur d'inflation qui continue de décélérer pendant que l'inflation totale stagne resterait le signal de confirmation le plus solide."
+    },
+    {
+      "likelihoodChangedFrom": null,
+      "why": "",
+      "familyId": "iran",
+      "branchId": "iran-fin",
+      "version": 1,
+      "date": "2026-07-05",
+      "editionSlug": "2026-S27",
+      "likelihood": "faible",
+      "thesis": "Accord vérifié sur Ormuz, transits normalisés. Le Brent revient vers 65-70 $ en quelques semaines — le scénario le plus favorable aux actifs financiers.",
+      "impacts": {
+        "eq": {
+          "direction": "up",
+          "label": "Hausse forte",
+          "text": "Rotation brutale hors de l'énergie et de la défense."
+        },
+        "fi": {
+          "direction": "up",
+          "label": "Hausse",
+          "text": "Baisse des taux sur toute la courbe."
+        },
+        "fx": {
+          "direction": "flat",
+          "label": "Dollar plus faible",
+          "text": "Fin de la prime de refuge."
+        },
+        "cm": {
+          "direction": "down",
+          "label": "Baisse marquée",
+          "text": "Brent vers 65-70 $."
+        }
+      },
+      "watchSignals": "Transits quotidiens effectifs, primes d'assurance de guerre en baisse, retrait effectif du blocus naval."
+    },
+    {
+      "likelihoodChangedFrom": null,
+      "why": "",
+      "familyId": "iran",
+      "branchId": "iran-durcissement",
+      "version": 1,
+      "date": "2026-07-05",
+      "editionSlug": "2026-S27",
+      "likelihood": "faible",
+      "thesis": "Escalade : frappes élargies, sortie de production du Golfe. Le Brent viserait 120 $ et au-delà — la stagflation véritable.",
+      "impacts": {
+        "eq": {
+          "direction": "down",
+          "label": "Baisse forte",
+          "text": "Compression simultanée des multiples et des marges."
+        },
+        "fi": {
+          "direction": "down",
+          "label": "Baisse",
+          "text": "Le piège du choc d'offre : taux et actions baissent ensemble."
+        },
+        "fx": {
+          "direction": "up",
+          "label": "Dollar plus fort",
+          "text": "Refuge et rendement se combinent."
+        },
+        "cm": {
+          "direction": "up",
+          "label": "Hausse forte",
+          "text": "Brent au-delà de 120 $."
+        }
+      },
+      "watchSignals": "Frappes sur des terminaux d'exportation, sorties d'assureurs maritimes, arrêts de production annoncés."
+    },
+    {
+      "likelihoodChangedFrom": "faible",
+      "why": "Le blocage physique de 48 h à l'entrée du détroit, même bref et sans frappe directe, change la distribution des risques par rapport à une simple rumeur non matérialisée.",
+      "familyId": "iran",
+      "branchId": "iran-durcissement",
+      "version": 2,
+      "date": "2026-07-09",
+      "editionSlug": "2026-S28-E1",
+      "likelihood": "moderee",
+      "thesis": "Un premier épisode de blocage physique avéré rend le scénario de durcissement moins hypothétique — sans en faire le scénario central, qui reste l'enlisement.",
+      "impacts": {
+        "eq": {
+          "direction": "down",
+          "label": "Baisse forte",
+          "text": "Inchangé sur le fond."
+        },
+        "fi": {
+          "direction": "down",
+          "label": "Baisse",
+          "text": "Inchangé sur le fond."
+        },
+        "fx": {
+          "direction": "up",
+          "label": "Dollar plus fort",
+          "text": "Inchangé sur le fond."
+        },
+        "cm": {
+          "direction": "up",
+          "label": "Hausse forte",
+          "text": "Inchangé sur le fond."
+        }
+      },
+      "watchSignals": "Une deuxième suspension des transits confirmerait la trajectoire ; une reprise durable sans nouvel épisode l'infirmerait."
+    },
+    {
+      "likelihoodChangedFrom": null,
+      "why": "",
+      "familyId": "ai",
+      "branchId": "ai-plafonne",
+      "version": 1,
+      "date": "2026-07-05",
+      "editionSlug": "2026-S27",
+      "likelihood": "central",
+      "thesis": "Les fournisseurs d'infrastructure continuent de délivrer, mais les dépenses cessent d'accélérer. La croissance des bénéfices reste forte sans plus surprendre à la hausse.",
+      "impacts": {
+        "eq": {
+          "direction": "flat",
+          "label": "Hausse faible, dispersée",
+          "text": "Le marché avance au rythme des bénéfices, sans extension de multiples."
+        },
+        "fi": {
+          "direction": "flat",
+          "label": "Sans direction",
+          "text": "Les taux restent pilotés par le pétrole et la Fed."
+        },
+        "fx": {
+          "direction": "flat",
+          "label": "Sans direction",
+          "text": "Aucun flux dominant lié à l'IA."
+        },
+        "cm": {
+          "direction": "flat",
+          "label": "Soutien maintenu",
+          "text": "Le capex déjà engagé continue de tirer cuivre et électricité."
+        }
+      },
+      "watchSignals": "La décélération du taux de croissance du carnet de commandes, pas son niveau absolu."
+    },
+    {
+      "likelihoodChangedFrom": null,
+      "why": "La saison de résultats confirme des surprises de BPA record sans signe net d'accélération du capex — exactement la signature attendue de cette branche.",
+      "familyId": "ai",
+      "branchId": "ai-plafonne",
+      "version": 2,
+      "date": "2026-08-09",
+      "editionSlug": "2026-S32",
+      "likelihood": "central",
+      "thesis": "Inchangé : 86 % de surprises positives de BPA valident la partie « profits tiennent » ; aucune annonce de révision à la hausse des budgets de compute ne vient déplacer le curseur vers la branche accélération.",
+      "impacts": {
+        "eq": {
+          "direction": "flat",
+          "label": "Hausse faible, dispersée",
+          "text": "Inchangé."
+        },
+        "fi": {
+          "direction": "flat",
+          "label": "Sans direction",
+          "text": "Inchangé."
+        },
+        "fx": {
+          "direction": "flat",
+          "label": "Sans direction",
+          "text": "Inchangé."
+        },
+        "cm": {
+          "direction": "flat",
+          "label": "Soutien maintenu",
+          "text": "Inchangé."
+        }
+      },
+      "watchSignals": "L'écart entre capex annoncé et capex décaissé sur les prochains trimestres."
+    },
+    {
+      "likelihoodChangedFrom": null,
+      "why": "",
+      "familyId": "ai",
+      "branchId": "ai-accelere",
+      "version": 1,
+      "date": "2026-07-05",
+      "editionSlug": "2026-S27",
+      "likelihood": "moderee",
+      "thesis": "L'adoption se diffuse au-delà des fournisseurs d'infrastructure, les entreprises utilisatrices montrent des gains de marge mesurables — le cycle passerait de « dépense spéculative » à « investissement à retour prouvé ».",
+      "impacts": {
+        "eq": {
+          "direction": "up",
+          "label": "Hausse forte, élargie",
+          "text": "Le leadership s'étend au-delà des semi-conducteurs."
+        },
+        "fi": {
+          "direction": "down",
+          "label": "Sous pression",
+          "text": "Taux neutre plus élevé, émission massive pour financer le capex."
+        },
+        "fx": {
+          "direction": "up",
+          "label": "Dollar plus fort",
+          "text": "Les capitaux se concentrent sur le marché américain."
+        },
+        "cm": {
+          "direction": "up",
+          "label": "Cuivre et électricité",
+          "text": "Le goulet d'étranglement n'est plus la puce mais le mégawatt."
+        }
+      },
+      "watchSignals": "Revenus cloud et carnets de commandes contractés, marges opérationnelles hors tech, enquêtes de productivité du BLS."
+    },
+    {
+      "likelihoodChangedFrom": null,
+      "why": "",
+      "familyId": "ai",
+      "branchId": "ai-decoit",
+      "version": 1,
+      "date": "2026-07-05",
+      "editionSlug": "2026-S27",
+      "likelihood": "faible",
+      "thesis": "Les entreprises utilisatrices ne parviennent pas à démontrer un retour sur investissement, les grands acheteurs de compute révisent leurs dépenses à la baisse. Sans coussin de valorisation, la correction serait portée intégralement par les multiples.",
+      "impacts": {
+        "eq": {
+          "direction": "down",
+          "label": "Baisse forte",
+          "text": "Correction concentrée sur semi-conducteurs et infrastructure."
+        },
+        "fi": {
+          "direction": "up",
+          "label": "Hausse",
+          "text": "Enfin une couverture qui fonctionne — choc de demande, pas d'offre."
+        },
+        "fx": {
+          "direction": "flat",
+          "label": "Yen plus fort",
+          "text": "Aversion au risque classique."
+        },
+        "cm": {
+          "direction": "down",
+          "label": "Cuivre en baisse",
+          "text": "Le cuivre perd sa prime IA."
+        }
+      },
+      "watchSignals": "Révision de capex d'un grand acheteur de compute, annulations dans les carnets de commandes plutôt que reports."
+    }
+  ]
+}
