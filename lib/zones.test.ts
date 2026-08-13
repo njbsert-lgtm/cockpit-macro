@@ -49,4 +49,15 @@ describe("zoneMatches", () => {
     expect(zoneMatches(["us", "jp"], "jp")).toBe(true);
     expect(zoneMatches(["us", "jp"], "fr")).toBe(false);
   });
+
+  it("sélectionner global montre tout, même un contenu qui n'est taggé que fr ou jp", () => {
+    expect(zoneMatches(["fr"], "global")).toBe(true);
+    expect(zoneMatches(["jp"], "global")).toBe(true);
+    expect(zoneMatches([], "global")).toBe(true);
+  });
+
+  it("un contenu qui n'est jamais taggé in, em ou global n'apparaît pour aucun de ces trois", () => {
+    expect(zoneMatches(["us", "ez", "jp", "cn", "uk", "fr"], "in")).toBe(false);
+    expect(zoneMatches(["us", "ez", "jp", "cn", "uk", "fr"], "em")).toBe(false);
+  });
 });

@@ -62,8 +62,15 @@ export function zoneAncestors(zone: Zone): Zone[] {
  * Un contenu taggé `itemZones` est-il visible pour la zone sélectionnée `selected` ?
  * Sélectionner 'fr' doit remonter les contenus taggés 'ez' et 'global' — pas l'inverse :
  * un contenu taggé 'fr' ne doit pas apparaître quand 'ez' ou 'global' est sélectionné.
+ *
+ * 'global' est la racine de l'arbre, pas une feuille comme les autres : c'est la vue
+ * « rien de caché » choisie par défaut (voir DEFAULT_ZONE), donc elle montre tout, y compris
+ * le contenu taggé uniquement 'fr' ou 'jp'. Sans ce cas particulier, le contenu spécifique à
+ * une zone ne remonterait jamais vers 'global' — seul le contenu explicitement taggé 'global'
+ * serait visible, ce qui viderait la vue par défaut de tout ce qui a une portée régionale.
  */
 export function zoneMatches(itemZones: Zone[], selected: Zone): boolean {
+  if (selected === "global") return true;
   const visible = new Set(zoneAncestors(selected));
   return itemZones.some((z) => visible.has(z));
 }
