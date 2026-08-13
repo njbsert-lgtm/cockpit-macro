@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
+import { usePathname, useSearchParams } from "next/navigation";
 import { getFreshnessSummaryForZone, getOverallTier } from "@/lib/freshness-summary";
 import { TIER_LABEL } from "@/lib/freshness";
 import { formatDateTime } from "@/lib/format";
@@ -10,13 +10,33 @@ import { FreshnessDot } from "@/components/states/FreshnessDot";
 
 export function FreshnessIndicator() {
   const searchParams = useSearchParams();
+  const pathname = usePathname();
   const zone = parseZone(searchParams.get(ZONE_PARAM));
   const [open, setOpen] = useState(false);
   // Évite un mismatch d'hydratation : `now` dépend de l'horloge du poste du lecteur.
   const [now, setNow] = useState<Date | null>(null);
   useEffect(() => setNow(new Date()), []);
 
-  useEffect(() => setOpen(false), [zone]);
+  // Le panneau vit dans la mise en page racine, jamais démontée entre deux pages : sans ça il
+  // resterait ouvert par-dessus l'écran suivant après un changement d'onglet ou de zone.
+  useEffect(() => setOpen(false), [zone, pathname]);
+
+  const containerRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (!open) return;
+    function onPointerDown(e: PointerEvent) {
+      if (!containerRef.current?.contains(e.target as Node)) setOpen(false);
+    }
+    function onKeyDown(e: KeyboardEvent) {
+      if (e.key === "Escape") setOpen(false);
+    }
+    document.addEventListener("pointerdown", onPointerDown);
+    document.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.removeEventListener("pointerdown", onPointerDown);
+      document.removeEventListener("keydown", onKeyDown);
+    };
+  }, [open]);
 
   if (!now) {
     return <span className="font-mono text-[11.5px] text-white/40">Fraîcheur…</span>;
@@ -27,7 +47,7 @@ export function FreshnessIndicator() {
   const oldest = summary[0];
 
   return (
-    <div className="relative">
+    <div className="relative" ref={containerRef}>
       <button
         type="button"
         onClick={() => setOpen((o) => !o)}
