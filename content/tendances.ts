@@ -47,6 +47,9 @@ export const TRENDS: Trend[] = [
           "why": "Le Brent oscille désormais entre 85 et 90 $ sans nouvelle jambe haussière — la prime s'est installée plutôt qu'elle ne continue de monter."
         }
       ],
+      "driverRefs": [
+        "iran"
+      ],
       "invalidatedBy": "Une réouverture vérifiée d'Ormuz avec normalisation des transits et recul durable des primes d'assurance maritime."
     },
     {
@@ -79,6 +82,10 @@ export const TRENDS: Trend[] = [
           "why": "La BoJ relève à 1,00 % le 31 juillet et plusieurs membres appellent à accélérer ; trois banques centrales resserrent désormais de façon synchronisée."
         }
       ],
+      "driverRefs": [
+        "rates",
+        "iran"
+      ],
       "invalidatedBy": "Un retournement net de l'emploi américain qui forcerait la Fed à rouvrir la porte à une baisse."
     },
     {
@@ -106,6 +113,9 @@ export const TRENDS: Trend[] = [
           "editionSlug": "2026-S32",
           "why": "Les carnets de commandes progressent encore mais le rythme de progression ralentit — la thèse tient sans nouvelle confirmation forte."
         }
+      ],
+      "driverRefs": [
+        "ai"
       ],
       "invalidatedBy": "Un premier trimestre où un grand acheteur de compute révise son capex à la baisse."
     },
@@ -138,6 +148,9 @@ export const TRENDS: Trend[] = [
           "why": "USD/JPY dépasse 159 après le rapport d'emploi américain, intervention conjointe évoquée, hausse de la BoJ actée."
         }
       ],
+      "driverRefs": [
+        "rates"
+      ],
       "invalidatedBy": "Une stabilisation durable du yen sous 150 sans intervention, qui retirerait la pression sur la BoJ."
     },
     {
@@ -163,6 +176,7 @@ export const TRENDS: Trend[] = [
           "why": "Le CSI 300 reste plat sur l'année, le Nifty 50 recule sur fond de sorties de capitaux et de facture pétrolière."
         }
       ],
+      "driverRefs": [],
       "invalidatedBy": "Un retour net des flux vers la Chine onshore ou une stabilisation claire de la roupie indienne."
     }
   ];

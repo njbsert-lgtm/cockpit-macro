@@ -1,21 +1,16 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { getTrend } from "@/lib/content";
+import { getDriver, getTrend, getTrends } from "@/lib/content";
 import { formatDateLong } from "@/lib/format";
+import {
+  TREND_STATUS_CLASS as STATUS_CLASS,
+  TREND_STATUS_LABEL as STATUS_LABEL,
+} from "@/lib/trend-labels";
 
-const STATUS_LABEL: Record<string, string> = {
-  renforce: "Se renforce",
-  maintient: "Se maintient",
-  affaiblit: "S'affaiblit",
-  invalidee: "Invalidée",
-};
-
-const STATUS_CLASS: Record<string, string> = {
-  renforce: "bg-teal-bg text-teal",
-  maintient: "bg-line-2 text-ink-2",
-  affaiblit: "bg-ochre-bg text-ochre",
-  invalidee: "bg-rust-bg text-rust",
-};
+/** Énumère les tendances au build — même effet de bord voulu que pour les drivers. */
+export function generateStaticParams() {
+  return getTrends().map((t) => ({ id: t.id }));
+}
 
 export default async function TrendPage({
   params,
@@ -55,6 +50,40 @@ export default async function TrendPage({
         </p>
         <p className="mt-1 text-14 text-ink-2">{trend.invalidatedBy}</p>
       </div>
+
+      <section className="mt-6 max-w-[70ch]">
+        <h2 className="font-mono text-10-5 font-semibold uppercase tracking-wider text-mute">
+          Les drivers qui pourraient la faire tomber
+        </h2>
+        {trend.driverRefs.length === 0 ? (
+          <p className="mt-2 text-14 text-mute">
+            Aucun driver suivi ne peut l&rsquo;invalider aujourd&rsquo;hui. C&rsquo;est ce qui
+            la rend confortable — et ce qui la rendrait dangereuse si elle se mettait à
+            s&rsquo;éroder sans qu&rsquo;on sache quoi surveiller.
+          </p>
+        ) : (
+          <ul className="mt-2 flex flex-wrap gap-2">
+            {trend.driverRefs.map((driverId) => {
+              const driver = getDriver(driverId)!;
+              return (
+                <li key={driverId}>
+                  <Link
+                    href={`/bulletin/drivers/${driverId}`}
+                    className="block border border-line bg-card px-3 py-2 hover:border-deep"
+                  >
+                    <span className="block font-display text-13-5 font-bold text-ink">
+                      {driver.label}
+                    </span>
+                    <span className="mt-0.5 block font-mono text-11 text-mute">
+                      {driver.question}
+                    </span>
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+        )}
+      </section>
 
       <section className="mt-10">
         <h2 className="font-display text-xl font-extrabold text-ink">
