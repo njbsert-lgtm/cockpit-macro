@@ -12,7 +12,7 @@ export const SCENARIO_VERSIONS: ScenarioVersion[] = [
     {
       "likelihoodChangedFrom": null,
       "why": "",
-      "familyId": "rates",
+      "driverId": "rates",
       "branchId": "rates-statu-quo",
       "version": 1,
       "date": "2026-07-05",
@@ -46,7 +46,7 @@ export const SCENARIO_VERSIONS: ScenarioVersion[] = [
     {
       "likelihoodChangedFrom": null,
       "why": "",
-      "familyId": "rates",
+      "driverId": "rates",
       "branchId": "rates-statu-quo",
       "version": 2,
       "date": "2026-08-09",
@@ -80,7 +80,7 @@ export const SCENARIO_VERSIONS: ScenarioVersion[] = [
     {
       "likelihoodChangedFrom": null,
       "why": "",
-      "familyId": "rates",
+      "driverId": "rates",
       "branchId": "rates-hausse",
       "version": 1,
       "date": "2026-07-05",
@@ -114,7 +114,7 @@ export const SCENARIO_VERSIONS: ScenarioVersion[] = [
     {
       "likelihoodChangedFrom": "faible",
       "why": "La Fed de Kevin Warsh affiche trois dissidences pour une hausse dès la réunion de juillet, et J.P. Morgan a révisé son scénario central vers une première hausse en décembre. Le changement n'est pas dans les chiffres d'inflation mais dans la fonction de réaction de la Fed elle-même.",
-      "familyId": "rates",
+      "driverId": "rates",
       "branchId": "rates-hausse",
       "version": 2,
       "date": "2026-08-09",
@@ -148,7 +148,7 @@ export const SCENARIO_VERSIONS: ScenarioVersion[] = [
     {
       "likelihoodChangedFrom": null,
       "why": "",
-      "familyId": "rates",
+      "driverId": "rates",
       "branchId": "rates-baisses",
       "version": 1,
       "date": "2026-07-05",
@@ -182,7 +182,7 @@ export const SCENARIO_VERSIONS: ScenarioVersion[] = [
     {
       "likelihoodChangedFrom": "moderee",
       "why": "Le CPI de juillet confirme une inflation totale à 3,4 %, sans recul, malgré un cœur qui décélère. Tant que le Brent reste au-dessus de 85 $, la Fed n'a structurellement aucune marge pour baisser, quelle que soit l'évolution de l'emploi.",
-      "familyId": "rates",
+      "driverId": "rates",
       "branchId": "rates-baisses",
       "version": 2,
       "date": "2026-08-09",
@@ -216,7 +216,7 @@ export const SCENARIO_VERSIONS: ScenarioVersion[] = [
     {
       "likelihoodChangedFrom": null,
       "why": "",
-      "familyId": "iran",
+      "driverId": "iran",
       "branchId": "iran-enlisement",
       "version": 1,
       "date": "2026-07-05",
@@ -250,7 +250,7 @@ export const SCENARIO_VERSIONS: ScenarioVersion[] = [
     {
       "likelihoodChangedFrom": null,
       "why": "Quatrième cycle rumeur-démenti recensé depuis juin, sans changement des transits effectifs. Le scénario central se confirme plutôt qu'il n'évolue.",
-      "familyId": "iran",
+      "driverId": "iran",
       "branchId": "iran-enlisement",
       "version": 2,
       "date": "2026-08-02",
@@ -284,7 +284,7 @@ export const SCENARIO_VERSIONS: ScenarioVersion[] = [
     {
       "likelihoodChangedFrom": null,
       "why": "",
-      "familyId": "iran",
+      "driverId": "iran",
       "branchId": "iran-fin",
       "version": 1,
       "date": "2026-07-05",
@@ -318,7 +318,7 @@ export const SCENARIO_VERSIONS: ScenarioVersion[] = [
     {
       "likelihoodChangedFrom": null,
       "why": "",
-      "familyId": "iran",
+      "driverId": "iran",
       "branchId": "iran-durcissement",
       "version": 1,
       "date": "2026-07-05",
@@ -352,7 +352,7 @@ export const SCENARIO_VERSIONS: ScenarioVersion[] = [
     {
       "likelihoodChangedFrom": "faible",
       "why": "Le blocage physique de 48 h à l'entrée du détroit, même bref et sans frappe directe, change la distribution des risques par rapport à une simple rumeur non matérialisée.",
-      "familyId": "iran",
+      "driverId": "iran",
       "branchId": "iran-durcissement",
       "version": 2,
       "date": "2026-07-09",
@@ -386,7 +386,7 @@ export const SCENARIO_VERSIONS: ScenarioVersion[] = [
     {
       "likelihoodChangedFrom": null,
       "why": "",
-      "familyId": "ai",
+      "driverId": "ai",
       "branchId": "ai-plafonne",
       "version": 1,
       "date": "2026-07-05",
@@ -420,7 +420,7 @@ export const SCENARIO_VERSIONS: ScenarioVersion[] = [
     {
       "likelihoodChangedFrom": null,
       "why": "La saison de résultats confirme des surprises de BPA record sans signe net d'accélération du capex — exactement la signature attendue de cette branche.",
-      "familyId": "ai",
+      "driverId": "ai",
       "branchId": "ai-plafonne",
       "version": 2,
       "date": "2026-08-09",
@@ -454,7 +454,7 @@ export const SCENARIO_VERSIONS: ScenarioVersion[] = [
     {
       "likelihoodChangedFrom": null,
       "why": "",
-      "familyId": "ai",
+      "driverId": "ai",
       "branchId": "ai-accelere",
       "version": 1,
       "date": "2026-07-05",
@@ -488,7 +488,7 @@ export const SCENARIO_VERSIONS: ScenarioVersion[] = [
     {
       "likelihoodChangedFrom": null,
       "why": "",
-      "familyId": "ai",
+      "driverId": "ai",
       "branchId": "ai-decoit",
       "version": 1,
       "date": "2026-07-05",

@@ -1,12 +1,6 @@
-import type { ScenarioFamilyId } from "./types";
-
-export const FAMILY_LABELS: Record<ScenarioFamilyId, string> = {
-  rates: "Taux directeurs",
-  iran: "Conflit iranien",
-  ai: "Cycle IA",
-};
-
-export const FAMILY_ORDER: ScenarioFamilyId[] = ["rates", "iran", "ai"];
+// Le libellé et la question d'un driver vivent dans `content/drivers.ts` : ce sont du
+// contenu. Ne restent ici que les libellés d'affichage des branches et des vraisemblances,
+// qui appartiennent au vocabulaire de l'interface.
 
 export const BRANCH_LABELS: Record<string, string> = {
   "rates-hausse": "Hausse",
@@ -20,8 +14,13 @@ export const BRANCH_LABELS: Record<string, string> = {
   "ai-decoit": "Profits déçoivent",
 };
 
-export const BRANCH_ORDER: Record<ScenarioFamilyId, string[]> = {
-  rates: ["rates-hausse", "rates-statu-quo", "rates-baisses"],
+/**
+ * Ordre d'affichage des branches d'un driver, de la plus favorable aux actifs à la plus
+ * adverse. Ce n'est pas l'ordre de vraisemblance : c'est un axe de lecture stable, pour que
+ * la position d'une branche veuille toujours dire la même chose d'un driver à l'autre.
+ */
+export const BRANCH_ORDER: Record<string, string[]> = {
+  rates: ["rates-baisses", "rates-statu-quo", "rates-hausse"],
   iran: ["iran-fin", "iran-enlisement", "iran-durcissement"],
   ai: ["ai-accelere", "ai-plafonne", "ai-decoit"],
 };
