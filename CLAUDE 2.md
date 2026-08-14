@@ -70,14 +70,43 @@ L'état complet est dans l'URL : `?zone=fr`. Toute vue est partageable et rechar
 
 C'est le cœur du produit et l'écran d'accueil.
 
-### Structure
+### Structure en trois couches
 
-- **En-tête permanent** : le régime en une phrase + quatre indicateurs clés, mis à jour à
-  chaque édition. C'est ce qu'on lit en trois secondes.
-- **Dernière édition**, dépliée par défaut
-- **Arbres de scénarios**, dans leur état courant
-- **Archive** : les éditions hebdomadaires en colonne vertébrale, les éditions spéciales
-  indentées sous leur semaine. Filtrable par zone, par période et par type.
+**Couche 1 — Les drivers, en-tête permanent.**
+Le régime en une phrase, puis trois à cinq **cartes de driver**. Chaque carte affiche la
+question posée, la branche actuellement dominante, et la date de dernière révision.
+C'est ce qu'on lit en dix secondes, et c'est le point d'entrée de toute la navigation :
+un clic sur une carte ouvre la page du driver avec son arbre de scénarios et sa trajectoire.
+
+Les cartes sont ordonnées par **intensité courante** — le driver qui explique le plus des
+mouvements récents en premier. Cet ordre est fixé à la main dans le frontmatter de l'édition,
+pas calculé : c'est un jugement, et il doit se voir.
+
+**Couche 2 — Les éditions.**
+La dernière édition dépliée par défaut, puis l'archive : hebdomadaires en colonne vertébrale,
+spéciales indentées sous leur semaine. Filtrable par zone, par période, par type et
+**par driver**.
+
+**Couche 3 — Les tendances de fond.**
+Index thématique, accessible depuis l'en-tête. Ce qu'on consulte une fois par mois, pas
+tous les jours — donc en troisième position, jamais en avant.
+
+### Drivers et tendances : deux objets distincts
+
+À ne surtout pas fusionner dans le modèle de données.
+
+| | Driver | Tendance de fond |
+|---|---|---|
+| Nature | Incertitude active | Direction déjà établie |
+| Forme | Bifurque en 3 branches | A un statut et une trajectoire |
+| Question | « Que se passe-t-il si… ? » | « Qu'est-ce qui est durablement vrai ? » |
+| Horizon | Trimestres | Années |
+| Exemple | La Fed monte-t-elle ses taux ? | La désinflation est terminée |
+| Révision | À chaque bascule de vraisemblance | À chaque changement de statut |
+
+**Le lien entre les deux est explicite et bidirectionnel** : chaque tendance liste les drivers
+qui pourraient l'invalider, chaque driver liste les tendances qu'il alimente. C'est ce qui
+permet de répondre à « si la Fed monte, laquelle de mes convictions longues tombe ? ».
 
 ### Ce qui rend une édition analytique et non descriptive
 
@@ -120,7 +149,7 @@ des **seuils objectifs**, écrits dans la configuration, pas à une impression.
 | **Brent** | ±8 % | 2 séances glissantes |
 | **Inflation sous-jacente publiée** | écart ≥ 0,3 pt au consensus | à la publication |
 | **Banque centrale majeure** | décision non anticipée ou changement de biais explicite | à l'annonce |
-| **Scénarios** | bascule de la branche centrale d'une famille | à la révision |
+| **Scénarios** | bascule de la branche dominante d'un driver | à la révision |
 | **Géopolitique** | modification d'un flux physique : fermeture, embargo appliqué, saisie | à l'événement |
 
 Au moins un seuil franchi, sinon ça attend le dimanche. Le seuil déclenché est enregistré dans
@@ -189,18 +218,35 @@ lecture de long terme tient depuis six mois ou si elle s'est érodée sans que v
 Dans une édition, les passages qui touchent une tendance de fond sont visuellement marqués et
 cliquables vers la page de la tendance.
 
-### Scénarios
+### Scénarios : un arbre par driver
 
-Trois familles, trois branches chacune :
+Un driver, une question, trois branches. Les scénarios n'existent jamais seuls : ils sont
+toujours la réponse à la question d'un driver.
 
-| Famille | Branches |
-|---|---|
-| **Taux directeurs** | Hausse · Statu quo prolongé · Retour aux baisses |
-| **Conflit iranien** | Fin du conflit · Enlisement · Durcissement |
-| **Cycle IA** | Profits et capex accélèrent · Profits tiennent, capex plafonne · Profits déçoivent |
+| Driver | Question | Branches |
+|---|---|---|
+| **Taux directeurs** | La Fed reprend-elle son cycle de hausse ? | Hausse · Statu quo prolongé · Retour aux baisses |
+| **Conflit iranien** | Ormuz rouvre-t-il ? | Fin du conflit · Enlisement · Durcissement |
+| **Cycle IA** | Les profits justifient-ils le capex ? | Profits et capex accélèrent · Profits tiennent, capex plafonne · Profits déçoivent |
 
 Chaque branche : la thèse, la grille d'impacts par classe d'actifs (direction + explication),
 les signaux de confirmation ou d'alerte.
+
+### La page d'un driver
+
+Un clic sur une carte de driver ouvre une page qui contient, dans cet ordre :
+
+1. La question et la branche dominante actuelle
+2. Les trois branches, comparables côte à côte sur desktop, en onglets sur mobile
+3. La **trajectoire** — comment la vraisemblance de chaque branche a évolué dans le temps
+4. Les **instruments qu'il pilote**, avec leur valeur du jour et leurs alertes actives
+5. Les **tendances de fond** qu'il alimente ou pourrait invalider
+6. Les **passages d'éditions** qui l'ont révisé, du plus récent au plus ancien
+
+C'est la page qui répond à « qu'est-ce qui fait bouger le marché en ce moment, et qu'est-ce
+qui se passe selon comment ça tourne ».
+
+### Versionnement
 
 **Les scénarios sont versionnés.** Chaque révision crée une version datée liée à l'édition qui
 l'a produite. Deux vues :
@@ -250,8 +296,9 @@ instruments de la zone sélectionnée. Chaque ligne : valeur, perf YTD, perf 1 m
 note éditoriale courte.
 
 **Niveau 3 — La fiche instrument.** Graphique de la série, les performances sur plusieurs
-horizons, ce qui l'a fait bouger cette année, et **les passages d'éditions du bulletin qui le
-mentionnent**, du plus récent au plus ancien. C'est la jonction entre le prix et l'analyse :
+horizons, **les drivers qui le pilotent** avec leur branche dominante — cliquables vers la
+page du driver —, et **les passages d'éditions du bulletin qui le mentionnent**, du plus
+récent au plus ancien. C'est la jonction entre le prix et l'analyse :
 on doit pouvoir partir d'un chiffre et remonter à ce qu'on en avait dit.
 
 ---
@@ -300,6 +347,20 @@ type MacroIndicator = {
   nextRelease: string | null;
 };
 
+type Driver = {
+  id: 'rates' | 'iran' | 'ai' | string;   // extensible : de nouveaux drivers apparaîtront
+  label: string;             // 'Taux directeurs'
+  question: string;          // 'La Fed reprend-elle son cycle de hausse ?'
+  dominantBranchId: string;  // la branche jugée la plus vraisemblable aujourd'hui
+  intensityRank: number;     // ordre d'affichage, fixé à la main dans l'édition
+  instrumentRefs: string[];  // les instruments qu'il pilote
+  trendRefs: string[];       // les tendances qu'il alimente ou pourrait invalider
+  zones: Zone[];
+  lastRevisedAt: string;
+  lastRevisedIn: string;     // slug de l'édition
+  retiredAt: string | null;  // un driver peut cesser d'en être un ; on ne le supprime pas
+};
+
 type Trend = {
   id: string;
   title: string;
@@ -308,7 +369,8 @@ type Trend = {
   assetClasses: AssetClass[];
   status: 'renforce' | 'maintient' | 'affaiblit' | 'invalidee';
   statusHistory: Array<{ date: string; status: Trend['status']; editionSlug: string; why: string }>;
-  invalidatedBy: string;     // ce qui la ferait tomber
+  driverRefs: string[];      // les drivers qui pourraient la faire tomber
+  invalidatedBy: string;     // ce qui la ferait tomber, en clair
 };
 
 type Edition = {
@@ -325,6 +387,7 @@ type Edition = {
   // blocs MDX obligatoires — hebdo : whatChanged, whatConfirmed, scenarioRevisions,
   //   whatIGotWrong, whatIWatch, plus specialsRecap si des spéciales ont paru dans la semaine
   // blocs MDX obligatoires — spéciale : whatChanged, scenarioRevisions, whatIWatch
+  driverOrder: string[];     // ordre d'intensité des drivers à cette date, jugement manuel
   trendRefs: string[];       // tendances de fond touchées
   instrumentRefs: string[];  // instruments cités
   sources: Array<{ label: string; url: string }>;
@@ -361,7 +424,7 @@ type AlertEvent = {
 // À créer : 'spread-us10y-bund10y', 'spread-oat10y-bund10y'
 
 type ScenarioVersion = {
-  familyId: 'rates' | 'iran' | 'ai';
+  driverId: string;          // référence un Driver, jamais une chaîne libre
   branchId: string;
   version: number;
   date: string;
@@ -501,9 +564,12 @@ Critère de validation : le site est déployé sur Vercel et **utilisable au pou
 téléphone**. Pas « joli en capture d'écran ».
 
 **Étape 2 — Le contenu éditorial.**
-Éditions en MDX avec frontmatter et validation des cinq blocs obligatoires. Objets Tendance
-avec leur chronologie de statuts. Scénarios versionnés avec la vue Trajectoire.
-Migrer trois éditions rétrospectives pour vérifier que l'archive et les liens fonctionnent.
+Objets **Driver** avec leurs cartes en en-tête de l'onglet Bulletin et leur page dédiée.
+Éditions en MDX avec frontmatter et validation des blocs obligatoires selon le type.
+Objets **Tendance** avec chronologie de statuts, liés aux drivers dans les deux sens.
+Scénarios versionnés, rattachés à un driver, avec la vue Trajectoire.
+Migrer trois éditions rétrospectives pour vérifier que l'archive et tous les liens croisés
+fonctionnent — driver ↔ tendance ↔ instrument ↔ édition. C'est ce maillage qui fait le produit.
 
 **Étape 3 — Les données automatiques.**
 Une source d'abord : FRED, pour les taux et l'inflation. Cron, Zod, stockage, fraîcheur.
