@@ -4,11 +4,11 @@ import { formatDateShort } from "@/lib/format";
 import { BRANCH_LABELS } from "@/lib/scenario-labels";
 
 /**
- * Couche 1 du Bulletin : ce qu'on lit en dix secondes, et le point d'entrée de toute la
+ * Couche 1 des Notes : ce qu'on lit en dix secondes, et le point d'entrée de toute la
  * navigation. Cartes claires sur le bandeau bleu pétrole — le contraste 7:1 exigé par le
  * cahier interdit de poser du texte de corps directement sur ce fond.
  *
- * L'ordre est celui du `driverOrder` de la dernière édition : un jugement d'intensité, pas un
+ * L'ordre est celui du `driverOrder` de la dernière note : un jugement d'intensité, pas un
  * calcul. Un driver retiré n'a pas de carte, mais sa page reste accessible.
  */
 export function DriverCards({ drivers }: { drivers: Driver[] }) {
@@ -23,7 +23,7 @@ export function DriverCards({ drivers }: { drivers: Driver[] }) {
         {drivers.map((driver, i) => (
           <li key={driver.id}>
             <Link
-              href={`/bulletin/drivers/${driver.id}`}
+              href={`/notes/drivers/${driver.id}`}
               className="flex h-full flex-col border border-line bg-card px-3.5 py-3 hover:border-ochre focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-white"
             >
               <span className="flex items-baseline gap-2">

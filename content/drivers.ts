@@ -6,7 +6,7 @@ import type { DriverInput } from "@/lib/types";
  * confondre avec une tendance de fond, qui est une direction déjà établie sur des années.
  *
  * On ne saisit ici que ce qui est irréductiblement un jugement. `dominantBranchId`,
- * `intensityRank`, `lastRevisedAt` et `lastRevisedIn` sont dérivés des éditions et des
+ * `intensityRank`, `lastRevisedAt` et `lastRevisedIn` sont dérivés des notes et des
  * scénarios par `lib/drivers.ts` : les redemander ici, c'est garantir qu'ils divergeront.
  *
  * Un driver retiré n'est jamais supprimé — sa page reste accessible, seule sa carte

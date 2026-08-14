@@ -4,7 +4,7 @@ import {
   getDriver,
   getDrivers,
   getCurrentBranches,
-  getEditionsRevising,
+  getNotesRevising,
   getScenarioVersionsByDriver,
   getTrend,
 } from "@/lib/content";
@@ -13,13 +13,13 @@ import { getAlertsForInstrument } from "@/lib/alerts";
 import { formatInstrumentValue } from "@/lib/marches";
 import { formatDateLong, formatSignedPct } from "@/lib/format";
 import { BRANCH_LABELS, BRANCH_ORDER, LIKELIHOOD_LABELS } from "@/lib/scenario-labels";
-import { DriverBranches } from "@/components/bulletin/DriverBranches";
-import { ScenarioTrajectory } from "@/components/bulletin/ScenarioTrajectory";
+import { DriverBranches } from "@/components/notes/DriverBranches";
+import { ScenarioTrajectory } from "@/components/notes/ScenarioTrajectory";
 import { DataValue } from "@/components/states/DataValue";
 import { TREND_STATUS_CLASS, TREND_STATUS_LABEL } from "@/lib/trend-labels";
 
 /**
- * Énumère les drivers au build. Effet de bord voulu, comme pour les éditions : cela force le
+ * Énumère les drivers au build. Effet de bord voulu, comme pour les notes : cela force le
  * contrôle d'intégrité de tout le graphe pendant `next build`, donc une référence morte fait
  * échouer la compilation au lieu de produire un lien mort.
  */
@@ -45,15 +45,15 @@ export default async function DriverPage({ params }: { params: Promise<{ id: str
     .map((b) => current.find((c) => c.branchId === b))
     .filter((b): b is NonNullable<typeof b> => Boolean(b));
 
-  const revisions = getEditionsRevising(driver.id);
+  const revisions = getNotesRevising(driver.id);
 
   return (
     <div className="mx-auto max-w-content px-4 py-8 md:px-6">
       <Link
-        href="/bulletin"
+        href="/notes"
         className="mb-4 inline-block font-mono text-xs text-deep underline decoration-line underline-offset-4 hover:decoration-deep"
       >
-        ← Retour au bulletin
+        ← Retour aux notes
       </Link>
 
       {/* 1 — La question et la branche dominante */}
@@ -71,7 +71,7 @@ export default async function DriverPage({ params }: { params: Promise<{ id: str
         </strong>
         {" — "}
         <Link
-          href={`/bulletin/${driver.lastRevisedIn}`}
+          href={`/notes/${driver.lastRevisedIn}`}
           className="text-deep underline decoration-line underline-offset-4"
         >
           révisée le {formatDateLong(driver.lastRevisedAt)}
@@ -81,7 +81,7 @@ export default async function DriverPage({ params }: { params: Promise<{ id: str
       {driver.retiredAt && (
         <p className="mt-3 border-l-3 border-mute bg-paper px-3.5 py-2.5 text-13-5 text-ink-2">
           Ce driver a été retiré le {formatDateLong(driver.retiredAt)} : il ne figure plus en
-          en-tête du bulletin. Sa page reste consultable — on ne supprime pas une lecture
+          en-tête des notes. Sa page reste consultable — on ne supprime pas une lecture
           passée.
         </p>
       )}
@@ -153,14 +153,14 @@ export default async function DriverPage({ params }: { params: Promise<{ id: str
                         ? formatSignedPct(event.direction === "up" ? event.observed : -event.observed)
                         : `${event.observed} bps`}{" "}
                       le {formatDateLong(event.toDate)}
-                      {event.editionSlug && (
+                      {event.noteSlug && (
                         <>
                           {" · "}
                           <Link
-                            href={`/bulletin/${event.editionSlug}`}
+                            href={`/notes/${event.noteSlug}`}
                             className="text-deep underline decoration-line underline-offset-4"
                           >
-                            {event.editionSlug}
+                            {event.noteSlug}
                           </Link>
                         </>
                       )}
@@ -182,7 +182,7 @@ export default async function DriverPage({ params }: { params: Promise<{ id: str
           return (
             <li key={trendId}>
               <Link
-                href={`/bulletin/tendances/${trendId}`}
+                href={`/notes/tendances/${trendId}`}
                 className="block border border-line bg-card px-3.5 py-3 hover:border-deep"
               >
                 <div className="flex flex-wrap items-center gap-2">
@@ -204,22 +204,22 @@ export default async function DriverPage({ params }: { params: Promise<{ id: str
         })}
       </ul>
 
-      {/* 6 — Les éditions qui l'ont révisé */}
-      <SectionTitle>Les éditions qui l&rsquo;ont révisé</SectionTitle>
+      {/* 6 — Les notes qui l'ont révisé */}
+      <SectionTitle>Les notes qui l&rsquo;ont révisé</SectionTitle>
       <ol className="mt-4 flex flex-col gap-2">
-        {revisions.map((edition) => {
-          const revised = versions.filter((v) => v.editionSlug === edition.slug);
+        {revisions.map((note) => {
+          const revised = versions.filter((v) => v.noteSlug === note.slug);
           return (
-            <li key={edition.slug}>
+            <li key={note.slug}>
               <Link
-                href={`/bulletin/${edition.slug}`}
+                href={`/notes/${note.slug}`}
                 className="block border border-line-2 bg-card px-3.5 py-2.5 hover:border-deep"
               >
                 <span className="font-display text-14 font-bold text-ink">
-                  {edition.regimeStatement}
+                  {note.regimeStatement}
                 </span>
                 <span className="mt-1 block font-mono text-11 text-mute">
-                  {edition.slug} · {formatDateLong(edition.date)} ·{" "}
+                  {note.slug} · {formatDateLong(note.date)} ·{" "}
                   {revised
                     .map(
                       (v) =>

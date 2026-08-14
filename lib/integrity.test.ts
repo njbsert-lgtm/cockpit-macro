@@ -2,7 +2,7 @@ import { readFileSync } from "node:fs";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
 import { checkIntegrity, type ContentGraph } from "./integrity";
-import { parseEdition, readEditionSources } from "./editions";
+import { parseNote, readNoteSources } from "./notes";
 import { DRIVERS } from "@/content/drivers";
 import { TRENDS } from "@/content/tendances";
 import { SCENARIO_VERSIONS } from "@/content/scenarios";
@@ -10,7 +10,7 @@ import { getInstruments } from "./data";
 import { deriveDrivers, activeDrivers } from "./drivers";
 import type {
   DriverInput,
-  Edition,
+  Note,
   ScenarioVersion,
   Trend,
 } from "./types";
@@ -32,7 +32,7 @@ function driver(over: Partial<DriverInput> = {}): DriverInput {
   };
 }
 
-function edition(over: Partial<Edition> = {}): Edition {
+function note(over: Partial<Note> = {}): Note {
   return {
     slug: "2026-S27",
     kind: "hebdo",
@@ -61,7 +61,7 @@ function trend(over: Partial<Trend> = {}): Trend {
     assetClasses: ["rates"],
     status: "renforce",
     statusHistory: [
-      { date: "2026-07-05", status: "renforce", editionSlug: "2026-S27", why: "Parce que." },
+      { date: "2026-07-05", status: "renforce", noteSlug: "2026-S27", why: "Parce que." },
     ],
     driverRefs: ["rates"],
     invalidatedBy: "…",
@@ -76,7 +76,7 @@ function branches(driverId = "rates", over: Partial<ScenarioVersion>[] = []): Sc
     branchId,
     version: 1,
     date: "2026-07-05",
-    editionSlug: "2026-S27",
+    noteSlug: "2026-S27",
     likelihood,
     likelihoodChangedFrom: null,
     why: "",
@@ -101,7 +101,7 @@ function graph(over: Partial<ContentGraph> = {}): ContentGraph {
   return {
     drivers: [driver()],
     trends: [trend()],
-    editions: [edition()],
+    notes: [note()],
     scenarios: branches(),
     instrumentIds: new Set(["us10y"]),
     ...over,
@@ -158,17 +158,17 @@ describe("références mortes — tendance", () => {
     expect(() => checkIntegrity(g)).toThrow(/driver inconnu « fantome »/);
   });
 
-  it("refuse une édition inexistante dans l'historique de statut", () => {
+  it("refuse une note inexistante dans l'historique de statut", () => {
     const g = graph({
       trends: [
         trend({
           statusHistory: [
-            { date: "2026-07-05", status: "renforce", editionSlug: "2026-S99", why: "Parce que." },
+            { date: "2026-07-05", status: "renforce", noteSlug: "2026-S99", why: "Parce que." },
           ],
         }),
       ],
     });
-    expect(() => checkIntegrity(g)).toThrow(/l'historique de statut cite l'édition « 2026-S99 »/);
+    expect(() => checkIntegrity(g)).toThrow(/l'historique de statut cite la note « 2026-S99 »/);
   });
 
   it("refuse un changement de statut sans justification", () => {
@@ -176,7 +176,7 @@ describe("références mortes — tendance", () => {
       trends: [
         trend({
           statusHistory: [
-            { date: "2026-07-05", status: "renforce", editionSlug: "2026-S27", why: "  " },
+            { date: "2026-07-05", status: "renforce", noteSlug: "2026-S27", why: "  " },
           ],
         }),
       ],
@@ -205,53 +205,53 @@ describe("lien driver ↔ tendance : inclusion, pas symétrie", () => {
   });
 });
 
-describe("références mortes — édition", () => {
+describe("références mortes — note", () => {
   it("refuse une tendance inexistante dans trendRefs", () => {
-    const g = graph({ editions: [edition({ trendRefs: ["fantome"] })] });
+    const g = graph({ notes: [note({ trendRefs: ["fantome"] })] });
     expect(() => checkIntegrity(g)).toThrow(/tendance inconnue « fantome » dans trendRefs/);
   });
 
   it("refuse un instrument inexistant dans instrumentRefs", () => {
-    const g = graph({ editions: [edition({ instrumentRefs: ["fantome"] })] });
+    const g = graph({ notes: [note({ instrumentRefs: ["fantome"] })] });
     expect(() => checkIntegrity(g)).toThrow(/instrument inconnu « fantome » dans instrumentRefs/);
   });
 
   it("refuse un driver inexistant dans driverOrder", () => {
-    const g = graph({ editions: [edition({ driverOrder: ["fantome"] })] });
+    const g = graph({ notes: [note({ driverOrder: ["fantome"] })] });
     expect(() => checkIntegrity(g)).toThrow(/driver inconnu « fantome » dans driverOrder/);
   });
 
   it("refuse un driver listé deux fois dans driverOrder", () => {
-    const g = graph({ editions: [edition({ driverOrder: ["rates", "rates"] })] });
+    const g = graph({ notes: [note({ driverOrder: ["rates", "rates"] })] });
     expect(() => checkIntegrity(g)).toThrow(/listé deux fois dans driverOrder/);
   });
 
-  it("refuse que la dernière édition oublie un driver actif — sa carte disparaîtrait", () => {
+  it("refuse que la dernière note oublie un driver actif — sa carte disparaîtrait", () => {
     const g = graph({
       drivers: [driver(), driver({ id: "iran", trendRefs: [] })],
       scenarios: [...branches("rates"), ...branches("iran")],
-      editions: [edition({ driverOrder: ["rates"] })],
+      notes: [note({ driverOrder: ["rates"] })],
     });
     expect(() => checkIntegrity(g)).toThrow(/driverOrder omet « iran »/);
   });
 
-  it("tolère qu'une édition ancienne soit partielle : un driver a pu naître après elle", () => {
+  it("tolère qu'une note ancienne soit partielle : un driver a pu naître après elle", () => {
     const g = graph({
       drivers: [driver(), driver({ id: "iran", trendRefs: [] })],
       scenarios: [...branches("rates"), ...branches("iran")],
-      editions: [
-        edition({ slug: "2026-S27", date: "2026-07-05", driverOrder: ["rates"] }),
-        edition({ slug: "2026-S28", date: "2026-07-12", driverOrder: ["rates", "iran"] }),
+      notes: [
+        note({ slug: "2026-S27", date: "2026-07-05", driverOrder: ["rates"] }),
+        note({ slug: "2026-S28", date: "2026-07-12", driverOrder: ["rates", "iran"] }),
       ],
     });
     expect(() => checkIntegrity(g)).not.toThrow();
   });
 
-  it("n'exige pas d'un driver retiré qu'il figure dans la dernière édition", () => {
+  it("n'exige pas d'un driver retiré qu'il figure dans la dernière note", () => {
     const g = graph({
       drivers: [driver(), driver({ id: "iran", trendRefs: [], retiredAt: "2026-06-01" })],
       scenarios: [...branches("rates"), ...branches("iran")],
-      editions: [edition({ driverOrder: ["rates"] })],
+      notes: [note({ driverOrder: ["rates"] })],
     });
     expect(() => checkIntegrity(g)).not.toThrow();
   });
@@ -265,9 +265,9 @@ describe("références mortes — scénarios", () => {
     expect(() => checkIntegrity(g)).toThrow(/driver inconnu « fantome »/);
   });
 
-  it("refuse une édition inexistante", () => {
-    const g = graph({ scenarios: branches("rates", [{ editionSlug: "2026-S99" }]) });
-    expect(() => checkIntegrity(g)).toThrow(/édition inconnue « 2026-S99 »/);
+  it("refuse une note inexistante", () => {
+    const g = graph({ scenarios: branches("rates", [{ noteSlug: "2026-S99" }]) });
+    expect(() => checkIntegrity(g)).toThrow(/note inconnue « 2026-S99 »/);
   });
 
   it("refuse une révision de vraisemblance sans justification", () => {
@@ -293,20 +293,20 @@ describe("identifiants en double", () => {
 // ---------------------------------------------------------------------------
 
 describe("dérivation des champs de Driver", () => {
-  const editions = [
-    edition({ slug: "2026-S27", date: "2026-07-05", driverOrder: ["rates", "iran"] }),
-    edition({ slug: "2026-S28", date: "2026-07-12", driverOrder: ["iran", "rates"] }),
+  const notes = [
+    note({ slug: "2026-S27", date: "2026-07-05", driverOrder: ["rates", "iran"] }),
+    note({ slug: "2026-S28", date: "2026-07-12", driverOrder: ["iran", "rates"] }),
   ];
   const scenarios = [
     ...branches("rates"),
     ...branches("iran"),
-    { ...branches("rates")[0], version: 2, date: "2026-07-12", editionSlug: "2026-S28" },
+    { ...branches("rates")[0], version: 2, date: "2026-07-12", noteSlug: "2026-S28" },
   ];
 
-  it("prend l'ordre d'intensité de la dernière édition, pas de la première", () => {
+  it("prend l'ordre d'intensité de la dernière note, pas de la première", () => {
     const derived = deriveDrivers(
       [driver(), driver({ id: "iran", trendRefs: [] })],
-      editions,
+      notes,
       scenarios,
     );
     expect(derived.map((d) => d.id).sort()).toEqual(["iran", "rates"]);
@@ -315,12 +315,12 @@ describe("dérivation des champs de Driver", () => {
   });
 
   it("prend la branche centrale comme branche dominante", () => {
-    const derived = deriveDrivers([driver()], editions, scenarios);
+    const derived = deriveDrivers([driver()], notes, scenarios);
     expect(derived[0].dominantBranchId).toBe("rates-a");
   });
 
   it("prend la révision la plus récente comme dernière révision", () => {
-    const derived = deriveDrivers([driver()], editions, scenarios);
+    const derived = deriveDrivers([driver()], notes, scenarios);
     expect(derived[0].lastRevisedAt).toBe("2026-07-12");
     expect(derived[0].lastRevisedIn).toBe("2026-S28");
   });
@@ -328,7 +328,7 @@ describe("dérivation des champs de Driver", () => {
   it("écarte des cartes un driver retiré, sans supprimer son objet", () => {
     const derived = deriveDrivers(
       [driver(), driver({ id: "iran", trendRefs: [], retiredAt: "2026-07-10" })],
-      editions,
+      notes,
       scenarios,
     );
     expect(derived).toHaveLength(2);
@@ -338,9 +338,9 @@ describe("dérivation des champs de Driver", () => {
 
 // ---------------------------------------------------------------------------
 
-describe("l'édition de test à référence morte", () => {
+describe("la note de test à référence morte", () => {
   // `content/__fixtures__/2026-S33.mdx` est une hebdo entièrement valide, sauf que son
-  // driverOrder cite un driver inexistant. Elle vit hors de `content/editions/` : déposée
+  // driverOrder cite un driver inexistant. Elle vit hors de `content/notes/` : déposée
   // dans le corpus, elle rendrait la branche définitivement non compilable, ce qui est
   // exactement ce qu'elle sert à démontrer. Ce test la joue contre le vrai graphe.
   const fixture = () => {
@@ -348,7 +348,7 @@ describe("l'édition de test à référence morte", () => {
       path.join(process.cwd(), "content", "__fixtures__", "2026-S33.mdx"),
       "utf8",
     );
-    return parseEdition("2026-S33", source);
+    return parseNote("2026-S33", source);
   };
 
   it("passe la validation de fichier : le défaut n'est pas dans sa forme", () => {
@@ -357,11 +357,11 @@ describe("l'édition de test à référence morte", () => {
   });
 
   it("fait échouer le contrôle d'intégrité en nommant le driver inexistant", () => {
-    const editions = readEditionSources().map(({ slug, source }) => parseEdition(slug, source));
+    const notes = readNoteSources().map(({ slug, source }) => parseNote(slug, source));
     const graph: ContentGraph = {
       drivers: DRIVERS,
       trends: TRENDS,
-      editions: [...editions.map((e) => e.meta), fixture().meta],
+      notes: [...notes.map((e) => e.meta), fixture().meta],
       scenarios: SCENARIO_VERSIONS,
       instrumentIds: new Set(getInstruments().map((i) => i.id)),
     };
@@ -371,11 +371,11 @@ describe("l'édition de test à référence morte", () => {
   });
 
   it("le corpus réel, lui, passe le contrôle sans la fixture", () => {
-    const editions = readEditionSources().map(({ slug, source }) => parseEdition(slug, source));
+    const notes = readNoteSources().map(({ slug, source }) => parseNote(slug, source));
     const graph: ContentGraph = {
       drivers: DRIVERS,
       trends: TRENDS,
-      editions: editions.map((e) => e.meta),
+      notes: notes.map((e) => e.meta),
       scenarios: SCENARIO_VERSIONS,
       instrumentIds: new Set(getInstruments().map((i) => i.id)),
     };

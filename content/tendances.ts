@@ -2,12 +2,12 @@ import type { Trend } from "@/lib/types";
 
 /**
  * Tendances de fond — de l'analyse, donc versionnée dans le repo et non dans la base.
- * Une tendance est un objet persistant qui traverse les éditions, pas un paragraphe :
+ * Une tendance est un objet persistant qui traverse les notes, pas un paragraphe :
  * son `statusHistory` est ce qui permet de voir, en un écran, si la lecture de long terme
  * tient depuis six mois ou si elle s'est érodée sans qu'on le remarque.
  *
  * Le typage `Trend[]` fait la validation : un statut hors énumération, une entrée
- * d'historique sans justification ou sans édition de rattachement ne compile pas.
+ * d'historique sans justification ou sans note de rattachement ne compile pas.
  */
 export const TRENDS: Trend[] = [
     {
@@ -31,25 +31,25 @@ export const TRENDS: Trend[] = [
         {
           "date": "2026-06-24",
           "status": "renforce",
-          "editionSlug": "2026-S26-E1",
+          "noteSlug": "2026-S26-E1",
           "why": "Deux tankers déroutés à l'approche d'Ormuz : la prime cesse de porter sur une menace pour porter sur un flux réellement contraint."
         },
         {
           "date": "2026-07-05",
           "status": "renforce",
-          "editionSlug": "2026-S27",
+          "noteSlug": "2026-S27",
           "why": "Premier constat du déficit de 1,8 Mb/j chiffré par l'AIE, aucun signe de désescalade."
         },
         {
           "date": "2026-07-12",
           "status": "renforce",
-          "editionSlug": "2026-S28",
+          "noteSlug": "2026-S28",
           "why": "Ormuz reste fermé après l'épisode de blocage du 9 juillet ; les primes d'assurance de guerre grimpent encore."
         },
         {
           "date": "2026-08-09",
           "status": "maintient",
-          "editionSlug": "2026-S32",
+          "noteSlug": "2026-S32",
           "why": "Le Brent oscille désormais entre 85 et 90 $ sans nouvelle jambe haussière — la prime s'est installée plutôt qu'elle ne continue de monter."
         }
       ],
@@ -78,19 +78,19 @@ export const TRENDS: Trend[] = [
         {
           "date": "2026-06-14",
           "status": "maintient",
-          "editionSlug": "2026-S24",
+          "noteSlug": "2026-S24",
           "why": "Le choc énergétique s'installe mais le cœur d'inflation décélère encore : la thèse est posée sans être confirmée."
         },
         {
           "date": "2026-07-05",
           "status": "maintient",
-          "editionSlug": "2026-S27",
+          "noteSlug": "2026-S27",
           "why": "La BCE vient de relever ses taux en juin, la Fed est en pause avec un biais haussier depuis juillet."
         },
         {
           "date": "2026-08-02",
           "status": "renforce",
-          "editionSlug": "2026-S31",
+          "noteSlug": "2026-S31",
           "why": "La BoJ relève à 1,00 % le 31 juillet et plusieurs membres appellent à accélérer ; trois banques centrales resserrent désormais de façon synchronisée."
         }
       ],
@@ -116,19 +116,19 @@ export const TRENDS: Trend[] = [
         {
           "date": "2026-06-28",
           "status": "maintient",
-          "editionSlug": "2026-S26",
+          "noteSlug": "2026-S26",
           "why": "Thèse établie avant la saison de résultats du T2 : les bénéfices sont supposés porter le marché, pas encore vérifiés."
         },
         {
           "date": "2026-07-19",
           "status": "renforce",
-          "editionSlug": "2026-S29",
+          "noteSlug": "2026-S29",
           "why": "86 % de surprises positives de BPA au T2, un record sur la période suivie par FactSet."
         },
         {
           "date": "2026-08-09",
           "status": "maintient",
-          "editionSlug": "2026-S32",
+          "noteSlug": "2026-S32",
           "why": "Les carnets de commandes progressent encore mais le rythme de progression ralentit — la thèse tient sans nouvelle confirmation forte."
         }
       ],
@@ -156,13 +156,13 @@ export const TRENDS: Trend[] = [
         {
           "date": "2026-07-12",
           "status": "maintient",
-          "editionSlug": "2026-S28",
+          "noteSlug": "2026-S28",
           "why": "Le yen s'approche de 158, sans franchir de seuil qui justifierait un changement de statut."
         },
         {
           "date": "2026-08-02",
           "status": "renforce",
-          "editionSlug": "2026-S31",
+          "noteSlug": "2026-S31",
           "why": "USD/JPY dépasse 159 après le rapport d'emploi américain, intervention conjointe évoquée, hausse de la BoJ actée."
         }
       ],
@@ -190,7 +190,7 @@ export const TRENDS: Trend[] = [
         {
           "date": "2026-07-05",
           "status": "maintient",
-          "editionSlug": "2026-S27",
+          "noteSlug": "2026-S27",
           "why": "Le CSI 300 reste plat sur l'année, le Nifty 50 recule sur fond de sorties de capitaux et de facture pétrolière."
         }
       ],

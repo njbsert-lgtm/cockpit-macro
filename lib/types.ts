@@ -52,7 +52,7 @@ export type MacroIndicator = {
  * Ce qu'on saisit à la main pour un driver. Les quatre champs restants du type `Driver`
  * (`intensityRank`, `dominantBranchId`, `lastRevisedAt`, `lastRevisedIn`) existent déjà
  * ailleurs dans le contenu : les redemander à l'auteur, c'est garantir qu'ils divergeront à
- * la première édition publiée sans mise à jour. Ils sont donc dérivés — voir `lib/drivers.ts`.
+ * la première note publiée sans mise à jour. Ils sont donc dérivés — voir `lib/drivers.ts`.
  */
 export type DriverInput = {
   id: string; // 'rates' | 'iran' | 'ai' — extensible : de nouveaux drivers apparaîtront
@@ -67,13 +67,13 @@ export type DriverInput = {
 /**
  * Un driver est une **incertitude active** qui bifurque en trois branches — à ne pas
  * confondre avec une tendance de fond, qui est une direction déjà établie. C'est le point
- * d'entrée de la navigation du Bulletin.
+ * d'entrée de la navigation des Notes.
  */
 export type Driver = DriverInput & {
   dominantBranchId: string; // dérivé : la branche dont la version courante est 'central'
-  intensityRank: number; // dérivé : position dans le driverOrder de la dernière édition
+  intensityRank: number; // dérivé : position dans le driverOrder de la dernière note
   lastRevisedAt: string; // dérivé : date de sa ScenarioVersion la plus récente
-  lastRevisedIn: string; // dérivé : slug de l'édition qui a produit cette révision
+  lastRevisedIn: string; // dérivé : slug de la note qui a produit cette révision
 };
 
 export type TrendStatus = "renforce" | "maintient" | "affaiblit" | "invalidee";
@@ -88,28 +88,28 @@ export type Trend = {
   statusHistory: Array<{
     date: string;
     status: TrendStatus;
-    editionSlug: string;
+    noteSlug: string;
     why: string;
   }>;
   driverRefs: string[]; // les drivers qui pourraient la faire tomber
   invalidatedBy: string; // ce qui la ferait tomber, en clair
 };
 
-export type EditionKind = "hebdo" | "speciale";
+export type NoteKind = "hebdo" | "speciale";
 
 /**
- * Métadonnées d'une édition — le frontmatter de son fichier MDX. Les blocs analytiques ne
- * figurent pas ici : ils vivent dans le corps du MDX (`content/editions/<slug>.mdx`) sous
- * forme de composants nommés, et leur présence est validée par `lib/editions.ts` selon le
- * type d'édition. `isoWeek` et `parentWeek` sont dérivés du slug, pas saisis à la main.
+ * Métadonnées d'une note — le frontmatter de son fichier MDX. Les blocs analytiques ne
+ * figurent pas ici : ils vivent dans le corps du MDX (`content/notes/<slug>.mdx`) sous
+ * forme de composants nommés, et leur présence est validée par `lib/notes.ts` selon le
+ * type de note. `isoWeek` et `parentWeek` sont dérivés du slug, pas saisis à la main.
  */
-export type Edition = {
+export type Note = {
   slug: string; // '2026-S33' ou '2026-S33-E1'
-  kind: EditionKind;
+  kind: NoteKind;
   date: string;
   isoWeek: string; // '2026-S33', identique pour l'hebdo et ses spéciales
   parentWeek: string | null; // pour une spéciale : la hebdo de rattachement
-  comparesTo: string | null; // slug de l'édition de référence du bloc « ce qui a changé »
+  comparesTo: string | null; // slug de la note de référence du bloc « ce qui a changé »
   trigger: string | null; // obligatoire pour une spéciale : le seuil franchi
   regimeStatement: string; // le régime en une phrase, à cette date
   keyIndicators: Array<{ label: string; value: string }>;
@@ -144,8 +144,8 @@ export type AlertEvent = {
   toValue: number;
   fromDate: string;
   toDate: string;
-  status: "nouveau" | "promu" | "ignore"; // promu = a donné lieu à une édition spéciale
-  editionSlug: string | null;
+  status: "nouveau" | "promu" | "ignore"; // promu = a donné lieu à une note spéciale
+  noteSlug: string | null;
 };
 
 export type ScenarioLikelihood = "central" | "moderee" | "faible";
@@ -160,7 +160,7 @@ export type ScenarioVersion = {
   branchId: string;
   version: number;
   date: string;
-  editionSlug: string; // l'édition qui a produit cette révision
+  noteSlug: string; // la note qui a produit cette révision
   likelihood: ScenarioLikelihood;
   likelihoodChangedFrom: ScenarioLikelihood | null;
   why: string; // obligatoire si la vraisemblance a changé
@@ -174,7 +174,7 @@ export type ScenarioVersion = {
 
 /**
  * `seed.json` ne porte que des **données** : ce qui viendra d'APIs publiques à l'étape 3.
- * L'analyse — éditions, tendances, scénarios — vit dans `content/`, versionnée dans le repo,
+ * L'analyse — notes, tendances, scénarios — vit dans `content/`, versionnée dans le repo,
  * pour rester lisible même si l'automatisation des données casse.
  *
  * `alertRules` restera ici jusqu'à l'étape 4, qui les sortira dans un fichier de configuration

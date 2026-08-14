@@ -2,9 +2,9 @@ import { readFileSync, readdirSync } from "node:fs";
 import path from "node:path";
 import matter from "gray-matter";
 import { z } from "zod";
-import type { Edition, EditionKind, Zone } from "./types";
+import type { Note, NoteKind, Zone } from "./types";
 
-export const EDITIONS_DIR = path.join(process.cwd(), "content", "editions");
+export const NOTES_DIR = path.join(process.cwd(), "content", "notes");
 
 // ---------------------------------------------------------------------------
 // Les blocs analytiques
@@ -35,10 +35,10 @@ export const BLOCK_TITLES: Record<BlockName, string> = {
 };
 
 /**
- * L'ordre porte du sens : « ce que j'avais mal lu » placé en tête d'une édition n'a pas la
+ * L'ordre porte du sens : « ce que j'avais mal lu » placé en tête d'une note n'a pas la
  * même valeur qu'après la révision des scénarios. L'ordre canonique est donc imposé.
  */
-const CANONICAL_ORDER: Record<EditionKind, BlockName[]> = {
+const CANONICAL_ORDER: Record<NoteKind, BlockName[]> = {
   hebdo: [
     "CeQuiAChange",
     "CeQuiSestConfirme",
@@ -52,7 +52,7 @@ const CANONICAL_ORDER: Record<EditionKind, BlockName[]> = {
   speciale: ["CeQuiAChange", "RevisionDesScenarios", "CeQueJeSurveille"],
 };
 
-const REQUIRED_BLOCKS: Record<EditionKind, BlockName[]> = {
+const REQUIRED_BLOCKS: Record<NoteKind, BlockName[]> = {
   hebdo: [
     "CeQuiAChange",
     "CeQuiSestConfirme",
@@ -64,7 +64,7 @@ const REQUIRED_BLOCKS: Record<EditionKind, BlockName[]> = {
 };
 
 /** `RecapDesSpeciales` n'est jamais exigé d'office : il dépend de la semaine (voir le corpus). */
-const ALLOWED_BLOCKS: Record<EditionKind, BlockName[]> = {
+const ALLOWED_BLOCKS: Record<NoteKind, BlockName[]> = {
   hebdo: CANONICAL_ORDER.hebdo,
   speciale: CANONICAL_ORDER.speciale,
 };
@@ -73,10 +73,10 @@ const ALLOWED_BLOCKS: Record<EditionKind, BlockName[]> = {
 // Erreurs
 // ---------------------------------------------------------------------------
 
-export class EditionValidationError extends Error {
+export class NoteValidationError extends Error {
   constructor(slug: string, reason: string) {
-    super(`content/editions/${slug}.mdx — ${reason}`);
-    this.name = "EditionValidationError";
+    super(`content/notes/${slug}.mdx — ${reason}`);
+    this.name = "NoteValidationError";
   }
 }
 
@@ -130,7 +130,7 @@ const SLUG_PATTERN = /^(\d{4})-S(\d{2})(?:-E(\d+))?$/;
 export type SlugParts = {
   isoWeek: string;
   /** Le type que la forme du slug implique — confronté au `kind` déclaré. */
-  impliedKind: EditionKind;
+  impliedKind: NoteKind;
   parentWeek: string | null;
 };
 
@@ -141,7 +141,7 @@ export type SlugParts = {
 export function parseSlug(slug: string): SlugParts {
   const match = SLUG_PATTERN.exec(slug);
   if (!match) {
-    throw new EditionValidationError(
+    throw new NoteValidationError(
       slug,
       "slug invalide : attendu « AAAA-Sxx » pour une hebdo ou « AAAA-Sxx-En » pour une spéciale",
     );
@@ -168,7 +168,7 @@ function readBlockSequence(slug: string, body: string): BlockName[] {
   for (const match of body.matchAll(COMPONENT_TAG)) {
     const name = match[1];
     if (!(BLOCK_NAMES as readonly string[]).includes(name)) {
-      throw new EditionValidationError(
+      throw new NoteValidationError(
         slug,
         `bloc inconnu « <${name}> ». Blocs valides : ${BLOCK_NAMES.join(", ")}`,
       );
@@ -182,13 +182,13 @@ function readBlockSequence(slug: string, body: string): BlockName[] {
 // Validation d'un fichier, sans accès disque — testable sur des sources synthétiques
 // ---------------------------------------------------------------------------
 
-export type ParsedEdition = {
-  meta: Edition;
+export type ParsedNote = {
+  meta: Note;
   body: string;
   blocks: BlockName[];
 };
 
-export function parseEdition(slug: string, source: string): ParsedEdition {
+export function parseNote(slug: string, source: string): ParsedNote {
   const { isoWeek, impliedKind, parentWeek } = parseSlug(slug);
 
   const file = matter(source);
@@ -197,12 +197,12 @@ export function parseEdition(slug: string, source: string): ParsedEdition {
     const detail = parsed.error.issues
       .map((i) => `${i.path.join(".") || "(racine)"} : ${i.message}`)
       .join(" ; ");
-    throw new EditionValidationError(slug, `frontmatter invalide — ${detail}`);
+    throw new NoteValidationError(slug, `frontmatter invalide — ${detail}`);
   }
   const fm = parsed.data;
 
   if (fm.kind !== impliedKind) {
-    throw new EditionValidationError(
+    throw new NoteValidationError(
       slug,
       `le frontmatter déclare « ${fm.kind} » mais la forme du slug implique « ${impliedKind} »`,
     );
@@ -211,13 +211,13 @@ export function parseEdition(slug: string, source: string): ParsedEdition {
   // Le seuil franchi est ce qui justifie l'existence d'une spéciale : sans lui, le lecteur ne
   // peut pas savoir pourquoi elle a été publiée.
   if (fm.kind === "speciale" && !fm.trigger) {
-    throw new EditionValidationError(
+    throw new NoteValidationError(
       slug,
-      "une édition spéciale doit déclarer le seuil franchi dans « trigger »",
+      "une note spéciale doit déclarer le seuil franchi dans « trigger »",
     );
   }
   if (fm.kind === "hebdo" && fm.trigger) {
-    throw new EditionValidationError(
+    throw new NoteValidationError(
       slug,
       "une hebdo paraît qu'il se soit passé quelque chose ou non : elle ne doit pas déclarer de « trigger »",
     );
@@ -228,14 +228,14 @@ export function parseEdition(slug: string, source: string): ParsedEdition {
   const seen = new Set<BlockName>();
   for (const block of blocks) {
     if (seen.has(block)) {
-      throw new EditionValidationError(slug, `bloc « <${block}> » présent deux fois`);
+      throw new NoteValidationError(slug, `bloc « <${block}> » présent deux fois`);
     }
     seen.add(block);
   }
 
   for (const required of REQUIRED_BLOCKS[fm.kind]) {
     if (!seen.has(required)) {
-      throw new EditionValidationError(
+      throw new NoteValidationError(
         slug,
         `bloc obligatoire manquant « <${required}> » (${BLOCK_TITLES[required]})`,
       );
@@ -245,7 +245,7 @@ export function parseEdition(slug: string, source: string): ParsedEdition {
   const allowed = ALLOWED_BLOCKS[fm.kind];
   for (const block of blocks) {
     if (!allowed.includes(block)) {
-      throw new EditionValidationError(
+      throw new NoteValidationError(
         slug,
         `bloc « <${block}> » interdit dans une ${fm.kind === "hebdo" ? "hebdo" : "spéciale"} — la structure allégée des spéciales doit rester distincte`,
       );
@@ -254,7 +254,7 @@ export function parseEdition(slug: string, source: string): ParsedEdition {
 
   const canonical = CANONICAL_ORDER[fm.kind].filter((b) => seen.has(b));
   if (blocks.join(",") !== canonical.join(",")) {
-    throw new EditionValidationError(
+    throw new NoteValidationError(
       slug,
       `ordre des blocs non canonique — attendu ${canonical.join(" → ")}, trouvé ${blocks.join(" → ")}`,
     );
@@ -287,58 +287,58 @@ export function parseEdition(slug: string, source: string): ParsedEdition {
 // ---------------------------------------------------------------------------
 
 /**
- * Règles d'articulation de la chaîne des éditions : elles ne peuvent pas s'évaluer sur un
- * fichier isolé, mais ne concernent que les éditions entre elles.
+ * Règles d'articulation de la chaîne des notes : elles ne peuvent pas s'évaluer sur un
+ * fichier isolé, mais ne concernent que les notes entre elles.
  *
  * Les références sortantes — vers les tendances, les instruments, les drivers — sont
  * vérifiées ailleurs, par `checkIntegrity` (`lib/integrity.ts`), qui contrôle tout le graphe
  * de contenu d'un seul tenant.
  */
-export function validateEditionChain(editions: ParsedEdition[]): Edition[] {
-  const byDate = [...editions].sort(
+export function validateNoteChain(notes: ParsedNote[]): Note[] {
+  const byDate = [...notes].sort(
     (a, b) => a.meta.date.localeCompare(b.meta.date) || a.meta.slug.localeCompare(b.meta.slug),
   );
   const slugs = new Set(byDate.map((e) => e.meta.slug));
 
-  byDate.forEach((edition, index) => {
-    const { slug, kind, comparesTo, isoWeek } = edition.meta;
+  byDate.forEach((note, index) => {
+    const { slug, kind, comparesTo, isoWeek } = note.meta;
     const previous = byDate.slice(0, index);
 
     // « Le bloc "ce qui a changé" d'une hebdo se compare à la hebdo précédente, jamais à la
-    // dernière spéciale. Une spéciale se compare à la dernière édition, quelle qu'elle soit. »
+    // dernière spéciale. Une spéciale se compare à la dernière note, quelle qu'elle soit. »
     const expected =
       kind === "hebdo"
         ? (previous.filter((e) => e.meta.kind === "hebdo").at(-1)?.meta.slug ?? null)
         : (previous.at(-1)?.meta.slug ?? null);
 
     if (comparesTo !== expected) {
-      throw new EditionValidationError(
+      throw new NoteValidationError(
         slug,
         kind === "hebdo"
           ? `une hebdo se compare à la hebdo précédente (${expected ?? "aucune"}), pas à ${comparesTo ?? "rien"} — sinon le fil hebdomadaire se rompt`
-          : `une spéciale se compare à la dernière édition parue (${expected ?? "aucune"}), pas à ${comparesTo ?? "rien"}`,
+          : `une spéciale se compare à la dernière note parue (${expected ?? "aucune"}), pas à ${comparesTo ?? "rien"}`,
       );
     }
 
     if (comparesTo && !slugs.has(comparesTo)) {
-      throw new EditionValidationError(slug, `« comparesTo » pointe vers ${comparesTo}, qui n'existe pas`);
+      throw new NoteValidationError(slug, `« comparesTo » pointe vers ${comparesTo}, qui n'existe pas`);
     }
 
     // « La hebdo suivante consolide les spéciales de la semaine » — l'antidote à la réaction
     // à chaud. Une semaine qui a produit des spéciales doit les relire avec du recul.
     if (kind === "hebdo") {
-      const specialsThisWeek = editions.filter(
+      const specialsThisWeek = notes.filter(
         (e) => e.meta.kind === "speciale" && e.meta.parentWeek === isoWeek,
       );
-      const hasRecap = edition.blocks.includes("RecapDesSpeciales");
+      const hasRecap = note.blocks.includes("RecapDesSpeciales");
       if (specialsThisWeek.length > 0 && !hasRecap) {
-        throw new EditionValidationError(
+        throw new NoteValidationError(
           slug,
           `la semaine ${isoWeek} porte ${specialsThisWeek.length} spéciale(s) : le bloc « <RecapDesSpeciales> » est obligatoire`,
         );
       }
       if (specialsThisWeek.length === 0 && hasRecap) {
-        throw new EditionValidationError(
+        throw new NoteValidationError(
           slug,
           `aucune spéciale n'a paru en semaine ${isoWeek} : le bloc « <RecapDesSpeciales> » n'a rien à consolider`,
         );
@@ -354,12 +354,12 @@ export function validateEditionChain(editions: ParsedEdition[]): Edition[] {
 // Chargement depuis le disque
 // ---------------------------------------------------------------------------
 
-export function readEditionSources(): Array<{ slug: string; source: string }> {
-  return readdirSync(EDITIONS_DIR)
+export function readNoteSources(): Array<{ slug: string; source: string }> {
+  return readdirSync(NOTES_DIR)
     .filter((f) => f.endsWith(".mdx"))
     .sort()
     .map((file) => ({
       slug: file.replace(/\.mdx$/, ""),
-      source: readFileSync(path.join(EDITIONS_DIR, file), "utf8"),
+      source: readFileSync(path.join(NOTES_DIR, file), "utf8"),
     }));
 }

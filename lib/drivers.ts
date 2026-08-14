@@ -1,12 +1,12 @@
-import type { Driver, DriverInput, Edition, ScenarioVersion } from "./types";
+import type { Driver, DriverInput, Note, ScenarioVersion } from "./types";
 import { currentVersion } from "./integrity";
 
 /**
  * Dérive les quatre champs de `Driver` qui ne sont pas saisis à la main.
  *
  * `content/drivers.ts` ne porte que du jugement irréductible. Tout ce qui existe déjà
- * ailleurs — l'ordre d'intensité (dans l'édition), la branche dominante (dans les scénarios),
- * la date de dernière révision (idem) — est recalculé ici. Publier une édition suffit donc à
+ * ailleurs — l'ordre d'intensité (dans la note), la branche dominante (dans les scénarios),
+ * la date de dernière révision (idem) — est recalculé ici. Publier une note suffit donc à
  * les mettre à jour : il n'y a pas de champ à resaisir, donc rien qui puisse diverger.
  *
  * L'intégrité est supposée déjà vérifiée par `checkIntegrity` — d'où les `!` : une branche
@@ -14,10 +14,10 @@ import { currentVersion } from "./integrity";
  */
 export function deriveDrivers(
   inputs: DriverInput[],
-  editions: Edition[],
+  notes: Note[],
   scenarios: ScenarioVersion[],
 ): Driver[] {
-  const latest = [...editions].sort((a, b) => b.date.localeCompare(a.date))[0];
+  const latest = [...notes].sort((a, b) => b.date.localeCompare(a.date))[0];
   const order = latest?.driverOrder ?? [];
 
   return inputs.map((input) => {
@@ -37,16 +37,16 @@ export function deriveDrivers(
     return {
       ...input,
       dominantBranchId,
-      // Un driver retiré n'apparaît plus dans le driverOrder de la dernière édition : il est
+      // Un driver retiré n'apparaît plus dans le driverOrder de la dernière note : il est
       // rangé après les actifs plutôt que de remonter en tête avec un rang de -1.
       intensityRank: rank === -1 ? Number.MAX_SAFE_INTEGER : rank,
       lastRevisedAt: lastRevision.date,
-      lastRevisedIn: lastRevision.editionSlug,
+      lastRevisedIn: lastRevision.noteSlug,
     };
   });
 }
 
-/** Les drivers actifs, dans l'ordre d'intensité jugé à la dernière édition. */
+/** Les drivers actifs, dans l'ordre d'intensité jugé à la dernière note. */
 export function activeDrivers(drivers: Driver[], asOf: string): Driver[] {
   return drivers
     .filter((d) => d.retiredAt === null || d.retiredAt > asOf)

@@ -3,11 +3,11 @@ kind: hebdo
 date: '2026-08-16'
 comparesTo: 2026-S32
 regimeStatement: >-
-  Édition de test : tout est valide sauf une référence, pour vérifier qu'un
+  Note de test : tout est valide sauf une référence, pour vérifier qu'un
   lien mort casse la compilation au lieu de s'afficher.
 keyIndicators:
   - label: Régime
-    value: Édition de test
+    value: Note de test
   - label: Nature du défaut
     value: Référence morte
   - label: Champ fautif
@@ -31,7 +31,7 @@ sources: []
 
 <CeQuiAChange>
 
-Cette édition est un cas de test, pas de l'analyse. Elle est délibérément **valide sur tous les plans sauf un** : son `driverOrder` cite `geopolitique-europe`, un driver qui n'existe pas dans `content/drivers.ts`.
+Cette note est un cas de test, pas de l'analyse. Elle est délibérément **valide sur tous les plans sauf un** : son `driverOrder` cite `geopolitique-europe`, un driver qui n'existe pas dans `content/drivers.ts`.
 
 Tout le reste est conforme — les cinq blocs d'une hebdo, dans l'ordre canonique, le récapitulatif exigé parce que la semaine 33 porte une spéciale, un `comparesTo` qui pointe vers la hebdo précédente. C'est ce qui rend le test concluant : si le build échoue, c'est bien à cause de la référence morte et de rien d'autre.
 

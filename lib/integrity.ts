@@ -1,6 +1,6 @@
 import type {
   DriverInput,
-  Edition,
+  Note,
   ScenarioVersion,
   Trend,
 } from "./types";
@@ -26,7 +26,7 @@ export class IntegrityError extends Error {
 export type ContentGraph = {
   drivers: DriverInput[];
   trends: Trend[];
-  editions: Edition[];
+  notes: Note[];
   scenarios: ScenarioVersion[];
   instrumentIds: ReadonlySet<string>;
 };
@@ -36,18 +36,18 @@ const BRANCHES_PER_DRIVER = 3;
 export function checkIntegrity(graph: ContentGraph): void {
   const driverIds = new Set(graph.drivers.map((d) => d.id));
   const trendIds = new Set(graph.trends.map((t) => t.id));
-  const editionSlugs = new Set(graph.editions.map((e) => e.slug));
+  const noteSlugs = new Set(graph.notes.map((e) => e.slug));
 
   checkDuplicateIds(graph);
-  checkDrivers(graph, { trendIds, editionSlugs });
-  checkTrends(graph, { driverIds, editionSlugs });
-  checkEditions(graph, { driverIds, trendIds });
-  checkScenarios(graph, { driverIds, editionSlugs });
+  checkDrivers(graph, { trendIds, noteSlugs });
+  checkTrends(graph, { driverIds, noteSlugs });
+  checkNotes(graph, { driverIds, trendIds });
+  checkScenarios(graph, { driverIds, noteSlugs });
 }
 
 // ---------------------------------------------------------------------------
 
-function checkDuplicateIds({ drivers, trends, editions }: ContentGraph) {
+function checkDuplicateIds({ drivers, trends, notes }: ContentGraph) {
   const dup = <T>(items: T[], key: (i: T) => string, where: string) => {
     const seen = new Set<string>();
     for (const item of items) {
@@ -58,14 +58,14 @@ function checkDuplicateIds({ drivers, trends, editions }: ContentGraph) {
   };
   dup(drivers, (d) => d.id, "content/drivers.ts");
   dup(trends, (t) => t.id, "content/tendances.ts");
-  dup(editions, (e) => e.slug, "content/editions");
+  dup(notes, (e) => e.slug, "content/notes");
 }
 
 // ---------------------------------------------------------------------------
 
 function checkDrivers(
   { drivers, scenarios, instrumentIds }: ContentGraph,
-  refs: { trendIds: ReadonlySet<string>; editionSlugs: ReadonlySet<string> },
+  refs: { trendIds: ReadonlySet<string>; noteSlugs: ReadonlySet<string> },
 ) {
   for (const driver of drivers) {
     const where = `content/drivers.ts (${driver.id})`;
@@ -130,7 +130,7 @@ export function currentVersion(
 
 function checkTrends(
   { trends, drivers }: ContentGraph,
-  refs: { driverIds: ReadonlySet<string>; editionSlugs: ReadonlySet<string> },
+  refs: { driverIds: ReadonlySet<string>; noteSlugs: ReadonlySet<string> },
 ) {
   const driverById = new Map(drivers.map((d) => [d.id, d]));
 
@@ -138,10 +138,10 @@ function checkTrends(
     const where = `content/tendances.ts (${trend.id})`;
 
     for (const entry of trend.statusHistory) {
-      if (!refs.editionSlugs.has(entry.editionSlug)) {
+      if (!refs.noteSlugs.has(entry.noteSlug)) {
         throw new IntegrityError(
           where,
-          `l'historique de statut cite l'édition « ${entry.editionSlug} », qui n'existe pas`,
+          `l'historique de statut cite la note « ${entry.noteSlug} », qui n'existe pas`,
         );
       }
       if (!entry.why.trim()) {
@@ -174,26 +174,26 @@ function checkTrends(
 
 // ---------------------------------------------------------------------------
 
-function checkEditions(
-  { editions, drivers, instrumentIds }: ContentGraph,
+function checkNotes(
+  { notes, drivers, instrumentIds }: ContentGraph,
   refs: { driverIds: ReadonlySet<string>; trendIds: ReadonlySet<string> },
 ) {
-  for (const edition of editions) {
-    const where = `content/editions/${edition.slug}.mdx`;
+  for (const note of notes) {
+    const where = `content/notes/${note.slug}.mdx`;
     const seen = new Set<string>();
 
-    for (const id of edition.trendRefs) {
+    for (const id of note.trendRefs) {
       if (!refs.trendIds.has(id)) {
         throw new IntegrityError(where, `tendance inconnue « ${id} » dans trendRefs`);
       }
     }
-    for (const id of edition.instrumentRefs) {
+    for (const id of note.instrumentRefs) {
       if (!instrumentIds.has(id)) {
         throw new IntegrityError(where, `instrument inconnu « ${id} » dans instrumentRefs`);
       }
     }
 
-    for (const driverId of edition.driverOrder) {
+    for (const driverId of note.driverOrder) {
       if (!refs.driverIds.has(driverId)) {
         throw new IntegrityError(where, `driver inconnu « ${driverId} » dans driverOrder`);
       }
@@ -204,11 +204,11 @@ function checkEditions(
     }
   }
 
-  // Seule la dernière édition pilote l'affichage des cartes : c'est d'elle que vient
+  // Seule la dernière note pilote l'affichage des cartes : c'est d'elle que vient
   // `intensityRank`. Un driver actif qu'elle oublie n'aurait pas de rang, donc pas de carte —
-  // il disparaîtrait sans bruit. Les éditions antérieures ont le droit d'être partielles :
+  // il disparaîtrait sans bruit. Les notes antérieures ont le droit d'être partielles :
   // un driver a pu apparaître après elles.
-  const latest = [...editions].sort((a, b) => b.date.localeCompare(a.date))[0];
+  const latest = [...notes].sort((a, b) => b.date.localeCompare(a.date))[0];
   if (!latest) return;
 
   const active = drivers.filter(
@@ -217,8 +217,8 @@ function checkEditions(
   const missing = active.filter((d) => !latest.driverOrder.includes(d.id));
   if (missing.length > 0) {
     throw new IntegrityError(
-      `content/editions/${latest.slug}.mdx`,
-      `dernière édition parue : driverOrder omet ${missing.map((d) => `« ${d.id} »`).join(", ")}, qui ${missing.length > 1 ? "sont des drivers actifs" : "est un driver actif"} — sa carte disparaîtrait de l'en-tête sans que rien ne le signale`,
+      `content/notes/${latest.slug}.mdx`,
+      `dernière note parue : driverOrder omet ${missing.map((d) => `« ${d.id} »`).join(", ")}, qui ${missing.length > 1 ? "sont des drivers actifs" : "est un driver actif"} — sa carte disparaîtrait de l'en-tête sans que rien ne le signale`,
     );
   }
 }
@@ -227,7 +227,7 @@ function checkEditions(
 
 function checkScenarios(
   { scenarios }: ContentGraph,
-  refs: { driverIds: ReadonlySet<string>; editionSlugs: ReadonlySet<string> },
+  refs: { driverIds: ReadonlySet<string>; noteSlugs: ReadonlySet<string> },
 ) {
   const byBranch = new Map<string, ScenarioVersion[]>();
 
@@ -237,8 +237,8 @@ function checkScenarios(
     if (!refs.driverIds.has(v.driverId)) {
       throw new IntegrityError(where, `driver inconnu « ${v.driverId} »`);
     }
-    if (!refs.editionSlugs.has(v.editionSlug)) {
-      throw new IntegrityError(where, `édition inconnue « ${v.editionSlug} »`);
+    if (!refs.noteSlugs.has(v.noteSlug)) {
+      throw new IntegrityError(where, `note inconnue « ${v.noteSlug} »`);
     }
 
     // « Une révision sans justification écrite est interdite. »

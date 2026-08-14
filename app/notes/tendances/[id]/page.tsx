@@ -26,10 +26,10 @@ export default async function TrendPage({
   return (
     <div className="mx-auto max-w-content px-4 py-8 md:px-6">
       <Link
-        href="/bulletin"
+        href="/notes"
         className="mb-4 inline-block font-mono text-xs text-deep underline decoration-line underline-offset-4 hover:decoration-deep"
       >
-        ← Retour au bulletin
+        ← Retour aux notes
       </Link>
 
       <p className="font-mono text-11 uppercase tracking-wider text-mute">Tendance de fond</p>
@@ -68,7 +68,7 @@ export default async function TrendPage({
               return (
                 <li key={driverId}>
                   <Link
-                    href={`/bulletin/drivers/${driverId}`}
+                    href={`/notes/drivers/${driverId}`}
                     className="block border border-line bg-card px-3 py-2 hover:border-deep"
                   >
                     <span className="block font-display text-13-5 font-bold text-ink">
@@ -101,10 +101,10 @@ export default async function TrendPage({
                 </span>
                 <span className="font-mono text-11-5 text-mute">{formatDateLong(h.date)}</span>
                 <Link
-                  href={`/bulletin/${h.editionSlug}`}
+                  href={`/notes/${h.noteSlug}`}
                   className="font-mono text-11-5 text-deep underline decoration-line underline-offset-4"
                 >
-                  {h.editionSlug}
+                  {h.noteSlug}
                 </Link>
               </div>
               <p className="mt-1.5 max-w-[64ch] text-14-5 text-ink-2">{h.why}</p>

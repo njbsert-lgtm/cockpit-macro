@@ -4382,7 +4382,7 @@
       "fromDate": "2026-07-31",
       "toDate": "2026-08-03",
       "status": "promu",
-      "editionSlug": "2026-S32-E1"
+      "noteSlug": "2026-S32-E1"
     },
     {
       "ruleId": "spread-oat-bund-30bp",
@@ -4394,7 +4394,7 @@
       "fromDate": "2026-08-04",
       "toDate": "2026-08-07",
       "status": "promu",
-      "editionSlug": "2026-S32-E2"
+      "noteSlug": "2026-S32-E2"
     }
   ]
 }

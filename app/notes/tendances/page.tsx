@@ -4,7 +4,7 @@ import { formatDateLong } from "@/lib/format";
 import { TREND_STATUS_CLASS, TREND_STATUS_LABEL } from "@/lib/trend-labels";
 
 /**
- * Couche 3 du Bulletin : l'index thématique des tendances de fond. Ce qu'on consulte une fois
+ * Couche 3 des Notes : l'index thématique des tendances de fond. Ce qu'on consulte une fois
  * par mois, pas tous les jours — d'où sa place en troisième position, jamais en avant.
  */
 export default function TrendsIndexPage() {
@@ -17,13 +17,13 @@ export default function TrendsIndexPage() {
   return (
     <div className="mx-auto max-w-content px-4 py-8 md:px-6">
       <Link
-        href="/bulletin"
+        href="/notes"
         className="mb-4 inline-block font-mono text-xs text-deep underline decoration-line underline-offset-4 hover:decoration-deep"
       >
-        ← Retour au bulletin
+        ← Retour aux notes
       </Link>
 
-      <p className="font-mono text-11 uppercase tracking-wider text-mute">Bulletin</p>
+      <p className="font-mono text-11 uppercase tracking-wider text-mute">Notes</p>
       <h1 className="mt-1 font-display text-26 font-extrabold text-ink">Tendances de fond</h1>
       <p className="mt-2 max-w-[64ch] text-15 text-mute">
         Ce qui est durablement vrai, par opposition aux drivers, qui sont les incertitudes
@@ -39,7 +39,7 @@ export default function TrendsIndexPage() {
           return (
             <li key={trend.id} className="border border-line bg-card">
               <Link
-                href={`/bulletin/tendances/${trend.id}`}
+                href={`/notes/tendances/${trend.id}`}
                 className="block px-4 py-3.5 hover:bg-paper"
               >
                 <div className="flex flex-wrap items-center gap-2">

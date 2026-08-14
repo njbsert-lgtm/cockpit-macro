@@ -8,7 +8,7 @@ import { ZONE_PARAM } from "@/lib/zone-param";
 type Tab = { href: string; label: string; disabled?: boolean };
 
 const TABS: Tab[] = [
-  { href: "/bulletin", label: "Bulletin" },
+  { href: "/notes", label: "Notes" },
   { href: "/macro", label: "Macro" },
   { href: "/marches", label: "Marchés" },
   { href: "/veille", label: "Veille", disabled: true },

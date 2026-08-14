@@ -4,7 +4,7 @@ import { zoneMatches } from "./zones";
 
 /**
  * Accès aux **données** uniquement — ce qui viendra d'APIs publiques à l'étape 3.
- * L'analyse (éditions, tendances, scénarios) est servie par `lib/content.ts`, qui lit des
+ * L'analyse (notes, tendances, scénarios) est servie par `lib/content.ts`, qui lit des
  * fichiers versionnés : les deux natures de contenu ne se mélangent jamais dans le code.
  *
  * Import direct du JSON, pas de fetch : données figées, aucun accès réseau à cette étape.

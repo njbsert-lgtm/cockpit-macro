@@ -1,12 +1,12 @@
 import { describe, expect, it } from "vitest";
 import {
-  parseEdition,
+  parseNote,
   parseSlug,
-  readEditionSources,
-  validateEditionChain,
+  readNoteSources,
+  validateNoteChain,
   type BlockName,
-  type ParsedEdition,
-} from "./editions";
+  type ParsedNote,
+} from "./notes";
 
 // --- fabrique de sources synthétiques ---------------------------------------
 
@@ -80,32 +80,32 @@ describe("parseSlug", () => {
 
 describe("blocs obligatoires selon le type", () => {
   it("accepte une hebdo qui porte ses cinq blocs", () => {
-    expect(() => parseEdition("2026-S33", source())).not.toThrow();
+    expect(() => parseNote("2026-S33", source())).not.toThrow();
   });
 
   it("refuse une hebdo à laquelle il manque « ce que j'avais mal lu »", () => {
     const blocks = HEBDO_BLOCKS.filter((b) => b !== "CeQueJavaisMalLu");
-    expect(() => parseEdition("2026-S33", source({}, blocks))).toThrow(
+    expect(() => parseNote("2026-S33", source({}, blocks))).toThrow(
       /bloc obligatoire manquant « <CeQueJavaisMalLu> »/,
     );
   });
 
   it("refuse une hebdo à laquelle il manque « ce qui s'est confirmé »", () => {
     const blocks = HEBDO_BLOCKS.filter((b) => b !== "CeQuiSestConfirme");
-    expect(() => parseEdition("2026-S33", source({}, blocks))).toThrow(
+    expect(() => parseNote("2026-S33", source({}, blocks))).toThrow(
       /bloc obligatoire manquant « <CeQuiSestConfirme> »/,
     );
   });
 
   it("accepte une spéciale avec seulement ses trois blocs", () => {
     const fm = { kind: "speciale", trigger: "Brent ±8 % sur 2 séances" };
-    expect(() => parseEdition("2026-S33-E1", source(fm, SPECIALE_BLOCKS))).not.toThrow();
+    expect(() => parseNote("2026-S33-E1", source(fm, SPECIALE_BLOCKS))).not.toThrow();
   });
 
   it("refuse une spéciale sans révision des scénarios", () => {
     const fm = { kind: "speciale", trigger: "Brent ±8 %" };
     const blocks = SPECIALE_BLOCKS.filter((b) => b !== "RevisionDesScenarios");
-    expect(() => parseEdition("2026-S33-E1", source(fm, blocks))).toThrow(
+    expect(() => parseNote("2026-S33-E1", source(fm, blocks))).toThrow(
       /bloc obligatoire manquant « <RevisionDesScenarios> »/,
     );
   });
@@ -118,17 +118,17 @@ describe("blocs obligatoires selon le type", () => {
       "CeQueJeSurveille",
       "CeQueJavaisMalLu",
     ];
-    expect(() => parseEdition("2026-S33-E1", source(fm, blocks))).toThrow(/interdit dans une spéciale/);
+    expect(() => parseNote("2026-S33-E1", source(fm, blocks))).toThrow(/interdit dans une spéciale/);
   });
 
   it("refuse un nom de bloc inconnu plutôt que de l'ignorer en silence", () => {
     const raw = source().replace("<CeQuiAChange>", "<CeQuiAChanger>");
-    expect(() => parseEdition("2026-S33", raw)).toThrow(/bloc inconnu « <CeQuiAChanger> »/);
+    expect(() => parseNote("2026-S33", raw)).toThrow(/bloc inconnu « <CeQuiAChanger> »/);
   });
 
   it("refuse un bloc présent deux fois", () => {
     const blocks = [...HEBDO_BLOCKS, "CeQuiAChange" as BlockName];
-    expect(() => parseEdition("2026-S33", source({}, blocks))).toThrow(/présent deux fois/);
+    expect(() => parseNote("2026-S33", source({}, blocks))).toThrow(/présent deux fois/);
   });
 
   it("impose l'ordre canonique — « ce que j'avais mal lu » ne peut pas passer en tête", () => {
@@ -139,31 +139,31 @@ describe("blocs obligatoires selon le type", () => {
       "RevisionDesScenarios",
       "CeQueJeSurveille",
     ];
-    expect(() => parseEdition("2026-S33", source({}, blocks))).toThrow(/ordre des blocs non canonique/);
+    expect(() => parseNote("2026-S33", source({}, blocks))).toThrow(/ordre des blocs non canonique/);
   });
 });
 
 describe("frontmatter", () => {
   it("refuse un type incohérent avec la forme du slug", () => {
-    expect(() => parseEdition("2026-S33-E1", source({ kind: "hebdo" }))).toThrow(
+    expect(() => parseNote("2026-S33-E1", source({ kind: "hebdo" }))).toThrow(
       /le frontmatter déclare « hebdo » mais la forme du slug implique « speciale »/,
     );
   });
 
   it("exige le seuil franchi sur une spéciale", () => {
     const raw = source({ kind: "speciale" }, SPECIALE_BLOCKS);
-    expect(() => parseEdition("2026-S33-E1", raw)).toThrow(/doit déclarer le seuil franchi/);
+    expect(() => parseNote("2026-S33-E1", raw)).toThrow(/doit déclarer le seuil franchi/);
   });
 
   it("refuse un seuil sur une hebdo, qui paraît qu'il se passe quelque chose ou non", () => {
-    expect(() => parseEdition("2026-S33", source({ trigger: "Brent ±8 %" }))).toThrow(
+    expect(() => parseNote("2026-S33", source({ trigger: "Brent ±8 %" }))).toThrow(
       /ne doit pas déclarer de « trigger »/,
     );
   });
 
   it("refuse un frontmatter incomplet", () => {
     const raw = source().replace(/regimeStatement:.*\n/, "");
-    expect(() => parseEdition("2026-S33", raw)).toThrow(/frontmatter invalide/);
+    expect(() => parseNote("2026-S33", raw)).toThrow(/frontmatter invalide/);
   });
 });
 
@@ -171,17 +171,17 @@ describe("frontmatter", () => {
 
 describe("règles inter-fichiers", () => {
   const hebdo = (slug: string, date: string, comparesTo: string | null, blocks = HEBDO_BLOCKS) =>
-    parseEdition(slug, source({ date, comparesTo }, blocks));
+    parseNote(slug, source({ date, comparesTo }, blocks));
   const speciale = (slug: string, date: string, comparesTo: string | null) =>
-    parseEdition(slug, source({ kind: "speciale", date, comparesTo, trigger: "Brent ±8 %" }, SPECIALE_BLOCKS));
+    parseNote(slug, source({ kind: "speciale", date, comparesTo, trigger: "Brent ±8 %" }, SPECIALE_BLOCKS));
 
   it("accepte une chaîne conforme", () => {
-    const corpus: ParsedEdition[] = [
+    const corpus: ParsedNote[] = [
       hebdo("2026-S27", "2026-07-05", null),
       speciale("2026-S28-E1", "2026-07-09", "2026-S27"),
       hebdo("2026-S28", "2026-07-12", "2026-S27", [...HEBDO_BLOCKS, "RecapDesSpeciales"]),
     ];
-    expect(() => validateEditionChain(corpus)).not.toThrow();
+    expect(() => validateNoteChain(corpus)).not.toThrow();
   });
 
   it("refuse une hebdo qui se compare à une spéciale — sinon le fil hebdomadaire se rompt", () => {
@@ -190,20 +190,20 @@ describe("règles inter-fichiers", () => {
       speciale("2026-S28-E1", "2026-07-09", "2026-S27"),
       hebdo("2026-S28", "2026-07-12", "2026-S28-E1", [...HEBDO_BLOCKS, "RecapDesSpeciales"]),
     ];
-    expect(() => validateEditionChain(corpus)).toThrow(
+    expect(() => validateNoteChain(corpus)).toThrow(
       /une hebdo se compare à la hebdo précédente \(2026-S27\)/,
     );
   });
 
-  it("exige qu'une spéciale se compare à la dernière édition parue, quelle qu'elle soit", () => {
+  it("exige qu'une spéciale se compare à la dernière note parue, quelle qu'elle soit", () => {
     const corpus = [
       hebdo("2026-S27", "2026-07-05", null),
       speciale("2026-S28-E1", "2026-07-09", "2026-S27"),
       // E2 devrait se comparer à E1, pas à la hebdo.
       speciale("2026-S28-E2", "2026-07-10", "2026-S27"),
     ];
-    expect(() => validateEditionChain(corpus)).toThrow(
-      /une spéciale se compare à la dernière édition parue \(2026-S28-E1\)/,
+    expect(() => validateNoteChain(corpus)).toThrow(
+      /une spéciale se compare à la dernière note parue \(2026-S28-E1\)/,
     );
   });
 
@@ -213,14 +213,14 @@ describe("règles inter-fichiers", () => {
       speciale("2026-S28-E1", "2026-07-09", "2026-S27"),
       hebdo("2026-S28", "2026-07-12", "2026-S27"), // sans RecapDesSpeciales
     ];
-    expect(() => validateEditionChain(corpus)).toThrow(
+    expect(() => validateNoteChain(corpus)).toThrow(
       /la semaine 2026-S28 porte 1 spéciale\(s\) : le bloc « <RecapDesSpeciales> » est obligatoire/,
     );
   });
 
   it("refuse un récapitulatif quand aucune spéciale n'a paru cette semaine-là", () => {
     const corpus = [hebdo("2026-S27", "2026-07-05", null, [...HEBDO_BLOCKS, "RecapDesSpeciales"])];
-    expect(() => validateEditionChain(corpus)).toThrow(/n'a rien à consolider/);
+    expect(() => validateNoteChain(corpus)).toThrow(/n'a rien à consolider/);
   });
 
 });
@@ -229,10 +229,10 @@ describe("règles inter-fichiers", () => {
 
 describe("le corpus réel", () => {
   const corpus = () =>
-    readEditionSources().map(({ slug, source: raw }) => parseEdition(slug, raw));
+    readNoteSources().map(({ slug, source: raw }) => parseNote(slug, raw));
 
-  it("compile : toutes les éditions passent les règles, dans l'ordre chronologique", () => {
-    const meta = validateEditionChain(corpus());
+  it("compile : toutes les notes passent les règles, dans l'ordre chronologique", () => {
+    const meta = validateNoteChain(corpus());
     expect(meta.map((e) => e.slug)).toEqual([
       "2026-S24",
       "2026-S26-E1",
@@ -264,7 +264,7 @@ describe("le corpus réel", () => {
     expect(specialsOf("2026-S32")).toHaveLength(2);
   });
 
-  it("les éditions rétrospectives couvrent les trois drivers et au moins deux tendances", () => {
+  it("les notes rétrospectives couvrent les trois drivers et au moins deux tendances", () => {
     const retro = corpus().filter((p) =>
       ["2026-S24", "2026-S26-E1", "2026-S26-E2", "2026-S26"].includes(p.meta.slug),
     );

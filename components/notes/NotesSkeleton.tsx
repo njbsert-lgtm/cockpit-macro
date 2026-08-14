@@ -1,8 +1,8 @@
 import { LoadingState, SkeletonBlock, SkeletonLine, SkeletonRow } from "@/components/states/Skeleton";
 
-export function BulletinSkeleton() {
+export function NotesSkeleton() {
   return (
-    <LoadingState label="Chargement du bulletin">
+    <LoadingState label="Chargement des notes">
       <div className="bg-deep px-4 py-8 md:px-6">
         <div className="mx-auto max-w-content">
           <SkeletonBlock className="h-3 w-40 bg-white/15" />

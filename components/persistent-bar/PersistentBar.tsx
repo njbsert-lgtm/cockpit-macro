@@ -8,7 +8,7 @@ export function PersistentBar() {
     <header className="sticky top-0 z-30 bg-deep px-4 py-3 text-white">
       <div className="mx-auto flex max-w-content flex-wrap items-center justify-between gap-2.5">
         <Link
-          href="/bulletin"
+          href="/notes"
           className="font-display text-13 font-extrabold uppercase tracking-widest text-white focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-white"
         >
           Cockpit macro

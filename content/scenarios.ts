@@ -1,7 +1,7 @@
 import type { ScenarioVersion } from "@/lib/types";
 
 /**
- * Scénarios versionnés — chaque révision crée une version datée liée à l'édition qui l'a
+ * Scénarios versionnés — chaque révision crée une version datée liée à la note qui l'a
  * produite. On n'écrase jamais une version : on en ajoute une, ce qui rend la vue Trajectoire
  * possible et montre si la lecture a suivi les données ou couru derrière les prix.
  *
@@ -16,7 +16,7 @@ export const SCENARIO_VERSIONS: ScenarioVersion[] = [
       "branchId": "ai-accelere",
       "version": 1,
       "date": "2026-07-05",
-      "editionSlug": "2026-S27",
+      "noteSlug": "2026-S27",
       "likelihood": "moderee",
       "thesis": "L'adoption se diffuse au-delà des fournisseurs d'infrastructure, les entreprises utilisatrices montrent des gains de marge mesurables — le cycle passerait de « dépense spéculative » à « investissement à retour prouvé ».",
       "impacts": {
@@ -50,7 +50,7 @@ export const SCENARIO_VERSIONS: ScenarioVersion[] = [
       "branchId": "ai-decoit",
       "version": 1,
       "date": "2026-07-05",
-      "editionSlug": "2026-S27",
+      "noteSlug": "2026-S27",
       "likelihood": "faible",
       "thesis": "Les entreprises utilisatrices ne parviennent pas à démontrer un retour sur investissement, les grands acheteurs de compute révisent leurs dépenses à la baisse. Sans coussin de valorisation, la correction serait portée intégralement par les multiples.",
       "impacts": {
@@ -82,7 +82,7 @@ export const SCENARIO_VERSIONS: ScenarioVersion[] = [
       "branchId": "ai-plafonne",
       "version": 1,
       "date": "2026-06-28",
-      "editionSlug": "2026-S26",
+      "noteSlug": "2026-S26",
       "likelihood": "central",
       "likelihoodChangedFrom": null,
       "why": "",
@@ -118,7 +118,7 @@ export const SCENARIO_VERSIONS: ScenarioVersion[] = [
       "branchId": "ai-plafonne",
       "version": 2,
       "date": "2026-07-05",
-      "editionSlug": "2026-S27",
+      "noteSlug": "2026-S27",
       "likelihood": "central",
       "thesis": "Les fournisseurs d'infrastructure continuent de délivrer, mais les dépenses cessent d'accélérer. La croissance des bénéfices reste forte sans plus surprendre à la hausse.",
       "impacts": {
@@ -152,7 +152,7 @@ export const SCENARIO_VERSIONS: ScenarioVersion[] = [
       "branchId": "ai-plafonne",
       "version": 3,
       "date": "2026-08-09",
-      "editionSlug": "2026-S32",
+      "noteSlug": "2026-S32",
       "likelihood": "central",
       "thesis": "Inchangé : 86 % de surprises positives de BPA valident la partie « profits tiennent » ; aucune annonce de révision à la hausse des budgets de compute ne vient déplacer le curseur vers la branche accélération.",
       "impacts": {
@@ -184,7 +184,7 @@ export const SCENARIO_VERSIONS: ScenarioVersion[] = [
       "branchId": "iran-durcissement",
       "version": 1,
       "date": "2026-06-24",
-      "editionSlug": "2026-S26-E1",
+      "noteSlug": "2026-S26-E1",
       "likelihood": "faible",
       "likelihoodChangedFrom": null,
       "why": "",
@@ -220,7 +220,7 @@ export const SCENARIO_VERSIONS: ScenarioVersion[] = [
       "branchId": "iran-durcissement",
       "version": 2,
       "date": "2026-07-05",
-      "editionSlug": "2026-S27",
+      "noteSlug": "2026-S27",
       "likelihood": "faible",
       "thesis": "Escalade : frappes élargies, sortie de production du Golfe. Le Brent viserait 120 $ et au-delà — la stagflation véritable.",
       "impacts": {
@@ -254,7 +254,7 @@ export const SCENARIO_VERSIONS: ScenarioVersion[] = [
       "branchId": "iran-durcissement",
       "version": 3,
       "date": "2026-07-09",
-      "editionSlug": "2026-S28-E1",
+      "noteSlug": "2026-S28-E1",
       "likelihood": "moderee",
       "thesis": "Un premier épisode de blocage physique avéré rend le scénario de durcissement moins hypothétique — sans en faire le scénario central, qui reste l'enlisement.",
       "impacts": {
@@ -288,7 +288,7 @@ export const SCENARIO_VERSIONS: ScenarioVersion[] = [
       "branchId": "iran-enlisement",
       "version": 1,
       "date": "2026-07-05",
-      "editionSlug": "2026-S27",
+      "noteSlug": "2026-S27",
       "likelihood": "central",
       "thesis": "Statu quo prolongé : ni accord, ni escalade majeure. Le Brent oscille entre 80 et 95 $ au rythme des rumeurs. C'est le scénario le plus probable et, paradoxalement, le plus confortable pour les actions.",
       "impacts": {
@@ -322,7 +322,7 @@ export const SCENARIO_VERSIONS: ScenarioVersion[] = [
       "branchId": "iran-enlisement",
       "version": 2,
       "date": "2026-08-02",
-      "editionSlug": "2026-S31",
+      "noteSlug": "2026-S31",
       "likelihood": "central",
       "thesis": "Inchangé sur le fond ; le nombre de cycles rumeur-démenti sans conséquence physique renforce la confiance dans ce scénario central plutôt que de la remettre en cause.",
       "impacts": {
@@ -356,7 +356,7 @@ export const SCENARIO_VERSIONS: ScenarioVersion[] = [
       "branchId": "iran-fin",
       "version": 1,
       "date": "2026-07-05",
-      "editionSlug": "2026-S27",
+      "noteSlug": "2026-S27",
       "likelihood": "faible",
       "thesis": "Accord vérifié sur Ormuz, transits normalisés. Le Brent revient vers 65-70 $ en quelques semaines — le scénario le plus favorable aux actifs financiers.",
       "impacts": {
@@ -388,7 +388,7 @@ export const SCENARIO_VERSIONS: ScenarioVersion[] = [
       "branchId": "rates-baisses",
       "version": 1,
       "date": "2026-06-14",
-      "editionSlug": "2026-S24",
+      "noteSlug": "2026-S24",
       "likelihood": "moderee",
       "likelihoodChangedFrom": null,
       "why": "",
@@ -424,7 +424,7 @@ export const SCENARIO_VERSIONS: ScenarioVersion[] = [
       "branchId": "rates-baisses",
       "version": 2,
       "date": "2026-07-05",
-      "editionSlug": "2026-S27",
+      "noteSlug": "2026-S27",
       "likelihood": "moderee",
       "thesis": "Un retour aux baisses suppose soit un accord vérifié sur Ormuz qui fait refluer l'inflation totale, soit une détérioration nette du marché du travail.",
       "impacts": {
@@ -458,7 +458,7 @@ export const SCENARIO_VERSIONS: ScenarioVersion[] = [
       "branchId": "rates-baisses",
       "version": 3,
       "date": "2026-08-09",
-      "editionSlug": "2026-S32",
+      "noteSlug": "2026-S32",
       "likelihood": "faible",
       "thesis": "Le canal qui aurait pu déclencher cette branche (un accord sur Ormuz) ne s'est pas matérialisé ; le second canal (choc de demande via l'emploi) reste ambigu après le rapport de juillet. La branche recule au profit du statu quo.",
       "impacts": {
@@ -490,7 +490,7 @@ export const SCENARIO_VERSIONS: ScenarioVersion[] = [
       "branchId": "rates-hausse",
       "version": 1,
       "date": "2026-06-14",
-      "editionSlug": "2026-S24",
+      "noteSlug": "2026-S24",
       "likelihood": "faible",
       "likelihoodChangedFrom": null,
       "why": "",
@@ -526,7 +526,7 @@ export const SCENARIO_VERSIONS: ScenarioVersion[] = [
       "branchId": "rates-hausse",
       "version": 2,
       "date": "2026-07-05",
-      "editionSlug": "2026-S27",
+      "noteSlug": "2026-S27",
       "likelihood": "faible",
       "thesis": "Une hausse nécessiterait que le choc pétrolier commence à désancrer les anticipations d'inflation — pas observé à ce stade.",
       "impacts": {
@@ -560,7 +560,7 @@ export const SCENARIO_VERSIONS: ScenarioVersion[] = [
       "branchId": "rates-hausse",
       "version": 3,
       "date": "2026-08-09",
-      "editionSlug": "2026-S32",
+      "noteSlug": "2026-S32",
       "likelihood": "moderee",
       "thesis": "Une Fed prête à monter dans une économie molle pour défendre sa crédibilité est désormais documentée par le vote de juillet, pas seulement une hypothèse. Le scénario central reste le statu quo, mais l'écart s'est réduit.",
       "impacts": {
@@ -592,7 +592,7 @@ export const SCENARIO_VERSIONS: ScenarioVersion[] = [
       "branchId": "rates-statu-quo",
       "version": 1,
       "date": "2026-06-14",
-      "editionSlug": "2026-S24",
+      "noteSlug": "2026-S24",
       "likelihood": "central",
       "likelihoodChangedFrom": null,
       "why": "",
@@ -628,7 +628,7 @@ export const SCENARIO_VERSIONS: ScenarioVersion[] = [
       "branchId": "rates-statu-quo",
       "version": 2,
       "date": "2026-07-05",
-      "editionSlug": "2026-S27",
+      "noteSlug": "2026-S27",
       "likelihood": "central",
       "thesis": "Statu quo prolongé : la Fed reste en attente, ni hausse ni baisse, le temps de voir si le choc pétrolier se propage aux anticipations d'inflation.",
       "impacts": {
@@ -662,7 +662,7 @@ export const SCENARIO_VERSIONS: ScenarioVersion[] = [
       "branchId": "rates-statu-quo",
       "version": 3,
       "date": "2026-08-09",
-      "editionSlug": "2026-S32",
+      "noteSlug": "2026-S32",
       "likelihood": "central",
       "thesis": "Statu quo prolongé reste central, mais la marge s'est réduite des deux côtés : la branche hausse et la branche baisse ont toutes deux bougé cette semaine, resserrant l'intervalle autour du statu quo sans le remettre en cause.",
       "impacts": {

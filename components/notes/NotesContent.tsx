@@ -1,10 +1,10 @@
 import Link from "next/link";
 import type { Zone } from "@/lib/types";
-import { getActiveDrivers, getEditionsRevising } from "@/lib/content";
-import { getLatestEditionForZone, buildArchiveWeeks } from "@/lib/bulletin";
+import { getActiveDrivers, getNotesRevising } from "@/lib/content";
+import { getLatestNoteForZone, buildArchiveWeeks } from "@/lib/archive";
 import { ZONE_LABELS } from "@/lib/zones";
 import { RegimeHeader } from "./RegimeHeader";
-import { EditionBlocks } from "./EditionBlocks";
+import { NoteBlocks } from "./NoteBlocks";
 import { ArchiveList } from "./ArchiveList";
 import { EmptyState } from "@/components/states/EmptyState";
 
@@ -14,38 +14,38 @@ async function simulateLoad() {
   await new Promise((resolve) => setTimeout(resolve, 300));
 }
 
-export async function BulletinContent({ zone }: { zone: Zone }) {
+export async function NotesContent({ zone }: { zone: Zone }) {
   await simulateLoad();
 
-  const latestEdition = getLatestEditionForZone(zone);
+  const latestNote = getLatestNoteForZone(zone);
   const weeks = buildArchiveWeeks(zone);
   const drivers = getActiveDrivers();
 
-  // Inverse de « quelles éditions ont révisé ce driver ? », calculé une fois pour le filtre
+  // Inverse de « quelles notes ont révisé ce driver ? », calculé une fois pour le filtre
   // d'archive — le composant est client, il ne peut pas résoudre le contenu lui-même.
   const revisionsBySlug: Record<string, string[]> = {};
   for (const driver of drivers) {
-    for (const edition of getEditionsRevising(driver.id)) {
-      (revisionsBySlug[edition.slug] ??= []).push(driver.id);
+    for (const note of getNotesRevising(driver.id)) {
+      (revisionsBySlug[note.slug] ??= []).push(driver.id);
     }
   }
 
   return (
     <>
-      {latestEdition ? (
-        <RegimeHeader edition={latestEdition} drivers={drivers} />
+      {latestNote ? (
+        <RegimeHeader note={latestNote} drivers={drivers} />
       ) : (
         <div className="bg-deep px-4 py-8 md:px-6">
           <div className="mx-auto max-w-content">
             <EmptyState
-              title={`Aucune édition ne couvre ${ZONE_LABELS[zone]} pour l'instant`}
-              description="Le bulletin se construit zone par zone. En attendant, consultez la lecture Émergents ou Global, qui couvrent déjà cette zone dans leurs éditions transversales."
+              title={`Aucune note ne couvre ${ZONE_LABELS[zone]} pour l'instant`}
+              description="Les notes se construisent zone par zone. En attendant, consultez la lecture Émergents ou Global, qui couvrent déjà cette zone dans leurs notes transversales."
               action={
                 <Link
-                  href="/bulletin?zone=global"
+                  href="/notes?zone=global"
                   className="inline-block border border-white/40 bg-white/10 px-3 py-1.5 font-mono text-12-5 text-white hover:bg-white/20"
                 >
-                  Voir le bulletin Global
+                  Voir les notes de la zone Global
                 </Link>
               }
             />
@@ -54,12 +54,12 @@ export async function BulletinContent({ zone }: { zone: Zone }) {
       )}
 
       <div className="mx-auto max-w-content px-4 py-8 md:px-6">
-        {latestEdition && (
+        {latestNote && (
           <section>
             <p className="mb-2 font-mono text-11 uppercase tracking-wider text-mute">
-              Dernière édition
+              Dernière note
             </p>
-            <EditionBlocks edition={latestEdition} />
+            <NoteBlocks note={latestNote} />
           </section>
         )}
 

@@ -8,5 +8,5 @@ export default async function Home({
 }) {
   const params = await searchParams;
   const zone = params[ZONE_PARAM];
-  redirect(zone ? `/bulletin?${ZONE_PARAM}=${zone}` : "/bulletin");
+  redirect(zone ? `/notes?${ZONE_PARAM}=${zone}` : "/notes");
 }

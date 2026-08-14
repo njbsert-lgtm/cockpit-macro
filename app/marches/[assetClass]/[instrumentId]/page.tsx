@@ -3,7 +3,7 @@ import Link from "next/link";
 import { parseZone, ZONE_PARAM } from "@/lib/zone-param";
 import { ASSET_CLASS_LABELS, ASSET_CLASS_ORDER, formatInstrumentValue, instrumentPerformances } from "@/lib/marches";
 import { getInstrument, getObservations } from "@/lib/data";
-import { getDriversForInstrument, getEditions } from "@/lib/content";
+import { getDriversForInstrument, getNotes } from "@/lib/content";
 import { BRANCH_LABELS } from "@/lib/scenario-labels";
 import { formatDateLong } from "@/lib/format";
 import type { AssetClass } from "@/lib/types";
@@ -34,7 +34,7 @@ export default async function InstrumentPage({
   const latest = obs.at(-1) ?? null;
   const perf = instrumentPerformances(instrument);
 
-  const mentions = getEditions()
+  const mentions = getNotes()
     .filter((e) => e.instrumentRefs.includes(instrument.id))
     .sort((a, b) => b.date.localeCompare(a.date));
 
@@ -113,7 +113,7 @@ export default async function InstrumentPage({
             {drivers.map((driver) => (
               <li key={driver.id}>
                 <Link
-                  href={`/bulletin/drivers/${driver.id}`}
+                  href={`/notes/drivers/${driver.id}`}
                   className="block border border-line bg-card px-3.5 py-3 hover:border-deep"
                 >
                   <span className="font-display text-14-5 font-bold text-ink">
@@ -133,11 +133,11 @@ export default async function InstrumentPage({
 
       <section className="mt-10">
         <h2 className="font-display text-xl font-extrabold text-ink">
-          Dans le bulletin ({mentions.length})
+          Dans les notes ({mentions.length})
         </h2>
         {mentions.length === 0 ? (
           <p className="mt-3 max-w-[60ch] text-14-5 text-mute">
-            Aucune édition ne mentionne encore cet instrument. Les passages qui le citent
+            Aucune note ne mentionne encore cet instrument. Les passages qui le citent
             apparaîtront ici, du plus récent au plus ancien.
           </p>
         ) : (
@@ -145,7 +145,7 @@ export default async function InstrumentPage({
             {mentions.map((e) => (
               <li key={e.slug}>
                 <Link
-                  href={`/bulletin/${e.slug}`}
+                  href={`/notes/${e.slug}`}
                   className="block border border-line-2 bg-card px-3.5 py-2.5 hover:border-deep"
                 >
                   <span className="font-display text-14 font-bold text-ink">

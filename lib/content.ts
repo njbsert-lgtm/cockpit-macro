@@ -5,12 +5,12 @@ import { getInstruments } from "./data";
 import { checkIntegrity, currentVersion } from "./integrity";
 import { activeDrivers, deriveDrivers } from "./drivers";
 import {
-  parseEdition,
-  readEditionSources,
-  validateEditionChain,
-  type ParsedEdition,
-} from "./editions";
-import type { Driver, Edition, Trend, Zone } from "./types";
+  parseNote,
+  readNoteSources,
+  validateNoteChain,
+  type ParsedNote,
+} from "./notes";
+import type { Driver, Note, Trend, Zone } from "./types";
 import { zoneMatches } from "./zones";
 
 // ---------------------------------------------------------------------------
@@ -18,60 +18,60 @@ import { zoneMatches } from "./zones";
 // ---------------------------------------------------------------------------
 
 function loadContent() {
-  const parsed: ParsedEdition[] = readEditionSources().map(({ slug, source }) =>
-    parseEdition(slug, source),
+  const parsed: ParsedNote[] = readNoteSources().map(({ slug, source }) =>
+    parseNote(slug, source),
   );
 
-  // Règles propres à la chaîne des éditions (comparesTo, récapitulatif des spéciales).
-  const editions = validateEditionChain(parsed);
+  // Règles propres à la chaîne des notes (comparesTo, récapitulatif des spéciales).
+  const notes = validateNoteChain(parsed);
 
   // Puis l'intégrité de tout le graphe, d'un seul tenant. Toute référence morte lève ici :
   // rien ne peut produire un lien mort à l'écran, le build échoue avant.
   checkIntegrity({
     drivers: DRIVERS,
     trends: TRENDS,
-    editions,
+    notes,
     scenarios: SCENARIO_VERSIONS,
     instrumentIds: new Set(getInstruments().map((i) => i.id)),
   });
 
   return {
-    editions,
+    notes,
     bodies: new Map(parsed.map((p) => [p.meta.slug, p.body])),
-    drivers: deriveDrivers(DRIVERS, editions, SCENARIO_VERSIONS),
+    drivers: deriveDrivers(DRIVERS, notes, SCENARIO_VERSIONS),
   };
 }
 
 const CONTENT = loadContent();
 
 // ---------------------------------------------------------------------------
-// Éditions
+// Notes
 // ---------------------------------------------------------------------------
 
-export function getEditions(): Edition[] {
-  return CONTENT.editions;
+export function getNotes(): Note[] {
+  return CONTENT.notes;
 }
 
-export function getEdition(slug: string): Edition | null {
-  return CONTENT.editions.find((e) => e.slug === slug) ?? null;
+export function getNote(slug: string): Note | null {
+  return CONTENT.notes.find((e) => e.slug === slug) ?? null;
 }
 
-/** Le corps MDX brut d'une édition, à compiler par le composant qui l'affiche. */
-export function getEditionBody(slug: string): string | null {
+/** Le corps MDX brut d'une note, à compiler par le composant qui l'affiche. */
+export function getNoteBody(slug: string): string | null {
   return CONTENT.bodies.get(slug) ?? null;
 }
 
-export function getEditionsByZone(zone: Zone): Edition[] {
-  return CONTENT.editions.filter((e) => zoneMatches(e.zones, zone));
+export function getNotesByZone(zone: Zone): Note[] {
+  return CONTENT.notes.filter((e) => zoneMatches(e.zones, zone));
 }
 
-/** La dernière édition en date, tous types confondus (hebdo ou spéciale). */
-export function getLatestEdition(): Edition | null {
-  return [...CONTENT.editions].sort((a, b) => b.date.localeCompare(a.date))[0] ?? null;
+/** La dernière note en date, tous types confondus (hebdo ou spéciale). */
+export function getLatestNote(): Note | null {
+  return [...CONTENT.notes].sort((a, b) => b.date.localeCompare(a.date))[0] ?? null;
 }
 
-export function getSpecialsOf(isoWeek: string): Edition[] {
-  return CONTENT.editions.filter((e) => e.kind === "speciale" && e.parentWeek === isoWeek);
+export function getSpecialsOf(isoWeek: string): Note[] {
+  return CONTENT.notes.filter((e) => e.kind === "speciale" && e.parentWeek === isoWeek);
 }
 
 // ---------------------------------------------------------------------------
@@ -86,9 +86,9 @@ export function getDriver(id: string): Driver | null {
   return CONTENT.drivers.find((d) => d.id === id) ?? null;
 }
 
-/** Les drivers à afficher en carte, dans l'ordre d'intensité de la dernière édition. */
+/** Les drivers à afficher en carte, dans l'ordre d'intensité de la dernière note. */
 export function getActiveDrivers(): Driver[] {
-  const latest = getLatestEdition();
+  const latest = getLatestNote();
   return activeDrivers(CONTENT.drivers, latest?.date ?? "9999-12-31");
 }
 
@@ -97,12 +97,12 @@ export function getDriversForInstrument(instrumentId: string): Driver[] {
   return CONTENT.drivers.filter((d) => d.instrumentRefs.includes(instrumentId));
 }
 
-/** Les éditions qui ont révisé ce driver, du plus récent au plus ancien. */
-export function getEditionsRevising(driverId: string): Edition[] {
+/** Les notes qui ont révisé ce driver, du plus récent au plus ancien. */
+export function getNotesRevising(driverId: string): Note[] {
   const slugs = new Set(
-    SCENARIO_VERSIONS.filter((s) => s.driverId === driverId).map((s) => s.editionSlug),
+    SCENARIO_VERSIONS.filter((s) => s.driverId === driverId).map((s) => s.noteSlug),
   );
-  return CONTENT.editions
+  return CONTENT.notes
     .filter((e) => slugs.has(e.slug))
     .sort((a, b) => b.date.localeCompare(a.date));
 }

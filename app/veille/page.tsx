@@ -16,13 +16,13 @@ export default function VeillePage() {
       <div className="mt-6">
         <EmptyState
           title="Pas encore construit"
-          description="La veille arrive à l'étape 5 : collecte RSS et GDELT, filtre par mots-clés, puis classification par l'API Claude. Trois actions par item : verser dans l'édition en cours, archiver, ignorer."
+          description="La veille arrive à l'étape 5 : collecte RSS et GDELT, filtre par mots-clés, puis classification par l'API Claude. Trois actions par item : verser dans la note en cours, archiver, ignorer."
           action={
             <Link
-              href="/bulletin"
+              href="/notes"
               className="inline-block border border-line bg-paper px-3 py-1.5 font-mono text-12-5 text-ink-2 hover:border-deep hover:text-deep"
             >
-              Revenir au Bulletin
+              Revenir aux Notes
             </Link>
           }
         />

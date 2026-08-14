@@ -1,9 +1,9 @@
-import { BLOCK_TITLES, type BlockName } from "@/lib/editions";
+import { BLOCK_TITLES, type BlockName } from "@/lib/notes";
 
 /**
  * Chaque bloc analytique du MDX rend son propre titre de section : l'auteur écrit
  * `<CeQuiAChange>` et n'a jamais à répéter l'intitulé, donc il ne peut pas dériver d'une
- * édition à l'autre.
+ * note à l'autre.
  */
 function Block({ name, children }: { name: BlockName; children?: React.ReactNode }) {
   return (
@@ -20,7 +20,7 @@ function Block({ name, children }: { name: BlockName; children?: React.ReactNode
 
 type BlockProps = { children?: React.ReactNode };
 
-export const editionMdxComponents = {
+export const noteMdxComponents = {
   CeQuiAChange: (p: BlockProps) => <Block name="CeQuiAChange" {...p} />,
   CeQuiSestConfirme: (p: BlockProps) => <Block name="CeQuiSestConfirme" {...p} />,
   RevisionDesScenarios: (p: BlockProps) => <Block name="RevisionDesScenarios" {...p} />,

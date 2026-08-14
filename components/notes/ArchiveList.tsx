@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import type { ArchiveWeek } from "@/lib/bulletin";
+import type { ArchiveWeek } from "@/lib/archive";
 import { formatDateLong } from "@/lib/format";
 import { ZONE_LABELS } from "@/lib/zones";
 import type { Zone } from "@/lib/types";
@@ -44,14 +44,14 @@ export function ArchiveList({
   zone: Zone;
   /** Les drivers proposés au filtre — libellés résolus côté serveur. */
   drivers: ArchiveDriverOption[];
-  /** Pour chaque slug d'édition, les drivers qu'elle a révisés. */
+  /** Pour chaque slug de note, les drivers qu'elle a révisés. */
   revisionsBySlug: Record<string, string[]>;
 }) {
   const [filter, setFilter] = useState<TypeFilter>("tout");
   const [driverFilter, setDriverFilter] = useState<string>("tout");
   const ordered = [...weeks].reverse(); // le plus récent en tête
 
-  // Filtrer par driver, c'est demander « quelles éditions ont révisé cette incertitude ? ».
+  // Filtrer par driver, c'est demander « quelles notes ont révisé cette incertitude ? ».
   const revisedBySelectedDriver = (slug: string) =>
     driverFilter === "tout" || (revisionsBySlug[slug] ?? []).includes(driverFilter);
 
@@ -117,13 +117,13 @@ export function ArchiveList({
               <div className="px-3.5 py-3">
                 {week.emptyForZone && (
                   <p className="text-13-5 italic text-mute">
-                    Aucune édition ne concerne {ZONE_LABELS[zone]} cette semaine.
+                    Aucune note ne concerne {ZONE_LABELS[zone]} cette semaine.
                   </p>
                 )}
 
                 {!week.emptyForZone && week.isGap && (
                   <p className="text-13-5 italic text-rust">
-                    Discipline rompue : aucune édition, pas même une hebdo courte, n&rsquo;a été
+                    Discipline rompue : aucune note, pas même une hebdo courte, n&rsquo;a été
                     publiée cette semaine-là.
                   </p>
                 )}
@@ -136,7 +136,7 @@ export function ArchiveList({
 
                 {showHebdo && week.hebdo && (
                   <Link
-                    href={`/bulletin/${week.hebdo.slug}`}
+                    href={`/notes/${week.hebdo.slug}`}
                     className="block border border-line-2 px-3 py-2.5 hover:border-deep"
                   >
                     <span className="font-display text-14-5 font-bold text-ink">
@@ -153,7 +153,7 @@ export function ArchiveList({
                     {showSpecials.map((s) => (
                       <li key={s.slug}>
                         <Link
-                          href={`/bulletin/${s.slug}`}
+                          href={`/notes/${s.slug}`}
                           className="block border border-ochre-bg bg-ochre-bg/40 px-3 py-2 hover:border-ochre"
                         >
                           <span className="font-display text-13-5 font-bold text-ink">
