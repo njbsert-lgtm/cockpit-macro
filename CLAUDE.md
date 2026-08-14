@@ -4,7 +4,7 @@
 
 Un tableau de bord macroéconomique et géopolitique personnel, consultable sur mobile et desktop.
 Objectif : suivre les données macro par zone, la performance des classes d'actifs, et tenir un
-bulletin analytique dont l'historique s'accumule.
+journal de notes analytiques dont l'historique s'accumule.
 
 Ce n'est **pas** un terminal de trading, ni un agrégateur de news. Un chiffre par jour suffit.
 La valeur est dans l'interprétation, pas dans la fraîcheur à la seconde.
@@ -28,7 +28,7 @@ Si l'automatisation des données casse, l'analyse doit rester lisible et le site
 - **Tailwind CSS** — pas de librairie de composants, le design est spécifique
 - **Vercel** pour l'hébergement et les cron jobs
 - **Supabase** (Postgres) pour les séries de données et l'historique
-- **MDX** pour les éditions du bulletin, versionnées dans le repo
+- **MDX** pour les notes, versionnées dans le repo
 - **Zod** pour valider toute réponse d'API externe avant insertion
 - **Recharts** pour les graphiques de séries, rien de plus lourd
 
@@ -44,7 +44,7 @@ Barre d'onglets en bas sur mobile, horizontale en haut sur desktop. Jamais de ha
 
 | Onglet | Question | Fréquence |
 |---|---|---|
-| **Bulletin** *(défaut)* | Que s'est-il passé et qu'est-ce que ça implique ? | Quotidienne |
+| **Notes** *(défaut)* | Que s'est-il passé et qu'est-ce que ça implique ? | Quotidienne |
 | **Macro** | Où en sont les économies ? | Hebdomadaire |
 | **Marchés** | Où en sont les prix ? | Quotidienne |
 | **Veille** | Qu'est-ce que je dois trier ? | Quotidienne |
@@ -58,7 +58,7 @@ Visible sur tous les écrans, elle contient exactement deux choses :
 
 1. **Le sélecteur de zone** — contexte global, une seule zone à la fois.
    Il pilote simultanément Macro (quels indicateurs), Marchés (quels instruments remontent)
-   et Bulletin (quelles éditions et quels passages sont mis en avant).
+   et Notes (quelles notes et quels passages sont mis en avant).
 2. **L'indicateur de fraîcheur** — point coloré + date. Vert sous 24 h, ambre entre 24 et 48 h,
    rouge au-delà. Cliquable pour voir le détail par source.
 
@@ -66,7 +66,7 @@ L'état complet est dans l'URL : `?zone=fr`. Toute vue est partageable et rechar
 
 ---
 
-## Onglet 1 — Bulletin
+## Onglet 1 — Notes
 
 C'est le cœur du produit et l'écran d'accueil.
 
@@ -78,14 +78,38 @@ question posée, la branche actuellement dominante, et la date de dernière rév
 C'est ce qu'on lit en dix secondes, et c'est le point d'entrée de toute la navigation :
 un clic sur une carte ouvre la page du driver avec son arbre de scénarios et sa trajectoire.
 
+Les cartes de driver sont **empilées en pleine largeur**, pas en rangée horizontale : chacune
+porte une question, une branche dominante et une date, ce qui est trop de texte pour une
+vignette étroite. Le défilement horizontal est réservé à l'étagère des notes, où l'ordre
+chronologique rend le geste naturel.
+
 Les cartes sont ordonnées par **intensité courante** — le driver qui explique le plus des
-mouvements récents en premier. Cet ordre est fixé à la main dans le frontmatter de l'édition,
+mouvements récents en premier. Cet ordre est fixé à la main dans le frontmatter de la note,
 pas calculé : c'est un jugement, et il doit se voir.
 
-**Couche 2 — Les éditions.**
-La dernière édition dépliée par défaut, puis l'archive : hebdomadaires en colonne vertébrale,
-spéciales indentées sous leur semaine. Filtrable par zone, par période, par type et
-**par driver**.
+**Couche 2 — L'étagère des notes récentes.**
+Une rangée horizontale de cartes, les plus récentes à gauche, qui défile vers la droite.
+Quatre à six notes maximum : c'est une étagère de fraîcheur, pas une archive.
+
+- L'en-tête de la rangée affiche **« Notes › »** et est **entièrement cliquable** : il ouvre
+  la page d'archive. Le chevron seul est une cible trop petite au pouce.
+- Chaque carte : le type (hebdo ou spéciale), la semaine ISO, la date, la phrase de régime,
+  et les drivers touchés en pastilles. Un clic ouvre la note en pleine page.
+- Les notes spéciales sont visuellement distinctes — ce sont des exceptions, ça doit se voir
+  sans lire l'étiquette.
+- **Largeur de carte à 78 % de la fenêtre sur mobile**, pour que la suivante dépasse
+  visiblement du bord. Sans ce débord, l'utilisateur ne devine pas que ça défile.
+- `scroll-snap-type: x mandatory`, défilement natif, aucun JavaScript de défilement.
+- Sur desktop, pas de carrousel : une grille de quatre cartes. Le défilement horizontal est
+  une contrainte de petit écran, pas un parti pris esthétique.
+- Balisage en `<ul>` / `<li>` avec un `aria-label` explicite : c'est une liste, pas un décor.
+
+**L'archive ne figure pas sur cet écran.** Elle a sa propre page, `/notes`.
+
+**Page `/notes` — L'archive.**
+Liste complète, notes hebdomadaires en colonne vertébrale, spéciales indentées sous leur
+semaine. Filtrable par zone, par période, par type et **par driver**. Les semaines sans note
+hebdomadaire y apparaissent comme des trous explicites.
 
 **Couche 3 — Les tendances de fond.**
 Index thématique, accessible depuis l'en-tête. Ce qu'on consulte une fois par mois, pas
@@ -108,12 +132,12 @@ tous les jours — donc en troisième position, jamais en avant.
 qui pourraient l'invalider, chaque driver liste les tendances qu'il alimente. C'est ce qui
 permet de répondre à « si la Fed monte, laquelle de mes convictions longues tombe ? ».
 
-### Ce qui rend une édition analytique et non descriptive
+### Ce qui rend une note analytique et non descriptive
 
-Une édition n'est pas un résumé de l'actualité. Elle a une **structure obligatoire** dont
+Une note n'est pas un résumé de l'actualité. Elle a une **structure obligatoire** dont
 chaque bloc force un jugement. Le gabarit MDX doit refuser de compiler si un bloc manque.
 
-1. **Ce qui a changé depuis la dernière édition.** Pas ce qui s'est passé — ce qui a changé
+1. **Ce qui a changé depuis la dernière note.** Pas ce qui s'est passé — ce qui a changé
    dans la lecture. Si rien n'a changé, l'écrire : « rien n'a modifié la thèse cette semaine »
    est une information de premier ordre.
 2. **Ce qui s'est confirmé.** Les hypothèses que les données ont validées. Sans ce bloc,
@@ -122,20 +146,20 @@ chaque bloc force un jugement. Le gabarit MDX doit refuser de compiler si un blo
    pourquoi ? Une révision sans justification écrite est interdite.
 4. **Ce que j'avais mal lu.** Bloc obligatoire, même vide. C'est ce qui transforme l'archive
    en instrument d'apprentissage plutôt qu'en pile de notes.
-5. **Ce que je surveille d'ici la prochaine édition.** Trois éléments maximum, chacun avec
+5. **Ce que je surveille d'ici la prochaine note.** Trois éléments maximum, chacun avec
    le signal précis qui le validerait ou l'invaliderait.
 
 Les nouvelles individuelles sont des **pièces à conviction** citées à l'intérieur de ces blocs,
 pas des sections autonomes. Une nouvelle qui ne sert aucun des cinq blocs ne rentre pas.
 
-### Cadence : hebdomadaire fixe + éditions spéciales
+### Cadence : hebdomadaire fixe + notes spéciales
 
-**L'édition hebdomadaire est le squelette.** Elle paraît le dimanche soir, qu'il se soit passé
-quelque chose ou non. Une semaine sans édition est un trou dans l'archive, et l'archive n'a de
-valeur que si elle est continue. Une semaine où rien n'a bougé produit une édition courte qui
+**La note hebdomadaire est le squelette.** Elle paraît le dimanche soir, qu'il se soit passé
+quelque chose ou non. Une semaine sans note est un trou dans l'archive, et l'archive n'a de
+valeur que si elle est continue. Une semaine où rien n'a bougé produit une note courte qui
 le dit : c'est une information, pas un échec.
 
-**L'édition spéciale est l'exception, et doit le rester.** Si on en publie une par semaine,
+**La note spéciale est l'exception, et doit le rester.** Si on en publie une par semaine,
 la distinction meurt et le hebdo devient du remplissage. Le déclenchement est donc soumis à
 des **seuils objectifs**, écrits dans la configuration, pas à une impression.
 
@@ -153,7 +177,7 @@ des **seuils objectifs**, écrits dans la configuration, pas à une impression.
 | **Géopolitique** | modification d'un flux physique : fermeture, embargo appliqué, saisie | à l'événement |
 
 Au moins un seuil franchi, sinon ça attend le dimanche. Le seuil déclenché est enregistré dans
-le champ `trigger` et affiché sur l'édition : le lecteur doit savoir pourquoi elle existe.
+le champ `trigger` et affiché sur la note : le lecteur doit savoir pourquoi elle existe.
 
 ### Le moteur d'alertes — règles d'implémentation
 
@@ -170,7 +194,7 @@ Ces cinq règles décident si l'outil est utilisable ou s'il devient une machine
    mouvement atteint le double du seuil. Sans ça, une tendance soutenue déclenche tous les jours.
 4. **Le sens est enregistré, pas seulement l'amplitude.** Un écartement de spread et un
    resserrement de spread disent des choses opposées. Stocker `direction` et l'afficher.
-5. **L'alerte notifie, elle ne rédige pas.** Elle ouvre un brouillon d'édition spéciale
+5. **L'alerte notifie, elle ne rédige pas.** Elle ouvre un brouillon de note spéciale
    pré-rempli avec le seuil franchi, les valeurs concernées et les instruments liés.
    La décision de publier reste humaine — une alerte peut se révéler être du bruit.
 
@@ -187,9 +211,9 @@ C'est la subtilité à ne pas rater dans le code.
 
 - **Le bloc « ce qui a changé » d'une hebdo se compare à la hebdo précédente**, jamais à la
   dernière spéciale. Sinon le fil hebdomadaire se rompt et l'archive devient illisible.
-- **Une spéciale se compare à la dernière édition, quelle qu'elle soit.** C'est un delta à chaud.
+- **Une spéciale se compare à la dernière note, quelle qu'elle soit.** C'est un delta à chaud.
 - **La hebdo suivante consolide les spéciales de la semaine** dans un bloc supplémentaire :
-  ce que les éditions spéciales ont établi, et ce qui, avec le recul de quelques jours,
+  ce que les notes spéciales ont établi, et ce qui, avec le recul de quelques jours,
   s'est révélé être du bruit. Ce bloc est l'antidote à la réaction à chaud.
 
 **Structure allégée pour les spéciales.** Exiger « ce que j'avais mal lu » trente minutes après
@@ -208,14 +232,14 @@ la liste. Une discipline rompue doit être visible.
 
 
 
-Une tendance de fond est un objet persistant qui traverse les éditions, pas un paragraphe.
+Une tendance de fond est un objet persistant qui traverse les notes, pas un paragraphe.
 
 Chaque tendance a un statut affiché : **se renforce · se maintient · s'affaiblit · invalidée**.
-Sur la page d'une tendance, on voit la chronologie de tous les passages d'éditions qui l'ont
+Sur la page d'une tendance, on voit la chronologie de tous les passages de notes qui l'ont
 mentionnée, avec les changements de statut. C'est ce qui permet de voir, en un écran, si votre
 lecture de long terme tient depuis six mois ou si elle s'est érodée sans que vous le remarquiez.
 
-Dans une édition, les passages qui touchent une tendance de fond sont visuellement marqués et
+Dans une note, les passages qui touchent une tendance de fond sont visuellement marqués et
 cliquables vers la page de la tendance.
 
 ### Scénarios : un arbre par driver
@@ -241,14 +265,14 @@ Un clic sur une carte de driver ouvre une page qui contient, dans cet ordre :
 3. La **trajectoire** — comment la vraisemblance de chaque branche a évolué dans le temps
 4. Les **instruments qu'il pilote**, avec leur valeur du jour et leurs alertes actives
 5. Les **tendances de fond** qu'il alimente ou pourrait invalider
-6. Les **passages d'éditions** qui l'ont révisé, du plus récent au plus ancien
+6. Les **passages de notes** qui l'ont révisé, du plus récent au plus ancien
 
 C'est la page qui répond à « qu'est-ce qui fait bouger le marché en ce moment, et qu'est-ce
 qui se passe selon comment ça tourne ».
 
 ### Versionnement
 
-**Les scénarios sont versionnés.** Chaque révision crée une version datée liée à l'édition qui
+**Les scénarios sont versionnés.** Chaque révision crée une version datée liée à la note qui
 l'a produite. Deux vues :
 - **État courant** — ce que je pense aujourd'hui
 - **Trajectoire** — comment la vraisemblance de chaque branche a évolué dans le temps
@@ -297,7 +321,7 @@ note éditoriale courte.
 
 **Niveau 3 — La fiche instrument.** Graphique de la série, les performances sur plusieurs
 horizons, **les drivers qui le pilotent** avec leur branche dominante — cliquables vers la
-page du driver —, et **les passages d'éditions du bulletin qui le mentionnent**, du plus
+page du driver —, et **les passages de notes qui le mentionnent**, du plus
 récent au plus ancien. C'est la jonction entre le prix et l'analyse :
 on doit pouvoir partir d'un chiffre et remonter à ce qu'on en avait dit.
 
@@ -306,7 +330,7 @@ on doit pouvoir partir d'un chiffre et remonter à ce qu'on en avait dit.
 ## Onglet 4 — Veille *(étape 5)*
 
 File des items collectés et classés « signal », en attente de tri. Trois actions par item :
-verser dans l'édition en cours de rédaction, archiver, ignorer. Compteur en pastille sur l'onglet.
+verser dans la note en cours de rédaction, archiver, ignorer. Compteur en pastille sur l'onglet.
 
 ---
 
@@ -352,12 +376,12 @@ type Driver = {
   label: string;             // 'Taux directeurs'
   question: string;          // 'La Fed reprend-elle son cycle de hausse ?'
   dominantBranchId: string;  // la branche jugée la plus vraisemblable aujourd'hui
-  intensityRank: number;     // ordre d'affichage, fixé à la main dans l'édition
+  intensityRank: number;     // ordre d'affichage, fixé à la main dans la note
   instrumentRefs: string[];  // les instruments qu'il pilote
   trendRefs: string[];       // les tendances qu'il alimente ou pourrait invalider
   zones: Zone[];
   lastRevisedAt: string;
-  lastRevisedIn: string;     // slug de l'édition
+  lastRevisedIn: string;     // slug de la note
   retiredAt: string | null;  // un driver peut cesser d'en être un ; on ne le supprime pas
 };
 
@@ -368,18 +392,18 @@ type Trend = {
   zones: Zone[];
   assetClasses: AssetClass[];
   status: 'renforce' | 'maintient' | 'affaiblit' | 'invalidee';
-  statusHistory: Array<{ date: string; status: Trend['status']; editionSlug: string; why: string }>;
+  statusHistory: Array<{ date: string; status: Trend['status']; noteSlug: string; why: string }>;
   driverRefs: string[];      // les drivers qui pourraient la faire tomber
   invalidatedBy: string;     // ce qui la ferait tomber, en clair
 };
 
-type Edition = {
+type Note = {
   slug: string;              // '2026-S33' ou '2026-S33-E1'
   kind: 'hebdo' | 'speciale';
   date: string;
   isoWeek: string;           // '2026-S33', identique pour l'hebdo et ses spéciales
   parentWeek: string | null; // pour une spéciale : la hebdo de rattachement
-  comparesTo: string;        // slug de l'édition de référence du bloc « ce qui a changé »
+  comparesTo: string;        // slug de la note de référence du bloc « ce qui a changé »
   trigger: string | null;    // obligatoire pour une spéciale : le seuil franchi
   regimeStatement: string;   // le régime en une phrase, à cette date
   keyIndicators: Array<{ label: string; value: string }>;
@@ -414,8 +438,8 @@ type AlertEvent = {
   toValue: number;
   fromDate: string;
   toDate: string;
-  status: 'nouveau' | 'promu' | 'ignore';  // promu = a donné lieu à une édition spéciale
-  editionSlug: string | null;
+  status: 'nouveau' | 'promu' | 'ignore';  // promu = a donné lieu à une note spéciale
+  noteSlug: string | null;
 };
 
 // Les spreads sont des instruments dérivés, calculés à l'insertion, pas à l'affichage.
@@ -428,7 +452,7 @@ type ScenarioVersion = {
   branchId: string;
   version: number;
   date: string;
-  editionSlug: string;       // l'édition qui a produit cette révision
+  noteSlug: string;       // la note qui a produit cette révision
   likelihood: 'central' | 'moderee' | 'faible';
   likelihoodChangedFrom: ScenarioVersion['likelihood'] | null;
   why: string;               // obligatoire si la vraisemblance a changé
@@ -508,12 +532,12 @@ La règle de tri est déjà écrite : la grille des cinq canaux de transmission 
 nature du choc, fonction de réaction, dollar, positionnement) plus le test « flux ou
 déclaration ». Le modèle l'applique, il ne l'invente pas. Grille dans le prompt système.
 
-**Passe 3 — Validation humaine.** Les items retenus alimentent l'édition en cours de
+**Passe 3 — Validation humaine.** Les items retenus alimentent la note en cours de
 rédaction. Le modèle trie et met en forme ; les cinq blocs analytiques restent à vous.
 
 ### Droit d'auteur dans le code
 
-Stocker liens et métadonnées, jamais le texte intégral. Les éditions contiennent des faits
+Stocker liens et métadonnées, jamais le texte intégral. Les notes contiennent des faits
 reformulés et sourcés, pas des citations longues. Un chiffre n'est pas protégeable ;
 la formulation d'un journaliste l'est.
 
@@ -550,12 +574,12 @@ Un chiffre sans date n'est jamais affiché. Un chiffre absent n'est jamais rempl
 **Étape 1 — La carcasse, données figées.**
 Next.js + Tailwind. Les quatre onglets, la barre persistante avec sélecteur de zone et
 indicateur de fraîcheur, la navigation à trois niveaux de l'onglet Marchés, les scénarios
-cliquables, l'archive du bulletin, et **les cinq états de chaque écran**.
+cliquables, l'étagère et l'archive des notes, et **les cinq états de chaque écran**.
 Données depuis `data/seed.json`, écrit à la main. Aucune API.
 
 Le seed contient volontairement des cas dégradés : un instrument sans valeur du jour, une
-source périmée de trois jours, une zone sans édition, **une semaine sans hebdo**, **une
-semaine portant deux éditions spéciales**, et **un historique de clôtures assez long pour
+source périmée de trois jours, une zone sans note, **une semaine sans hebdo**, **une
+semaine portant deux notes spéciales**, et **un historique de clôtures assez long pour
 tester le moteur d'alertes** : un franchissement de seuil, un quasi-franchissement, un
 franchissement en période de silence, et une série trouée par un jour férié. Sinon les états 3, 4 et 5 et l'affichage de
 l'archive casseront en production.
@@ -564,12 +588,12 @@ Critère de validation : le site est déployé sur Vercel et **utilisable au pou
 téléphone**. Pas « joli en capture d'écran ».
 
 **Étape 2 — Le contenu éditorial.**
-Objets **Driver** avec leurs cartes en en-tête de l'onglet Bulletin et leur page dédiée.
-Éditions en MDX avec frontmatter et validation des blocs obligatoires selon le type.
+Objets **Driver** avec leurs cartes en en-tête de l'onglet Notes et leur page dédiée.
+Notes en MDX avec frontmatter et validation des blocs obligatoires selon le type.
 Objets **Tendance** avec chronologie de statuts, liés aux drivers dans les deux sens.
 Scénarios versionnés, rattachés à un driver, avec la vue Trajectoire.
-Migrer trois éditions rétrospectives pour vérifier que l'archive et tous les liens croisés
-fonctionnent — driver ↔ tendance ↔ instrument ↔ édition. C'est ce maillage qui fait le produit.
+Migrer trois notes rétrospectives pour vérifier que l'archive et tous les liens croisés
+fonctionnent — driver ↔ tendance ↔ instrument ↔ note. C'est ce maillage qui fait le produit.
 
 **Étape 3 — Les données automatiques.**
 Une source d'abord : FRED, pour les taux et l'inflation. Cron, Zod, stockage, fraîcheur.
@@ -579,9 +603,9 @@ ils ont besoin de trois clôtures d'historique avant que leurs alertes puissent 
 
 **Étape 4 — Confort.**
 Mode comparaison de l'onglet Macro, graphiques de séries, recherche dans l'archive,
-export d'une édition en PDF. **Moteur d'alertes** : une fois les données automatiques en
+export d'une note en PDF. **Moteur d'alertes** : une fois les données automatiques en
 place, un contrôle quotidien post-clôture évalue les règles, applique la période de silence,
-et ouvre un brouillon d'édition spéciale pré-rempli. Il notifie, il ne rédige pas.
+et ouvre un brouillon de note spéciale pré-rempli. Il notifie, il ne rédige pas.
 Les règles sont dans un fichier de configuration éditable, pas en dur dans le code.
 
 **Étape 5 — La veille.**
@@ -599,7 +623,7 @@ Ne pas commencer par l'étape 3 ni par l'étape 5.
 - Aucune clé d'API dans le repo, `.env.local` dans `.gitignore` au premier commit
 - Aucune donnée inventée : si une valeur manque, l'interface le dit
 - Tests sur la logique de filtrage par zone, le calcul de performance YTD, la validation des
-  blocs obligatoires selon le type d'édition, le rattachement des spéciales à leur semaine
+  blocs obligatoires selon le type de note, le rattachement des spéciales à leur semaine
   ISO, et **le moteur d'alertes** : franchissement de seuil, fenêtre glissante, période de
   silence, calcul des spreads, gestion des clôtures manquantes. C'est la logique la plus
   facile à casser sans s'en apercevoir. Le reste se vérifie à l'œil.
