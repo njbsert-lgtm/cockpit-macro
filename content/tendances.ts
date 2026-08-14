@@ -29,6 +29,12 @@ export const TRENDS: Trend[] = [
       "status": "maintient",
       "statusHistory": [
         {
+          "date": "2026-06-24",
+          "status": "renforce",
+          "editionSlug": "2026-S26-E1",
+          "why": "Deux tankers déroutés à l'approche d'Ormuz : la prime cesse de porter sur une menace pour porter sur un flux réellement contraint."
+        },
+        {
           "date": "2026-07-05",
           "status": "renforce",
           "editionSlug": "2026-S27",
@@ -70,6 +76,12 @@ export const TRENDS: Trend[] = [
       "status": "renforce",
       "statusHistory": [
         {
+          "date": "2026-06-14",
+          "status": "maintient",
+          "editionSlug": "2026-S24",
+          "why": "Le choc énergétique s'installe mais le cœur d'inflation décélère encore : la thèse est posée sans être confirmée."
+        },
+        {
           "date": "2026-07-05",
           "status": "maintient",
           "editionSlug": "2026-S27",
@@ -101,6 +113,12 @@ export const TRENDS: Trend[] = [
       ],
       "status": "maintient",
       "statusHistory": [
+        {
+          "date": "2026-06-28",
+          "status": "maintient",
+          "editionSlug": "2026-S26",
+          "why": "Thèse établie avant la saison de résultats du T2 : les bénéfices sont supposés porter le marché, pas encore vérifiés."
+        },
         {
           "date": "2026-07-19",
           "status": "renforce",

@@ -12,206 +12,274 @@ export const SCENARIO_VERSIONS: ScenarioVersion[] = [
     {
       "likelihoodChangedFrom": null,
       "why": "",
-      "driverId": "rates",
-      "branchId": "rates-statu-quo",
+      "driverId": "ai",
+      "branchId": "ai-accelere",
       "version": 1,
       "date": "2026-07-05",
       "editionSlug": "2026-S27",
-      "likelihood": "central",
-      "thesis": "Statu quo prolongé : la Fed reste en attente, ni hausse ni baisse, le temps de voir si le choc pétrolier se propage aux anticipations d'inflation.",
+      "likelihood": "moderee",
+      "thesis": "L'adoption se diffuse au-delà des fournisseurs d'infrastructure, les entreprises utilisatrices montrent des gains de marge mesurables — le cycle passerait de « dépense spéculative » à « investissement à retour prouvé ».",
       "impacts": {
         "eq": {
           "direction": "up",
-          "label": "Hausse modérée",
-          "text": "Les bénéfices portent le marché sans extension de multiples."
-        },
-        "fi": {
-          "direction": "flat",
-          "label": "Sans direction",
-          "text": "Le 10 ans reste ancré, le portage rémunère plus que la duration longue."
-        },
-        "fx": {
-          "direction": "flat",
-          "label": "Dollar ferme",
-          "text": "Aucun choc de politique monétaire dans un sens ou l'autre."
-        },
-        "cm": {
-          "direction": "flat",
-          "label": "Volatiles, sans tendance",
-          "text": "Le pétrole reste piloté par Ormuz, pas par la Fed."
-        }
-      },
-      "watchSignals": "Le cœur d'inflation continue-t-il de décélérer pendant que l'inflation totale reste élevée ?"
-    },
-    {
-      "likelihoodChangedFrom": null,
-      "why": "",
-      "driverId": "rates",
-      "branchId": "rates-statu-quo",
-      "version": 2,
-      "date": "2026-08-09",
-      "editionSlug": "2026-S32",
-      "likelihood": "central",
-      "thesis": "Statu quo prolongé reste central, mais la marge s'est réduite des deux côtés : la branche hausse et la branche baisse ont toutes deux bougé cette semaine, resserrant l'intervalle autour du statu quo sans le remettre en cause.",
-      "impacts": {
-        "eq": {
-          "direction": "up",
-          "label": "Hausse modérée",
-          "text": "Inchangé : les bénéfices portent toujours le marché."
-        },
-        "fi": {
-          "direction": "flat",
-          "label": "Sans direction",
-          "text": "Le 10 ans reste entre 4,4 et 4,9 %, comme anticipé."
-        },
-        "fx": {
-          "direction": "flat",
-          "label": "Dollar ferme",
-          "text": "DXY toujours proche de 100, cohérent avec la thèse initiale."
-        },
-        "cm": {
-          "direction": "flat",
-          "label": "Volatiles, sans tendance",
-          "text": "Toujours piloté par Ormuz plutôt que par la Fed."
-        }
-      },
-      "watchSignals": "Le rapport d'emploi d'août — un ralentissement net ferait basculer la lecture vers la branche baisse."
-    },
-    {
-      "likelihoodChangedFrom": null,
-      "why": "",
-      "driverId": "rates",
-      "branchId": "rates-hausse",
-      "version": 1,
-      "date": "2026-07-05",
-      "editionSlug": "2026-S27",
-      "likelihood": "faible",
-      "thesis": "Une hausse nécessiterait que le choc pétrolier commence à désancrer les anticipations d'inflation — pas observé à ce stade.",
-      "impacts": {
-        "eq": {
-          "direction": "down",
-          "label": "Compression des multiples",
-          "text": "Un taux réel plus élevé pénalise mécaniquement les flux lointains."
+          "label": "Hausse forte, élargie",
+          "text": "Le leadership s'étend au-delà des semi-conducteurs."
         },
         "fi": {
           "direction": "down",
-          "label": "Baisse",
-          "text": "Toute la courbe se tend, la partie longue souffre le plus."
+          "label": "Sous pression",
+          "text": "Taux neutre plus élevé, émission massive pour financer le capex."
         },
         "fx": {
           "direction": "up",
           "label": "Dollar plus fort",
-          "text": "Un resserrement inattendu attire les flux de rendement."
+          "text": "Les capitaux se concentrent sur le marché américain."
+        },
+        "cm": {
+          "direction": "up",
+          "label": "Cuivre et électricité",
+          "text": "Le goulet d'étranglement n'est plus la puce mais le mégawatt."
+        }
+      },
+      "watchSignals": "Revenus cloud et carnets de commandes contractés, marges opérationnelles hors tech, enquêtes de productivité du BLS."
+    },
+    {
+      "likelihoodChangedFrom": null,
+      "why": "",
+      "driverId": "ai",
+      "branchId": "ai-decoit",
+      "version": 1,
+      "date": "2026-07-05",
+      "editionSlug": "2026-S27",
+      "likelihood": "faible",
+      "thesis": "Les entreprises utilisatrices ne parviennent pas à démontrer un retour sur investissement, les grands acheteurs de compute révisent leurs dépenses à la baisse. Sans coussin de valorisation, la correction serait portée intégralement par les multiples.",
+      "impacts": {
+        "eq": {
+          "direction": "down",
+          "label": "Baisse forte",
+          "text": "Correction concentrée sur semi-conducteurs et infrastructure."
+        },
+        "fi": {
+          "direction": "up",
+          "label": "Hausse",
+          "text": "Enfin une couverture qui fonctionne — choc de demande, pas d'offre."
+        },
+        "fx": {
+          "direction": "flat",
+          "label": "Yen plus fort",
+          "text": "Aversion au risque classique."
+        },
+        "cm": {
+          "direction": "down",
+          "label": "Cuivre en baisse",
+          "text": "Le cuivre perd sa prime IA."
+        }
+      },
+      "watchSignals": "Révision de capex d'un grand acheteur de compute, annulations dans les carnets de commandes plutôt que reports."
+    },
+    {
+      "driverId": "ai",
+      "branchId": "ai-plafonne",
+      "version": 1,
+      "date": "2026-06-28",
+      "editionSlug": "2026-S26",
+      "likelihood": "central",
+      "likelihoodChangedFrom": null,
+      "why": "",
+      "thesis": "Les fournisseurs d'infrastructure délivrent, mais les dépenses cessent d'accélérer. Hypothèse de travail : la saison de résultats du T2 n'a pas commencé.",
+      "impacts": {
+        "eq": {
+          "direction": "flat",
+          "label": "Hausse faible, dispersée",
+          "text": "Le marché avance au rythme des bénéfices, sans extension de multiples."
+        },
+        "fi": {
+          "direction": "flat",
+          "label": "Sans direction",
+          "text": "Les taux restent pilotés par le pétrole et la Fed."
+        },
+        "fx": {
+          "direction": "flat",
+          "label": "Sans direction",
+          "text": "Aucun flux dominant lié à l'IA."
         },
         "cm": {
           "direction": "flat",
-          "label": "Ambigu",
-          "text": "L'or est tiraillé entre taux réels en hausse et crédibilité anti-inflation renforcée."
+          "label": "Soutien maintenu",
+          "text": "Le capex déjà engagé continue de tirer cuivre et électricité."
         }
       },
-      "watchSignals": "Une inflation totale qui repasse au-dessus de 4 % sans justification énergétique évidente."
+      "watchSignals": "Les premières publications de juillet, et l'écart entre capex annoncé et capex décaissé."
+    },
+    {
+      "likelihoodChangedFrom": null,
+      "why": "",
+      "driverId": "ai",
+      "branchId": "ai-plafonne",
+      "version": 2,
+      "date": "2026-07-05",
+      "editionSlug": "2026-S27",
+      "likelihood": "central",
+      "thesis": "Les fournisseurs d'infrastructure continuent de délivrer, mais les dépenses cessent d'accélérer. La croissance des bénéfices reste forte sans plus surprendre à la hausse.",
+      "impacts": {
+        "eq": {
+          "direction": "flat",
+          "label": "Hausse faible, dispersée",
+          "text": "Le marché avance au rythme des bénéfices, sans extension de multiples."
+        },
+        "fi": {
+          "direction": "flat",
+          "label": "Sans direction",
+          "text": "Les taux restent pilotés par le pétrole et la Fed."
+        },
+        "fx": {
+          "direction": "flat",
+          "label": "Sans direction",
+          "text": "Aucun flux dominant lié à l'IA."
+        },
+        "cm": {
+          "direction": "flat",
+          "label": "Soutien maintenu",
+          "text": "Le capex déjà engagé continue de tirer cuivre et électricité."
+        }
+      },
+      "watchSignals": "La décélération du taux de croissance du carnet de commandes, pas son niveau absolu."
+    },
+    {
+      "likelihoodChangedFrom": null,
+      "why": "La saison de résultats confirme des surprises de BPA record sans signe net d'accélération du capex — exactement la signature attendue de cette branche.",
+      "driverId": "ai",
+      "branchId": "ai-plafonne",
+      "version": 3,
+      "date": "2026-08-09",
+      "editionSlug": "2026-S32",
+      "likelihood": "central",
+      "thesis": "Inchangé : 86 % de surprises positives de BPA valident la partie « profits tiennent » ; aucune annonce de révision à la hausse des budgets de compute ne vient déplacer le curseur vers la branche accélération.",
+      "impacts": {
+        "eq": {
+          "direction": "flat",
+          "label": "Hausse faible, dispersée",
+          "text": "Inchangé."
+        },
+        "fi": {
+          "direction": "flat",
+          "label": "Sans direction",
+          "text": "Inchangé."
+        },
+        "fx": {
+          "direction": "flat",
+          "label": "Sans direction",
+          "text": "Inchangé."
+        },
+        "cm": {
+          "direction": "flat",
+          "label": "Soutien maintenu",
+          "text": "Inchangé."
+        }
+      },
+      "watchSignals": "L'écart entre capex annoncé et capex décaissé sur les prochains trimestres."
+    },
+    {
+      "driverId": "iran",
+      "branchId": "iran-durcissement",
+      "version": 1,
+      "date": "2026-06-24",
+      "editionSlug": "2026-S26-E1",
+      "likelihood": "faible",
+      "likelihoodChangedFrom": null,
+      "why": "",
+      "thesis": "Escalade : blocage effectif du détroit, sortie de production du Golfe. Le déroutement de deux tankers ouvre la branche sans en faire le scénario central.",
+      "impacts": {
+        "eq": {
+          "direction": "down",
+          "label": "Baisse forte",
+          "text": "Compression simultanée des multiples et des marges."
+        },
+        "fi": {
+          "direction": "down",
+          "label": "Baisse",
+          "text": "Le piège du choc d'offre : taux et actions baissent ensemble."
+        },
+        "fx": {
+          "direction": "up",
+          "label": "Dollar plus fort",
+          "text": "Refuge et rendement se combinent."
+        },
+        "cm": {
+          "direction": "up",
+          "label": "Hausse forte",
+          "text": "Brent au-delà de 120 $."
+        }
+      },
+      "watchSignals": "Une suspension complète des transits, des frappes sur des terminaux d'exportation, un retrait des assureurs maritimes."
+    },
+    {
+      "likelihoodChangedFrom": null,
+      "why": "",
+      "driverId": "iran",
+      "branchId": "iran-durcissement",
+      "version": 2,
+      "date": "2026-07-05",
+      "editionSlug": "2026-S27",
+      "likelihood": "faible",
+      "thesis": "Escalade : frappes élargies, sortie de production du Golfe. Le Brent viserait 120 $ et au-delà — la stagflation véritable.",
+      "impacts": {
+        "eq": {
+          "direction": "down",
+          "label": "Baisse forte",
+          "text": "Compression simultanée des multiples et des marges."
+        },
+        "fi": {
+          "direction": "down",
+          "label": "Baisse",
+          "text": "Le piège du choc d'offre : taux et actions baissent ensemble."
+        },
+        "fx": {
+          "direction": "up",
+          "label": "Dollar plus fort",
+          "text": "Refuge et rendement se combinent."
+        },
+        "cm": {
+          "direction": "up",
+          "label": "Hausse forte",
+          "text": "Brent au-delà de 120 $."
+        }
+      },
+      "watchSignals": "Frappes sur des terminaux d'exportation, sorties d'assureurs maritimes, arrêts de production annoncés."
     },
     {
       "likelihoodChangedFrom": "faible",
-      "why": "La Fed de Kevin Warsh affiche trois dissidences pour une hausse dès la réunion de juillet, et J.P. Morgan a révisé son scénario central vers une première hausse en décembre. Le changement n'est pas dans les chiffres d'inflation mais dans la fonction de réaction de la Fed elle-même.",
-      "driverId": "rates",
-      "branchId": "rates-hausse",
-      "version": 2,
-      "date": "2026-08-09",
-      "editionSlug": "2026-S32",
+      "why": "Le blocage physique de 48 h à l'entrée du détroit, même bref et sans frappe directe, change la distribution des risques par rapport à une simple rumeur non matérialisée.",
+      "driverId": "iran",
+      "branchId": "iran-durcissement",
+      "version": 3,
+      "date": "2026-07-09",
+      "editionSlug": "2026-S28-E1",
       "likelihood": "moderee",
-      "thesis": "Une Fed prête à monter dans une économie molle pour défendre sa crédibilité est désormais documentée par le vote de juillet, pas seulement une hypothèse. Le scénario central reste le statu quo, mais l'écart s'est réduit.",
+      "thesis": "Un premier épisode de blocage physique avéré rend le scénario de durcissement moins hypothétique — sans en faire le scénario central, qui reste l'enlisement.",
       "impacts": {
         "eq": {
           "direction": "down",
-          "label": "Compression des multiples",
-          "text": "Plafonne les multiples, pentifie la courbe — inchangé sur le fond."
+          "label": "Baisse forte",
+          "text": "Inchangé sur le fond."
         },
         "fi": {
           "direction": "down",
           "label": "Baisse",
-          "text": "La prime de terme se reconstitue déjà sur la partie longue."
+          "text": "Inchangé sur le fond."
         },
         "fx": {
           "direction": "up",
           "label": "Dollar plus fort",
-          "text": "Le marché commence à price une partie du scénario décembre."
+          "text": "Inchangé sur le fond."
         },
         "cm": {
-          "direction": "flat",
-          "label": "Ambigu",
-          "text": "Inchangé : taux réels contre crédibilité anti-inflation."
-        }
-      },
-      "watchSignals": "Jackson Hole fin août — un ton explicitement plus dur de Kevin Warsh confirmerait la trajectoire vers décembre."
-    },
-    {
-      "likelihoodChangedFrom": null,
-      "why": "",
-      "driverId": "rates",
-      "branchId": "rates-baisses",
-      "version": 1,
-      "date": "2026-07-05",
-      "editionSlug": "2026-S27",
-      "likelihood": "moderee",
-      "thesis": "Un retour aux baisses suppose soit un accord vérifié sur Ormuz qui fait refluer l'inflation totale, soit une détérioration nette du marché du travail.",
-      "impacts": {
-        "eq": {
           "direction": "up",
           "label": "Hausse forte",
-          "text": "Rotation vers les valeurs sensibles à la duration et à la consommation."
-        },
-        "fi": {
-          "direction": "up",
-          "label": "Hausse",
-          "text": "Meilleur scénario pour la duration longue."
-        },
-        "fx": {
-          "direction": "down",
-          "label": "Dollar plus faible",
-          "text": "Fin de la prime de rendement relative."
-        },
-        "cm": {
-          "direction": "down",
-          "label": "Baisse pour l'énergie",
-          "text": "Sauf choc de demande, où l'or profiterait des taux réels plus bas."
-        }
-      },
-      "watchSignals": "Un accord vérifié sur Ormuz ou un rapport d'emploi américain nettement négatif."
-    },
-    {
-      "likelihoodChangedFrom": "moderee",
-      "why": "Le CPI de juillet confirme une inflation totale à 3,4 %, sans recul, malgré un cœur qui décélère. Tant que le Brent reste au-dessus de 85 $, la Fed n'a structurellement aucune marge pour baisser, quelle que soit l'évolution de l'emploi.",
-      "driverId": "rates",
-      "branchId": "rates-baisses",
-      "version": 2,
-      "date": "2026-08-09",
-      "editionSlug": "2026-S32",
-      "likelihood": "faible",
-      "thesis": "Le canal qui aurait pu déclencher cette branche (un accord sur Ormuz) ne s'est pas matérialisé ; le second canal (choc de demande via l'emploi) reste ambigu après le rapport de juillet. La branche recule au profit du statu quo.",
-      "impacts": {
-        "eq": {
-          "direction": "up",
-          "label": "Hausse forte",
-          "text": "Inchangé si le scénario se matérialisait, mais probabilité réduite."
-        },
-        "fi": {
-          "direction": "up",
-          "label": "Hausse",
-          "text": "Inchangé sur le fond."
-        },
-        "fx": {
-          "direction": "down",
-          "label": "Dollar plus faible",
-          "text": "Inchangé sur le fond."
-        },
-        "cm": {
-          "direction": "down",
-          "label": "Baisse pour l'énergie",
           "text": "Inchangé sur le fond."
         }
       },
-      "watchSignals": "Le rapport d'emploi d'août reste le signal le plus susceptible de faire remonter cette branche."
+      "watchSignals": "Une deuxième suspension des transits confirmerait la trajectoire ; une reprise durable sans nouvel épisode l'infirmerait."
     },
     {
       "likelihoodChangedFrom": null,
@@ -316,207 +384,309 @@ export const SCENARIO_VERSIONS: ScenarioVersion[] = [
       "watchSignals": "Transits quotidiens effectifs, primes d'assurance de guerre en baisse, retrait effectif du blocus naval."
     },
     {
+      "driverId": "rates",
+      "branchId": "rates-baisses",
+      "version": 1,
+      "date": "2026-06-14",
+      "editionSlug": "2026-S24",
+      "likelihood": "moderee",
       "likelihoodChangedFrom": null,
       "why": "",
-      "driverId": "iran",
-      "branchId": "iran-durcissement",
-      "version": 1,
-      "date": "2026-07-05",
-      "editionSlug": "2026-S27",
-      "likelihood": "faible",
-      "thesis": "Escalade : frappes élargies, sortie de production du Golfe. Le Brent viserait 120 $ et au-delà — la stagflation véritable.",
+      "thesis": "Un retour aux baisses suppose que le choc énergétique reste contenu et que le marché du travail se détériore franchement.",
       "impacts": {
         "eq": {
-          "direction": "down",
-          "label": "Baisse forte",
-          "text": "Compression simultanée des multiples et des marges."
-        },
-        "fi": {
-          "direction": "down",
-          "label": "Baisse",
-          "text": "Le piège du choc d'offre : taux et actions baissent ensemble."
-        },
-        "fx": {
-          "direction": "up",
-          "label": "Dollar plus fort",
-          "text": "Refuge et rendement se combinent."
-        },
-        "cm": {
           "direction": "up",
           "label": "Hausse forte",
-          "text": "Brent au-delà de 120 $."
-        }
-      },
-      "watchSignals": "Frappes sur des terminaux d'exportation, sorties d'assureurs maritimes, arrêts de production annoncés."
-    },
-    {
-      "likelihoodChangedFrom": "faible",
-      "why": "Le blocage physique de 48 h à l'entrée du détroit, même bref et sans frappe directe, change la distribution des risques par rapport à une simple rumeur non matérialisée.",
-      "driverId": "iran",
-      "branchId": "iran-durcissement",
-      "version": 2,
-      "date": "2026-07-09",
-      "editionSlug": "2026-S28-E1",
-      "likelihood": "moderee",
-      "thesis": "Un premier épisode de blocage physique avéré rend le scénario de durcissement moins hypothétique — sans en faire le scénario central, qui reste l'enlisement.",
-      "impacts": {
-        "eq": {
-          "direction": "down",
-          "label": "Baisse forte",
-          "text": "Inchangé sur le fond."
-        },
-        "fi": {
-          "direction": "down",
-          "label": "Baisse",
-          "text": "Inchangé sur le fond."
-        },
-        "fx": {
-          "direction": "up",
-          "label": "Dollar plus fort",
-          "text": "Inchangé sur le fond."
-        },
-        "cm": {
-          "direction": "up",
-          "label": "Hausse forte",
-          "text": "Inchangé sur le fond."
-        }
-      },
-      "watchSignals": "Une deuxième suspension des transits confirmerait la trajectoire ; une reprise durable sans nouvel épisode l'infirmerait."
-    },
-    {
-      "likelihoodChangedFrom": null,
-      "why": "",
-      "driverId": "ai",
-      "branchId": "ai-plafonne",
-      "version": 1,
-      "date": "2026-07-05",
-      "editionSlug": "2026-S27",
-      "likelihood": "central",
-      "thesis": "Les fournisseurs d'infrastructure continuent de délivrer, mais les dépenses cessent d'accélérer. La croissance des bénéfices reste forte sans plus surprendre à la hausse.",
-      "impacts": {
-        "eq": {
-          "direction": "flat",
-          "label": "Hausse faible, dispersée",
-          "text": "Le marché avance au rythme des bénéfices, sans extension de multiples."
-        },
-        "fi": {
-          "direction": "flat",
-          "label": "Sans direction",
-          "text": "Les taux restent pilotés par le pétrole et la Fed."
-        },
-        "fx": {
-          "direction": "flat",
-          "label": "Sans direction",
-          "text": "Aucun flux dominant lié à l'IA."
-        },
-        "cm": {
-          "direction": "flat",
-          "label": "Soutien maintenu",
-          "text": "Le capex déjà engagé continue de tirer cuivre et électricité."
-        }
-      },
-      "watchSignals": "La décélération du taux de croissance du carnet de commandes, pas son niveau absolu."
-    },
-    {
-      "likelihoodChangedFrom": null,
-      "why": "La saison de résultats confirme des surprises de BPA record sans signe net d'accélération du capex — exactement la signature attendue de cette branche.",
-      "driverId": "ai",
-      "branchId": "ai-plafonne",
-      "version": 2,
-      "date": "2026-08-09",
-      "editionSlug": "2026-S32",
-      "likelihood": "central",
-      "thesis": "Inchangé : 86 % de surprises positives de BPA valident la partie « profits tiennent » ; aucune annonce de révision à la hausse des budgets de compute ne vient déplacer le curseur vers la branche accélération.",
-      "impacts": {
-        "eq": {
-          "direction": "flat",
-          "label": "Hausse faible, dispersée",
-          "text": "Inchangé."
-        },
-        "fi": {
-          "direction": "flat",
-          "label": "Sans direction",
-          "text": "Inchangé."
-        },
-        "fx": {
-          "direction": "flat",
-          "label": "Sans direction",
-          "text": "Inchangé."
-        },
-        "cm": {
-          "direction": "flat",
-          "label": "Soutien maintenu",
-          "text": "Inchangé."
-        }
-      },
-      "watchSignals": "L'écart entre capex annoncé et capex décaissé sur les prochains trimestres."
-    },
-    {
-      "likelihoodChangedFrom": null,
-      "why": "",
-      "driverId": "ai",
-      "branchId": "ai-accelere",
-      "version": 1,
-      "date": "2026-07-05",
-      "editionSlug": "2026-S27",
-      "likelihood": "moderee",
-      "thesis": "L'adoption se diffuse au-delà des fournisseurs d'infrastructure, les entreprises utilisatrices montrent des gains de marge mesurables — le cycle passerait de « dépense spéculative » à « investissement à retour prouvé ».",
-      "impacts": {
-        "eq": {
-          "direction": "up",
-          "label": "Hausse forte, élargie",
-          "text": "Le leadership s'étend au-delà des semi-conducteurs."
-        },
-        "fi": {
-          "direction": "down",
-          "label": "Sous pression",
-          "text": "Taux neutre plus élevé, émission massive pour financer le capex."
-        },
-        "fx": {
-          "direction": "up",
-          "label": "Dollar plus fort",
-          "text": "Les capitaux se concentrent sur le marché américain."
-        },
-        "cm": {
-          "direction": "up",
-          "label": "Cuivre et électricité",
-          "text": "Le goulet d'étranglement n'est plus la puce mais le mégawatt."
-        }
-      },
-      "watchSignals": "Revenus cloud et carnets de commandes contractés, marges opérationnelles hors tech, enquêtes de productivité du BLS."
-    },
-    {
-      "likelihoodChangedFrom": null,
-      "why": "",
-      "driverId": "ai",
-      "branchId": "ai-decoit",
-      "version": 1,
-      "date": "2026-07-05",
-      "editionSlug": "2026-S27",
-      "likelihood": "faible",
-      "thesis": "Les entreprises utilisatrices ne parviennent pas à démontrer un retour sur investissement, les grands acheteurs de compute révisent leurs dépenses à la baisse. Sans coussin de valorisation, la correction serait portée intégralement par les multiples.",
-      "impacts": {
-        "eq": {
-          "direction": "down",
-          "label": "Baisse forte",
-          "text": "Correction concentrée sur semi-conducteurs et infrastructure."
+          "text": "Rotation vers les valeurs sensibles à la duration et à la consommation."
         },
         "fi": {
           "direction": "up",
           "label": "Hausse",
-          "text": "Enfin une couverture qui fonctionne — choc de demande, pas d'offre."
+          "text": "Meilleur scénario pour la duration longue."
         },
         "fx": {
-          "direction": "flat",
-          "label": "Yen plus fort",
-          "text": "Aversion au risque classique."
+          "direction": "down",
+          "label": "Dollar plus faible",
+          "text": "Fin de la prime de rendement relative."
         },
         "cm": {
           "direction": "down",
-          "label": "Cuivre en baisse",
-          "text": "Le cuivre perd sa prime IA."
+          "label": "Baisse pour l'énergie",
+          "text": "Sauf choc de demande, où l'or profiterait des taux réels plus bas."
         }
       },
-      "watchSignals": "Révision de capex d'un grand acheteur de compute, annulations dans les carnets de commandes plutôt que reports."
+      "watchSignals": "Un rapport d'emploi américain nettement négatif, ou un reflux rapide du Brent."
+    },
+    {
+      "likelihoodChangedFrom": null,
+      "why": "",
+      "driverId": "rates",
+      "branchId": "rates-baisses",
+      "version": 2,
+      "date": "2026-07-05",
+      "editionSlug": "2026-S27",
+      "likelihood": "moderee",
+      "thesis": "Un retour aux baisses suppose soit un accord vérifié sur Ormuz qui fait refluer l'inflation totale, soit une détérioration nette du marché du travail.",
+      "impacts": {
+        "eq": {
+          "direction": "up",
+          "label": "Hausse forte",
+          "text": "Rotation vers les valeurs sensibles à la duration et à la consommation."
+        },
+        "fi": {
+          "direction": "up",
+          "label": "Hausse",
+          "text": "Meilleur scénario pour la duration longue."
+        },
+        "fx": {
+          "direction": "down",
+          "label": "Dollar plus faible",
+          "text": "Fin de la prime de rendement relative."
+        },
+        "cm": {
+          "direction": "down",
+          "label": "Baisse pour l'énergie",
+          "text": "Sauf choc de demande, où l'or profiterait des taux réels plus bas."
+        }
+      },
+      "watchSignals": "Un accord vérifié sur Ormuz ou un rapport d'emploi américain nettement négatif."
+    },
+    {
+      "likelihoodChangedFrom": "moderee",
+      "why": "Le CPI de juillet confirme une inflation totale à 3,4 %, sans recul, malgré un cœur qui décélère. Tant que le Brent reste au-dessus de 85 $, la Fed n'a structurellement aucune marge pour baisser, quelle que soit l'évolution de l'emploi.",
+      "driverId": "rates",
+      "branchId": "rates-baisses",
+      "version": 3,
+      "date": "2026-08-09",
+      "editionSlug": "2026-S32",
+      "likelihood": "faible",
+      "thesis": "Le canal qui aurait pu déclencher cette branche (un accord sur Ormuz) ne s'est pas matérialisé ; le second canal (choc de demande via l'emploi) reste ambigu après le rapport de juillet. La branche recule au profit du statu quo.",
+      "impacts": {
+        "eq": {
+          "direction": "up",
+          "label": "Hausse forte",
+          "text": "Inchangé si le scénario se matérialisait, mais probabilité réduite."
+        },
+        "fi": {
+          "direction": "up",
+          "label": "Hausse",
+          "text": "Inchangé sur le fond."
+        },
+        "fx": {
+          "direction": "down",
+          "label": "Dollar plus faible",
+          "text": "Inchangé sur le fond."
+        },
+        "cm": {
+          "direction": "down",
+          "label": "Baisse pour l'énergie",
+          "text": "Inchangé sur le fond."
+        }
+      },
+      "watchSignals": "Le rapport d'emploi d'août reste le signal le plus susceptible de faire remonter cette branche."
+    },
+    {
+      "driverId": "rates",
+      "branchId": "rates-hausse",
+      "version": 1,
+      "date": "2026-06-14",
+      "editionSlug": "2026-S24",
+      "likelihood": "faible",
+      "likelihoodChangedFrom": null,
+      "why": "",
+      "thesis": "Une hausse supposerait un désancrage des anticipations d'inflation que rien n'indique à ce stade.",
+      "impacts": {
+        "eq": {
+          "direction": "down",
+          "label": "Compression des multiples",
+          "text": "Un taux réel plus élevé pénalise mécaniquement les flux lointains."
+        },
+        "fi": {
+          "direction": "down",
+          "label": "Baisse",
+          "text": "Toute la courbe se tend, la partie longue souffre le plus."
+        },
+        "fx": {
+          "direction": "up",
+          "label": "Dollar plus fort",
+          "text": "Un resserrement inattendu attire les flux de rendement."
+        },
+        "cm": {
+          "direction": "flat",
+          "label": "Ambigu",
+          "text": "L'or est tiraillé entre taux réels en hausse et crédibilité anti-inflation renforcée."
+        }
+      },
+      "watchSignals": "Des anticipations d'inflation à cinq ans qui se tendent sans justification énergétique."
+    },
+    {
+      "likelihoodChangedFrom": null,
+      "why": "",
+      "driverId": "rates",
+      "branchId": "rates-hausse",
+      "version": 2,
+      "date": "2026-07-05",
+      "editionSlug": "2026-S27",
+      "likelihood": "faible",
+      "thesis": "Une hausse nécessiterait que le choc pétrolier commence à désancrer les anticipations d'inflation — pas observé à ce stade.",
+      "impacts": {
+        "eq": {
+          "direction": "down",
+          "label": "Compression des multiples",
+          "text": "Un taux réel plus élevé pénalise mécaniquement les flux lointains."
+        },
+        "fi": {
+          "direction": "down",
+          "label": "Baisse",
+          "text": "Toute la courbe se tend, la partie longue souffre le plus."
+        },
+        "fx": {
+          "direction": "up",
+          "label": "Dollar plus fort",
+          "text": "Un resserrement inattendu attire les flux de rendement."
+        },
+        "cm": {
+          "direction": "flat",
+          "label": "Ambigu",
+          "text": "L'or est tiraillé entre taux réels en hausse et crédibilité anti-inflation renforcée."
+        }
+      },
+      "watchSignals": "Une inflation totale qui repasse au-dessus de 4 % sans justification énergétique évidente."
+    },
+    {
+      "likelihoodChangedFrom": "faible",
+      "why": "La Fed de Kevin Warsh affiche trois dissidences pour une hausse dès la réunion de juillet, et J.P. Morgan a révisé son scénario central vers une première hausse en décembre. Le changement n'est pas dans les chiffres d'inflation mais dans la fonction de réaction de la Fed elle-même.",
+      "driverId": "rates",
+      "branchId": "rates-hausse",
+      "version": 3,
+      "date": "2026-08-09",
+      "editionSlug": "2026-S32",
+      "likelihood": "moderee",
+      "thesis": "Une Fed prête à monter dans une économie molle pour défendre sa crédibilité est désormais documentée par le vote de juillet, pas seulement une hypothèse. Le scénario central reste le statu quo, mais l'écart s'est réduit.",
+      "impacts": {
+        "eq": {
+          "direction": "down",
+          "label": "Compression des multiples",
+          "text": "Plafonne les multiples, pentifie la courbe — inchangé sur le fond."
+        },
+        "fi": {
+          "direction": "down",
+          "label": "Baisse",
+          "text": "La prime de terme se reconstitue déjà sur la partie longue."
+        },
+        "fx": {
+          "direction": "up",
+          "label": "Dollar plus fort",
+          "text": "Le marché commence à price une partie du scénario décembre."
+        },
+        "cm": {
+          "direction": "flat",
+          "label": "Ambigu",
+          "text": "Inchangé : taux réels contre crédibilité anti-inflation."
+        }
+      },
+      "watchSignals": "Jackson Hole fin août — un ton explicitement plus dur de Kevin Warsh confirmerait la trajectoire vers décembre."
+    },
+    {
+      "driverId": "rates",
+      "branchId": "rates-statu-quo",
+      "version": 1,
+      "date": "2026-06-14",
+      "editionSlug": "2026-S24",
+      "likelihood": "central",
+      "likelihoodChangedFrom": null,
+      "why": "",
+      "thesis": "Statu quo prolongé : la Fed a mis fin à son cycle de baisse mais n'a aucun motif de remonter tant que le cœur d'inflation décélère.",
+      "impacts": {
+        "eq": {
+          "direction": "up",
+          "label": "Hausse modérée",
+          "text": "Les bénéfices portent le marché sans extension de multiples."
+        },
+        "fi": {
+          "direction": "flat",
+          "label": "Sans direction",
+          "text": "Le 10 ans reste ancré, le portage rémunère plus que la duration longue."
+        },
+        "fx": {
+          "direction": "flat",
+          "label": "Dollar ferme",
+          "text": "Aucun choc de politique monétaire dans un sens ou l'autre."
+        },
+        "cm": {
+          "direction": "flat",
+          "label": "Volatiles, sans tendance",
+          "text": "Le pétrole reste piloté par Ormuz, pas par la Fed."
+        }
+      },
+      "watchSignals": "Le cœur d'inflation continue-t-il de décélérer pendant que l'inflation totale monte avec l'énergie ?"
+    },
+    {
+      "likelihoodChangedFrom": null,
+      "why": "",
+      "driverId": "rates",
+      "branchId": "rates-statu-quo",
+      "version": 2,
+      "date": "2026-07-05",
+      "editionSlug": "2026-S27",
+      "likelihood": "central",
+      "thesis": "Statu quo prolongé : la Fed reste en attente, ni hausse ni baisse, le temps de voir si le choc pétrolier se propage aux anticipations d'inflation.",
+      "impacts": {
+        "eq": {
+          "direction": "up",
+          "label": "Hausse modérée",
+          "text": "Les bénéfices portent le marché sans extension de multiples."
+        },
+        "fi": {
+          "direction": "flat",
+          "label": "Sans direction",
+          "text": "Le 10 ans reste ancré, le portage rémunère plus que la duration longue."
+        },
+        "fx": {
+          "direction": "flat",
+          "label": "Dollar ferme",
+          "text": "Aucun choc de politique monétaire dans un sens ou l'autre."
+        },
+        "cm": {
+          "direction": "flat",
+          "label": "Volatiles, sans tendance",
+          "text": "Le pétrole reste piloté par Ormuz, pas par la Fed."
+        }
+      },
+      "watchSignals": "Le cœur d'inflation continue-t-il de décélérer pendant que l'inflation totale reste élevée ?"
+    },
+    {
+      "likelihoodChangedFrom": null,
+      "why": "",
+      "driverId": "rates",
+      "branchId": "rates-statu-quo",
+      "version": 3,
+      "date": "2026-08-09",
+      "editionSlug": "2026-S32",
+      "likelihood": "central",
+      "thesis": "Statu quo prolongé reste central, mais la marge s'est réduite des deux côtés : la branche hausse et la branche baisse ont toutes deux bougé cette semaine, resserrant l'intervalle autour du statu quo sans le remettre en cause.",
+      "impacts": {
+        "eq": {
+          "direction": "up",
+          "label": "Hausse modérée",
+          "text": "Inchangé : les bénéfices portent toujours le marché."
+        },
+        "fi": {
+          "direction": "flat",
+          "label": "Sans direction",
+          "text": "Le 10 ans reste entre 4,4 et 4,9 %, comme anticipé."
+        },
+        "fx": {
+          "direction": "flat",
+          "label": "Dollar ferme",
+          "text": "DXY toujours proche de 100, cohérent avec la thèse initiale."
+        },
+        "cm": {
+          "direction": "flat",
+          "label": "Volatiles, sans tendance",
+          "text": "Toujours piloté par Ormuz plutôt que par la Fed."
+        }
+      },
+      "watchSignals": "Le rapport d'emploi d'août — un ralentissement net ferait basculer la lecture vers la branche baisse."
     }
   ];

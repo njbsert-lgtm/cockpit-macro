@@ -228,11 +228,16 @@ describe("règles inter-fichiers", () => {
 // ---------------------------------------------------------------------------
 
 describe("le corpus réel", () => {
-  it("compile : les 9 éditions passent toutes les règles", () => {
-    const parsed = readEditionSources().map(({ slug, source: raw }) => parseEdition(slug, raw));
-    expect(parsed).toHaveLength(9);
-    const meta = validateEditionChain(parsed);
+  const corpus = () =>
+    readEditionSources().map(({ slug, source: raw }) => parseEdition(slug, raw));
+
+  it("compile : toutes les éditions passent les règles, dans l'ordre chronologique", () => {
+    const meta = validateEditionChain(corpus());
     expect(meta.map((e) => e.slug)).toEqual([
+      "2026-S24",
+      "2026-S26-E1",
+      "2026-S26-E2",
+      "2026-S26",
       "2026-S27",
       "2026-S28-E1",
       "2026-S28",
@@ -245,12 +250,30 @@ describe("le corpus réel", () => {
     ]);
   });
 
-  it("garde les cas dégradés de l'archive : un trou de semaine et une semaine à deux spéciales", () => {
-    const parsed = readEditionSources().map(({ slug, source: raw }) => parseEdition(slug, raw));
-    const weeks = new Set(parsed.map((p) => p.meta.isoWeek));
-    expect(weeks.has("2026-S30")).toBe(false); // le trou
+  it("garde ses trous de semaine — une discipline rompue doit rester visible", () => {
+    const weeks = new Set(corpus().map((p) => p.meta.isoWeek));
+    expect(weeks.has("2026-S25")).toBe(false);
+    expect(weeks.has("2026-S30")).toBe(false);
+  });
 
-    const s32 = parsed.filter((p) => p.meta.kind === "speciale" && p.meta.parentWeek === "2026-S32");
-    expect(s32).toHaveLength(2);
+  it("porte deux semaines à double spéciale", () => {
+    const parsed = corpus();
+    const specialsOf = (week: string) =>
+      parsed.filter((p) => p.meta.kind === "speciale" && p.meta.parentWeek === week);
+    expect(specialsOf("2026-S26")).toHaveLength(2);
+    expect(specialsOf("2026-S32")).toHaveLength(2);
+  });
+
+  it("les éditions rétrospectives couvrent les trois drivers et au moins deux tendances", () => {
+    const retro = corpus().filter((p) =>
+      ["2026-S24", "2026-S26-E1", "2026-S26-E2", "2026-S26"].includes(p.meta.slug),
+    );
+    expect(retro).toHaveLength(4);
+
+    const drivers = new Set(retro.flatMap((p) => p.meta.driverOrder));
+    expect([...drivers].sort()).toEqual(["ai", "iran", "rates"]);
+
+    const trends = new Set(retro.flatMap((p) => p.meta.trendRefs));
+    expect(trends.size).toBeGreaterThanOrEqual(2);
   });
 });
