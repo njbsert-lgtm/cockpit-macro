@@ -1,7 +1,15 @@
-import type { Edition } from "@/lib/types";
+import Link from "next/link";
+import type { Driver, Edition } from "@/lib/types";
 import { formatDateLong } from "@/lib/format";
+import { DriverCards } from "./DriverCards";
 
-export function RegimeHeader({ edition }: { edition: Edition }) {
+export function RegimeHeader({
+  edition,
+  drivers = [],
+}: {
+  edition: Edition;
+  drivers?: Driver[];
+}) {
   return (
     <div className="bg-deep px-4 py-6 text-white md:px-6 md:py-8">
       <div className="mx-auto max-w-content">
@@ -23,6 +31,19 @@ export function RegimeHeader({ edition }: { edition: Edition }) {
             </div>
           ))}
         </dl>
+
+        <DriverCards drivers={drivers} />
+
+        {drivers.length > 0 && (
+          <p className="mt-4 font-mono text-11 text-deep-fg">
+            <Link
+              href="/bulletin/tendances"
+              className="underline decoration-white/40 underline-offset-4 hover:decoration-white"
+            >
+              Voir les tendances de fond →
+            </Link>
+          </p>
+        )}
       </div>
     </div>
   );

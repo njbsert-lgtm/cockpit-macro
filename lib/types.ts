@@ -48,6 +48,34 @@ export type MacroIndicator = {
   nextRelease: string | null;
 };
 
+/**
+ * Ce qu'on saisit à la main pour un driver. Les quatre champs restants du type `Driver`
+ * (`intensityRank`, `dominantBranchId`, `lastRevisedAt`, `lastRevisedIn`) existent déjà
+ * ailleurs dans le contenu : les redemander à l'auteur, c'est garantir qu'ils divergeront à
+ * la première édition publiée sans mise à jour. Ils sont donc dérivés — voir `lib/drivers.ts`.
+ */
+export type DriverInput = {
+  id: string; // 'rates' | 'iran' | 'ai' — extensible : de nouveaux drivers apparaîtront
+  label: string; // 'Taux directeurs'
+  question: string; // 'La Fed reprend-elle son cycle de hausse ?'
+  instrumentRefs: string[]; // les instruments qu'il pilote
+  trendRefs: string[]; // les tendances qu'il alimente OU pourrait invalider
+  zones: Zone[];
+  retiredAt: string | null; // un driver peut cesser d'en être un ; on ne le supprime pas
+};
+
+/**
+ * Un driver est une **incertitude active** qui bifurque en trois branches — à ne pas
+ * confondre avec une tendance de fond, qui est une direction déjà établie. C'est le point
+ * d'entrée de la navigation du Bulletin.
+ */
+export type Driver = DriverInput & {
+  dominantBranchId: string; // dérivé : la branche dont la version courante est 'central'
+  intensityRank: number; // dérivé : position dans le driverOrder de la dernière édition
+  lastRevisedAt: string; // dérivé : date de sa ScenarioVersion la plus récente
+  lastRevisedIn: string; // dérivé : slug de l'édition qui a produit cette révision
+};
+
 export type TrendStatus = "renforce" | "maintient" | "affaiblit" | "invalidee";
 
 export type Trend = {
@@ -63,7 +91,8 @@ export type Trend = {
     editionSlug: string;
     why: string;
   }>;
-  invalidatedBy: string; // ce qui la ferait tomber
+  driverRefs: string[]; // les drivers qui pourraient la faire tomber
+  invalidatedBy: string; // ce qui la ferait tomber, en clair
 };
 
 export type EditionKind = "hebdo" | "speciale";
@@ -85,6 +114,7 @@ export type Edition = {
   regimeStatement: string; // le régime en une phrase, à cette date
   keyIndicators: Array<{ label: string; value: string }>;
   zones: Zone[];
+  driverOrder: string[]; // ordre d'intensité des drivers à cette date, jugement manuel
   trendRefs: string[]; // tendances de fond touchées
   instrumentRefs: string[]; // instruments cités
   sources: Array<{ label: string; url: string }>;
@@ -118,12 +148,15 @@ export type AlertEvent = {
   editionSlug: string | null;
 };
 
-export type ScenarioFamilyId = "rates" | "iran" | "ai";
 export type ScenarioLikelihood = "central" | "moderee" | "faible";
 export type ImpactDirection = "up" | "down" | "flat";
 
+/**
+ * Un scénario n'existe jamais seul : il est toujours la réponse à la question d'un driver.
+ * D'où `driverId`, qui « référence un Driver, jamais une chaîne libre ».
+ */
 export type ScenarioVersion = {
-  familyId: ScenarioFamilyId;
+  driverId: string;
   branchId: string;
   version: number;
   date: string;
