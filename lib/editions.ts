@@ -113,6 +113,7 @@ const frontmatterSchema = z.object({
     .array(z.object({ label: z.string().min(1), value: z.string().min(1) }))
     .min(1),
   zones: z.array(z.enum(ZONES)).min(1),
+  driverOrder: z.array(z.string()).min(1),
   trendRefs: z.array(z.string()).default([]),
   instrumentRefs: z.array(z.string()).default([]),
   sources: z
@@ -271,6 +272,7 @@ export function parseEdition(slug: string, source: string): ParsedEdition {
       regimeStatement: fm.regimeStatement,
       keyIndicators: fm.keyIndicators,
       zones: fm.zones,
+      driverOrder: fm.driverOrder,
       trendRefs: fm.trendRefs,
       instrumentRefs: fm.instrumentRefs,
       sources: fm.sources,
@@ -284,19 +286,15 @@ export function parseEdition(slug: string, source: string): ParsedEdition {
 // Règles inter-fichiers
 // ---------------------------------------------------------------------------
 
-export type CorpusRefs = {
-  trendIds: ReadonlySet<string>;
-  instrumentIds: ReadonlySet<string>;
-};
-
 /**
- * Règles qui ne peuvent pas s'évaluer sur un fichier isolé :
- * l'articulation hebdo/spéciale et les références croisées.
+ * Règles d'articulation de la chaîne des éditions : elles ne peuvent pas s'évaluer sur un
+ * fichier isolé, mais ne concernent que les éditions entre elles.
+ *
+ * Les références sortantes — vers les tendances, les instruments, les drivers — sont
+ * vérifiées ailleurs, par `checkIntegrity` (`lib/integrity.ts`), qui contrôle tout le graphe
+ * de contenu d'un seul tenant.
  */
-export function validateCorpus(
-  editions: ParsedEdition[],
-  refs: CorpusRefs,
-): Edition[] {
+export function validateEditionChain(editions: ParsedEdition[]): Edition[] {
   const byDate = [...editions].sort(
     (a, b) => a.meta.date.localeCompare(b.meta.date) || a.meta.slug.localeCompare(b.meta.slug),
   );
@@ -347,16 +345,6 @@ export function validateCorpus(
       }
     }
 
-    for (const id of edition.meta.trendRefs) {
-      if (!refs.trendIds.has(id)) {
-        throw new EditionValidationError(slug, `tendance inconnue « ${id} » dans trendRefs`);
-      }
-    }
-    for (const id of edition.meta.instrumentRefs) {
-      if (!refs.instrumentIds.has(id)) {
-        throw new EditionValidationError(slug, `instrument inconnu « ${id} » dans instrumentRefs`);
-      }
-    }
   });
 
   return byDate.map((e) => e.meta);

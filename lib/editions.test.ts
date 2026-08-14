@@ -3,13 +3,10 @@ import {
   parseEdition,
   parseSlug,
   readEditionSources,
-  validateCorpus,
+  validateEditionChain,
   type BlockName,
-  type CorpusRefs,
   type ParsedEdition,
 } from "./editions";
-import { TRENDS } from "@/content/tendances";
-import { getInstruments } from "./data";
 
 // --- fabrique de sources synthétiques ---------------------------------------
 
@@ -35,6 +32,7 @@ function source(fm: Fm = {}, blocks: BlockName[] = HEBDO_BLOCKS): string {
     "    value: Choc d'offre",
     "zones:",
     "  - us",
+    'driverOrder: ["rates"]',
     `trendRefs: ${JSON.stringify(fm.trendRefs ?? [])}`,
     `instrumentRefs: ${JSON.stringify(fm.instrumentRefs ?? [])}`,
     "sources: []",
@@ -55,11 +53,6 @@ const SPECIALE_BLOCKS: BlockName[] = [
   "RevisionDesScenarios",
   "CeQueJeSurveille",
 ];
-
-const REFS: CorpusRefs = {
-  trendIds: new Set(TRENDS.map((t) => t.id)),
-  instrumentIds: new Set(getInstruments().map((i) => i.id)),
-};
 
 // ---------------------------------------------------------------------------
 
@@ -188,7 +181,7 @@ describe("règles inter-fichiers", () => {
       speciale("2026-S28-E1", "2026-07-09", "2026-S27"),
       hebdo("2026-S28", "2026-07-12", "2026-S27", [...HEBDO_BLOCKS, "RecapDesSpeciales"]),
     ];
-    expect(() => validateCorpus(corpus, REFS)).not.toThrow();
+    expect(() => validateEditionChain(corpus)).not.toThrow();
   });
 
   it("refuse une hebdo qui se compare à une spéciale — sinon le fil hebdomadaire se rompt", () => {
@@ -197,7 +190,7 @@ describe("règles inter-fichiers", () => {
       speciale("2026-S28-E1", "2026-07-09", "2026-S27"),
       hebdo("2026-S28", "2026-07-12", "2026-S28-E1", [...HEBDO_BLOCKS, "RecapDesSpeciales"]),
     ];
-    expect(() => validateCorpus(corpus, REFS)).toThrow(
+    expect(() => validateEditionChain(corpus)).toThrow(
       /une hebdo se compare à la hebdo précédente \(2026-S27\)/,
     );
   });
@@ -209,7 +202,7 @@ describe("règles inter-fichiers", () => {
       // E2 devrait se comparer à E1, pas à la hebdo.
       speciale("2026-S28-E2", "2026-07-10", "2026-S27"),
     ];
-    expect(() => validateCorpus(corpus, REFS)).toThrow(
+    expect(() => validateEditionChain(corpus)).toThrow(
       /une spéciale se compare à la dernière édition parue \(2026-S28-E1\)/,
     );
   });
@@ -220,29 +213,16 @@ describe("règles inter-fichiers", () => {
       speciale("2026-S28-E1", "2026-07-09", "2026-S27"),
       hebdo("2026-S28", "2026-07-12", "2026-S27"), // sans RecapDesSpeciales
     ];
-    expect(() => validateCorpus(corpus, REFS)).toThrow(
+    expect(() => validateEditionChain(corpus)).toThrow(
       /la semaine 2026-S28 porte 1 spéciale\(s\) : le bloc « <RecapDesSpeciales> » est obligatoire/,
     );
   });
 
   it("refuse un récapitulatif quand aucune spéciale n'a paru cette semaine-là", () => {
     const corpus = [hebdo("2026-S27", "2026-07-05", null, [...HEBDO_BLOCKS, "RecapDesSpeciales"])];
-    expect(() => validateCorpus(corpus, REFS)).toThrow(/n'a rien à consolider/);
+    expect(() => validateEditionChain(corpus)).toThrow(/n'a rien à consolider/);
   });
 
-  it("refuse une référence de tendance qui ne résout pas", () => {
-    const corpus = [
-      parseEdition("2026-S27", source({ date: "2026-07-05", trendRefs: ["tendance-fantome"] })),
-    ];
-    expect(() => validateCorpus(corpus, REFS)).toThrow(/tendance inconnue « tendance-fantome »/);
-  });
-
-  it("refuse une référence d'instrument qui ne résout pas", () => {
-    const corpus = [
-      parseEdition("2026-S27", source({ date: "2026-07-05", instrumentRefs: ["xyz"] })),
-    ];
-    expect(() => validateCorpus(corpus, REFS)).toThrow(/instrument inconnu « xyz »/);
-  });
 });
 
 // ---------------------------------------------------------------------------
@@ -251,7 +231,7 @@ describe("le corpus réel", () => {
   it("compile : les 9 éditions passent toutes les règles", () => {
     const parsed = readEditionSources().map(({ slug, source: raw }) => parseEdition(slug, raw));
     expect(parsed).toHaveLength(9);
-    const meta = validateCorpus(parsed, REFS);
+    const meta = validateEditionChain(parsed);
     expect(meta.map((e) => e.slug)).toEqual([
       "2026-S27",
       "2026-S28-E1",
