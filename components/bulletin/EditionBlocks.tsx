@@ -1,34 +1,21 @@
 import Link from "next/link";
+import { compileMDX } from "next-mdx-remote/rsc";
 import type { Edition } from "@/lib/types";
 import { formatDateLong } from "@/lib/format";
-import { getEdition, getTrend } from "@/lib/data";
+import { getEdition, getEditionBody, getTrend } from "@/lib/content";
+import { editionMdxComponents } from "./mdx-blocks";
 
-const BLOCK_TITLES: Record<string, string> = {
-  whatChanged: "Ce qui a changé",
-  whatConfirmed: "Ce qui s'est confirmé",
-  scenarioRevisions: "Révision des scénarios",
-  whatIGotWrong: "Ce que j'avais mal lu",
-  whatIWatch: "Ce que je surveille",
-  specialsRecap: "Ce que les spéciales de la semaine ont établi",
-};
-
-function Block({ title, text }: { title: string; text: string }) {
-  return (
-    <div className="border-t border-line py-4 first:border-t-0">
-      <h4 className="font-mono text-11 font-semibold uppercase tracking-wider text-mute">
-        {title}
-      </h4>
-      <p className="mt-2 max-w-[70ch] text-15-5 leading-relaxed text-ink-2">{text}</p>
-    </div>
-  );
-}
-
-export function EditionBlocks({ edition }: { edition: Edition }) {
+export async function EditionBlocks({ edition }: { edition: Edition }) {
   const comparesTo = edition.comparesTo ? getEdition(edition.comparesTo) : null;
-  const order: Array<keyof Edition["blocks"]> =
-    edition.kind === "hebdo"
-      ? ["whatChanged", "whatConfirmed", "scenarioRevisions", "whatIGotWrong", "whatIWatch", "specialsRecap"]
-      : ["whatChanged", "scenarioRevisions", "whatIWatch"];
+  const body = getEditionBody(edition.slug);
+
+  // Le corps est validé au chargement du corpus : s'il manque ici, c'est une incohérence
+  // interne, pas une édition mal écrite.
+  const { content } = await compileMDX({
+    source: body ?? "",
+    components: editionMdxComponents,
+    options: { parseFrontmatter: false },
+  });
 
   return (
     <article className="border border-line bg-card">
@@ -63,13 +50,7 @@ export function EditionBlocks({ edition }: { edition: Edition }) {
         )}
       </header>
 
-      <div className="px-4 md:px-5">
-        {order.map((key) => {
-          const text = edition.blocks[key];
-          if (!text) return null;
-          return <Block key={key} title={BLOCK_TITLES[key]} text={text} />;
-        })}
-      </div>
+      <div className="px-4 md:px-5">{content}</div>
 
       {(edition.trendRefs.length > 0 || edition.sources.length > 0) && (
         <footer className="border-t border-line px-4 py-4 md:px-5">

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { Zone } from "@/lib/types";
-import { getCurrentScenarioBranches } from "@/lib/data";
+import { getCurrentScenarioBranches } from "@/lib/content";
 import { getLatestEditionForZone, buildArchiveWeeks } from "@/lib/bulletin";
 import { BRANCH_ORDER, FAMILY_LABELS, FAMILY_ORDER } from "@/lib/scenario-labels";
 import { ZONE_LABELS } from "@/lib/zones";

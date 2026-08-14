@@ -1,8 +1,17 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { getEdition } from "@/lib/data";
+import { getEdition, getEditions } from "@/lib/content";
 import { RegimeHeader } from "@/components/bulletin/RegimeHeader";
 import { EditionBlocks } from "@/components/bulletin/EditionBlocks";
+
+/**
+ * Énumère les éditions au build. Effet de bord voulu : cela force le chargement et la
+ * validation de tout le corpus MDX pendant `next build`, donc une édition à laquelle il
+ * manque un bloc obligatoire fait échouer la compilation au lieu de passer inaperçue.
+ */
+export function generateStaticParams() {
+  return getEditions().map((e) => ({ slug: e.slug }));
+}
 
 export default async function EditionPage({
   params,

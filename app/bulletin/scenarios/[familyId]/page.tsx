@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { getScenarioVersionsByFamily } from "@/lib/data";
+import { getScenarioVersionsByFamily } from "@/lib/content";
 import { formatDateLong } from "@/lib/format";
 import {
   BRANCH_LABELS,
@@ -9,6 +9,7 @@ import {
   LIKELIHOOD_LABELS,
 } from "@/lib/scenario-labels";
 import type { ScenarioFamilyId } from "@/lib/types";
+import { ScenarioTrajectory } from "@/components/bulletin/ScenarioTrajectory";
 
 const LIKELIHOOD_CLASS: Record<string, string> = {
   central: "bg-teal-bg text-teal",
@@ -48,7 +49,15 @@ export default async function ScenarioTrajectoryPage({
         si la lecture a suivi les données ou couru derrière les prix.
       </p>
 
-      <div className="mt-8 flex flex-col gap-8">
+      <div className="mt-6">
+        <ScenarioTrajectory versions={versions} branchOrder={branchOrder} />
+      </div>
+
+      <h2 className="mt-10 font-display text-xl font-extrabold text-ink">
+        Le détail, branche par branche
+      </h2>
+
+      <div className="mt-4 flex flex-col gap-8">
         {branchOrder.map((branchId) => {
           const branchVersions = versions
             .filter((v) => v.branchId === branchId)

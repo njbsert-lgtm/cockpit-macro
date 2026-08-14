@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { getTrend } from "@/lib/data";
+import { getTrend } from "@/lib/content";
 import { formatDateLong } from "@/lib/format";
 
 const STATUS_LABEL: Record<string, string> = {

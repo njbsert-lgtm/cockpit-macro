@@ -68,19 +68,12 @@ export type Trend = {
 
 export type EditionKind = "hebdo" | "speciale";
 
-// Blocs analytiques obligatoires. Étape 1 : texte brut porté par le seed pour rendre l'écran
-// Bulletin avec des données figées. Remplacé par le pipeline MDX à l'étape 2 — ce champ n'est
-// pas dans le modèle de données du cahier des charges, qui ne précise pas le stockage des
-// blocs ; c'est le minimum nécessaire pour cette étape.
-export type EditionBlocks = {
-  whatChanged: string;
-  whatConfirmed?: string; // hebdo uniquement
-  scenarioRevisions: string;
-  whatIGotWrong?: string; // hebdo uniquement
-  whatIWatch: string;
-  specialsRecap?: string; // hebdo uniquement, si des spéciales ont paru dans la semaine
-};
-
+/**
+ * Métadonnées d'une édition — le frontmatter de son fichier MDX. Les blocs analytiques ne
+ * figurent pas ici : ils vivent dans le corps du MDX (`content/editions/<slug>.mdx`) sous
+ * forme de composants nommés, et leur présence est validée par `lib/editions.ts` selon le
+ * type d'édition. `isoWeek` et `parentWeek` sont dérivés du slug, pas saisis à la main.
+ */
 export type Edition = {
   slug: string; // '2026-S33' ou '2026-S33-E1'
   kind: EditionKind;
@@ -92,7 +85,6 @@ export type Edition = {
   regimeStatement: string; // le régime en une phrase, à cette date
   keyIndicators: Array<{ label: string; value: string }>;
   zones: Zone[];
-  blocks: EditionBlocks;
   trendRefs: string[]; // tendances de fond touchées
   instrumentRefs: string[]; // instruments cités
   sources: Array<{ label: string; url: string }>;
@@ -147,14 +139,19 @@ export type ScenarioVersion = {
   watchSignals: string;
 };
 
+/**
+ * `seed.json` ne porte que des **données** : ce qui viendra d'APIs publiques à l'étape 3.
+ * L'analyse — éditions, tendances, scénarios — vit dans `content/`, versionnée dans le repo,
+ * pour rester lisible même si l'automatisation des données casse.
+ *
+ * `alertRules` restera ici jusqu'à l'étape 4, qui les sortira dans un fichier de configuration
+ * éditable comme le prévoit le cahier des charges.
+ */
 export type Seed = {
   instruments: Instrument[];
   observations: Observation[]; // séries des instruments de marché + spreads dérivés
   macroIndicators: MacroIndicator[];
   macroObservations: Observation[]; // séries des indicateurs macro, même forme que Observation
-  trends: Trend[];
-  editions: Edition[];
   alertRules: AlertRule[];
   alertEvents: AlertEvent[];
-  scenarioVersions: ScenarioVersion[];
 };

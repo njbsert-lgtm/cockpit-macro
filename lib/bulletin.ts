@@ -1,6 +1,6 @@
 import type { Edition, Zone } from "./types";
 import { zoneMatches } from "./zones";
-import { getEditions } from "./data";
+import { getEditions } from "./content";
 import { isoWeekRange } from "./iso-week";
 
 /** La dernière édition — tous types confondus — qui concerne la zone donnée. */

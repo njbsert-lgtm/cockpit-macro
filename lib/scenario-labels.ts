@@ -32,6 +32,13 @@ export const LIKELIHOOD_LABELS: Record<string, string> = {
   faible: "Probabilité faible",
 };
 
+/** Forme courte pour les axes, où « vraisemblance » est déjà donné par le contexte. */
+export const LIKELIHOOD_SHORT: Record<string, string> = {
+  central: "Centrale",
+  moderee: "Modérée",
+  faible: "Faible",
+};
+
 export const IMPACT_LABELS: Record<string, string> = {
   eq: "Actions",
   fi: "Obligations",
