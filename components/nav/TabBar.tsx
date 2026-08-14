@@ -27,8 +27,8 @@ function TabLink({
 }) {
   const base =
     variant === "mobile"
-      ? "flex flex-1 flex-col items-center gap-1 py-2.5 font-mono text-[10.5px] uppercase tracking-wide"
-      : "px-3.5 py-2.5 font-mono text-[12px] uppercase tracking-wide border-b-2";
+      ? "flex flex-1 flex-col items-center gap-1 py-2.5 font-mono text-10-5 uppercase tracking-wide"
+      : "px-3.5 py-2.5 font-mono text-xs uppercase tracking-wide border-b-2";
 
   if (tab.disabled) {
     return (
@@ -38,7 +38,7 @@ function TabLink({
         aria-disabled="true"
       >
         {tab.label}
-        <span className="ml-1 inline-block rounded-[2px] bg-white/15 px-1 font-mono text-[9px] text-white/60">
+        <span className="ml-1 inline-block rounded-xs bg-white/15 px-1 font-mono text-9 text-white/60">
           0
         </span>
       </span>
@@ -48,7 +48,7 @@ function TabLink({
   return (
     <Link
       href={`${tab.href}${qs ? `?${qs}` : ""}`}
-      className={`${base} focus-visible:outline-3 focus-visible:outline-offset-[-2px] focus-visible:outline-white ${
+      className={`${base} focus-visible:outline-3 focus-visible:-outline-offset-2 focus-visible:outline-white ${
         active
           ? variant === "mobile"
             ? "text-white"
@@ -77,7 +77,7 @@ function TabBarInner() {
         aria-label="Navigation principale"
         className="hidden border-b border-white/15 bg-deep px-4 md:block"
       >
-        <div className="mx-auto flex max-w-[1060px] gap-1">
+        <div className="mx-auto flex max-w-content gap-1">
           {TABS.map((tab) => (
             <TabLink
               key={tab.href}

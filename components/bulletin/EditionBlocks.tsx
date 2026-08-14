@@ -15,10 +15,10 @@ const BLOCK_TITLES: Record<string, string> = {
 function Block({ title, text }: { title: string; text: string }) {
   return (
     <div className="border-t border-line py-4 first:border-t-0">
-      <h4 className="font-mono text-[11px] font-semibold uppercase tracking-wider text-mute">
+      <h4 className="font-mono text-11 font-semibold uppercase tracking-wider text-mute">
         {title}
       </h4>
-      <p className="mt-2 max-w-[70ch] text-[15.5px] leading-relaxed text-ink-2">{text}</p>
+      <p className="mt-2 max-w-[70ch] text-15-5 leading-relaxed text-ink-2">{text}</p>
     </div>
   );
 }
@@ -35,25 +35,25 @@ export function EditionBlocks({ edition }: { edition: Edition }) {
       <header className="border-b border-line px-4 py-4 md:px-5">
         <div className="flex flex-wrap items-center gap-2">
           <span
-            className={`font-mono text-[10px] font-semibold uppercase tracking-wider px-2 py-1 ${
+            className={`font-mono text-10 font-semibold uppercase tracking-wider px-2 py-1 ${
               edition.kind === "hebdo" ? "bg-deep text-white" : "bg-ochre-bg text-ochre"
             }`}
           >
             {edition.kind === "hebdo" ? "Édition hebdomadaire" : "Édition spéciale"}
           </span>
-          <span className="font-mono text-[12px] text-mute">{edition.slug}</span>
-          <span className="font-mono text-[12px] text-mute">· {formatDateLong(edition.date)}</span>
+          <span className="font-mono text-xs text-mute">{edition.slug}</span>
+          <span className="font-mono text-xs text-mute">· {formatDateLong(edition.date)}</span>
         </div>
         {edition.trigger && (
-          <p className="mt-2.5 border-l-3 border-rust bg-rust-bg px-3 py-2 text-[13.5px] text-ink-2">
-            <span className="font-mono text-[10.5px] font-semibold uppercase tracking-wider text-rust">
+          <p className="mt-2.5 border-l-3 border-rust bg-rust-bg px-3 py-2 text-13-5 text-ink-2">
+            <span className="font-mono text-10-5 font-semibold uppercase tracking-wider text-rust">
               Seuil déclenché
             </span>{" "}
             — {edition.trigger}
           </p>
         )}
         {comparesTo && (
-          <p className="mt-2 font-mono text-[11.5px] text-mute">
+          <p className="mt-2 font-mono text-11-5 text-mute">
             Comparée à{" "}
             <Link href={`/bulletin/${comparesTo.slug}`} className="underline decoration-line underline-offset-4">
               {comparesTo.slug}
@@ -75,7 +75,7 @@ export function EditionBlocks({ edition }: { edition: Edition }) {
         <footer className="border-t border-line px-4 py-4 md:px-5">
           {edition.trendRefs.length > 0 && (
             <div className="flex flex-wrap items-center gap-2">
-              <span className="font-mono text-[10.5px] uppercase tracking-wider text-mute">
+              <span className="font-mono text-10-5 uppercase tracking-wider text-mute">
                 Tendances touchées :
               </span>
               {edition.trendRefs.map((id) => {
@@ -85,7 +85,7 @@ export function EditionBlocks({ edition }: { edition: Edition }) {
                   <Link
                     key={id}
                     href={`/bulletin/tendances/${id}`}
-                    className="border border-line-2 bg-paper px-2 py-1 font-mono text-[11px] text-ink-2 hover:border-deep hover:text-deep"
+                    className="border border-line-2 bg-paper px-2 py-1 font-mono text-11 text-ink-2 hover:border-deep hover:text-deep"
                   >
                     {trend.title}
                   </Link>
@@ -94,7 +94,7 @@ export function EditionBlocks({ edition }: { edition: Edition }) {
             </div>
           )}
           {edition.sources.length > 0 && (
-            <ul className="mt-3 flex flex-wrap gap-x-4 gap-y-1 font-mono text-[11px] text-mute">
+            <ul className="mt-3 flex flex-wrap gap-x-4 gap-y-1 font-mono text-11 text-mute">
               {edition.sources.map((s) => (
                 <li key={s.url}>
                   <a href={s.url} target="_blank" rel="noreferrer" className="hover:text-deep hover:underline">

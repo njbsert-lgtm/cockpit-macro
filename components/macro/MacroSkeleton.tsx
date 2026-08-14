@@ -3,7 +3,7 @@ import { LoadingState, SkeletonBlock, SkeletonLine } from "@/components/states/S
 export function MacroSkeleton() {
   return (
     <LoadingState label="Chargement des indicateurs macro">
-      <div className="mx-auto max-w-[1060px] px-4 py-8 md:px-6">
+      <div className="mx-auto max-w-content px-4 py-8 md:px-6">
         <SkeletonBlock className="h-9 w-64" />
         <div className="mt-8 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {Array.from({ length: 6 }).map((_, i) => (

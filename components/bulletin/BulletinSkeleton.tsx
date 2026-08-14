@@ -4,7 +4,7 @@ export function BulletinSkeleton() {
   return (
     <LoadingState label="Chargement du bulletin">
       <div className="bg-deep px-4 py-8 md:px-6">
-        <div className="mx-auto max-w-[1060px]">
+        <div className="mx-auto max-w-content">
           <SkeletonBlock className="h-3 w-40 bg-white/15" />
           <SkeletonBlock className="mt-3 h-9 w-3/4 bg-white/15" />
           <div className="mt-6 grid grid-cols-2 gap-1 md:grid-cols-4">
@@ -15,7 +15,7 @@ export function BulletinSkeleton() {
         </div>
       </div>
 
-      <div className="mx-auto max-w-[1060px] px-4 py-8 md:px-6">
+      <div className="mx-auto max-w-content px-4 py-8 md:px-6">
         <div className="border border-line bg-card p-4">
           <SkeletonLine width="30%" />
           <div className="mt-4 flex flex-col gap-3">

@@ -23,7 +23,7 @@ function FilterButton({
       type="button"
       aria-pressed={active}
       onClick={onClick}
-      className={`border px-3 py-1.5 font-mono text-[12.5px] font-medium ${
+      className={`border px-3 py-1.5 font-mono text-12-5 font-medium ${
         active ? "border-ink bg-ink text-white" : "border-line bg-paper text-ink-2 hover:border-mute"
       }`}
     >
@@ -39,7 +39,7 @@ export function ArchiveList({ weeks, zone }: { weeks: ArchiveWeek[]; zone: Zone 
   return (
     <div>
       <div className="flex flex-wrap items-center gap-2 border border-line bg-card p-3">
-        <span className="font-mono text-[10.5px] uppercase tracking-wider text-mute">Type</span>
+        <span className="font-mono text-10-5 uppercase tracking-wider text-mute">Type</span>
         <FilterButton active={filter === "tout"} onClick={() => setFilter("tout")}>
           Tout
         </FilterButton>
@@ -59,14 +59,14 @@ export function ArchiveList({ weeks, zone }: { weeks: ArchiveWeek[]; zone: Zone 
           return (
             <li key={week.isoWeek} className="border border-line bg-card">
               <div className="flex items-center justify-between gap-2 border-b border-line-2 bg-paper px-3.5 py-2">
-                <span className="font-mono text-[12px] font-semibold text-ink-2">{week.isoWeek}</span>
+                <span className="font-mono text-xs font-semibold text-ink-2">{week.isoWeek}</span>
                 {week.isGap && (
-                  <span className="font-mono text-[11px] font-semibold uppercase tracking-wide text-rust">
+                  <span className="font-mono text-11 font-semibold uppercase tracking-wide text-rust">
                     Trou — aucune hebdo publiée
                   </span>
                 )}
                 {week.isCurrentWeek && !week.hebdo && (
-                  <span className="font-mono text-[11px] font-semibold uppercase tracking-wide text-mute">
+                  <span className="font-mono text-11 font-semibold uppercase tracking-wide text-mute">
                     Semaine en cours — hebdo à paraître dimanche
                   </span>
                 )}
@@ -74,13 +74,13 @@ export function ArchiveList({ weeks, zone }: { weeks: ArchiveWeek[]; zone: Zone 
 
               <div className="px-3.5 py-3">
                 {week.emptyForZone && (
-                  <p className="text-[13.5px] italic text-mute">
+                  <p className="text-13-5 italic text-mute">
                     Aucune édition ne concerne {ZONE_LABELS[zone]} cette semaine.
                   </p>
                 )}
 
                 {!week.emptyForZone && week.isGap && (
-                  <p className="text-[13.5px] italic text-rust">
+                  <p className="text-13-5 italic text-rust">
                     Discipline rompue : aucune édition, pas même une hebdo courte, n&rsquo;a été
                     publiée cette semaine-là.
                   </p>
@@ -91,10 +91,10 @@ export function ArchiveList({ weeks, zone }: { weeks: ArchiveWeek[]; zone: Zone 
                     href={`/bulletin/${week.hebdo.slug}`}
                     className="block border border-line-2 px-3 py-2.5 hover:border-deep"
                   >
-                    <span className="font-display text-[14.5px] font-bold text-ink">
+                    <span className="font-display text-14-5 font-bold text-ink">
                       {week.hebdo.regimeStatement}
                     </span>
-                    <span className="mt-1 block font-mono text-[11px] text-mute">
+                    <span className="mt-1 block font-mono text-11 text-mute">
                       Hebdo · {formatDateLong(week.hebdo.date)}
                     </span>
                   </Link>
@@ -108,10 +108,10 @@ export function ArchiveList({ weeks, zone }: { weeks: ArchiveWeek[]; zone: Zone 
                           href={`/bulletin/${s.slug}`}
                           className="block border border-ochre-bg bg-ochre-bg/40 px-3 py-2 hover:border-ochre"
                         >
-                          <span className="font-display text-[13.5px] font-bold text-ink">
+                          <span className="font-display text-13-5 font-bold text-ink">
                             {s.regimeStatement}
                           </span>
-                          <span className="mt-1 block font-mono text-[11px] text-mute">
+                          <span className="mt-1 block font-mono text-11 text-mute">
                             {s.slug} · {formatDateLong(s.date)}
                           </span>
                         </Link>

@@ -39,7 +39,7 @@ export function FreshnessIndicator() {
   }, [open]);
 
   if (!now) {
-    return <span className="font-mono text-[11.5px] text-white/40">Fraîcheur…</span>;
+    return <span className="font-mono text-11-5 text-white/40">Fraîcheur…</span>;
   }
 
   const summary = getFreshnessSummaryForZone(zone, now);
@@ -52,7 +52,7 @@ export function FreshnessIndicator() {
         type="button"
         onClick={() => setOpen((o) => !o)}
         aria-expanded={open}
-        className="flex items-center gap-2 rounded-[2px] bg-white/10 px-2.5 py-1.5 font-mono text-[11.5px] tracking-wide text-[#CFE0E3] hover:bg-white/15 focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-white"
+        className="flex items-center gap-2 rounded-xs bg-white/10 px-2.5 py-1.5 font-mono text-11-5 tracking-wide text-deep-fg hover:bg-white/15 focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-white"
       >
         <FreshnessDot tier={tier} />
         {oldest ? (
@@ -63,23 +63,23 @@ export function FreshnessIndicator() {
       </button>
 
       {open && (
-        <div className="absolute right-0 top-full z-50 mt-1.5 w-80 max-w-[85vw] border border-line bg-card p-3 text-ink shadow-[0_4px_0_0_rgba(0,0,0,0.08)]">
-          <p className="mb-2 font-mono text-[10.5px] font-semibold uppercase tracking-wider text-mute">
+        <div className="absolute right-0 top-full z-50 mt-1.5 w-80 max-w-[85vw] border border-line bg-card p-3 text-ink shadow-flat">
+          <p className="mb-2 font-mono text-10-5 font-semibold uppercase tracking-wider text-mute">
             Fraîcheur par source
           </p>
           {summary.length === 0 ? (
-            <p className="text-[13.5px] text-mute">
+            <p className="text-13-5 text-mute">
               Aucune source suivie pour cette zone pour l&rsquo;instant.
             </p>
           ) : (
             <ul className="flex flex-col gap-2">
               {summary.map((s) => (
-                <li key={s.source} className="flex items-center justify-between gap-3 text-[13px]">
+                <li key={s.source} className="flex items-center justify-between gap-3 text-13">
                   <span className="flex items-center gap-2">
                     <FreshnessDot tier={s.tier} />
                     {s.source}
                   </span>
-                  <span className="font-mono text-[11.5px] text-mute">
+                  <span className="font-mono text-11-5 text-mute">
                     {formatDateTime(s.fetchedAt)} · {TIER_LABEL[s.tier]}
                   </span>
                 </li>

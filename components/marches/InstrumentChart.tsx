@@ -10,7 +10,7 @@ export function InstrumentChart({
 }) {
   if (points.length < 2) {
     return (
-      <div className="flex h-56 items-center justify-center border border-dashed border-line text-[13.5px] text-mute">
+      <div className="flex h-56 items-center justify-center border border-dashed border-line text-13-5 text-mute">
         Historique insuffisant pour tracer un graphique.
       </div>
     );

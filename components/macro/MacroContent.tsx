@@ -20,11 +20,11 @@ export async function MacroContent({
   await simulateLoad();
 
   return (
-    <div className="mx-auto max-w-[1060px] px-4 py-8 md:px-6">
+    <div className="mx-auto max-w-content px-4 py-8 md:px-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <p className="font-mono text-[11px] uppercase tracking-wider text-mute">Macro</p>
-          <h1 className="mt-1 font-display text-[26px] font-extrabold text-ink">
+          <p className="font-mono text-11 uppercase tracking-wider text-mute">Macro</p>
+          <h1 className="mt-1 font-display text-26 font-extrabold text-ink">
             {mode === "zone" ? ZONE_LABELS[zone] : "Comparaison entre zones"}
           </h1>
         </div>

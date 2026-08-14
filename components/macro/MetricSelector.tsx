@@ -22,7 +22,7 @@ export function MetricSelector({ current }: { current: string }) {
               params.set("indicator", metric);
               router.push(`${pathname}?${params.toString()}`, { scroll: false });
             }}
-            className={`border px-3 py-1.5 font-mono text-[12.5px] font-medium ${
+            className={`border px-3 py-1.5 font-mono text-12-5 font-medium ${
               active ? "border-ink bg-ink text-white" : "border-line bg-paper text-ink-2 hover:border-mute"
             }`}
           >

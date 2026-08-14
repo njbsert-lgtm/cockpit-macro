@@ -12,12 +12,12 @@ async function MarchesContent({ zone }: { zone: string }) {
   await simulateLoad();
 
   return (
-    <div className="mx-auto max-w-[1060px] px-4 py-8 md:px-6">
-      <p className="font-mono text-[11px] uppercase tracking-wider text-mute">Marchés</p>
-      <h1 className="mt-1 font-display text-[26px] font-extrabold text-ink">
+    <div className="mx-auto max-w-content px-4 py-8 md:px-6">
+      <p className="font-mono text-11 uppercase tracking-wider text-mute">Marchés</p>
+      <h1 className="mt-1 font-display text-26 font-extrabold text-ink">
         Performance par classe d&rsquo;actifs
       </h1>
-      <p className="mt-2 max-w-[64ch] text-[15px] text-mute">
+      <p className="mt-2 max-w-[64ch] text-15 text-mute">
         Un clic ouvre les instruments de la classe, réordonnés pour remonter ceux de la zone
         sélectionnée.
       </p>

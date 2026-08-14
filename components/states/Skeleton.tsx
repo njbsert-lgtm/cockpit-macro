@@ -1,7 +1,7 @@
 export function SkeletonLine({ width = "100%" }: { width?: string }) {
   return (
     <div
-      className="h-4 animate-pulse rounded-[2px] bg-line-2"
+      className="h-4 animate-pulse rounded-xs bg-line-2"
       style={{ width }}
       aria-hidden="true"
     />
@@ -11,7 +11,7 @@ export function SkeletonLine({ width = "100%" }: { width?: string }) {
 export function SkeletonBlock({ className = "" }: { className?: string }) {
   return (
     <div
-      className={`animate-pulse rounded-[2px] bg-line-2 ${className}`}
+      className={`animate-pulse rounded-xs bg-line-2 ${className}`}
       aria-hidden="true"
     />
   );

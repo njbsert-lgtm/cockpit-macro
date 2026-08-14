@@ -9,12 +9,12 @@ export function PerfValue({
   size?: "sm" | "md" | "lg";
   unavailableReason?: string;
 }) {
-  const cls = size === "lg" ? "text-[22px]" : size === "sm" ? "text-[13px]" : "text-[15px]";
+  const cls = size === "lg" ? "text-22" : size === "sm" ? "text-13" : "text-15";
 
   if (pct === null) {
     return (
       <span
-        className={`font-mono italic text-mute ${size === "sm" ? "text-[12px]" : "text-[13px]"}`}
+        className={`font-mono italic text-mute ${size === "sm" ? "text-xs" : "text-13"}`}
         title={unavailableReason}
       >
         non disponible

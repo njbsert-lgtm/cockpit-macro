@@ -51,7 +51,7 @@ export function InstrumentTable({ rows, zoneLabel }: { rows: InstrumentRow[]; zo
     <button
       type="button"
       onClick={() => toggleSort(key)}
-      className="flex items-center gap-1 font-mono text-[10.5px] font-semibold uppercase tracking-wider text-mute hover:text-ink"
+      className="flex items-center gap-1 font-mono text-10-5 font-semibold uppercase tracking-wider text-mute hover:text-ink"
     >
       {label}
       {sortKey === key && <span aria-hidden="true">{asc ? "↑" : "↓"}</span>}
@@ -64,12 +64,12 @@ export function InstrumentTable({ rows, zoneLabel }: { rows: InstrumentRow[]; zo
         <thead>
           <tr className="border-b-2 border-ink">
             <th className="px-3 py-2.5 text-left">
-              <span className="font-mono text-[10.5px] font-semibold uppercase tracking-wider text-mute">
+              <span className="font-mono text-10-5 font-semibold uppercase tracking-wider text-mute">
                 Instrument
               </span>
             </th>
             <th className="px-3 py-2.5 text-left">
-              <span className="font-mono text-[10.5px] font-semibold uppercase tracking-wider text-mute">
+              <span className="font-mono text-10-5 font-semibold uppercase tracking-wider text-mute">
                 Valeur
               </span>
             </th>
@@ -78,7 +78,7 @@ export function InstrumentTable({ rows, zoneLabel }: { rows: InstrumentRow[]; zo
               {headerBtn("oneMonth", "1 mois")}
             </th>
             <th className="hidden px-3 py-2.5 text-left lg:table-cell">
-              <span className="font-mono text-[10.5px] font-semibold uppercase tracking-wider text-mute">
+              <span className="font-mono text-10-5 font-semibold uppercase tracking-wider text-mute">
                 Note
               </span>
             </th>
@@ -88,11 +88,11 @@ export function InstrumentTable({ rows, zoneLabel }: { rows: InstrumentRow[]; zo
           {sorted.map((row) => (
             <tr key={row.id} className={`border-b border-line-2 last:border-b-0 ${row.inZone ? "bg-paper" : ""}`}>
               <td className="px-3 py-3 align-top">
-                <Link href={row.href} className="font-display text-[14.5px] font-bold text-ink hover:text-deep">
+                <Link href={row.href} className="font-display text-14-5 font-bold text-ink hover:text-deep">
                   {row.label}
                 </Link>
                 {row.inZone && (
-                  <span className="ml-2 font-mono text-[10px] uppercase tracking-wide text-deep">
+                  <span className="ml-2 font-mono text-10 uppercase tracking-wide text-deep">
                     {zoneLabel}
                   </span>
                 )}
@@ -106,7 +106,7 @@ export function InstrumentTable({ rows, zoneLabel }: { rows: InstrumentRow[]; zo
               <td className="hidden px-3 py-3 text-right align-top sm:table-cell">
                 <PerfValue pct={row.oneMonth} size="sm" />
               </td>
-              <td className="hidden px-3 py-3 align-top text-[13px] text-ink-2 lg:table-cell">{row.note}</td>
+              <td className="hidden px-3 py-3 align-top text-13 text-ink-2 lg:table-cell">{row.note}</td>
             </tr>
           ))}
         </tbody>

@@ -28,14 +28,14 @@ export async function BulletinContent({ zone }: { zone: Zone }) {
         <RegimeHeader edition={latestEdition} />
       ) : (
         <div className="bg-deep px-4 py-8 md:px-6">
-          <div className="mx-auto max-w-[1060px]">
+          <div className="mx-auto max-w-content">
             <EmptyState
               title={`Aucune édition ne couvre ${ZONE_LABELS[zone]} pour l'instant`}
               description="Le bulletin se construit zone par zone. En attendant, consultez la lecture Émergents ou Global, qui couvrent déjà cette zone dans leurs éditions transversales."
               action={
                 <Link
                   href="/bulletin?zone=global"
-                  className="inline-block border border-white/40 bg-white/10 px-3 py-1.5 font-mono text-[12.5px] text-white hover:bg-white/20"
+                  className="inline-block border border-white/40 bg-white/10 px-3 py-1.5 font-mono text-12-5 text-white hover:bg-white/20"
                 >
                   Voir le bulletin Global
                 </Link>
@@ -45,10 +45,10 @@ export async function BulletinContent({ zone }: { zone: Zone }) {
         </div>
       )}
 
-      <div className="mx-auto max-w-[1060px] px-4 py-8 md:px-6">
+      <div className="mx-auto max-w-content px-4 py-8 md:px-6">
         {latestEdition && (
           <section>
-            <p className="mb-2 font-mono text-[11px] uppercase tracking-wider text-mute">
+            <p className="mb-2 font-mono text-11 uppercase tracking-wider text-mute">
               Dernière édition
             </p>
             <EditionBlocks edition={latestEdition} />
@@ -56,8 +56,8 @@ export async function BulletinContent({ zone }: { zone: Zone }) {
         )}
 
         <section className="mt-10">
-          <h2 className="font-display text-[22px] font-extrabold text-ink">Scénarios</h2>
-          <p className="mt-1 max-w-[64ch] text-[15px] text-mute">
+          <h2 className="font-display text-22 font-extrabold text-ink">Scénarios</h2>
+          <p className="mt-1 max-w-[64ch] text-15 text-mute">
             État courant de chaque famille. Cliquez une branche pour voir sa thèse et ses
             impacts par classe d&rsquo;actifs.
           </p>
@@ -79,8 +79,8 @@ export async function BulletinContent({ zone }: { zone: Zone }) {
         </section>
 
         <section className="mt-10">
-          <h2 className="font-display text-[22px] font-extrabold text-ink">Archive</h2>
-          <p className="mt-1 max-w-[64ch] text-[15px] text-mute">
+          <h2 className="font-display text-22 font-extrabold text-ink">Archive</h2>
+          <p className="mt-1 max-w-[64ch] text-15 text-mute">
             Les hebdos forment la colonne vertébrale ; les spéciales sont indentées sous leur
             semaine. Un trou signale une semaine sans hebdo publiée.
           </p>

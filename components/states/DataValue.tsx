@@ -23,11 +23,11 @@ export function DataValue({
   now,
   size = "md",
 }: DataValueProps) {
-  const valueClass = size === "sm" ? "text-[14.5px]" : "text-[15.5px]";
+  const valueClass = size === "sm" ? "text-14-5" : "text-15-5";
 
   if (value === null || date === null) {
     return (
-      <span className="font-mono text-[13px] italic text-mute">non suivi</span>
+      <span className="font-mono text-13 italic text-mute">non suivi</span>
     );
   }
 
@@ -41,7 +41,7 @@ export function DataValue({
         >
           {value}
         </span>
-        <span className="inline-flex items-center gap-1.5 font-mono text-[11px] text-rust">
+        <span className="inline-flex items-center gap-1.5 font-mono text-11 text-rust">
           <FreshnessDot tier={tier} />
           dernière valeur connue du {formatDateShort(date)} · source : {source}
         </span>
@@ -57,7 +57,7 @@ export function DataValue({
         >
           {value}
         </span>
-        <span className="inline-flex items-center gap-1.5 font-mono text-[11px] text-ochre">
+        <span className="inline-flex items-center gap-1.5 font-mono text-11 text-ochre">
           <FreshnessDot tier={tier} />
           périmé · relevé du {formatDateShort(date)}
         </span>
@@ -70,7 +70,7 @@ export function DataValue({
       <span className={`font-mono font-semibold tabular-nums text-ink ${valueClass}`}>
         {value}
       </span>
-      <span className="font-mono text-[11px] text-mute" title={formatDateLong(date)}>
+      <span className="font-mono text-11 text-mute" title={formatDateLong(date)}>
         au {formatDateShort(date)}
       </span>
     </span>

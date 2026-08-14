@@ -22,7 +22,7 @@ export function FreshnessDot({
         aria-hidden="true"
       />
       {withLabel && (
-        <span className="font-mono text-[11px] tracking-wide text-mute">
+        <span className="font-mono text-11 tracking-wide text-mute">
           {TIER_LABEL[tier]}
         </span>
       )}

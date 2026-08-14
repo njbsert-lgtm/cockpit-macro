@@ -11,7 +11,7 @@ export function Sparkline({
 }) {
   if (points.length < 2) {
     return (
-      <div className="flex h-10 items-center font-mono text-[11px] text-mute">
+      <div className="flex h-10 items-center font-mono text-11 text-mute">
         Historique insuffisant
       </div>
     );

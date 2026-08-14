@@ -28,7 +28,7 @@ export function ZoneModeView({ zone }: { zone: Zone }) {
 
         return (
           <section key={groupZone}>
-            <h3 className="border-b-2 border-ink pb-2 font-mono text-[13px] font-semibold uppercase tracking-wider text-ink">
+            <h3 className="border-b-2 border-ink pb-2 font-mono text-13 font-semibold uppercase tracking-wider text-ink">
               {ZONE_LABELS[groupZone]}
               {inherited && (
                 <span className="ml-2 font-normal normal-case text-mute">

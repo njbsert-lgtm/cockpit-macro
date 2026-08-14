@@ -13,7 +13,7 @@ export function EmptyState({
   return (
     <div className="border border-dashed border-line bg-card px-6 py-10 text-center">
       <p className="font-display text-lg font-bold text-ink">{title}</p>
-      <p className="mx-auto mt-2 max-w-md text-[15px] text-mute">{description}</p>
+      <p className="mx-auto mt-2 max-w-md text-15 text-mute">{description}</p>
       {action && <div className="mt-4">{action}</div>}
     </div>
   );

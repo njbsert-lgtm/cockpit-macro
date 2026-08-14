@@ -36,7 +36,7 @@ export function ScenarioFamilyTabs({
 
   return (
     <div className="mt-6 border border-line bg-card">
-      <h3 className="border-b border-line px-4 py-3 font-mono text-[13px] font-semibold uppercase tracking-wider">
+      <h3 className="border-b border-line px-4 py-3 font-mono text-13 font-semibold uppercase tracking-wider">
         {title}
       </h3>
       <div role="tablist" aria-label={title} className="flex flex-col border-b border-line md:flex-row">
@@ -56,15 +56,15 @@ export function ScenarioFamilyTabs({
               setSelected(next.branchId);
               document.getElementById(`tab-${next.branchId}`)?.focus();
             }}
-            className={`border-b border-line px-4 py-3 text-left last:border-b-0 focus-visible:outline-3 focus-visible:outline-offset-[-3px] focus-visible:outline-ochre md:flex-1 md:border-b-0 md:border-r md:last:border-r-0 ${
-              b.branchId === active.branchId ? "bg-card shadow-[inset_0_3px_0_0_var(--color-ink)]" : "bg-paper hover:bg-line-2"
+            className={`border-b border-line px-4 py-3 text-left last:border-b-0 focus-visible:outline-3 focus-visible:-outline-offset-3 focus-visible:outline-ochre md:flex-1 md:border-b-0 md:border-r md:last:border-r-0 ${
+              b.branchId === active.branchId ? "bg-card shadow-active-tab" : "bg-paper hover:bg-line-2"
             }`}
           >
-            <span className="block font-display text-[15px] font-bold text-ink">
+            <span className="block font-display text-15 font-bold text-ink">
               {BRANCH_LABELS[b.branchId] ?? b.branchId}
             </span>
             <span
-              className={`mt-0.5 block font-mono text-[11px] tracking-wide ${
+              className={`mt-0.5 block font-mono text-11 tracking-wide ${
                 b.branchId === active.branchId ? "text-ochre" : "text-mute"
               }`}
             >
@@ -75,11 +75,11 @@ export function ScenarioFamilyTabs({
       </div>
 
       <div role="tabpanel" id={`panel-${active.branchId}`} aria-labelledby={`tab-${active.branchId}`} className="p-4 md:p-5">
-        <p className="max-w-[70ch] text-[15.5px] text-ink-2">{active.thesis}</p>
+        <p className="max-w-[70ch] text-15-5 text-ink-2">{active.thesis}</p>
 
         {active.likelihoodChangedFrom && (
-          <p className="mt-3 border-l-3 border-ochre bg-ochre-bg px-3 py-2 text-[13.5px] text-ink-2">
-            <span className="font-mono text-[10.5px] font-semibold uppercase tracking-wider text-ochre">
+          <p className="mt-3 border-l-3 border-ochre bg-ochre-bg px-3 py-2 text-13-5 text-ink-2">
+            <span className="font-mono text-10-5 font-semibold uppercase tracking-wider text-ochre">
               Révision
             </span>{" "}
             — {LIKELIHOOD_LABELS[active.likelihoodChangedFrom]} → {LIKELIHOOD_LABELS[active.likelihood]}.{" "}
@@ -92,28 +92,28 @@ export function ScenarioFamilyTabs({
             const impact = active.impacts[key];
             return (
               <div key={key} className="bg-card p-3.5">
-                <p className="font-mono text-[10.5px] font-semibold uppercase tracking-wider text-mute">
+                <p className="font-mono text-10-5 font-semibold uppercase tracking-wider text-mute">
                   {IMPACT_LABELS[key]}
                 </p>
-                <p className={`mt-1.5 font-display text-[14.5px] font-bold ${DIRECTION_CLASS[impact.direction]}`}>
+                <p className={`mt-1.5 font-display text-14-5 font-bold ${DIRECTION_CLASS[impact.direction]}`}>
                   {DIRECTION_ARROW[impact.direction]} {impact.label}
                 </p>
-                <p className="mt-1 text-[13.5px] text-ink-2">{impact.text}</p>
+                <p className="mt-1 text-13-5 text-ink-2">{impact.text}</p>
               </div>
             );
           })}
         </div>
 
         <div className="mt-4 border-l-3 border-ink bg-paper px-3.5 py-3">
-          <p className="font-mono text-[10.5px] font-semibold uppercase tracking-wider text-mute">
+          <p className="font-mono text-10-5 font-semibold uppercase tracking-wider text-mute">
             Signaux à surveiller
           </p>
-          <p className="mt-1 text-[14px] text-ink-2">{active.watchSignals}</p>
+          <p className="mt-1 text-14 text-ink-2">{active.watchSignals}</p>
         </div>
 
         <Link
           href={`/bulletin/scenarios/${active.familyId}`}
-          className="mt-4 inline-block font-mono text-[12px] font-medium text-deep underline decoration-line underline-offset-4 hover:decoration-deep"
+          className="mt-4 inline-block font-mono text-xs font-medium text-deep underline decoration-line underline-offset-4 hover:decoration-deep"
         >
           Voir la trajectoire de cette famille →
         </Link>

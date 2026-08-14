@@ -16,10 +16,10 @@ export default async function EditionPage({
   return (
     <>
       <RegimeHeader edition={edition} />
-      <div className="mx-auto max-w-[1060px] px-4 py-8 md:px-6">
+      <div className="mx-auto max-w-content px-4 py-8 md:px-6">
         <Link
           href="/bulletin"
-          className="mb-4 inline-block font-mono text-[12px] text-deep underline decoration-line underline-offset-4 hover:decoration-deep"
+          className="mb-4 inline-block font-mono text-xs text-deep underline decoration-line underline-offset-4 hover:decoration-deep"
         >
           ← Retour au bulletin
         </Link>

@@ -29,21 +29,21 @@ export default async function ScenarioTrajectoryPage({
   const versions = getScenarioVersionsByFamily(familyId);
 
   return (
-    <div className="mx-auto max-w-[1060px] px-4 py-8 md:px-6">
+    <div className="mx-auto max-w-content px-4 py-8 md:px-6">
       <Link
         href="/bulletin"
-        className="mb-4 inline-block font-mono text-[12px] text-deep underline decoration-line underline-offset-4 hover:decoration-deep"
+        className="mb-4 inline-block font-mono text-xs text-deep underline decoration-line underline-offset-4 hover:decoration-deep"
       >
         ← Retour au bulletin
       </Link>
 
-      <p className="font-mono text-[11px] uppercase tracking-wider text-mute">
+      <p className="font-mono text-11 uppercase tracking-wider text-mute">
         Trajectoire des scénarios
       </p>
-      <h1 className="mt-1.5 font-display text-[28px] font-extrabold text-ink">
+      <h1 className="mt-1.5 font-display text-28 font-extrabold text-ink">
         {FAMILY_LABELS[familyId]}
       </h1>
-      <p className="mt-2 max-w-[64ch] text-[15px] text-mute">
+      <p className="mt-2 max-w-[64ch] text-15 text-mute">
         Comment la vraisemblance de chaque branche a évolué dans le temps — la vue qui montre
         si la lecture a suivi les données ou couru derrière les prix.
       </p>
@@ -59,11 +59,11 @@ export default async function ScenarioTrajectoryPage({
           return (
             <section key={branchId} className="border border-line bg-card">
               <header className="flex flex-wrap items-center justify-between gap-2 border-b border-line bg-paper px-4 py-3">
-                <h2 className="font-display text-[16px] font-bold text-ink">
+                <h2 className="font-display text-base font-bold text-ink">
                   {BRANCH_LABELS[branchId] ?? branchId}
                 </h2>
                 <span
-                  className={`px-2 py-1 font-mono text-[11px] font-semibold uppercase tracking-wider ${LIKELIHOOD_CLASS[latest.likelihood]}`}
+                  className={`px-2 py-1 font-mono text-11 font-semibold uppercase tracking-wider ${LIKELIHOOD_CLASS[latest.likelihood]}`}
                 >
                   {LIKELIHOOD_LABELS[latest.likelihood]}
                 </span>
@@ -72,33 +72,33 @@ export default async function ScenarioTrajectoryPage({
                 {branchVersions.map((v) => (
                   <li key={v.version} className="border-l-2 border-line pl-3">
                     <div className="flex flex-wrap items-baseline gap-2">
-                      <span className="font-mono text-[11px] font-semibold text-mute">
+                      <span className="font-mono text-11 font-semibold text-mute">
                         v{v.version}
                       </span>
-                      <span className="font-mono text-[11.5px] text-mute">
+                      <span className="font-mono text-11-5 text-mute">
                         {formatDateLong(v.date)}
                       </span>
                       <Link
                         href={`/bulletin/${v.editionSlug}`}
-                        className="font-mono text-[11.5px] text-deep underline decoration-line underline-offset-4"
+                        className="font-mono text-11-5 text-deep underline decoration-line underline-offset-4"
                       >
                         {v.editionSlug}
                       </Link>
                       <span
-                        className={`px-1.5 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-wider ${LIKELIHOOD_CLASS[v.likelihood]}`}
+                        className={`px-1.5 py-0.5 font-mono text-10 font-semibold uppercase tracking-wider ${LIKELIHOOD_CLASS[v.likelihood]}`}
                       >
                         {LIKELIHOOD_LABELS[v.likelihood]}
                       </span>
                     </div>
                     {v.likelihoodChangedFrom && (
-                      <p className="mt-1.5 text-[13.5px] text-ink-2">
+                      <p className="mt-1.5 text-13-5 text-ink-2">
                         <span className="font-semibold text-ochre">
                           {LIKELIHOOD_LABELS[v.likelihoodChangedFrom]} → {LIKELIHOOD_LABELS[v.likelihood]}.
                         </span>{" "}
                         {v.why}
                       </p>
                     )}
-                    <p className="mt-1.5 max-w-[64ch] text-[13.5px] text-mute">{v.thesis}</p>
+                    <p className="mt-1.5 max-w-[64ch] text-13-5 text-mute">{v.thesis}</p>
                   </li>
                 ))}
               </ol>

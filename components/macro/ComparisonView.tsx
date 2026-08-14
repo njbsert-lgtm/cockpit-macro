@@ -16,7 +16,7 @@ export function ComparisonView({ metric, zone }: { metric: string; zone: Zone })
     <div>
       <MetricSelector current={metric} />
 
-      <p className="mt-4 max-w-[64ch] text-[14.5px] text-mute">
+      <p className="mt-4 max-w-[64ch] text-14-5 text-mute">
         {METRIC_LABELS[metric]}, toutes zones. C&rsquo;est ici que les divergences de politique
         monétaire ou de cycle deviennent visibles d&rsquo;un coup d&rsquo;œil.
       </p>
@@ -35,7 +35,7 @@ export function ComparisonView({ metric, zone }: { metric: string; zone: Zone })
                 highlighted ? "bg-paper" : ""
               }`}
             >
-              <span className={`font-display text-[14.5px] font-bold ${highlighted ? "text-ink" : "text-ink-2"}`}>
+              <span className={`font-display text-14-5 font-bold ${highlighted ? "text-ink" : "text-ink-2"}`}>
                 {ZONE_LABELS[z]}
               </span>
               {indicator && latest ? (
@@ -47,7 +47,7 @@ export function ComparisonView({ metric, zone }: { metric: string; zone: Zone })
                   size="sm"
                 />
               ) : (
-                <span className="font-mono text-[13px] italic text-mute">non suivi</span>
+                <span className="font-mono text-13 italic text-mute">non suivi</span>
               )}
             </div>
           );
@@ -57,7 +57,7 @@ export function ComparisonView({ metric, zone }: { metric: string; zone: Zone })
       {(() => {
         const withRelease = indicators.find((i) => i.nextRelease && relevantZones.includes(i.zone));
         return withRelease ? (
-          <p className="mt-3 font-mono text-[11px] text-mute">
+          <p className="mt-3 font-mono text-11 text-mute">
             Prochaine publication ({ZONE_LABELS[withRelease.zone]}) :{" "}
             {formatDateLong(withRelease.nextRelease!)}
           </p>
