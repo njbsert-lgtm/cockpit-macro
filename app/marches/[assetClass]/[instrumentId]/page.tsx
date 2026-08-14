@@ -3,7 +3,8 @@ import Link from "next/link";
 import { parseZone, ZONE_PARAM } from "@/lib/zone-param";
 import { ASSET_CLASS_LABELS, ASSET_CLASS_ORDER, formatInstrumentValue, instrumentPerformances } from "@/lib/marches";
 import { getInstrument, getObservations } from "@/lib/data";
-import { getEditions } from "@/lib/content";
+import { getDriversForInstrument, getEditions } from "@/lib/content";
+import { BRANCH_LABELS } from "@/lib/scenario-labels";
 import { formatDateLong } from "@/lib/format";
 import type { AssetClass } from "@/lib/types";
 import { DataValue } from "@/components/states/DataValue";
@@ -36,6 +37,8 @@ export default async function InstrumentPage({
   const mentions = getEditions()
     .filter((e) => e.instrumentRefs.includes(instrument.id))
     .sort((a, b) => b.date.localeCompare(a.date));
+
+  const drivers = getDriversForInstrument(instrument.id);
 
   return (
     <div className="mx-auto max-w-content px-4 py-8 md:px-6">
@@ -95,6 +98,38 @@ export default async function InstrumentPage({
         </p>
         <p className="mt-1 max-w-[64ch] text-14-5 text-ink-2">{instrument.note}</p>
       </div>
+
+      <section className="mt-10">
+        <h2 className="font-display text-xl font-extrabold text-ink">
+          Ce qui le pilote ({drivers.length})
+        </h2>
+        {drivers.length === 0 ? (
+          <p className="mt-3 max-w-[60ch] text-14-5 text-mute">
+            Aucun driver suivi ne pilote cet instrument. Il bouge pour des raisons qui ne sont
+            pas, aujourd&rsquo;hui, une incertitude que l&rsquo;on suit activement.
+          </p>
+        ) : (
+          <ul className="mt-3 flex flex-col gap-2">
+            {drivers.map((driver) => (
+              <li key={driver.id}>
+                <Link
+                  href={`/bulletin/drivers/${driver.id}`}
+                  className="block border border-line bg-card px-3.5 py-3 hover:border-deep"
+                >
+                  <span className="font-display text-14-5 font-bold text-ink">
+                    {driver.question}
+                  </span>
+                  <span className="mt-1 block font-mono text-11 text-mute">
+                    {driver.label} · branche dominante :{" "}
+                    {BRANCH_LABELS[driver.dominantBranchId] ?? driver.dominantBranchId} ·
+                    révisée le {formatDateLong(driver.lastRevisedAt)}
+                  </span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
 
       <section className="mt-10">
         <h2 className="font-display text-xl font-extrabold text-ink">

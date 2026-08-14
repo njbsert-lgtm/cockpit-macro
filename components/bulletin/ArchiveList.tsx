@@ -32,29 +32,71 @@ function FilterButton({
   );
 }
 
-export function ArchiveList({ weeks, zone }: { weeks: ArchiveWeek[]; zone: Zone }) {
+export type ArchiveDriverOption = { id: string; label: string };
+
+export function ArchiveList({
+  weeks,
+  zone,
+  drivers,
+  revisionsBySlug,
+}: {
+  weeks: ArchiveWeek[];
+  zone: Zone;
+  /** Les drivers proposés au filtre — libellés résolus côté serveur. */
+  drivers: ArchiveDriverOption[];
+  /** Pour chaque slug d'édition, les drivers qu'elle a révisés. */
+  revisionsBySlug: Record<string, string[]>;
+}) {
   const [filter, setFilter] = useState<TypeFilter>("tout");
+  const [driverFilter, setDriverFilter] = useState<string>("tout");
   const ordered = [...weeks].reverse(); // le plus récent en tête
+
+  // Filtrer par driver, c'est demander « quelles éditions ont révisé cette incertitude ? ».
+  const revisedBySelectedDriver = (slug: string) =>
+    driverFilter === "tout" || (revisionsBySlug[slug] ?? []).includes(driverFilter);
 
   return (
     <div>
-      <div className="flex flex-wrap items-center gap-2 border border-line bg-card p-3">
-        <span className="font-mono text-10-5 uppercase tracking-wider text-mute">Type</span>
-        <FilterButton active={filter === "tout"} onClick={() => setFilter("tout")}>
-          Tout
-        </FilterButton>
-        <FilterButton active={filter === "hebdo"} onClick={() => setFilter("hebdo")}>
-          Hebdo
-        </FilterButton>
-        <FilterButton active={filter === "speciale"} onClick={() => setFilter("speciale")}>
-          Spéciales
-        </FilterButton>
+      <div className="flex flex-col gap-2 border border-line bg-card p-3">
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="w-14 font-mono text-10-5 uppercase tracking-wider text-mute">Type</span>
+          <FilterButton active={filter === "tout"} onClick={() => setFilter("tout")}>
+            Tout
+          </FilterButton>
+          <FilterButton active={filter === "hebdo"} onClick={() => setFilter("hebdo")}>
+            Hebdo
+          </FilterButton>
+          <FilterButton active={filter === "speciale"} onClick={() => setFilter("speciale")}>
+            Spéciales
+          </FilterButton>
+        </div>
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="w-14 font-mono text-10-5 uppercase tracking-wider text-mute">Driver</span>
+          <FilterButton active={driverFilter === "tout"} onClick={() => setDriverFilter("tout")}>
+            Tout
+          </FilterButton>
+          {drivers.map((d) => (
+            <FilterButton
+              key={d.id}
+              active={driverFilter === d.id}
+              onClick={() => setDriverFilter(d.id)}
+            >
+              {d.label}
+            </FilterButton>
+          ))}
+        </div>
       </div>
 
       <ol className="mt-4 flex flex-col gap-3">
         {ordered.map((week) => {
-          const showHebdo = filter !== "speciale" && week.hebdo;
-          const showSpecials = filter !== "hebdo" ? week.specials : [];
+          const showHebdo =
+            filter !== "speciale" && week.hebdo && revisedBySelectedDriver(week.hebdo.slug)
+              ? week.hebdo
+              : null;
+          const showSpecials =
+            filter !== "hebdo"
+              ? week.specials.filter((s) => revisedBySelectedDriver(s.slug))
+              : [];
 
           return (
             <li key={week.isoWeek} className="border border-line bg-card">
@@ -83,6 +125,12 @@ export function ArchiveList({ weeks, zone }: { weeks: ArchiveWeek[]; zone: Zone 
                   <p className="text-13-5 italic text-rust">
                     Discipline rompue : aucune édition, pas même une hebdo courte, n&rsquo;a été
                     publiée cette semaine-là.
+                  </p>
+                )}
+
+                {!week.emptyForZone && !week.isGap && !showHebdo && showSpecials.length === 0 && (
+                  <p className="text-13-5 italic text-mute">
+                    Rien dans cette semaine ne correspond aux filtres.
                   </p>
                 )}
 

@@ -1,12 +1,10 @@
 import Link from "next/link";
 import type { Zone } from "@/lib/types";
-import { getCurrentScenarioBranches } from "@/lib/content";
+import { getActiveDrivers, getEditionsRevising } from "@/lib/content";
 import { getLatestEditionForZone, buildArchiveWeeks } from "@/lib/bulletin";
-import { BRANCH_ORDER, FAMILY_LABELS, FAMILY_ORDER } from "@/lib/scenario-labels";
 import { ZONE_LABELS } from "@/lib/zones";
 import { RegimeHeader } from "./RegimeHeader";
 import { EditionBlocks } from "./EditionBlocks";
-import { ScenarioFamilyTabs } from "./ScenarioFamilyTabs";
 import { ArchiveList } from "./ArchiveList";
 import { EmptyState } from "@/components/states/EmptyState";
 
@@ -21,11 +19,21 @@ export async function BulletinContent({ zone }: { zone: Zone }) {
 
   const latestEdition = getLatestEditionForZone(zone);
   const weeks = buildArchiveWeeks(zone);
+  const drivers = getActiveDrivers();
+
+  // Inverse de « quelles éditions ont révisé ce driver ? », calculé une fois pour le filtre
+  // d'archive — le composant est client, il ne peut pas résoudre le contenu lui-même.
+  const revisionsBySlug: Record<string, string[]> = {};
+  for (const driver of drivers) {
+    for (const edition of getEditionsRevising(driver.id)) {
+      (revisionsBySlug[edition.slug] ??= []).push(driver.id);
+    }
+  }
 
   return (
     <>
       {latestEdition ? (
-        <RegimeHeader edition={latestEdition} />
+        <RegimeHeader edition={latestEdition} drivers={drivers} />
       ) : (
         <div className="bg-deep px-4 py-8 md:px-6">
           <div className="mx-auto max-w-content">
@@ -56,36 +64,18 @@ export async function BulletinContent({ zone }: { zone: Zone }) {
         )}
 
         <section className="mt-10">
-          <h2 className="font-display text-22 font-extrabold text-ink">Scénarios</h2>
-          <p className="mt-1 max-w-[64ch] text-15 text-mute">
-            État courant de chaque famille. Cliquez une branche pour voir sa thèse et ses
-            impacts par classe d&rsquo;actifs.
-          </p>
-          {FAMILY_ORDER.map((familyId) => {
-            const current = getCurrentScenarioBranches(familyId);
-            const ordered = BRANCH_ORDER[familyId]
-              .map((id) => current.find((b) => b.branchId === id))
-              .filter((b): b is NonNullable<typeof b> => Boolean(b));
-            const central = ordered.find((b) => b.likelihood === "central");
-            return (
-              <ScenarioFamilyTabs
-                key={familyId}
-                title={FAMILY_LABELS[familyId]}
-                branches={ordered}
-                centralBranchId={central?.branchId ?? null}
-              />
-            );
-          })}
-        </section>
-
-        <section className="mt-10">
           <h2 className="font-display text-22 font-extrabold text-ink">Archive</h2>
           <p className="mt-1 max-w-[64ch] text-15 text-mute">
             Les hebdos forment la colonne vertébrale ; les spéciales sont indentées sous leur
             semaine. Un trou signale une semaine sans hebdo publiée.
           </p>
           <div className="mt-4">
-            <ArchiveList weeks={weeks} zone={zone} />
+            <ArchiveList
+              weeks={weeks}
+              zone={zone}
+              drivers={drivers.map((d) => ({ id: d.id, label: d.label }))}
+              revisionsBySlug={revisionsBySlug}
+            />
           </div>
         </section>
       </div>
