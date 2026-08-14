@@ -1,5 +1,12 @@
+import { readFileSync } from "node:fs";
+import path from "node:path";
 import { describe, expect, it } from "vitest";
 import { checkIntegrity, type ContentGraph } from "./integrity";
+import { parseEdition, readEditionSources } from "./editions";
+import { DRIVERS } from "@/content/drivers";
+import { TRENDS } from "@/content/tendances";
+import { SCENARIO_VERSIONS } from "@/content/scenarios";
+import { getInstruments } from "./data";
 import { deriveDrivers, activeDrivers } from "./drivers";
 import type {
   DriverInput,
@@ -326,5 +333,52 @@ describe("dérivation des champs de Driver", () => {
     );
     expect(derived).toHaveLength(2);
     expect(activeDrivers(derived, "2026-07-12").map((d) => d.id)).toEqual(["rates"]);
+  });
+});
+
+// ---------------------------------------------------------------------------
+
+describe("l'édition de test à référence morte", () => {
+  // `content/__fixtures__/2026-S33.mdx` est une hebdo entièrement valide, sauf que son
+  // driverOrder cite un driver inexistant. Elle vit hors de `content/editions/` : déposée
+  // dans le corpus, elle rendrait la branche définitivement non compilable, ce qui est
+  // exactement ce qu'elle sert à démontrer. Ce test la joue contre le vrai graphe.
+  const fixture = () => {
+    const source = readFileSync(
+      path.join(process.cwd(), "content", "__fixtures__", "2026-S33.mdx"),
+      "utf8",
+    );
+    return parseEdition("2026-S33", source);
+  };
+
+  it("passe la validation de fichier : le défaut n'est pas dans sa forme", () => {
+    expect(() => fixture()).not.toThrow();
+    expect(fixture().meta.driverOrder).toContain("geopolitique-europe");
+  });
+
+  it("fait échouer le contrôle d'intégrité en nommant le driver inexistant", () => {
+    const editions = readEditionSources().map(({ slug, source }) => parseEdition(slug, source));
+    const graph: ContentGraph = {
+      drivers: DRIVERS,
+      trends: TRENDS,
+      editions: [...editions.map((e) => e.meta), fixture().meta],
+      scenarios: SCENARIO_VERSIONS,
+      instrumentIds: new Set(getInstruments().map((i) => i.id)),
+    };
+    expect(() => checkIntegrity(graph)).toThrow(
+      /2026-S33\.mdx — driver inconnu « geopolitique-europe » dans driverOrder/,
+    );
+  });
+
+  it("le corpus réel, lui, passe le contrôle sans la fixture", () => {
+    const editions = readEditionSources().map(({ slug, source }) => parseEdition(slug, source));
+    const graph: ContentGraph = {
+      drivers: DRIVERS,
+      trends: TRENDS,
+      editions: editions.map((e) => e.meta),
+      scenarios: SCENARIO_VERSIONS,
+      instrumentIds: new Set(getInstruments().map((i) => i.id)),
+    };
+    expect(() => checkIntegrity(graph)).not.toThrow();
   });
 });
