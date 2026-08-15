@@ -1,11 +1,11 @@
 import { Suspense } from "react";
-import { NotesContent } from "@/components/notes/NotesContent";
-import { NotesSkeleton } from "@/components/notes/NotesSkeleton";
+import { FeedContent } from "@/components/notes/FeedContent";
+import { FeedSkeleton } from "@/components/notes/FeedSkeleton";
 
 export default function NotesPage() {
   return (
-    <Suspense fallback={<NotesSkeleton />}>
-      <NotesContent />
+    <Suspense fallback={<FeedSkeleton />}>
+      <FeedContent />
     </Suspense>
   );
 }

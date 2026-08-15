@@ -65,7 +65,7 @@ partagé par les quatre onglets : chaque onglet qui a besoin d'une notion de zon
 |---|---|
 | **Macro** | Le sélecteur du bandeau, seul endroit où il apparaît. État dans l'URL : `?zone=fr`. |
 | **Marchés** | Sa propre rangée de zones, à l'intérieur de l'écran (voir Onglet 3). Un filtre local, pas le bandeau. |
-| **Notes** | Aucune notion de zone. L'écran d'accueil et l'archive montrent toutes les notes. |
+| **Notes** | Aucune notion de zone. L'écran d'accueil (`/`) et le fil (`/notes`) montrent tout. |
 | **Veille** | Sans objet. |
 
 Changer de zone sur Macro ne touche ni Marchés ni Notes, et réciproquement : ce sont des
@@ -75,7 +75,7 @@ Changer de zone sur Macro ne touche ni Marchés ni Notes, et réciproquement : c
 
 ## Onglet 1 — Notes
 
-C'est le cœur du produit et l'écran d'accueil.
+C'est le cœur du produit et l'écran d'accueil, à `/`.
 
 ### Structure en trois couches
 
@@ -95,29 +95,39 @@ mouvements récents en premier. Cet ordre est fixé à la main dans le frontmatt
 pas calculé : c'est un jugement, et il doit se voir.
 
 **Couche 2 — L'étagère des notes récentes.**
-Une rangée horizontale de cartes, les plus récentes à gauche, qui défile vers la droite.
-Quatre à six notes maximum : c'est une étagère de fraîcheur, pas une archive.
+Une rangée horizontale de **cartes-articles**, les plus récentes à gauche. Quatre à six notes
+maximum : c'est une étagère de fraîcheur, pas un fil complet.
+
+*Anatomie d'une carte*, du haut vers le bas :
+1. Un bandeau coloré en tête de carte, dont la teinte encode le type — neutre pour une
+   hebdomadaire, rouille pour une spéciale.
+2. La semaine ISO et la date, en mono.
+3. La phrase de régime, en gros et en gras : c'est l'accroche.
+4. Deux lignes tirées du bloc « ce qui a changé », en texte simple.
+5. Les drivers touchés, en pastilles.
+
+Sans images, l'ancrage visuel est typographique : la hiérarchie de tailles doit être franche
+entre ces cinq niveaux, sinon la carte se lit comme une ligne de tableau plutôt que comme un
+article. La teinte du bandeau ne porte jamais l'information seule — le libellé du type reste
+écrit juste en dessous.
 
 - L'en-tête de la rangée affiche **« Notes › »** et est **entièrement cliquable** : il ouvre
-  la page d'archive. Le chevron seul est une cible trop petite au pouce.
-- Chaque carte : le type (hebdo ou spéciale), la semaine ISO, la date, la phrase de régime,
-  et les drivers touchés en pastilles. Un clic ouvre la note en pleine page.
-- Les notes spéciales sont visuellement distinctes — ce sont des exceptions, ça doit se voir
-  sans lire l'étiquette.
+  `/notes`. Le chevron seul est une cible trop petite au pouce.
+- Un clic n'importe où sur une carte ouvre la note en pleine page.
 - **Largeur de carte à 78 % de la fenêtre sur mobile**, pour que la suivante dépasse
   visiblement du bord. Sans ce débord, l'utilisateur ne devine pas que ça défile.
 - `scroll-snap-type: x mandatory`, défilement natif, aucun JavaScript de défilement.
-- Sur desktop, pas de carrousel : une grille de quatre cartes. Le défilement horizontal est
-  une contrainte de petit écran, pas un parti pris esthétique.
+- Sur desktop, pas de carrousel : une grille de **trois** cartes. Le défilement horizontal
+  est une contrainte de petit écran, pas un parti pris esthétique.
 - Balisage en `<ul>` / `<li>` avec un `aria-label` explicite : c'est une liste, pas un décor.
 
-**L'archive ne figure pas sur cet écran.** Elle a sa propre page, `/notes`.
-
-**Page `/notes` — L'archive.**
-Liste complète, notes hebdomadaires en colonne vertébrale, spéciales indentées sous leur
-semaine. Filtrable par période, par type et **par driver** — pas par zone, Notes n'a plus de
-notion de zone, l'archive montre tout. Les semaines sans note hebdomadaire y apparaissent
-comme des trous explicites.
+**Page `/notes` — Le fil.**
+Les mêmes cartes-articles, empilées en pleine largeur, de la plus récente à la plus ancienne.
+Pas d'arborescence par semaine : ni colonne vertébrale d'hebdos ni spéciales indentées, un
+seul fil chronologique plat. Filtrable par type et **par driver**, pas par zone — Notes n'a
+pas de notion de zone. Une semaine sans note hebdomadaire apparaît comme une ligne discrète
+dans le fil plutôt que de disparaître : un trou reste visible même sous un filtre, la
+discipline rompue n'est pas quelque chose qu'un filtre doit pouvoir masquer.
 
 **Couche 3 — Les tendances de fond.**
 Index thématique, accessible depuis l'en-tête. Ce qu'on consulte une fois par mois, pas
@@ -152,7 +162,7 @@ chaque bloc force un jugement. Le gabarit MDX doit refuser de compiler si un blo
    on ne retient que les surprises et on surestime le changement.
 3. **Révision des scénarios.** Pour chaque famille, la vraisemblance a-t-elle bougé, et
    pourquoi ? Une révision sans justification écrite est interdite.
-4. **Ce que j'avais mal lu.** Bloc obligatoire, même vide. C'est ce qui transforme l'archive
+4. **Ce que j'avais mal lu.** Bloc obligatoire, même vide. C'est ce qui transforme le fil
    en instrument d'apprentissage plutôt qu'en pile de notes.
 5. **Ce que je surveille d'ici la prochaine note.** Trois éléments maximum, chacun avec
    le signal précis qui le validerait ou l'invaliderait.
@@ -163,9 +173,9 @@ pas des sections autonomes. Une nouvelle qui ne sert aucun des cinq blocs ne ren
 ### Cadence : hebdomadaire fixe + notes spéciales
 
 **La note hebdomadaire est le squelette.** Elle paraît le dimanche soir, qu'il se soit passé
-quelque chose ou non. Une semaine sans note est un trou dans l'archive, et l'archive n'a de
-valeur que si elle est continue. Une semaine où rien n'a bougé produit une note courte qui
-le dit : c'est une information, pas un échec.
+quelque chose ou non. Une semaine sans note est un trou dans le fil, et le fil n'a de valeur
+que s'il est continu. Une semaine où rien n'a bougé produit une note courte qui le dit :
+c'est une information, pas un échec.
 
 **La note spéciale est l'exception, et doit le rester.** Si on en publie une par semaine,
 la distinction meurt et le hebdo devient du remplissage. Le déclenchement est donc soumis à
@@ -218,7 +228,7 @@ les nommer distinctement, sans quoi l'alerte sera mal interprétée :
 C'est la subtilité à ne pas rater dans le code.
 
 - **Le bloc « ce qui a changé » d'une hebdo se compare à la hebdo précédente**, jamais à la
-  dernière spéciale. Sinon le fil hebdomadaire se rompt et l'archive devient illisible.
+  dernière spéciale. Sinon le fil hebdomadaire se rompt et devient illisible.
 - **Une spéciale se compare à la dernière note, quelle qu'elle soit.** C'est un delta à chaud.
 - **La hebdo suivante consolide les spéciales de la semaine** dans un bloc supplémentaire :
   ce que les notes spéciales ont établi, et ce qui, avec le recul de quelques jours,
@@ -229,14 +239,15 @@ un choc n'a aucun sens. Une spéciale ne requiert que trois blocs : ce qui a cha
 des scénarios avec justification, ce que je surveille. Les cinq blocs complets restent
 obligatoires pour les hebdos.
 
-### Identification et archive
+### Identification et continuité
 
 Numérotation par semaine ISO : `2026-S33` pour l'hebdo, `2026-S33-E1` et `2026-S33-E2` pour les
-spéciales de cette semaine. L'archive présente les hebdos comme colonne vertébrale, avec les
-spéciales indentées sous la semaine à laquelle elles appartiennent.
+spéciales de cette semaine. Le fil ne les groupe plus visuellement par semaine — chaque note
+est sa propre carte, à sa propre date — mais l'identifiant garde la trace du rattachement :
+c'est lui qui permet de détecter une semaine sans hebdo.
 
-Si une semaine n'a pas d'hebdo, l'archive affiche explicitement le trou plutôt que de refermer
-la liste. Une discipline rompue doit être visible.
+Si une semaine n'a pas d'hebdo, le fil l'affiche explicitement comme un trou plutôt que de la
+faire disparaître. Une discipline rompue doit être visible.
 
 
 
@@ -631,7 +642,7 @@ Un chiffre sans date n'est jamais affiché. Un chiffre absent n'est jamais rempl
 **Étape 1 — La carcasse, données figées.**
 Next.js + Tailwind. Les quatre onglets, la barre persistante avec sélecteur de zone et
 indicateur de fraîcheur, la navigation à trois niveaux de l'onglet Marchés, les scénarios
-cliquables, l'étagère et l'archive des notes, et **les cinq états de chaque écran**.
+cliquables, l'étagère et le fil des notes, et **les cinq états de chaque écran**.
 Données depuis `data/seed.json`, écrit à la main. Aucune API.
 
 Le seed contient volontairement des cas dégradés : un instrument sans valeur du jour, une
@@ -639,8 +650,8 @@ source périmée de trois jours, une combinaison classe d'actifs / zone sans ins
 (Marchés), **une semaine sans hebdo**, **une
 semaine portant deux notes spéciales**, et **un historique de clôtures assez long pour
 tester le moteur d'alertes** : un franchissement de seuil, un quasi-franchissement, un
-franchissement en période de silence, et une série trouée par un jour férié. Sinon les états 3, 4 et 5 et l'affichage de
-l'archive casseront en production.
+franchissement en période de silence, et une série trouée par un jour férié. Sinon les états 3, 4 et 5 et l'affichage
+du fil casseront en production.
 
 Critère de validation : le site est déployé sur Vercel et **utilisable au pouce sur un
 téléphone**. Pas « joli en capture d'écran ».
@@ -650,7 +661,7 @@ Objets **Driver** avec leurs cartes en en-tête de l'onglet Notes et leur page d
 Notes en MDX avec frontmatter et validation des blocs obligatoires selon le type.
 Objets **Tendance** avec chronologie de statuts, liés aux drivers dans les deux sens.
 Scénarios versionnés, rattachés à un driver, avec la vue Trajectoire.
-Migrer trois notes rétrospectives pour vérifier que l'archive et tous les liens croisés
+Migrer trois notes rétrospectives pour vérifier que le fil et tous les liens croisés
 fonctionnent — driver ↔ tendance ↔ instrument ↔ note. C'est ce maillage qui fait le produit.
 
 **Étape 3 — Les données automatiques.**
@@ -660,7 +671,7 @@ Les deux spreads sont calculés et stockés dès que le Bund, l'OAT et le 10 ans
 ils ont besoin de trois clôtures d'historique avant que leurs alertes puissent s'évaluer.
 
 **Étape 4 — Confort.**
-Mode comparaison de l'onglet Macro, graphiques de séries, recherche dans l'archive,
+Mode comparaison de l'onglet Macro, graphiques de séries, recherche dans les notes,
 export d'une note en PDF. **Moteur d'alertes** : une fois les données automatiques en
 place, un contrôle quotidien post-clôture évalue les règles, applique la période de silence,
 et ouvre un brouillon de note spéciale pré-rempli. Il notifie, il ne rédige pas.

@@ -1,5 +1,11 @@
-import { redirect } from "next/navigation";
+import { Suspense } from "react";
+import { HomeContent } from "@/components/notes/HomeContent";
+import { HomeSkeleton } from "@/components/notes/HomeSkeleton";
 
 export default function Home() {
-  redirect("/notes");
+  return (
+    <Suspense fallback={<HomeSkeleton />}>
+      <HomeContent />
+    </Suspense>
+  );
 }

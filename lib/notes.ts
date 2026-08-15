@@ -163,6 +163,22 @@ export function parseSlug(slug: string): SlugParts {
 // pas : `<` doit être suivi immédiatement d'une lettre majuscule.
 const COMPONENT_TAG = /<([A-Z][A-Za-z0-9]*)(\s[^>]*)?\/?>/g;
 
+/**
+ * Le texte brut d'un bloc nommé, débarrassé de la mise en forme markdown — pour un extrait de
+ * carte, pas pour du rendu : c'est du texte simple, affiché avec un `line-clamp` CSS plutôt que
+ * tronqué ici à un nombre de caractères, qui ne saurait pas ce qu'une police ou une largeur de
+ * carte permettent d'afficher.
+ */
+export function extractBlockText(body: string, block: BlockName): string | null {
+  const match = new RegExp(`<${block}>([\\s\\S]*?)</${block}>`).exec(body);
+  if (!match) return null;
+  return match[1]
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1") // liens markdown : garde le texte, jette l'URL
+    .replace(/[*_`]/g, "") // emphase et code inline
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
 function readBlockSequence(slug: string, body: string): BlockName[] {
   const sequence: BlockName[] = [];
   for (const match of body.matchAll(COMPONENT_TAG)) {

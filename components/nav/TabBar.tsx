@@ -6,11 +6,21 @@ import { usePathname } from "next/navigation";
 type Tab = { href: string; label: string; disabled?: boolean };
 
 const TABS: Tab[] = [
-  { href: "/notes", label: "Notes" },
+  { href: "/", label: "Notes" },
   { href: "/macro", label: "Macro" },
   { href: "/marches", label: "Marchés" },
   { href: "/veille", label: "Veille", disabled: true },
 ];
+
+/**
+ * L'onglet Notes vit à `/`, mais ses sous-pages — le fil, une note, un driver, une tendance —
+ * restent sous `/notes`. `pathname.startsWith("/")` serait vrai partout ; il faut un cas
+ * particulier pour ne pas allumer l'onglet Notes sur Macro ou Marchés.
+ */
+function isTabActive(tab: Tab, pathname: string): boolean {
+  if (tab.href === "/") return pathname === "/" || pathname.startsWith("/notes");
+  return pathname.startsWith(tab.href);
+}
 
 function TabLink({
   tab,
@@ -78,7 +88,7 @@ export function TabBar() {
       >
         <div className="mx-auto flex max-w-content gap-1">
           {TABS.map((tab) => (
-            <TabLink key={tab.href} tab={tab} active={pathname.startsWith(tab.href)} variant="desktop" />
+            <TabLink key={tab.href} tab={tab} active={isTabActive(tab, pathname)} variant="desktop" />
           ))}
         </div>
       </nav>
@@ -89,7 +99,7 @@ export function TabBar() {
         className="fixed inset-x-0 bottom-0 z-30 flex border-t border-white/15 bg-deep md:hidden"
       >
         {TABS.map((tab) => (
-          <TabLink key={tab.href} tab={tab} active={pathname.startsWith(tab.href)} variant="mobile" />
+          <TabLink key={tab.href} tab={tab} active={isTabActive(tab, pathname)} variant="mobile" />
         ))}
       </nav>
     </>

@@ -5,6 +5,7 @@ import { getInstruments } from "./data";
 import { checkIntegrity, currentVersion } from "./integrity";
 import { activeDrivers, deriveDrivers } from "./drivers";
 import {
+  extractBlockText,
   parseNote,
   readNoteSources,
   validateNoteChain,
@@ -61,6 +62,13 @@ export function getNoteBody(slug: string): string | null {
   return CONTENT.bodies.get(slug) ?? null;
 }
 
+/** L'extrait de « ce qui a changé », en texte simple — l'accroche d'une carte-article. */
+export function getChangeExcerpt(slug: string): string | null {
+  const body = CONTENT.bodies.get(slug);
+  if (!body) return null;
+  return extractBlockText(body, "CeQuiAChange");
+}
+
 export function getNotesByZone(zone: Zone): Note[] {
   return CONTENT.notes.filter((e) => zoneMatches(e.zones, zone));
 }
@@ -95,6 +103,26 @@ export function getActiveDrivers(): Driver[] {
 /** Inverse de `Driver.instrumentRefs` — calculé, jamais stocké. */
 export function getDriversForInstrument(instrumentId: string): Driver[] {
   return CONTENT.drivers.filter((d) => d.instrumentRefs.includes(instrumentId));
+}
+
+/**
+ * Pour chaque note, les drivers qu'elle a effectivement révisés — l'inverse de
+ * `getNotesRevising`, calculé une fois pour toutes les cartes plutôt que note par note.
+ * Une note qui n'a révisé aucun driver (ex. une spéciale sans impact sur les scénarios)
+ * n'a simplement pas d'entrée : pas de pastille inventée.
+ */
+export function getRevisingDriversByNote(): Map<string, Driver[]> {
+  const byNote = new Map<string, Driver[]>();
+  for (const driver of CONTENT.drivers) {
+    for (const slug of new Set(
+      SCENARIO_VERSIONS.filter((s) => s.driverId === driver.id).map((s) => s.noteSlug),
+    )) {
+      const list = byNote.get(slug) ?? [];
+      list.push(driver);
+      byNote.set(slug, list);
+    }
+  }
+  return byNote;
 }
 
 /** Les notes qui ont révisé ce driver, du plus récent au plus ancien. */
