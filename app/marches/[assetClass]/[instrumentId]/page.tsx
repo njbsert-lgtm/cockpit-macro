@@ -1,7 +1,13 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { parseZone, ZONE_PARAM } from "@/lib/zone-param";
-import { ASSET_CLASS_LABELS, ASSET_CLASS_ORDER, formatInstrumentValue, instrumentPerformances } from "@/lib/marches";
+import {
+  ASSET_CLASS_LABELS,
+  ASSET_CLASS_ORDER,
+  ASSET_CLASS_PARAM,
+  formatInstrumentValue,
+  instrumentPerformances,
+} from "@/lib/marches";
 import { getInstrument, getObservations } from "@/lib/data";
 import { getDriversForInstrument, getNotes } from "@/lib/content";
 import { BRANCH_LABELS } from "@/lib/scenario-labels";
@@ -43,7 +49,7 @@ export default async function InstrumentPage({
   return (
     <div className="mx-auto max-w-content px-4 py-8 md:px-6">
       <Link
-        href={`/marches/${rawClass}?${ZONE_PARAM}=${zone}`}
+        href={`/marches?${ASSET_CLASS_PARAM}=${rawClass}&${ZONE_PARAM}=${zone}`}
         className="mb-4 inline-block font-mono text-xs text-deep underline decoration-line underline-offset-4 hover:decoration-deep"
       >
         ← {ASSET_CLASS_LABELS[rawClass]}

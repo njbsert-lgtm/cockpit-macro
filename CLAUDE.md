@@ -309,21 +309,64 @@ compte autant que sa valeur.
 
 ## Onglet 3 — Marchés
 
-La performance par classe d'actifs, en trois niveaux de profondeur.
+La performance par classe d'actifs. **Deux rangées de filtres en haut, puis la liste** — et non
+une arborescence à parcourir. Le niveau 1 et le niveau 2 sont le même écran : on change de
+classe sans revenir en arrière.
 
-**Niveau 1 — Les quatre classes.** Actions · Obligations · Matières premières · Devises.
-Pour chacune : performance depuis le 1er janvier, sur un mois, sur un an. Un clic ouvre le
-niveau 2.
+### Les deux rangées de filtres
 
-**Niveau 2 — Les instruments de la classe.** Liste triable, réordonnée pour remonter les
-instruments de la zone sélectionnée. Chaque ligne : valeur, perf YTD, perf 1 mois,
-note éditoriale courte.
+**Rangée 1 — la classe d'actifs.** Quatre boutons : Actions · Obligations · Matières
+premières · Devises. **Pas d'onglet « Vue d'ensemble »** : une classe est toujours
+sélectionnée, Actions par défaut. Chaque bouton porte le nom de la classe et, en dessous en
+plus petit, la **performance YTD des instruments que le bouton ouvre** — moyenne simple non
+pondérée, filtrée par la zone courante. Le chiffre décrit donc exactement ce qu'un clic
+affiche ; il n'y a pas d'agrégat qui parle d'autre chose que de la liste.
 
-**Niveau 3 — La fiche instrument.** Graphique de la série, les performances sur plusieurs
-horizons, **les drivers qui le pilotent** avec leur branche dominante — cliquables vers la
-page du driver —, et **les passages de notes qui le mentionnent**, du plus
-récent au plus ancien. C'est la jonction entre le prix et l'analyse :
-on doit pouvoir partir d'un chiffre et remonter à ce qu'on en avait dit.
+**Rangée 2 — la zone.** Boutons à défilement horizontal, **« Toutes » en tête et par
+défaut**. Ce n'est pas un second filtre : c'est le **même état** que le sélecteur de zone de
+la barre persistante, présenté autrement. Sélectionner France ici met à jour le sélecteur du
+bandeau et, par voie de conséquence, l'onglet Notes et l'onglet Macro. Un seul contexte, deux
+commandes.
+
+**Style des boutons.** De vrais boutons, jamais du texte en gras souligné : fond `--paper`,
+bordure fine, rayon 2 px. À l'état actif, fond `--ink` et texte blanc. **Hauteur minimale
+44 px** et `aria-pressed` sur chacun — le contraste inversé ne dit rien à un lecteur d'écran.
+
+**Contraintes de largeur, à vérifier à 390 px.** Les quatre boutons de la rangée 1 tiennent
+sans troncature — le libellé passe à la ligne plutôt que d'être coupé. La rangée 2 laisse
+voir le bord du bouton suivant : sans ce débord, personne ne devine que ça défile.
+
+### La liste
+
+Chaque ligne : le libellé de l'instrument à gauche, la valeur à droite, et **sous la valeur la
+variation du jour dans une pastille colorée** — fond vert pâle en hausse, rouge pâle en
+baisse, neutre à plat. La couleur ne porte jamais l'information seule : le signe reste écrit.
+Un clic ouvre la fiche instrument.
+
+La variation est mesurée **entre les deux dernières clôtures**, et exprimée dans l'unité qui
+se lit : **points de base pour les taux et les spreads**, pourcentage pour tout le reste. Dire
+qu'un 10 ans « perd 0,5 % » n'informe personne ; « perd 2 bps » se lit immédiatement.
+
+**Deux clôtures séparées de plus de sept jours ne se suivent plus.** Au-delà, ce n'est plus
+une variation de séance mais un saut au-dessus d'un trou, et la variation n'est pas calculée.
+Sept jours laissent passer un week-end prolongé par un jour férié, pas un mois d'absence.
+
+**Quand la variation est indisponible, jamais de tiret.** La ligne affiche la dernière valeur
+connue avec sa date, en ambre ou en rouge selon la fraîcheur — c'est l'état 4 ou 5 du cahier,
+pas un vide. Le pourquoi est dans l'infobulle.
+
+### L'état dans l'URL
+
+Les deux filtres sont dans la chaîne de requête : `?classe=rates&zone=fr`. Toute vue est
+partageable et rechargeable. Une valeur de `classe` inconnue retombe sur le défaut plutôt que
+de produire un 404 : un paramètre d'URL se saisit à la main, il ne doit pas casser la page.
+
+### La fiche instrument
+
+Graphique de la série, les performances sur plusieurs horizons, **les drivers qui le
+pilotent** avec leur branche dominante — cliquables vers la page du driver —, et **les
+passages de notes qui le mentionnent**, du plus récent au plus ancien. C'est la jonction entre
+le prix et l'analyse : on doit pouvoir partir d'un chiffre et remonter à ce qu'on en avait dit.
 
 ---
 

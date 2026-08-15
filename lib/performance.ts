@@ -72,3 +72,57 @@ export function oneYearPerformance(obs: Observation[]): Performance | null {
   if (!latest) return null;
   return performanceSince(obs, addDays(latest.date, -365));
 }
+
+/** Nombre de jours calendaires entre deux dates ISO. */
+function daysBetween(from: string, to: string): number {
+  const a = new Date(from + "T00:00:00Z").getTime();
+  const b = new Date(to + "T00:00:00Z").getTime();
+  return Math.round((b - a) / 86_400_000);
+}
+
+/**
+ * Au-delà de cet écart, deux clôtures ne se suivent plus : ce n'est plus une variation de
+ * séance mais un saut au-dessus d'un trou. Sept jours laissent passer un week-end prolongé
+ * par un jour férié — le cas que le seed exerce — sans laisser passer un mois d'absence.
+ */
+export const MAX_SESSION_GAP_DAYS = 7;
+
+export type DailyChange = {
+  absolute: number; // dans l'unité de l'instrument : points d'indice, dollars, points de taux
+  pct: number; // variation relative, en %
+  direction: "up" | "down" | "flat";
+  fromDate: string;
+  fromValue: number;
+  toDate: string;
+  toValue: number;
+};
+
+/**
+ * Variation entre la dernière clôture et la précédente. `null` dans deux cas, jamais
+ * remplacée par un tiret ni par zéro : la série n'a qu'une clôture, ou l'écart entre les deux
+ * dernières dépasse `MAX_SESSION_GAP_DAYS`. Comparer une clôture à une autre vieille d'un mois
+ * et appeler le résultat « variation du jour » serait faux — l'appelant doit alors se rabattre
+ * sur la dernière valeur connue et sa date.
+ */
+export function dailyChange(
+  obs: Observation[],
+  maxGapDays: number = MAX_SESSION_GAP_DAYS,
+): DailyChange | null {
+  const sorted = sortedByDate(obs);
+  const to = sorted.at(-1);
+  const from = sorted.at(-2);
+  if (!to || !from) return null;
+  if (from.value === 0) return null;
+  if (daysBetween(from.date, to.date) > maxGapDays) return null;
+
+  const absolute = to.value - from.value;
+  return {
+    absolute,
+    pct: (absolute / Math.abs(from.value)) * 100,
+    direction: absolute > 0 ? "up" : absolute < 0 ? "down" : "flat",
+    fromDate: from.date,
+    fromValue: from.value,
+    toDate: to.date,
+    toValue: to.value,
+  };
+}

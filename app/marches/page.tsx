@@ -1,31 +1,89 @@
 import { Suspense } from "react";
 import { parseZone, ZONE_PARAM } from "@/lib/zone-param";
-import { ASSET_CLASS_ORDER } from "@/lib/marches";
-import { ClassCard } from "@/components/marches/ClassCard";
+import {
+  ASSET_CLASS_LABELS,
+  ASSET_CLASS_ORDER,
+  ASSET_CLASS_PARAM,
+  formatDailyChange,
+  formatInstrumentValue,
+  getClassPerformance,
+  parseAssetClass,
+} from "@/lib/marches";
+import { getInstrumentsByAssetClass, getObservations } from "@/lib/data";
+import { dailyChange, latestObservation, MAX_SESSION_GAP_DAYS } from "@/lib/performance";
+import { freshnessTier } from "@/lib/freshness";
+import { ZONE_LABELS } from "@/lib/zones";
+import { formatDateLong } from "@/lib/format";
+import type { AssetClass, Zone } from "@/lib/types";
+import { FilterRows, type ClassSummary } from "@/components/marches/FilterRows";
+import { InstrumentList, type InstrumentRow } from "@/components/marches/InstrumentList";
 import { MarchesSkeleton } from "@/components/marches/MarchesSkeleton";
+import { EmptyState } from "@/components/states/EmptyState";
 
 async function simulateLoad() {
   await new Promise((resolve) => setTimeout(resolve, 300));
 }
 
-async function MarchesContent({ zone }: { zone: string }) {
+function buildRows(assetClass: AssetClass, zone: Zone): InstrumentRow[] {
+  return getInstrumentsByAssetClass(assetClass, zone).map((instrument) => {
+    const obs = getObservations(instrument.id);
+    const latest = latestObservation(obs);
+    const change = dailyChange(obs);
+    const sorted = [...obs].sort((a, b) => a.date.localeCompare(b.date));
+    const previous = sorted.at(-2) ?? null;
+
+    return {
+      id: instrument.id,
+      label: instrument.label,
+      href: `/marches/${assetClass}/${instrument.id}?${ZONE_PARAM}=${zone}`,
+      value: latest ? formatInstrumentValue(instrument, latest.value) : null,
+      date: latest?.date ?? null,
+      tier: freshnessTier(latest?.fetchedAt),
+      change: change ? formatDailyChange(instrument, change) : null,
+      direction: change?.direction ?? null,
+      changeUnavailableReason: change
+        ? null
+        : previous
+          ? `Variation de séance non calculable : la clôture précédente date du ${formatDateLong(previous.date)}, au-delà des ${MAX_SESSION_GAP_DAYS} jours qui séparent deux séances consécutives.`
+          : "Variation de séance non calculable : la série ne compte qu'une seule clôture.",
+      zoneTag: instrument.zones[0] ? ZONE_LABELS[instrument.zones[0]] : null,
+    };
+  });
+}
+
+async function MarchesContent({ assetClass, zone }: { assetClass: AssetClass; zone: Zone }) {
   await simulateLoad();
+
+  const summaries: ClassSummary[] = ASSET_CLASS_ORDER.map((c) => {
+    const perf = getClassPerformance(c, zone);
+    return { assetClass: c, ytd: perf.ytd, total: perf.total };
+  });
+  const rows = buildRows(assetClass, zone);
 
   return (
     <div className="mx-auto max-w-content px-4 py-8 md:px-6">
       <p className="font-mono text-11 uppercase tracking-wider text-mute">Marchés</p>
       <h1 className="mt-1 font-display text-26 font-extrabold text-ink">
-        Performance par classe d&rsquo;actifs
+        {ASSET_CLASS_LABELS[assetClass]}
       </h1>
-      <p className="mt-2 max-w-[64ch] text-15 text-mute">
-        Un clic ouvre les instruments de la classe, réordonnés pour remonter ceux de la zone
-        sélectionnée.
-      </p>
-      <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2">
-        {ASSET_CLASS_ORDER.map((assetClass) => (
-          <ClassCard key={assetClass} assetClass={assetClass} zone={zone} />
-        ))}
+
+      <FilterRows assetClass={assetClass} zone={zone} summaries={summaries} />
+
+      <div className="mt-5">
+        {rows.length === 0 ? (
+          <EmptyState
+            title={`Aucun instrument de cette classe pour ${ZONE_LABELS[zone]}`}
+            description="Choisissez « Toutes » dans la rangée des zones pour voir l'ensemble des instruments suivis, ou une autre classe d'actifs."
+          />
+        ) : (
+          <InstrumentList rows={rows} />
+        )}
       </div>
+
+      <p className="mt-3 font-mono text-11 text-mute">
+        Variation entre les deux dernières clôtures. Les taux et les spreads sont exprimés en
+        points de base, les autres instruments en pourcentage.
+      </p>
     </div>
   );
 }
@@ -37,10 +95,11 @@ export default async function MarchesPage({
 }) {
   const params = await searchParams;
   const zone = parseZone(params[ZONE_PARAM]);
+  const assetClass = parseAssetClass(params[ASSET_CLASS_PARAM]);
 
   return (
-    <Suspense key={zone} fallback={<MarchesSkeleton />}>
-      <MarchesContent zone={zone} />
+    <Suspense key={`${assetClass}-${zone}`} fallback={<MarchesSkeleton />}>
+      <MarchesContent assetClass={assetClass} zone={zone} />
     </Suspense>
   );
 }

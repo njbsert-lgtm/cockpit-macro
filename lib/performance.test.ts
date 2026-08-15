@@ -1,6 +1,8 @@
 import { describe, expect, it } from "vitest";
 import {
+  dailyChange,
   latestObservation,
+  MAX_SESSION_GAP_DAYS,
   observationOnOrBefore,
   oneMonthPerformance,
   oneYearPerformance,
@@ -100,5 +102,65 @@ describe("oneMonthPerformance / oneYearPerformance", () => {
     const perf = oneMonthPerformance(list);
     expect(perf).not.toBeNull();
     expect(perf?.pct).toBeCloseTo(5);
+  });
+});
+
+// ---------------------------------------------------------------------------
+
+describe("dailyChange", () => {
+  it("mesure l'écart entre les deux dernières clôtures, pas entre les deux premières", () => {
+    const list = [obs("2026-08-10", 100), obs("2026-08-11", 110), obs("2026-08-12", 121)];
+    const change = dailyChange(list);
+    expect(change?.absolute).toBeCloseTo(11, 10);
+    expect(change?.pct).toBeCloseTo(10, 10);
+    expect(change?.fromDate).toBe("2026-08-11");
+    expect(change?.toDate).toBe("2026-08-12");
+  });
+
+  it("ne dépend pas de l'ordre d'entrée des observations", () => {
+    const list = [obs("2026-08-12", 121), obs("2026-08-10", 100), obs("2026-08-11", 110)];
+    expect(dailyChange(list)?.fromDate).toBe("2026-08-11");
+  });
+
+  it("enregistre le sens, pas seulement l'amplitude", () => {
+    expect(dailyChange([obs("2026-08-11", 110), obs("2026-08-12", 100)])?.direction).toBe("down");
+    expect(dailyChange([obs("2026-08-11", 100), obs("2026-08-12", 110)])?.direction).toBe("up");
+    expect(dailyChange([obs("2026-08-11", 100), obs("2026-08-12", 100)])?.direction).toBe("flat");
+  });
+
+  it("franchit un week-end prolongé par un jour férié", () => {
+    const list = [obs("2026-08-05", 100), obs("2026-08-12", 101)];
+    expect(dailyChange(list)).not.toBeNull();
+    expect(dailyChange(list)?.fromDate).toBe("2026-08-05");
+  });
+
+  it("refuse de franchir un trou plus large qu'une séance — ce ne serait plus une variation du jour", () => {
+    const list = [obs("2026-07-13", 100), obs("2026-08-12", 130)];
+    expect(dailyChange(list)).toBeNull();
+  });
+
+  it("place la frontière exactement à MAX_SESSION_GAP_DAYS jours", () => {
+    const within = [obs("2026-08-05", 100), obs("2026-08-12", 101)]; // 7 jours
+    const beyond = [obs("2026-08-04", 100), obs("2026-08-12", 101)]; // 8 jours
+    expect(MAX_SESSION_GAP_DAYS).toBe(7);
+    expect(dailyChange(within)).not.toBeNull();
+    expect(dailyChange(beyond)).toBeNull();
+  });
+
+  it("retourne null plutôt que zéro quand la série n'a qu'une clôture", () => {
+    expect(dailyChange([obs("2026-08-12", 100)])).toBeNull();
+    expect(dailyChange([])).toBeNull();
+  });
+
+  it("gère une variation négative sur un taux sans inverser le signe du pourcentage", () => {
+    // Les taux se lisent en bps, mais le calcul relatif doit rester juste : 4,30 → 4,28.
+    const change = dailyChange([obs("2026-08-11", 4.3), obs("2026-08-12", 4.28)]);
+    expect(change?.absolute).toBeCloseTo(-0.02, 10);
+    expect(change?.pct).toBeLessThan(0);
+    expect(change?.direction).toBe("down");
+  });
+
+  it("ne divise pas par zéro sur un spread nul la veille", () => {
+    expect(dailyChange([obs("2026-08-11", 0), obs("2026-08-12", 0.15)])).toBeNull();
   });
 });
