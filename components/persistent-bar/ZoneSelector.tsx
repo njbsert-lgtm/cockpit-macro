@@ -10,6 +10,11 @@ export function ZoneSelector() {
   const searchParams = useSearchParams();
   const zone = parseZone(searchParams.get(ZONE_PARAM));
 
+  // La zone ne pilote plus que Macro : Marchés a sa propre rangée de zones (le même état,
+  // affiché autrement, à l'intérieur de l'écran), et Notes ne se filtre plus par zone du
+  // tout. Le sélecteur du bandeau n'a donc rien à faire — ni à afficher — ailleurs.
+  if (pathname !== "/macro") return null;
+
   return (
     <label className="inline-flex items-center gap-2">
       <span className="sr-only">Zone</span>

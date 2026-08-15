@@ -54,15 +54,22 @@ réservée : ajouter un onglet plus tard, c'est refaire la navigation.
 
 ### La barre persistante
 
-Visible sur tous les écrans, elle contient exactement deux choses :
+Visible sur tous les écrans. Elle contient toujours l'indicateur de fraîcheur — point coloré
++ date, vert sous 24 h, ambre entre 24 et 48 h, rouge au-delà, cliquable pour voir le détail
+par source.
 
-1. **Le sélecteur de zone** — contexte global, une seule zone à la fois.
-   Il pilote simultanément Macro (quels indicateurs), Marchés (quels instruments remontent)
-   et Notes (quelles notes et quels passages sont mis en avant).
-2. **L'indicateur de fraîcheur** — point coloré + date. Vert sous 24 h, ambre entre 24 et 48 h,
-   rouge au-delà. Cliquable pour voir le détail par source.
+**Le sélecteur de zone n'y figure que sur l'onglet Macro.** Ce n'est plus un contexte global
+partagé par les quatre onglets : chaque onglet qui a besoin d'une notion de zone la gère lui-même.
 
-L'état complet est dans l'URL : `?zone=fr`. Toute vue est partageable et rechargeable.
+| Onglet | Zone |
+|---|---|
+| **Macro** | Le sélecteur du bandeau, seul endroit où il apparaît. État dans l'URL : `?zone=fr`. |
+| **Marchés** | Sa propre rangée de zones, à l'intérieur de l'écran (voir Onglet 3). Un filtre local, pas le bandeau. |
+| **Notes** | Aucune notion de zone. L'écran d'accueil et l'archive montrent toutes les notes. |
+| **Veille** | Sans objet. |
+
+Changer de zone sur Macro ne touche ni Marchés ni Notes, et réciproquement : ce sont des
+états indépendants, chacun dans l'URL de sa propre page, partageable et rechargeable.
 
 ---
 
@@ -108,8 +115,9 @@ Quatre à six notes maximum : c'est une étagère de fraîcheur, pas une archive
 
 **Page `/notes` — L'archive.**
 Liste complète, notes hebdomadaires en colonne vertébrale, spéciales indentées sous leur
-semaine. Filtrable par zone, par période, par type et **par driver**. Les semaines sans note
-hebdomadaire y apparaissent comme des trous explicites.
+semaine. Filtrable par période, par type et **par driver** — pas par zone, Notes n'a plus de
+notion de zone, l'archive montre tout. Les semaines sans note hebdomadaire y apparaissent
+comme des trous explicites.
 
 **Couche 3 — Les tendances de fond.**
 Index thématique, accessible depuis l'en-tête. Ce qu'on consulte une fois par mois, pas
@@ -323,10 +331,16 @@ pondérée, filtrée par la zone courante. Le chiffre décrit donc exactement ce
 affiche ; il n'y a pas d'agrégat qui parle d'autre chose que de la liste.
 
 **Rangée 2 — la zone.** Boutons à défilement horizontal, **« Toutes » en tête et par
-défaut**. Ce n'est pas un second filtre : c'est le **même état** que le sélecteur de zone de
-la barre persistante, présenté autrement. Sélectionner France ici met à jour le sélecteur du
-bandeau et, par voie de conséquence, l'onglet Notes et l'onglet Macro. Un seul contexte, deux
-commandes.
+défaut**. C'est le seul sélecteur de zone de l'onglet Marchés — la barre persistante n'en a
+plus, elle est réservée à Macro. Un choix ici reste local à Marchés ; il ne touche ni Notes
+ni Macro.
+
+**Sur Obligations, choisir un pays affiche sa courbe complète** — 6 mois · 1 an · 3 ans ·
+5 ans · 10 ans · 15 ans · 20 ans, du plus court au plus long — au lieu du point de repère
+unique. « Toutes », « Zone euro » et « Émergents » restent sur le repère à 10 ans, un par
+pays : afficher les sept maturités des neuf pays en même temps ferait un mur de 65 lignes, pas
+une liste. `Zone euro` et `Émergents` sont des agrégats, pas des émetteurs : ils n'ont pas de
+courbe qui leur soit propre, seulement celles de leurs pays membres.
 
 **Style des boutons.** De vrais boutons, jamais du texte en gras souligné : fond `--paper`,
 bordure fine, rayon 2 px. À l'état actif, fond `--ink` et texte blanc. **Hauteur minimale
@@ -621,7 +635,8 @@ cliquables, l'étagère et l'archive des notes, et **les cinq états de chaque �
 Données depuis `data/seed.json`, écrit à la main. Aucune API.
 
 Le seed contient volontairement des cas dégradés : un instrument sans valeur du jour, une
-source périmée de trois jours, une zone sans note, **une semaine sans hebdo**, **une
+source périmée de trois jours, une combinaison classe d'actifs / zone sans instrument
+(Marchés), **une semaine sans hebdo**, **une
 semaine portant deux notes spéciales**, et **un historique de clôtures assez long pour
 tester le moteur d'alertes** : un franchissement de seuil, un quasi-franchissement, un
 franchissement en période de silence, et une série trouée par un jour férié. Sinon les états 3, 4 et 5 et l'affichage de

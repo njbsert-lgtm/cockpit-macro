@@ -1,8 +1,5 @@
-import Link from "next/link";
-import type { Zone } from "@/lib/types";
-import { getActiveDrivers, getNotesRevising } from "@/lib/content";
-import { getLatestNoteForZone, buildArchiveWeeks } from "@/lib/archive";
-import { ZONE_LABELS } from "@/lib/zones";
+import { getActiveDrivers, getLatestNote, getNotesRevising } from "@/lib/content";
+import { buildArchiveWeeks } from "@/lib/archive";
 import { RegimeHeader } from "./RegimeHeader";
 import { NoteBlocks } from "./NoteBlocks";
 import { ArchiveList } from "./ArchiveList";
@@ -14,11 +11,11 @@ async function simulateLoad() {
   await new Promise((resolve) => setTimeout(resolve, 300));
 }
 
-export async function NotesContent({ zone }: { zone: Zone }) {
+export async function NotesContent() {
   await simulateLoad();
 
-  const latestNote = getLatestNoteForZone(zone);
-  const weeks = buildArchiveWeeks(zone);
+  const latestNote = getLatestNote();
+  const weeks = buildArchiveWeeks();
   const drivers = getActiveDrivers();
 
   // Inverse de « quelles notes ont révisé ce driver ? », calculé une fois pour le filtre
@@ -38,16 +35,8 @@ export async function NotesContent({ zone }: { zone: Zone }) {
         <div className="bg-deep px-4 py-8 md:px-6">
           <div className="mx-auto max-w-content">
             <EmptyState
-              title={`Aucune note ne couvre ${ZONE_LABELS[zone]} pour l'instant`}
-              description="Les notes se construisent zone par zone. En attendant, consultez la lecture Émergents ou Global, qui couvrent déjà cette zone dans leurs notes transversales."
-              action={
-                <Link
-                  href="/notes?zone=global"
-                  className="inline-block border border-white/40 bg-white/10 px-3 py-1.5 font-mono text-12-5 text-white hover:bg-white/20"
-                >
-                  Voir les notes de la zone Global
-                </Link>
-              }
+              title="Aucune note n'a encore été publiée"
+              description="La première note hebdomadaire fera apparaître le régime en une phrase et les drivers en en-tête."
             />
           </div>
         </div>
@@ -72,7 +61,6 @@ export async function NotesContent({ zone }: { zone: Zone }) {
           <div className="mt-4">
             <ArchiveList
               weeks={weeks}
-              zone={zone}
               drivers={drivers.map((d) => ({ id: d.id, label: d.label }))}
               revisionsBySlug={revisionsBySlug}
             />

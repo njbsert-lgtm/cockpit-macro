@@ -263,6 +263,706 @@
       "unit": "index",
       "ytdBasis": 98.8,
       "note": "Plus bas à 96,2 le 29/01, puis reprise."
+    },
+    {
+      "id": "us6m",
+      "label": "US 6 mois",
+      "assetClass": "rates",
+      "zones": [
+        "us"
+      ],
+      "unit": "percent",
+      "ytdBasis": 4.0,
+      "note": "Point de la courbe US Treasury."
+    },
+    {
+      "id": "us1y",
+      "label": "US 1 an",
+      "assetClass": "rates",
+      "zones": [
+        "us"
+      ],
+      "unit": "percent",
+      "ytdBasis": 4.1,
+      "note": "Point de la courbe US Treasury."
+    },
+    {
+      "id": "us3y",
+      "label": "US 3 ans",
+      "assetClass": "rates",
+      "zones": [
+        "us"
+      ],
+      "unit": "percent",
+      "ytdBasis": 4.23,
+      "note": "Point de la courbe US Treasury."
+    },
+    {
+      "id": "us5y",
+      "label": "US 5 ans",
+      "assetClass": "rates",
+      "zones": [
+        "us"
+      ],
+      "unit": "percent",
+      "ytdBasis": 4.3,
+      "note": "Point de la courbe US Treasury."
+    },
+    {
+      "id": "us15y",
+      "label": "US 15 ans",
+      "assetClass": "rates",
+      "zones": [
+        "us"
+      ],
+      "unit": "percent",
+      "ytdBasis": 4.47,
+      "note": "Point de la courbe US Treasury."
+    },
+    {
+      "id": "us20y",
+      "label": "US 20 ans",
+      "assetClass": "rates",
+      "zones": [
+        "us"
+      ],
+      "unit": "percent",
+      "ytdBasis": 4.55,
+      "note": "Point de la courbe US Treasury."
+    },
+    {
+      "id": "fr6m",
+      "label": "OAT 6 mois",
+      "assetClass": "rates",
+      "zones": [
+        "fr",
+        "ez"
+      ],
+      "unit": "percent",
+      "ytdBasis": 2.75,
+      "note": "Point de la courbe OAT."
+    },
+    {
+      "id": "fr1y",
+      "label": "OAT 1 an",
+      "assetClass": "rates",
+      "zones": [
+        "fr",
+        "ez"
+      ],
+      "unit": "percent",
+      "ytdBasis": 2.85,
+      "note": "Point de la courbe OAT."
+    },
+    {
+      "id": "fr3y",
+      "label": "OAT 3 ans",
+      "assetClass": "rates",
+      "zones": [
+        "fr",
+        "ez"
+      ],
+      "unit": "percent",
+      "ytdBasis": 2.98,
+      "note": "Point de la courbe OAT."
+    },
+    {
+      "id": "fr5y",
+      "label": "OAT 5 ans",
+      "assetClass": "rates",
+      "zones": [
+        "fr",
+        "ez"
+      ],
+      "unit": "percent",
+      "ytdBasis": 3.05,
+      "note": "Point de la courbe OAT."
+    },
+    {
+      "id": "fr15y",
+      "label": "OAT 15 ans",
+      "assetClass": "rates",
+      "zones": [
+        "fr",
+        "ez"
+      ],
+      "unit": "percent",
+      "ytdBasis": 3.22,
+      "note": "Point de la courbe OAT."
+    },
+    {
+      "id": "fr20y",
+      "label": "OAT 20 ans",
+      "assetClass": "rates",
+      "zones": [
+        "fr",
+        "ez"
+      ],
+      "unit": "percent",
+      "ytdBasis": 3.3,
+      "note": "Point de la courbe OAT."
+    },
+    {
+      "id": "de6m",
+      "label": "Bund 6 mois",
+      "assetClass": "rates",
+      "zones": [
+        "de",
+        "ez"
+      ],
+      "unit": "percent",
+      "ytdBasis": 2.0,
+      "note": "Point de la courbe Bund."
+    },
+    {
+      "id": "de1y",
+      "label": "Bund 1 an",
+      "assetClass": "rates",
+      "zones": [
+        "de",
+        "ez"
+      ],
+      "unit": "percent",
+      "ytdBasis": 2.1,
+      "note": "Point de la courbe Bund."
+    },
+    {
+      "id": "de3y",
+      "label": "Bund 3 ans",
+      "assetClass": "rates",
+      "zones": [
+        "de",
+        "ez"
+      ],
+      "unit": "percent",
+      "ytdBasis": 2.23,
+      "note": "Point de la courbe Bund."
+    },
+    {
+      "id": "de5y",
+      "label": "Bund 5 ans",
+      "assetClass": "rates",
+      "zones": [
+        "de",
+        "ez"
+      ],
+      "unit": "percent",
+      "ytdBasis": 2.3,
+      "note": "Point de la courbe Bund."
+    },
+    {
+      "id": "de15y",
+      "label": "Bund 15 ans",
+      "assetClass": "rates",
+      "zones": [
+        "de",
+        "ez"
+      ],
+      "unit": "percent",
+      "ytdBasis": 2.47,
+      "note": "Point de la courbe Bund."
+    },
+    {
+      "id": "de20y",
+      "label": "Bund 20 ans",
+      "assetClass": "rates",
+      "zones": [
+        "de",
+        "ez"
+      ],
+      "unit": "percent",
+      "ytdBasis": 2.55,
+      "note": "Point de la courbe Bund."
+    },
+    {
+      "id": "es6m",
+      "label": "Bono 6 mois",
+      "assetClass": "rates",
+      "zones": [
+        "es",
+        "ez"
+      ],
+      "unit": "percent",
+      "ytdBasis": 2.8,
+      "note": "Point de la courbe souveraine espagnole."
+    },
+    {
+      "id": "es1y",
+      "label": "Bono 1 an",
+      "assetClass": "rates",
+      "zones": [
+        "es",
+        "ez"
+      ],
+      "unit": "percent",
+      "ytdBasis": 2.9,
+      "note": "Point de la courbe souveraine espagnole."
+    },
+    {
+      "id": "es3y",
+      "label": "Bono 3 ans",
+      "assetClass": "rates",
+      "zones": [
+        "es",
+        "ez"
+      ],
+      "unit": "percent",
+      "ytdBasis": 3.03,
+      "note": "Point de la courbe souveraine espagnole."
+    },
+    {
+      "id": "es5y",
+      "label": "Bono 5 ans",
+      "assetClass": "rates",
+      "zones": [
+        "es",
+        "ez"
+      ],
+      "unit": "percent",
+      "ytdBasis": 3.1,
+      "note": "Point de la courbe souveraine espagnole."
+    },
+    {
+      "id": "es10y",
+      "label": "Bono 10 ans",
+      "assetClass": "rates",
+      "zones": [
+        "es",
+        "ez"
+      ],
+      "unit": "percent",
+      "ytdBasis": 3.15,
+      "note": "Point de la courbe souveraine espagnole."
+    },
+    {
+      "id": "es15y",
+      "label": "Bono 15 ans",
+      "assetClass": "rates",
+      "zones": [
+        "es",
+        "ez"
+      ],
+      "unit": "percent",
+      "ytdBasis": 3.27,
+      "note": "Point de la courbe souveraine espagnole."
+    },
+    {
+      "id": "es20y",
+      "label": "Bono 20 ans",
+      "assetClass": "rates",
+      "zones": [
+        "es",
+        "ez"
+      ],
+      "unit": "percent",
+      "ytdBasis": 3.35,
+      "note": "Point de la courbe souveraine espagnole."
+    },
+    {
+      "id": "it6m",
+      "label": "BTP 6 mois",
+      "assetClass": "rates",
+      "zones": [
+        "it",
+        "ez"
+      ],
+      "unit": "percent",
+      "ytdBasis": 3.2,
+      "note": "Point de la courbe souveraine italienne."
+    },
+    {
+      "id": "it1y",
+      "label": "BTP 1 an",
+      "assetClass": "rates",
+      "zones": [
+        "it",
+        "ez"
+      ],
+      "unit": "percent",
+      "ytdBasis": 3.3,
+      "note": "Point de la courbe souveraine italienne."
+    },
+    {
+      "id": "it3y",
+      "label": "BTP 3 ans",
+      "assetClass": "rates",
+      "zones": [
+        "it",
+        "ez"
+      ],
+      "unit": "percent",
+      "ytdBasis": 3.43,
+      "note": "Point de la courbe souveraine italienne."
+    },
+    {
+      "id": "it5y",
+      "label": "BTP 5 ans",
+      "assetClass": "rates",
+      "zones": [
+        "it",
+        "ez"
+      ],
+      "unit": "percent",
+      "ytdBasis": 3.5,
+      "note": "Point de la courbe souveraine italienne."
+    },
+    {
+      "id": "it10y",
+      "label": "BTP 10 ans",
+      "assetClass": "rates",
+      "zones": [
+        "it",
+        "ez"
+      ],
+      "unit": "percent",
+      "ytdBasis": 3.55,
+      "note": "Point de la courbe souveraine italienne."
+    },
+    {
+      "id": "it15y",
+      "label": "BTP 15 ans",
+      "assetClass": "rates",
+      "zones": [
+        "it",
+        "ez"
+      ],
+      "unit": "percent",
+      "ytdBasis": 3.67,
+      "note": "Point de la courbe souveraine italienne."
+    },
+    {
+      "id": "it20y",
+      "label": "BTP 20 ans",
+      "assetClass": "rates",
+      "zones": [
+        "it",
+        "ez"
+      ],
+      "unit": "percent",
+      "ytdBasis": 3.75,
+      "note": "Point de la courbe souveraine italienne."
+    },
+    {
+      "id": "uk6m",
+      "label": "Gilt 6 mois",
+      "assetClass": "rates",
+      "zones": [
+        "uk"
+      ],
+      "unit": "percent",
+      "ytdBasis": 3.9,
+      "note": "Point de la courbe des Gilts."
+    },
+    {
+      "id": "uk1y",
+      "label": "Gilt 1 an",
+      "assetClass": "rates",
+      "zones": [
+        "uk"
+      ],
+      "unit": "percent",
+      "ytdBasis": 4.0,
+      "note": "Point de la courbe des Gilts."
+    },
+    {
+      "id": "uk3y",
+      "label": "Gilt 3 ans",
+      "assetClass": "rates",
+      "zones": [
+        "uk"
+      ],
+      "unit": "percent",
+      "ytdBasis": 4.13,
+      "note": "Point de la courbe des Gilts."
+    },
+    {
+      "id": "uk5y",
+      "label": "Gilt 5 ans",
+      "assetClass": "rates",
+      "zones": [
+        "uk"
+      ],
+      "unit": "percent",
+      "ytdBasis": 4.2,
+      "note": "Point de la courbe des Gilts."
+    },
+    {
+      "id": "uk10y",
+      "label": "Gilt 10 ans",
+      "assetClass": "rates",
+      "zones": [
+        "uk"
+      ],
+      "unit": "percent",
+      "ytdBasis": 4.25,
+      "note": "Point de la courbe des Gilts."
+    },
+    {
+      "id": "uk15y",
+      "label": "Gilt 15 ans",
+      "assetClass": "rates",
+      "zones": [
+        "uk"
+      ],
+      "unit": "percent",
+      "ytdBasis": 4.37,
+      "note": "Point de la courbe des Gilts."
+    },
+    {
+      "id": "uk20y",
+      "label": "Gilt 20 ans",
+      "assetClass": "rates",
+      "zones": [
+        "uk"
+      ],
+      "unit": "percent",
+      "ytdBasis": 4.45,
+      "note": "Point de la courbe des Gilts."
+    },
+    {
+      "id": "jp6m",
+      "label": "JGB 6 mois",
+      "assetClass": "rates",
+      "zones": [
+        "jp"
+      ],
+      "unit": "percent",
+      "ytdBasis": 1.1,
+      "note": "Point de la courbe des JGB, post-hausse de la BoJ à 1,00 %."
+    },
+    {
+      "id": "jp1y",
+      "label": "JGB 1 an",
+      "assetClass": "rates",
+      "zones": [
+        "jp"
+      ],
+      "unit": "percent",
+      "ytdBasis": 1.2,
+      "note": "Point de la courbe des JGB, post-hausse de la BoJ à 1,00 %."
+    },
+    {
+      "id": "jp3y",
+      "label": "JGB 3 ans",
+      "assetClass": "rates",
+      "zones": [
+        "jp"
+      ],
+      "unit": "percent",
+      "ytdBasis": 1.33,
+      "note": "Point de la courbe des JGB, post-hausse de la BoJ à 1,00 %."
+    },
+    {
+      "id": "jp5y",
+      "label": "JGB 5 ans",
+      "assetClass": "rates",
+      "zones": [
+        "jp"
+      ],
+      "unit": "percent",
+      "ytdBasis": 1.4,
+      "note": "Point de la courbe des JGB, post-hausse de la BoJ à 1,00 %."
+    },
+    {
+      "id": "jp10y",
+      "label": "JGB 10 ans",
+      "assetClass": "rates",
+      "zones": [
+        "jp"
+      ],
+      "unit": "percent",
+      "ytdBasis": 1.45,
+      "note": "Point de la courbe des JGB, post-hausse de la BoJ à 1,00 %."
+    },
+    {
+      "id": "jp15y",
+      "label": "JGB 15 ans",
+      "assetClass": "rates",
+      "zones": [
+        "jp"
+      ],
+      "unit": "percent",
+      "ytdBasis": 1.57,
+      "note": "Point de la courbe des JGB, post-hausse de la BoJ à 1,00 %."
+    },
+    {
+      "id": "jp20y",
+      "label": "JGB 20 ans",
+      "assetClass": "rates",
+      "zones": [
+        "jp"
+      ],
+      "unit": "percent",
+      "ytdBasis": 1.65,
+      "note": "Point de la courbe des JGB, post-hausse de la BoJ à 1,00 %."
+    },
+    {
+      "id": "cn6m",
+      "label": "CGB 6 mois",
+      "assetClass": "rates",
+      "zones": [
+        "cn",
+        "em"
+      ],
+      "unit": "percent",
+      "ytdBasis": 1.65,
+      "note": "Point de la courbe souveraine chinoise."
+    },
+    {
+      "id": "cn1y",
+      "label": "CGB 1 an",
+      "assetClass": "rates",
+      "zones": [
+        "cn",
+        "em"
+      ],
+      "unit": "percent",
+      "ytdBasis": 1.75,
+      "note": "Point de la courbe souveraine chinoise."
+    },
+    {
+      "id": "cn3y",
+      "label": "CGB 3 ans",
+      "assetClass": "rates",
+      "zones": [
+        "cn",
+        "em"
+      ],
+      "unit": "percent",
+      "ytdBasis": 1.88,
+      "note": "Point de la courbe souveraine chinoise."
+    },
+    {
+      "id": "cn5y",
+      "label": "CGB 5 ans",
+      "assetClass": "rates",
+      "zones": [
+        "cn",
+        "em"
+      ],
+      "unit": "percent",
+      "ytdBasis": 1.95,
+      "note": "Point de la courbe souveraine chinoise."
+    },
+    {
+      "id": "cn10y",
+      "label": "CGB 10 ans",
+      "assetClass": "rates",
+      "zones": [
+        "cn",
+        "em"
+      ],
+      "unit": "percent",
+      "ytdBasis": 2.0,
+      "note": "Point de la courbe souveraine chinoise."
+    },
+    {
+      "id": "cn15y",
+      "label": "CGB 15 ans",
+      "assetClass": "rates",
+      "zones": [
+        "cn",
+        "em"
+      ],
+      "unit": "percent",
+      "ytdBasis": 2.12,
+      "note": "Point de la courbe souveraine chinoise."
+    },
+    {
+      "id": "cn20y",
+      "label": "CGB 20 ans",
+      "assetClass": "rates",
+      "zones": [
+        "cn",
+        "em"
+      ],
+      "unit": "percent",
+      "ytdBasis": 2.2,
+      "note": "Point de la courbe souveraine chinoise."
+    },
+    {
+      "id": "in6m",
+      "label": "G-Sec 6 mois",
+      "assetClass": "rates",
+      "zones": [
+        "in",
+        "em"
+      ],
+      "unit": "percent",
+      "ytdBasis": 6.5,
+      "note": "Point de la courbe souveraine indienne."
+    },
+    {
+      "id": "in1y",
+      "label": "G-Sec 1 an",
+      "assetClass": "rates",
+      "zones": [
+        "in",
+        "em"
+      ],
+      "unit": "percent",
+      "ytdBasis": 6.6,
+      "note": "Point de la courbe souveraine indienne."
+    },
+    {
+      "id": "in3y",
+      "label": "G-Sec 3 ans",
+      "assetClass": "rates",
+      "zones": [
+        "in",
+        "em"
+      ],
+      "unit": "percent",
+      "ytdBasis": 6.73,
+      "note": "Point de la courbe souveraine indienne."
+    },
+    {
+      "id": "in5y",
+      "label": "G-Sec 5 ans",
+      "assetClass": "rates",
+      "zones": [
+        "in",
+        "em"
+      ],
+      "unit": "percent",
+      "ytdBasis": 6.8,
+      "note": "Point de la courbe souveraine indienne."
+    },
+    {
+      "id": "in10y",
+      "label": "G-Sec 10 ans",
+      "assetClass": "rates",
+      "zones": [
+        "in",
+        "em"
+      ],
+      "unit": "percent",
+      "ytdBasis": 6.85,
+      "note": "Point de la courbe souveraine indienne."
+    },
+    {
+      "id": "in15y",
+      "label": "G-Sec 15 ans",
+      "assetClass": "rates",
+      "zones": [
+        "in",
+        "em"
+      ],
+      "unit": "percent",
+      "ytdBasis": 6.97,
+      "note": "Point de la courbe souveraine indienne."
+    },
+    {
+      "id": "in20y",
+      "label": "G-Sec 20 ans",
+      "assetClass": "rates",
+      "zones": [
+        "in",
+        "em"
+      ],
+      "unit": "percent",
+      "ytdBasis": 7.05,
+      "note": "Point de la courbe souveraine indienne."
     }
   ],
   "observations": [
@@ -1189,6 +1889,3366 @@
       "value": 100,
       "source": "Twelve Data",
       "fetchedAt": "2026-08-12T20:05:00Z"
+    },
+    {
+      "instrumentId": "us6m",
+      "date": "2026-08-03",
+      "value": 4.37,
+      "source": "FRED",
+      "fetchedAt": "2026-08-03T21:05:00Z"
+    },
+    {
+      "instrumentId": "us6m",
+      "date": "2026-08-04",
+      "value": 4.35,
+      "source": "FRED",
+      "fetchedAt": "2026-08-04T21:05:00Z"
+    },
+    {
+      "instrumentId": "us6m",
+      "date": "2026-08-06",
+      "value": 4.33,
+      "source": "FRED",
+      "fetchedAt": "2026-08-06T21:05:00Z"
+    },
+    {
+      "instrumentId": "us6m",
+      "date": "2026-08-07",
+      "value": 4.31,
+      "source": "FRED",
+      "fetchedAt": "2026-08-07T21:05:00Z"
+    },
+    {
+      "instrumentId": "us6m",
+      "date": "2026-08-10",
+      "value": 4.32,
+      "source": "FRED",
+      "fetchedAt": "2026-08-10T21:05:00Z"
+    },
+    {
+      "instrumentId": "us6m",
+      "date": "2026-08-11",
+      "value": 4.31,
+      "source": "FRED",
+      "fetchedAt": "2026-08-11T21:05:00Z"
+    },
+    {
+      "instrumentId": "us6m",
+      "date": "2026-08-12",
+      "value": 4.3,
+      "source": "FRED",
+      "fetchedAt": "2026-08-12T21:05:00Z"
+    },
+    {
+      "instrumentId": "us6m",
+      "date": "2026-08-13",
+      "value": 4.3,
+      "source": "FRED",
+      "fetchedAt": "2026-08-13T21:05:00Z"
+    },
+    {
+      "instrumentId": "us1y",
+      "date": "2026-08-03",
+      "value": 4.47,
+      "source": "FRED",
+      "fetchedAt": "2026-08-03T21:05:00Z"
+    },
+    {
+      "instrumentId": "us1y",
+      "date": "2026-08-04",
+      "value": 4.45,
+      "source": "FRED",
+      "fetchedAt": "2026-08-04T21:05:00Z"
+    },
+    {
+      "instrumentId": "us1y",
+      "date": "2026-08-06",
+      "value": 4.43,
+      "source": "FRED",
+      "fetchedAt": "2026-08-06T21:05:00Z"
+    },
+    {
+      "instrumentId": "us1y",
+      "date": "2026-08-07",
+      "value": 4.41,
+      "source": "FRED",
+      "fetchedAt": "2026-08-07T21:05:00Z"
+    },
+    {
+      "instrumentId": "us1y",
+      "date": "2026-08-10",
+      "value": 4.42,
+      "source": "FRED",
+      "fetchedAt": "2026-08-10T21:05:00Z"
+    },
+    {
+      "instrumentId": "us1y",
+      "date": "2026-08-11",
+      "value": 4.41,
+      "source": "FRED",
+      "fetchedAt": "2026-08-11T21:05:00Z"
+    },
+    {
+      "instrumentId": "us1y",
+      "date": "2026-08-12",
+      "value": 4.4,
+      "source": "FRED",
+      "fetchedAt": "2026-08-12T21:05:00Z"
+    },
+    {
+      "instrumentId": "us1y",
+      "date": "2026-08-13",
+      "value": 4.4,
+      "source": "FRED",
+      "fetchedAt": "2026-08-13T21:05:00Z"
+    },
+    {
+      "instrumentId": "us3y",
+      "date": "2026-08-03",
+      "value": 4.6,
+      "source": "FRED",
+      "fetchedAt": "2026-08-03T21:05:00Z"
+    },
+    {
+      "instrumentId": "us3y",
+      "date": "2026-08-04",
+      "value": 4.58,
+      "source": "FRED",
+      "fetchedAt": "2026-08-04T21:05:00Z"
+    },
+    {
+      "instrumentId": "us3y",
+      "date": "2026-08-06",
+      "value": 4.56,
+      "source": "FRED",
+      "fetchedAt": "2026-08-06T21:05:00Z"
+    },
+    {
+      "instrumentId": "us3y",
+      "date": "2026-08-07",
+      "value": 4.54,
+      "source": "FRED",
+      "fetchedAt": "2026-08-07T21:05:00Z"
+    },
+    {
+      "instrumentId": "us3y",
+      "date": "2026-08-10",
+      "value": 4.55,
+      "source": "FRED",
+      "fetchedAt": "2026-08-10T21:05:00Z"
+    },
+    {
+      "instrumentId": "us3y",
+      "date": "2026-08-11",
+      "value": 4.54,
+      "source": "FRED",
+      "fetchedAt": "2026-08-11T21:05:00Z"
+    },
+    {
+      "instrumentId": "us3y",
+      "date": "2026-08-12",
+      "value": 4.53,
+      "source": "FRED",
+      "fetchedAt": "2026-08-12T21:05:00Z"
+    },
+    {
+      "instrumentId": "us3y",
+      "date": "2026-08-13",
+      "value": 4.53,
+      "source": "FRED",
+      "fetchedAt": "2026-08-13T21:05:00Z"
+    },
+    {
+      "instrumentId": "us5y",
+      "date": "2026-08-03",
+      "value": 4.67,
+      "source": "FRED",
+      "fetchedAt": "2026-08-03T21:05:00Z"
+    },
+    {
+      "instrumentId": "us5y",
+      "date": "2026-08-04",
+      "value": 4.65,
+      "source": "FRED",
+      "fetchedAt": "2026-08-04T21:05:00Z"
+    },
+    {
+      "instrumentId": "us5y",
+      "date": "2026-08-06",
+      "value": 4.63,
+      "source": "FRED",
+      "fetchedAt": "2026-08-06T21:05:00Z"
+    },
+    {
+      "instrumentId": "us5y",
+      "date": "2026-08-07",
+      "value": 4.61,
+      "source": "FRED",
+      "fetchedAt": "2026-08-07T21:05:00Z"
+    },
+    {
+      "instrumentId": "us5y",
+      "date": "2026-08-10",
+      "value": 4.62,
+      "source": "FRED",
+      "fetchedAt": "2026-08-10T21:05:00Z"
+    },
+    {
+      "instrumentId": "us5y",
+      "date": "2026-08-11",
+      "value": 4.61,
+      "source": "FRED",
+      "fetchedAt": "2026-08-11T21:05:00Z"
+    },
+    {
+      "instrumentId": "us5y",
+      "date": "2026-08-12",
+      "value": 4.6,
+      "source": "FRED",
+      "fetchedAt": "2026-08-12T21:05:00Z"
+    },
+    {
+      "instrumentId": "us5y",
+      "date": "2026-08-13",
+      "value": 4.6,
+      "source": "FRED",
+      "fetchedAt": "2026-08-13T21:05:00Z"
+    },
+    {
+      "instrumentId": "us15y",
+      "date": "2026-08-03",
+      "value": 4.84,
+      "source": "FRED",
+      "fetchedAt": "2026-08-03T21:05:00Z"
+    },
+    {
+      "instrumentId": "us15y",
+      "date": "2026-08-04",
+      "value": 4.82,
+      "source": "FRED",
+      "fetchedAt": "2026-08-04T21:05:00Z"
+    },
+    {
+      "instrumentId": "us15y",
+      "date": "2026-08-06",
+      "value": 4.8,
+      "source": "FRED",
+      "fetchedAt": "2026-08-06T21:05:00Z"
+    },
+    {
+      "instrumentId": "us15y",
+      "date": "2026-08-07",
+      "value": 4.78,
+      "source": "FRED",
+      "fetchedAt": "2026-08-07T21:05:00Z"
+    },
+    {
+      "instrumentId": "us15y",
+      "date": "2026-08-10",
+      "value": 4.79,
+      "source": "FRED",
+      "fetchedAt": "2026-08-10T21:05:00Z"
+    },
+    {
+      "instrumentId": "us15y",
+      "date": "2026-08-11",
+      "value": 4.78,
+      "source": "FRED",
+      "fetchedAt": "2026-08-11T21:05:00Z"
+    },
+    {
+      "instrumentId": "us15y",
+      "date": "2026-08-12",
+      "value": 4.77,
+      "source": "FRED",
+      "fetchedAt": "2026-08-12T21:05:00Z"
+    },
+    {
+      "instrumentId": "us15y",
+      "date": "2026-08-13",
+      "value": 4.77,
+      "source": "FRED",
+      "fetchedAt": "2026-08-13T21:05:00Z"
+    },
+    {
+      "instrumentId": "us20y",
+      "date": "2026-08-03",
+      "value": 4.92,
+      "source": "FRED",
+      "fetchedAt": "2026-08-03T21:05:00Z"
+    },
+    {
+      "instrumentId": "us20y",
+      "date": "2026-08-04",
+      "value": 4.9,
+      "source": "FRED",
+      "fetchedAt": "2026-08-04T21:05:00Z"
+    },
+    {
+      "instrumentId": "us20y",
+      "date": "2026-08-06",
+      "value": 4.88,
+      "source": "FRED",
+      "fetchedAt": "2026-08-06T21:05:00Z"
+    },
+    {
+      "instrumentId": "us20y",
+      "date": "2026-08-07",
+      "value": 4.86,
+      "source": "FRED",
+      "fetchedAt": "2026-08-07T21:05:00Z"
+    },
+    {
+      "instrumentId": "us20y",
+      "date": "2026-08-10",
+      "value": 4.87,
+      "source": "FRED",
+      "fetchedAt": "2026-08-10T21:05:00Z"
+    },
+    {
+      "instrumentId": "us20y",
+      "date": "2026-08-11",
+      "value": 4.86,
+      "source": "FRED",
+      "fetchedAt": "2026-08-11T21:05:00Z"
+    },
+    {
+      "instrumentId": "us20y",
+      "date": "2026-08-12",
+      "value": 4.85,
+      "source": "FRED",
+      "fetchedAt": "2026-08-12T21:05:00Z"
+    },
+    {
+      "instrumentId": "us20y",
+      "date": "2026-08-13",
+      "value": 4.85,
+      "source": "FRED",
+      "fetchedAt": "2026-08-13T21:05:00Z"
+    },
+    {
+      "instrumentId": "fr6m",
+      "date": "2026-08-03",
+      "value": 2.95,
+      "source": "Banque de France",
+      "fetchedAt": "2026-08-03T18:05:00Z"
+    },
+    {
+      "instrumentId": "fr6m",
+      "date": "2026-08-04",
+      "value": 2.97,
+      "source": "Banque de France",
+      "fetchedAt": "2026-08-04T18:05:00Z"
+    },
+    {
+      "instrumentId": "fr6m",
+      "date": "2026-08-06",
+      "value": 3.2,
+      "source": "Banque de France",
+      "fetchedAt": "2026-08-06T18:05:00Z"
+    },
+    {
+      "instrumentId": "fr6m",
+      "date": "2026-08-07",
+      "value": 3.4,
+      "source": "Banque de France",
+      "fetchedAt": "2026-08-07T18:05:00Z"
+    },
+    {
+      "instrumentId": "fr6m",
+      "date": "2026-08-10",
+      "value": 3.35,
+      "source": "Banque de France",
+      "fetchedAt": "2026-08-10T18:05:00Z"
+    },
+    {
+      "instrumentId": "fr6m",
+      "date": "2026-08-11",
+      "value": 3.33,
+      "source": "Banque de France",
+      "fetchedAt": "2026-08-11T18:05:00Z"
+    },
+    {
+      "instrumentId": "fr6m",
+      "date": "2026-08-12",
+      "value": 3.31,
+      "source": "Banque de France",
+      "fetchedAt": "2026-08-12T18:05:00Z"
+    },
+    {
+      "instrumentId": "fr6m",
+      "date": "2026-08-13",
+      "value": 3.29,
+      "source": "Banque de France",
+      "fetchedAt": "2026-08-13T18:05:00Z"
+    },
+    {
+      "instrumentId": "fr1y",
+      "date": "2026-08-03",
+      "value": 3.05,
+      "source": "Banque de France",
+      "fetchedAt": "2026-08-03T18:05:00Z"
+    },
+    {
+      "instrumentId": "fr1y",
+      "date": "2026-08-04",
+      "value": 3.07,
+      "source": "Banque de France",
+      "fetchedAt": "2026-08-04T18:05:00Z"
+    },
+    {
+      "instrumentId": "fr1y",
+      "date": "2026-08-06",
+      "value": 3.3,
+      "source": "Banque de France",
+      "fetchedAt": "2026-08-06T18:05:00Z"
+    },
+    {
+      "instrumentId": "fr1y",
+      "date": "2026-08-07",
+      "value": 3.5,
+      "source": "Banque de France",
+      "fetchedAt": "2026-08-07T18:05:00Z"
+    },
+    {
+      "instrumentId": "fr1y",
+      "date": "2026-08-10",
+      "value": 3.45,
+      "source": "Banque de France",
+      "fetchedAt": "2026-08-10T18:05:00Z"
+    },
+    {
+      "instrumentId": "fr1y",
+      "date": "2026-08-11",
+      "value": 3.43,
+      "source": "Banque de France",
+      "fetchedAt": "2026-08-11T18:05:00Z"
+    },
+    {
+      "instrumentId": "fr1y",
+      "date": "2026-08-12",
+      "value": 3.41,
+      "source": "Banque de France",
+      "fetchedAt": "2026-08-12T18:05:00Z"
+    },
+    {
+      "instrumentId": "fr1y",
+      "date": "2026-08-13",
+      "value": 3.39,
+      "source": "Banque de France",
+      "fetchedAt": "2026-08-13T18:05:00Z"
+    },
+    {
+      "instrumentId": "fr3y",
+      "date": "2026-08-03",
+      "value": 3.18,
+      "source": "Banque de France",
+      "fetchedAt": "2026-08-03T18:05:00Z"
+    },
+    {
+      "instrumentId": "fr3y",
+      "date": "2026-08-04",
+      "value": 3.2,
+      "source": "Banque de France",
+      "fetchedAt": "2026-08-04T18:05:00Z"
+    },
+    {
+      "instrumentId": "fr3y",
+      "date": "2026-08-06",
+      "value": 3.43,
+      "source": "Banque de France",
+      "fetchedAt": "2026-08-06T18:05:00Z"
+    },
+    {
+      "instrumentId": "fr3y",
+      "date": "2026-08-07",
+      "value": 3.63,
+      "source": "Banque de France",
+      "fetchedAt": "2026-08-07T18:05:00Z"
+    },
+    {
+      "instrumentId": "fr3y",
+      "date": "2026-08-10",
+      "value": 3.58,
+      "source": "Banque de France",
+      "fetchedAt": "2026-08-10T18:05:00Z"
+    },
+    {
+      "instrumentId": "fr3y",
+      "date": "2026-08-11",
+      "value": 3.56,
+      "source": "Banque de France",
+      "fetchedAt": "2026-08-11T18:05:00Z"
+    },
+    {
+      "instrumentId": "fr3y",
+      "date": "2026-08-12",
+      "value": 3.54,
+      "source": "Banque de France",
+      "fetchedAt": "2026-08-12T18:05:00Z"
+    },
+    {
+      "instrumentId": "fr3y",
+      "date": "2026-08-13",
+      "value": 3.52,
+      "source": "Banque de France",
+      "fetchedAt": "2026-08-13T18:05:00Z"
+    },
+    {
+      "instrumentId": "fr5y",
+      "date": "2026-08-03",
+      "value": 3.25,
+      "source": "Banque de France",
+      "fetchedAt": "2026-08-03T18:05:00Z"
+    },
+    {
+      "instrumentId": "fr5y",
+      "date": "2026-08-04",
+      "value": 3.27,
+      "source": "Banque de France",
+      "fetchedAt": "2026-08-04T18:05:00Z"
+    },
+    {
+      "instrumentId": "fr5y",
+      "date": "2026-08-06",
+      "value": 3.5,
+      "source": "Banque de France",
+      "fetchedAt": "2026-08-06T18:05:00Z"
+    },
+    {
+      "instrumentId": "fr5y",
+      "date": "2026-08-07",
+      "value": 3.7,
+      "source": "Banque de France",
+      "fetchedAt": "2026-08-07T18:05:00Z"
+    },
+    {
+      "instrumentId": "fr5y",
+      "date": "2026-08-10",
+      "value": 3.65,
+      "source": "Banque de France",
+      "fetchedAt": "2026-08-10T18:05:00Z"
+    },
+    {
+      "instrumentId": "fr5y",
+      "date": "2026-08-11",
+      "value": 3.63,
+      "source": "Banque de France",
+      "fetchedAt": "2026-08-11T18:05:00Z"
+    },
+    {
+      "instrumentId": "fr5y",
+      "date": "2026-08-12",
+      "value": 3.61,
+      "source": "Banque de France",
+      "fetchedAt": "2026-08-12T18:05:00Z"
+    },
+    {
+      "instrumentId": "fr5y",
+      "date": "2026-08-13",
+      "value": 3.59,
+      "source": "Banque de France",
+      "fetchedAt": "2026-08-13T18:05:00Z"
+    },
+    {
+      "instrumentId": "fr15y",
+      "date": "2026-08-03",
+      "value": 3.42,
+      "source": "Banque de France",
+      "fetchedAt": "2026-08-03T18:05:00Z"
+    },
+    {
+      "instrumentId": "fr15y",
+      "date": "2026-08-04",
+      "value": 3.44,
+      "source": "Banque de France",
+      "fetchedAt": "2026-08-04T18:05:00Z"
+    },
+    {
+      "instrumentId": "fr15y",
+      "date": "2026-08-06",
+      "value": 3.67,
+      "source": "Banque de France",
+      "fetchedAt": "2026-08-06T18:05:00Z"
+    },
+    {
+      "instrumentId": "fr15y",
+      "date": "2026-08-07",
+      "value": 3.87,
+      "source": "Banque de France",
+      "fetchedAt": "2026-08-07T18:05:00Z"
+    },
+    {
+      "instrumentId": "fr15y",
+      "date": "2026-08-10",
+      "value": 3.82,
+      "source": "Banque de France",
+      "fetchedAt": "2026-08-10T18:05:00Z"
+    },
+    {
+      "instrumentId": "fr15y",
+      "date": "2026-08-11",
+      "value": 3.8,
+      "source": "Banque de France",
+      "fetchedAt": "2026-08-11T18:05:00Z"
+    },
+    {
+      "instrumentId": "fr15y",
+      "date": "2026-08-12",
+      "value": 3.78,
+      "source": "Banque de France",
+      "fetchedAt": "2026-08-12T18:05:00Z"
+    },
+    {
+      "instrumentId": "fr15y",
+      "date": "2026-08-13",
+      "value": 3.76,
+      "source": "Banque de France",
+      "fetchedAt": "2026-08-13T18:05:00Z"
+    },
+    {
+      "instrumentId": "fr20y",
+      "date": "2026-08-03",
+      "value": 3.5,
+      "source": "Banque de France",
+      "fetchedAt": "2026-08-03T18:05:00Z"
+    },
+    {
+      "instrumentId": "fr20y",
+      "date": "2026-08-04",
+      "value": 3.52,
+      "source": "Banque de France",
+      "fetchedAt": "2026-08-04T18:05:00Z"
+    },
+    {
+      "instrumentId": "fr20y",
+      "date": "2026-08-06",
+      "value": 3.75,
+      "source": "Banque de France",
+      "fetchedAt": "2026-08-06T18:05:00Z"
+    },
+    {
+      "instrumentId": "fr20y",
+      "date": "2026-08-07",
+      "value": 3.95,
+      "source": "Banque de France",
+      "fetchedAt": "2026-08-07T18:05:00Z"
+    },
+    {
+      "instrumentId": "fr20y",
+      "date": "2026-08-10",
+      "value": 3.9,
+      "source": "Banque de France",
+      "fetchedAt": "2026-08-10T18:05:00Z"
+    },
+    {
+      "instrumentId": "fr20y",
+      "date": "2026-08-11",
+      "value": 3.88,
+      "source": "Banque de France",
+      "fetchedAt": "2026-08-11T18:05:00Z"
+    },
+    {
+      "instrumentId": "fr20y",
+      "date": "2026-08-12",
+      "value": 3.86,
+      "source": "Banque de France",
+      "fetchedAt": "2026-08-12T18:05:00Z"
+    },
+    {
+      "instrumentId": "fr20y",
+      "date": "2026-08-13",
+      "value": 3.84,
+      "source": "Banque de France",
+      "fetchedAt": "2026-08-13T18:05:00Z"
+    },
+    {
+      "instrumentId": "de6m",
+      "date": "2026-08-03",
+      "value": 2.2,
+      "source": "Bundesbank",
+      "fetchedAt": "2026-08-03T18:05:00Z"
+    },
+    {
+      "instrumentId": "de6m",
+      "date": "2026-08-04",
+      "value": 2.21,
+      "source": "Bundesbank",
+      "fetchedAt": "2026-08-04T18:05:00Z"
+    },
+    {
+      "instrumentId": "de6m",
+      "date": "2026-08-06",
+      "value": 2.22,
+      "source": "Bundesbank",
+      "fetchedAt": "2026-08-06T18:05:00Z"
+    },
+    {
+      "instrumentId": "de6m",
+      "date": "2026-08-07",
+      "value": 2.23,
+      "source": "Bundesbank",
+      "fetchedAt": "2026-08-07T18:05:00Z"
+    },
+    {
+      "instrumentId": "de6m",
+      "date": "2026-08-10",
+      "value": 2.25,
+      "source": "Bundesbank",
+      "fetchedAt": "2026-08-10T18:05:00Z"
+    },
+    {
+      "instrumentId": "de6m",
+      "date": "2026-08-11",
+      "value": 2.24,
+      "source": "Bundesbank",
+      "fetchedAt": "2026-08-11T18:05:00Z"
+    },
+    {
+      "instrumentId": "de6m",
+      "date": "2026-08-12",
+      "value": 2.26,
+      "source": "Bundesbank",
+      "fetchedAt": "2026-08-12T18:05:00Z"
+    },
+    {
+      "instrumentId": "de6m",
+      "date": "2026-08-13",
+      "value": 2.25,
+      "source": "Bundesbank",
+      "fetchedAt": "2026-08-13T18:05:00Z"
+    },
+    {
+      "instrumentId": "de1y",
+      "date": "2026-08-03",
+      "value": 2.3,
+      "source": "Bundesbank",
+      "fetchedAt": "2026-08-03T18:05:00Z"
+    },
+    {
+      "instrumentId": "de1y",
+      "date": "2026-08-04",
+      "value": 2.31,
+      "source": "Bundesbank",
+      "fetchedAt": "2026-08-04T18:05:00Z"
+    },
+    {
+      "instrumentId": "de1y",
+      "date": "2026-08-06",
+      "value": 2.32,
+      "source": "Bundesbank",
+      "fetchedAt": "2026-08-06T18:05:00Z"
+    },
+    {
+      "instrumentId": "de1y",
+      "date": "2026-08-07",
+      "value": 2.33,
+      "source": "Bundesbank",
+      "fetchedAt": "2026-08-07T18:05:00Z"
+    },
+    {
+      "instrumentId": "de1y",
+      "date": "2026-08-10",
+      "value": 2.35,
+      "source": "Bundesbank",
+      "fetchedAt": "2026-08-10T18:05:00Z"
+    },
+    {
+      "instrumentId": "de1y",
+      "date": "2026-08-11",
+      "value": 2.34,
+      "source": "Bundesbank",
+      "fetchedAt": "2026-08-11T18:05:00Z"
+    },
+    {
+      "instrumentId": "de1y",
+      "date": "2026-08-12",
+      "value": 2.36,
+      "source": "Bundesbank",
+      "fetchedAt": "2026-08-12T18:05:00Z"
+    },
+    {
+      "instrumentId": "de1y",
+      "date": "2026-08-13",
+      "value": 2.35,
+      "source": "Bundesbank",
+      "fetchedAt": "2026-08-13T18:05:00Z"
+    },
+    {
+      "instrumentId": "de3y",
+      "date": "2026-08-03",
+      "value": 2.43,
+      "source": "Bundesbank",
+      "fetchedAt": "2026-08-03T18:05:00Z"
+    },
+    {
+      "instrumentId": "de3y",
+      "date": "2026-08-04",
+      "value": 2.44,
+      "source": "Bundesbank",
+      "fetchedAt": "2026-08-04T18:05:00Z"
+    },
+    {
+      "instrumentId": "de3y",
+      "date": "2026-08-06",
+      "value": 2.45,
+      "source": "Bundesbank",
+      "fetchedAt": "2026-08-06T18:05:00Z"
+    },
+    {
+      "instrumentId": "de3y",
+      "date": "2026-08-07",
+      "value": 2.46,
+      "source": "Bundesbank",
+      "fetchedAt": "2026-08-07T18:05:00Z"
+    },
+    {
+      "instrumentId": "de3y",
+      "date": "2026-08-10",
+      "value": 2.48,
+      "source": "Bundesbank",
+      "fetchedAt": "2026-08-10T18:05:00Z"
+    },
+    {
+      "instrumentId": "de3y",
+      "date": "2026-08-11",
+      "value": 2.47,
+      "source": "Bundesbank",
+      "fetchedAt": "2026-08-11T18:05:00Z"
+    },
+    {
+      "instrumentId": "de3y",
+      "date": "2026-08-12",
+      "value": 2.49,
+      "source": "Bundesbank",
+      "fetchedAt": "2026-08-12T18:05:00Z"
+    },
+    {
+      "instrumentId": "de3y",
+      "date": "2026-08-13",
+      "value": 2.48,
+      "source": "Bundesbank",
+      "fetchedAt": "2026-08-13T18:05:00Z"
+    },
+    {
+      "instrumentId": "de5y",
+      "date": "2026-08-03",
+      "value": 2.5,
+      "source": "Bundesbank",
+      "fetchedAt": "2026-08-03T18:05:00Z"
+    },
+    {
+      "instrumentId": "de5y",
+      "date": "2026-08-04",
+      "value": 2.51,
+      "source": "Bundesbank",
+      "fetchedAt": "2026-08-04T18:05:00Z"
+    },
+    {
+      "instrumentId": "de5y",
+      "date": "2026-08-06",
+      "value": 2.52,
+      "source": "Bundesbank",
+      "fetchedAt": "2026-08-06T18:05:00Z"
+    },
+    {
+      "instrumentId": "de5y",
+      "date": "2026-08-07",
+      "value": 2.53,
+      "source": "Bundesbank",
+      "fetchedAt": "2026-08-07T18:05:00Z"
+    },
+    {
+      "instrumentId": "de5y",
+      "date": "2026-08-10",
+      "value": 2.55,
+      "source": "Bundesbank",
+      "fetchedAt": "2026-08-10T18:05:00Z"
+    },
+    {
+      "instrumentId": "de5y",
+      "date": "2026-08-11",
+      "value": 2.54,
+      "source": "Bundesbank",
+      "fetchedAt": "2026-08-11T18:05:00Z"
+    },
+    {
+      "instrumentId": "de5y",
+      "date": "2026-08-12",
+      "value": 2.56,
+      "source": "Bundesbank",
+      "fetchedAt": "2026-08-12T18:05:00Z"
+    },
+    {
+      "instrumentId": "de5y",
+      "date": "2026-08-13",
+      "value": 2.55,
+      "source": "Bundesbank",
+      "fetchedAt": "2026-08-13T18:05:00Z"
+    },
+    {
+      "instrumentId": "de15y",
+      "date": "2026-08-03",
+      "value": 2.67,
+      "source": "Bundesbank",
+      "fetchedAt": "2026-08-03T18:05:00Z"
+    },
+    {
+      "instrumentId": "de15y",
+      "date": "2026-08-04",
+      "value": 2.68,
+      "source": "Bundesbank",
+      "fetchedAt": "2026-08-04T18:05:00Z"
+    },
+    {
+      "instrumentId": "de15y",
+      "date": "2026-08-06",
+      "value": 2.69,
+      "source": "Bundesbank",
+      "fetchedAt": "2026-08-06T18:05:00Z"
+    },
+    {
+      "instrumentId": "de15y",
+      "date": "2026-08-07",
+      "value": 2.7,
+      "source": "Bundesbank",
+      "fetchedAt": "2026-08-07T18:05:00Z"
+    },
+    {
+      "instrumentId": "de15y",
+      "date": "2026-08-10",
+      "value": 2.72,
+      "source": "Bundesbank",
+      "fetchedAt": "2026-08-10T18:05:00Z"
+    },
+    {
+      "instrumentId": "de15y",
+      "date": "2026-08-11",
+      "value": 2.71,
+      "source": "Bundesbank",
+      "fetchedAt": "2026-08-11T18:05:00Z"
+    },
+    {
+      "instrumentId": "de15y",
+      "date": "2026-08-12",
+      "value": 2.73,
+      "source": "Bundesbank",
+      "fetchedAt": "2026-08-12T18:05:00Z"
+    },
+    {
+      "instrumentId": "de15y",
+      "date": "2026-08-13",
+      "value": 2.72,
+      "source": "Bundesbank",
+      "fetchedAt": "2026-08-13T18:05:00Z"
+    },
+    {
+      "instrumentId": "de20y",
+      "date": "2026-08-03",
+      "value": 2.75,
+      "source": "Bundesbank",
+      "fetchedAt": "2026-08-03T18:05:00Z"
+    },
+    {
+      "instrumentId": "de20y",
+      "date": "2026-08-04",
+      "value": 2.76,
+      "source": "Bundesbank",
+      "fetchedAt": "2026-08-04T18:05:00Z"
+    },
+    {
+      "instrumentId": "de20y",
+      "date": "2026-08-06",
+      "value": 2.77,
+      "source": "Bundesbank",
+      "fetchedAt": "2026-08-06T18:05:00Z"
+    },
+    {
+      "instrumentId": "de20y",
+      "date": "2026-08-07",
+      "value": 2.78,
+      "source": "Bundesbank",
+      "fetchedAt": "2026-08-07T18:05:00Z"
+    },
+    {
+      "instrumentId": "de20y",
+      "date": "2026-08-10",
+      "value": 2.8,
+      "source": "Bundesbank",
+      "fetchedAt": "2026-08-10T18:05:00Z"
+    },
+    {
+      "instrumentId": "de20y",
+      "date": "2026-08-11",
+      "value": 2.79,
+      "source": "Bundesbank",
+      "fetchedAt": "2026-08-11T18:05:00Z"
+    },
+    {
+      "instrumentId": "de20y",
+      "date": "2026-08-12",
+      "value": 2.81,
+      "source": "Bundesbank",
+      "fetchedAt": "2026-08-12T18:05:00Z"
+    },
+    {
+      "instrumentId": "de20y",
+      "date": "2026-08-13",
+      "value": 2.8,
+      "source": "Bundesbank",
+      "fetchedAt": "2026-08-13T18:05:00Z"
+    },
+    {
+      "instrumentId": "es6m",
+      "date": "2026-08-03",
+      "value": 3.05,
+      "source": "Banco de España",
+      "fetchedAt": "2026-08-03T18:05:00Z"
+    },
+    {
+      "instrumentId": "es6m",
+      "date": "2026-08-04",
+      "value": 3.06,
+      "source": "Banco de España",
+      "fetchedAt": "2026-08-04T18:05:00Z"
+    },
+    {
+      "instrumentId": "es6m",
+      "date": "2026-08-06",
+      "value": 3.04,
+      "source": "Banco de España",
+      "fetchedAt": "2026-08-06T18:05:00Z"
+    },
+    {
+      "instrumentId": "es6m",
+      "date": "2026-08-07",
+      "value": 3.07,
+      "source": "Banco de España",
+      "fetchedAt": "2026-08-07T18:05:00Z"
+    },
+    {
+      "instrumentId": "es6m",
+      "date": "2026-08-10",
+      "value": 3.05,
+      "source": "Banco de España",
+      "fetchedAt": "2026-08-10T18:05:00Z"
+    },
+    {
+      "instrumentId": "es6m",
+      "date": "2026-08-11",
+      "value": 3.03,
+      "source": "Banco de España",
+      "fetchedAt": "2026-08-11T18:05:00Z"
+    },
+    {
+      "instrumentId": "es6m",
+      "date": "2026-08-12",
+      "value": 3.02,
+      "source": "Banco de España",
+      "fetchedAt": "2026-08-12T18:05:00Z"
+    },
+    {
+      "instrumentId": "es6m",
+      "date": "2026-08-13",
+      "value": 3.0,
+      "source": "Banco de España",
+      "fetchedAt": "2026-08-13T18:05:00Z"
+    },
+    {
+      "instrumentId": "es1y",
+      "date": "2026-08-03",
+      "value": 3.15,
+      "source": "Banco de España",
+      "fetchedAt": "2026-08-03T18:05:00Z"
+    },
+    {
+      "instrumentId": "es1y",
+      "date": "2026-08-04",
+      "value": 3.16,
+      "source": "Banco de España",
+      "fetchedAt": "2026-08-04T18:05:00Z"
+    },
+    {
+      "instrumentId": "es1y",
+      "date": "2026-08-06",
+      "value": 3.14,
+      "source": "Banco de España",
+      "fetchedAt": "2026-08-06T18:05:00Z"
+    },
+    {
+      "instrumentId": "es1y",
+      "date": "2026-08-07",
+      "value": 3.17,
+      "source": "Banco de España",
+      "fetchedAt": "2026-08-07T18:05:00Z"
+    },
+    {
+      "instrumentId": "es1y",
+      "date": "2026-08-10",
+      "value": 3.15,
+      "source": "Banco de España",
+      "fetchedAt": "2026-08-10T18:05:00Z"
+    },
+    {
+      "instrumentId": "es1y",
+      "date": "2026-08-11",
+      "value": 3.13,
+      "source": "Banco de España",
+      "fetchedAt": "2026-08-11T18:05:00Z"
+    },
+    {
+      "instrumentId": "es1y",
+      "date": "2026-08-12",
+      "value": 3.12,
+      "source": "Banco de España",
+      "fetchedAt": "2026-08-12T18:05:00Z"
+    },
+    {
+      "instrumentId": "es1y",
+      "date": "2026-08-13",
+      "value": 3.1,
+      "source": "Banco de España",
+      "fetchedAt": "2026-08-13T18:05:00Z"
+    },
+    {
+      "instrumentId": "es3y",
+      "date": "2026-08-03",
+      "value": 3.28,
+      "source": "Banco de España",
+      "fetchedAt": "2026-08-03T18:05:00Z"
+    },
+    {
+      "instrumentId": "es3y",
+      "date": "2026-08-04",
+      "value": 3.29,
+      "source": "Banco de España",
+      "fetchedAt": "2026-08-04T18:05:00Z"
+    },
+    {
+      "instrumentId": "es3y",
+      "date": "2026-08-06",
+      "value": 3.27,
+      "source": "Banco de España",
+      "fetchedAt": "2026-08-06T18:05:00Z"
+    },
+    {
+      "instrumentId": "es3y",
+      "date": "2026-08-07",
+      "value": 3.3,
+      "source": "Banco de España",
+      "fetchedAt": "2026-08-07T18:05:00Z"
+    },
+    {
+      "instrumentId": "es3y",
+      "date": "2026-08-10",
+      "value": 3.28,
+      "source": "Banco de España",
+      "fetchedAt": "2026-08-10T18:05:00Z"
+    },
+    {
+      "instrumentId": "es3y",
+      "date": "2026-08-11",
+      "value": 3.26,
+      "source": "Banco de España",
+      "fetchedAt": "2026-08-11T18:05:00Z"
+    },
+    {
+      "instrumentId": "es3y",
+      "date": "2026-08-12",
+      "value": 3.25,
+      "source": "Banco de España",
+      "fetchedAt": "2026-08-12T18:05:00Z"
+    },
+    {
+      "instrumentId": "es3y",
+      "date": "2026-08-13",
+      "value": 3.23,
+      "source": "Banco de España",
+      "fetchedAt": "2026-08-13T18:05:00Z"
+    },
+    {
+      "instrumentId": "es5y",
+      "date": "2026-08-03",
+      "value": 3.35,
+      "source": "Banco de España",
+      "fetchedAt": "2026-08-03T18:05:00Z"
+    },
+    {
+      "instrumentId": "es5y",
+      "date": "2026-08-04",
+      "value": 3.36,
+      "source": "Banco de España",
+      "fetchedAt": "2026-08-04T18:05:00Z"
+    },
+    {
+      "instrumentId": "es5y",
+      "date": "2026-08-06",
+      "value": 3.34,
+      "source": "Banco de España",
+      "fetchedAt": "2026-08-06T18:05:00Z"
+    },
+    {
+      "instrumentId": "es5y",
+      "date": "2026-08-07",
+      "value": 3.37,
+      "source": "Banco de España",
+      "fetchedAt": "2026-08-07T18:05:00Z"
+    },
+    {
+      "instrumentId": "es5y",
+      "date": "2026-08-10",
+      "value": 3.35,
+      "source": "Banco de España",
+      "fetchedAt": "2026-08-10T18:05:00Z"
+    },
+    {
+      "instrumentId": "es5y",
+      "date": "2026-08-11",
+      "value": 3.33,
+      "source": "Banco de España",
+      "fetchedAt": "2026-08-11T18:05:00Z"
+    },
+    {
+      "instrumentId": "es5y",
+      "date": "2026-08-12",
+      "value": 3.32,
+      "source": "Banco de España",
+      "fetchedAt": "2026-08-12T18:05:00Z"
+    },
+    {
+      "instrumentId": "es5y",
+      "date": "2026-08-13",
+      "value": 3.3,
+      "source": "Banco de España",
+      "fetchedAt": "2026-08-13T18:05:00Z"
+    },
+    {
+      "instrumentId": "es10y",
+      "date": "2026-08-03",
+      "value": 3.4,
+      "source": "Banco de España",
+      "fetchedAt": "2026-08-03T18:05:00Z"
+    },
+    {
+      "instrumentId": "es10y",
+      "date": "2026-08-04",
+      "value": 3.41,
+      "source": "Banco de España",
+      "fetchedAt": "2026-08-04T18:05:00Z"
+    },
+    {
+      "instrumentId": "es10y",
+      "date": "2026-08-06",
+      "value": 3.39,
+      "source": "Banco de España",
+      "fetchedAt": "2026-08-06T18:05:00Z"
+    },
+    {
+      "instrumentId": "es10y",
+      "date": "2026-08-07",
+      "value": 3.42,
+      "source": "Banco de España",
+      "fetchedAt": "2026-08-07T18:05:00Z"
+    },
+    {
+      "instrumentId": "es10y",
+      "date": "2026-08-10",
+      "value": 3.4,
+      "source": "Banco de España",
+      "fetchedAt": "2026-08-10T18:05:00Z"
+    },
+    {
+      "instrumentId": "es10y",
+      "date": "2026-08-11",
+      "value": 3.38,
+      "source": "Banco de España",
+      "fetchedAt": "2026-08-11T18:05:00Z"
+    },
+    {
+      "instrumentId": "es10y",
+      "date": "2026-08-12",
+      "value": 3.37,
+      "source": "Banco de España",
+      "fetchedAt": "2026-08-12T18:05:00Z"
+    },
+    {
+      "instrumentId": "es10y",
+      "date": "2026-08-13",
+      "value": 3.35,
+      "source": "Banco de España",
+      "fetchedAt": "2026-08-13T18:05:00Z"
+    },
+    {
+      "instrumentId": "es15y",
+      "date": "2026-08-03",
+      "value": 3.52,
+      "source": "Banco de España",
+      "fetchedAt": "2026-08-03T18:05:00Z"
+    },
+    {
+      "instrumentId": "es15y",
+      "date": "2026-08-04",
+      "value": 3.53,
+      "source": "Banco de España",
+      "fetchedAt": "2026-08-04T18:05:00Z"
+    },
+    {
+      "instrumentId": "es15y",
+      "date": "2026-08-06",
+      "value": 3.51,
+      "source": "Banco de España",
+      "fetchedAt": "2026-08-06T18:05:00Z"
+    },
+    {
+      "instrumentId": "es15y",
+      "date": "2026-08-07",
+      "value": 3.54,
+      "source": "Banco de España",
+      "fetchedAt": "2026-08-07T18:05:00Z"
+    },
+    {
+      "instrumentId": "es15y",
+      "date": "2026-08-10",
+      "value": 3.52,
+      "source": "Banco de España",
+      "fetchedAt": "2026-08-10T18:05:00Z"
+    },
+    {
+      "instrumentId": "es15y",
+      "date": "2026-08-11",
+      "value": 3.5,
+      "source": "Banco de España",
+      "fetchedAt": "2026-08-11T18:05:00Z"
+    },
+    {
+      "instrumentId": "es15y",
+      "date": "2026-08-12",
+      "value": 3.49,
+      "source": "Banco de España",
+      "fetchedAt": "2026-08-12T18:05:00Z"
+    },
+    {
+      "instrumentId": "es15y",
+      "date": "2026-08-13",
+      "value": 3.47,
+      "source": "Banco de España",
+      "fetchedAt": "2026-08-13T18:05:00Z"
+    },
+    {
+      "instrumentId": "es20y",
+      "date": "2026-08-03",
+      "value": 3.6,
+      "source": "Banco de España",
+      "fetchedAt": "2026-08-03T18:05:00Z"
+    },
+    {
+      "instrumentId": "es20y",
+      "date": "2026-08-04",
+      "value": 3.61,
+      "source": "Banco de España",
+      "fetchedAt": "2026-08-04T18:05:00Z"
+    },
+    {
+      "instrumentId": "es20y",
+      "date": "2026-08-06",
+      "value": 3.59,
+      "source": "Banco de España",
+      "fetchedAt": "2026-08-06T18:05:00Z"
+    },
+    {
+      "instrumentId": "es20y",
+      "date": "2026-08-07",
+      "value": 3.62,
+      "source": "Banco de España",
+      "fetchedAt": "2026-08-07T18:05:00Z"
+    },
+    {
+      "instrumentId": "es20y",
+      "date": "2026-08-10",
+      "value": 3.6,
+      "source": "Banco de España",
+      "fetchedAt": "2026-08-10T18:05:00Z"
+    },
+    {
+      "instrumentId": "es20y",
+      "date": "2026-08-11",
+      "value": 3.58,
+      "source": "Banco de España",
+      "fetchedAt": "2026-08-11T18:05:00Z"
+    },
+    {
+      "instrumentId": "es20y",
+      "date": "2026-08-12",
+      "value": 3.57,
+      "source": "Banco de España",
+      "fetchedAt": "2026-08-12T18:05:00Z"
+    },
+    {
+      "instrumentId": "es20y",
+      "date": "2026-08-13",
+      "value": 3.55,
+      "source": "Banco de España",
+      "fetchedAt": "2026-08-13T18:05:00Z"
+    },
+    {
+      "instrumentId": "it6m",
+      "date": "2026-08-03",
+      "value": 3.45,
+      "source": "Banca d'Italia",
+      "fetchedAt": "2026-08-03T18:05:00Z"
+    },
+    {
+      "instrumentId": "it6m",
+      "date": "2026-08-04",
+      "value": 3.47,
+      "source": "Banca d'Italia",
+      "fetchedAt": "2026-08-04T18:05:00Z"
+    },
+    {
+      "instrumentId": "it6m",
+      "date": "2026-08-06",
+      "value": 3.46,
+      "source": "Banca d'Italia",
+      "fetchedAt": "2026-08-06T18:05:00Z"
+    },
+    {
+      "instrumentId": "it6m",
+      "date": "2026-08-07",
+      "value": 3.49,
+      "source": "Banca d'Italia",
+      "fetchedAt": "2026-08-07T18:05:00Z"
+    },
+    {
+      "instrumentId": "it6m",
+      "date": "2026-08-10",
+      "value": 3.48,
+      "source": "Banca d'Italia",
+      "fetchedAt": "2026-08-10T18:05:00Z"
+    },
+    {
+      "instrumentId": "it6m",
+      "date": "2026-08-11",
+      "value": 3.45,
+      "source": "Banca d'Italia",
+      "fetchedAt": "2026-08-11T18:05:00Z"
+    },
+    {
+      "instrumentId": "it6m",
+      "date": "2026-08-12",
+      "value": 3.43,
+      "source": "Banca d'Italia",
+      "fetchedAt": "2026-08-12T18:05:00Z"
+    },
+    {
+      "instrumentId": "it6m",
+      "date": "2026-08-13",
+      "value": 3.4,
+      "source": "Banca d'Italia",
+      "fetchedAt": "2026-08-13T18:05:00Z"
+    },
+    {
+      "instrumentId": "it1y",
+      "date": "2026-08-03",
+      "value": 3.55,
+      "source": "Banca d'Italia",
+      "fetchedAt": "2026-08-03T18:05:00Z"
+    },
+    {
+      "instrumentId": "it1y",
+      "date": "2026-08-04",
+      "value": 3.57,
+      "source": "Banca d'Italia",
+      "fetchedAt": "2026-08-04T18:05:00Z"
+    },
+    {
+      "instrumentId": "it1y",
+      "date": "2026-08-06",
+      "value": 3.56,
+      "source": "Banca d'Italia",
+      "fetchedAt": "2026-08-06T18:05:00Z"
+    },
+    {
+      "instrumentId": "it1y",
+      "date": "2026-08-07",
+      "value": 3.59,
+      "source": "Banca d'Italia",
+      "fetchedAt": "2026-08-07T18:05:00Z"
+    },
+    {
+      "instrumentId": "it1y",
+      "date": "2026-08-10",
+      "value": 3.58,
+      "source": "Banca d'Italia",
+      "fetchedAt": "2026-08-10T18:05:00Z"
+    },
+    {
+      "instrumentId": "it1y",
+      "date": "2026-08-11",
+      "value": 3.55,
+      "source": "Banca d'Italia",
+      "fetchedAt": "2026-08-11T18:05:00Z"
+    },
+    {
+      "instrumentId": "it1y",
+      "date": "2026-08-12",
+      "value": 3.53,
+      "source": "Banca d'Italia",
+      "fetchedAt": "2026-08-12T18:05:00Z"
+    },
+    {
+      "instrumentId": "it1y",
+      "date": "2026-08-13",
+      "value": 3.5,
+      "source": "Banca d'Italia",
+      "fetchedAt": "2026-08-13T18:05:00Z"
+    },
+    {
+      "instrumentId": "it3y",
+      "date": "2026-08-03",
+      "value": 3.68,
+      "source": "Banca d'Italia",
+      "fetchedAt": "2026-08-03T18:05:00Z"
+    },
+    {
+      "instrumentId": "it3y",
+      "date": "2026-08-04",
+      "value": 3.7,
+      "source": "Banca d'Italia",
+      "fetchedAt": "2026-08-04T18:05:00Z"
+    },
+    {
+      "instrumentId": "it3y",
+      "date": "2026-08-06",
+      "value": 3.69,
+      "source": "Banca d'Italia",
+      "fetchedAt": "2026-08-06T18:05:00Z"
+    },
+    {
+      "instrumentId": "it3y",
+      "date": "2026-08-07",
+      "value": 3.72,
+      "source": "Banca d'Italia",
+      "fetchedAt": "2026-08-07T18:05:00Z"
+    },
+    {
+      "instrumentId": "it3y",
+      "date": "2026-08-10",
+      "value": 3.71,
+      "source": "Banca d'Italia",
+      "fetchedAt": "2026-08-10T18:05:00Z"
+    },
+    {
+      "instrumentId": "it3y",
+      "date": "2026-08-11",
+      "value": 3.68,
+      "source": "Banca d'Italia",
+      "fetchedAt": "2026-08-11T18:05:00Z"
+    },
+    {
+      "instrumentId": "it3y",
+      "date": "2026-08-12",
+      "value": 3.66,
+      "source": "Banca d'Italia",
+      "fetchedAt": "2026-08-12T18:05:00Z"
+    },
+    {
+      "instrumentId": "it3y",
+      "date": "2026-08-13",
+      "value": 3.63,
+      "source": "Banca d'Italia",
+      "fetchedAt": "2026-08-13T18:05:00Z"
+    },
+    {
+      "instrumentId": "it5y",
+      "date": "2026-08-03",
+      "value": 3.75,
+      "source": "Banca d'Italia",
+      "fetchedAt": "2026-08-03T18:05:00Z"
+    },
+    {
+      "instrumentId": "it5y",
+      "date": "2026-08-04",
+      "value": 3.77,
+      "source": "Banca d'Italia",
+      "fetchedAt": "2026-08-04T18:05:00Z"
+    },
+    {
+      "instrumentId": "it5y",
+      "date": "2026-08-06",
+      "value": 3.76,
+      "source": "Banca d'Italia",
+      "fetchedAt": "2026-08-06T18:05:00Z"
+    },
+    {
+      "instrumentId": "it5y",
+      "date": "2026-08-07",
+      "value": 3.79,
+      "source": "Banca d'Italia",
+      "fetchedAt": "2026-08-07T18:05:00Z"
+    },
+    {
+      "instrumentId": "it5y",
+      "date": "2026-08-10",
+      "value": 3.78,
+      "source": "Banca d'Italia",
+      "fetchedAt": "2026-08-10T18:05:00Z"
+    },
+    {
+      "instrumentId": "it5y",
+      "date": "2026-08-11",
+      "value": 3.75,
+      "source": "Banca d'Italia",
+      "fetchedAt": "2026-08-11T18:05:00Z"
+    },
+    {
+      "instrumentId": "it5y",
+      "date": "2026-08-12",
+      "value": 3.73,
+      "source": "Banca d'Italia",
+      "fetchedAt": "2026-08-12T18:05:00Z"
+    },
+    {
+      "instrumentId": "it5y",
+      "date": "2026-08-13",
+      "value": 3.7,
+      "source": "Banca d'Italia",
+      "fetchedAt": "2026-08-13T18:05:00Z"
+    },
+    {
+      "instrumentId": "it10y",
+      "date": "2026-08-03",
+      "value": 3.8,
+      "source": "Banca d'Italia",
+      "fetchedAt": "2026-08-03T18:05:00Z"
+    },
+    {
+      "instrumentId": "it10y",
+      "date": "2026-08-04",
+      "value": 3.82,
+      "source": "Banca d'Italia",
+      "fetchedAt": "2026-08-04T18:05:00Z"
+    },
+    {
+      "instrumentId": "it10y",
+      "date": "2026-08-06",
+      "value": 3.81,
+      "source": "Banca d'Italia",
+      "fetchedAt": "2026-08-06T18:05:00Z"
+    },
+    {
+      "instrumentId": "it10y",
+      "date": "2026-08-07",
+      "value": 3.84,
+      "source": "Banca d'Italia",
+      "fetchedAt": "2026-08-07T18:05:00Z"
+    },
+    {
+      "instrumentId": "it10y",
+      "date": "2026-08-10",
+      "value": 3.83,
+      "source": "Banca d'Italia",
+      "fetchedAt": "2026-08-10T18:05:00Z"
+    },
+    {
+      "instrumentId": "it10y",
+      "date": "2026-08-11",
+      "value": 3.8,
+      "source": "Banca d'Italia",
+      "fetchedAt": "2026-08-11T18:05:00Z"
+    },
+    {
+      "instrumentId": "it10y",
+      "date": "2026-08-12",
+      "value": 3.78,
+      "source": "Banca d'Italia",
+      "fetchedAt": "2026-08-12T18:05:00Z"
+    },
+    {
+      "instrumentId": "it10y",
+      "date": "2026-08-13",
+      "value": 3.75,
+      "source": "Banca d'Italia",
+      "fetchedAt": "2026-08-13T18:05:00Z"
+    },
+    {
+      "instrumentId": "it15y",
+      "date": "2026-08-03",
+      "value": 3.92,
+      "source": "Banca d'Italia",
+      "fetchedAt": "2026-08-03T18:05:00Z"
+    },
+    {
+      "instrumentId": "it15y",
+      "date": "2026-08-04",
+      "value": 3.94,
+      "source": "Banca d'Italia",
+      "fetchedAt": "2026-08-04T18:05:00Z"
+    },
+    {
+      "instrumentId": "it15y",
+      "date": "2026-08-06",
+      "value": 3.93,
+      "source": "Banca d'Italia",
+      "fetchedAt": "2026-08-06T18:05:00Z"
+    },
+    {
+      "instrumentId": "it15y",
+      "date": "2026-08-07",
+      "value": 3.96,
+      "source": "Banca d'Italia",
+      "fetchedAt": "2026-08-07T18:05:00Z"
+    },
+    {
+      "instrumentId": "it15y",
+      "date": "2026-08-10",
+      "value": 3.95,
+      "source": "Banca d'Italia",
+      "fetchedAt": "2026-08-10T18:05:00Z"
+    },
+    {
+      "instrumentId": "it15y",
+      "date": "2026-08-11",
+      "value": 3.92,
+      "source": "Banca d'Italia",
+      "fetchedAt": "2026-08-11T18:05:00Z"
+    },
+    {
+      "instrumentId": "it15y",
+      "date": "2026-08-12",
+      "value": 3.9,
+      "source": "Banca d'Italia",
+      "fetchedAt": "2026-08-12T18:05:00Z"
+    },
+    {
+      "instrumentId": "it15y",
+      "date": "2026-08-13",
+      "value": 3.87,
+      "source": "Banca d'Italia",
+      "fetchedAt": "2026-08-13T18:05:00Z"
+    },
+    {
+      "instrumentId": "it20y",
+      "date": "2026-08-03",
+      "value": 4.0,
+      "source": "Banca d'Italia",
+      "fetchedAt": "2026-08-03T18:05:00Z"
+    },
+    {
+      "instrumentId": "it20y",
+      "date": "2026-08-04",
+      "value": 4.02,
+      "source": "Banca d'Italia",
+      "fetchedAt": "2026-08-04T18:05:00Z"
+    },
+    {
+      "instrumentId": "it20y",
+      "date": "2026-08-06",
+      "value": 4.01,
+      "source": "Banca d'Italia",
+      "fetchedAt": "2026-08-06T18:05:00Z"
+    },
+    {
+      "instrumentId": "it20y",
+      "date": "2026-08-07",
+      "value": 4.04,
+      "source": "Banca d'Italia",
+      "fetchedAt": "2026-08-07T18:05:00Z"
+    },
+    {
+      "instrumentId": "it20y",
+      "date": "2026-08-10",
+      "value": 4.03,
+      "source": "Banca d'Italia",
+      "fetchedAt": "2026-08-10T18:05:00Z"
+    },
+    {
+      "instrumentId": "it20y",
+      "date": "2026-08-11",
+      "value": 4.0,
+      "source": "Banca d'Italia",
+      "fetchedAt": "2026-08-11T18:05:00Z"
+    },
+    {
+      "instrumentId": "it20y",
+      "date": "2026-08-12",
+      "value": 3.98,
+      "source": "Banca d'Italia",
+      "fetchedAt": "2026-08-12T18:05:00Z"
+    },
+    {
+      "instrumentId": "it20y",
+      "date": "2026-08-13",
+      "value": 3.95,
+      "source": "Banca d'Italia",
+      "fetchedAt": "2026-08-13T18:05:00Z"
+    },
+    {
+      "instrumentId": "uk6m",
+      "date": "2026-08-03",
+      "value": 4.23,
+      "source": "Bank of England",
+      "fetchedAt": "2026-08-03T17:35:00Z"
+    },
+    {
+      "instrumentId": "uk6m",
+      "date": "2026-08-04",
+      "value": 4.21,
+      "source": "Bank of England",
+      "fetchedAt": "2026-08-04T17:35:00Z"
+    },
+    {
+      "instrumentId": "uk6m",
+      "date": "2026-08-06",
+      "value": 4.2,
+      "source": "Bank of England",
+      "fetchedAt": "2026-08-06T17:35:00Z"
+    },
+    {
+      "instrumentId": "uk6m",
+      "date": "2026-08-07",
+      "value": 4.22,
+      "source": "Bank of England",
+      "fetchedAt": "2026-08-07T17:35:00Z"
+    },
+    {
+      "instrumentId": "uk6m",
+      "date": "2026-08-10",
+      "value": 4.2,
+      "source": "Bank of England",
+      "fetchedAt": "2026-08-10T17:35:00Z"
+    },
+    {
+      "instrumentId": "uk6m",
+      "date": "2026-08-11",
+      "value": 4.18,
+      "source": "Bank of England",
+      "fetchedAt": "2026-08-11T17:35:00Z"
+    },
+    {
+      "instrumentId": "uk6m",
+      "date": "2026-08-12",
+      "value": 4.17,
+      "source": "Bank of England",
+      "fetchedAt": "2026-08-12T17:35:00Z"
+    },
+    {
+      "instrumentId": "uk6m",
+      "date": "2026-08-13",
+      "value": 4.15,
+      "source": "Bank of England",
+      "fetchedAt": "2026-08-13T17:35:00Z"
+    },
+    {
+      "instrumentId": "uk1y",
+      "date": "2026-08-03",
+      "value": 4.33,
+      "source": "Bank of England",
+      "fetchedAt": "2026-08-03T17:35:00Z"
+    },
+    {
+      "instrumentId": "uk1y",
+      "date": "2026-08-04",
+      "value": 4.31,
+      "source": "Bank of England",
+      "fetchedAt": "2026-08-04T17:35:00Z"
+    },
+    {
+      "instrumentId": "uk1y",
+      "date": "2026-08-06",
+      "value": 4.3,
+      "source": "Bank of England",
+      "fetchedAt": "2026-08-06T17:35:00Z"
+    },
+    {
+      "instrumentId": "uk1y",
+      "date": "2026-08-07",
+      "value": 4.32,
+      "source": "Bank of England",
+      "fetchedAt": "2026-08-07T17:35:00Z"
+    },
+    {
+      "instrumentId": "uk1y",
+      "date": "2026-08-10",
+      "value": 4.3,
+      "source": "Bank of England",
+      "fetchedAt": "2026-08-10T17:35:00Z"
+    },
+    {
+      "instrumentId": "uk1y",
+      "date": "2026-08-11",
+      "value": 4.28,
+      "source": "Bank of England",
+      "fetchedAt": "2026-08-11T17:35:00Z"
+    },
+    {
+      "instrumentId": "uk1y",
+      "date": "2026-08-12",
+      "value": 4.27,
+      "source": "Bank of England",
+      "fetchedAt": "2026-08-12T17:35:00Z"
+    },
+    {
+      "instrumentId": "uk1y",
+      "date": "2026-08-13",
+      "value": 4.25,
+      "source": "Bank of England",
+      "fetchedAt": "2026-08-13T17:35:00Z"
+    },
+    {
+      "instrumentId": "uk3y",
+      "date": "2026-08-03",
+      "value": 4.46,
+      "source": "Bank of England",
+      "fetchedAt": "2026-08-03T17:35:00Z"
+    },
+    {
+      "instrumentId": "uk3y",
+      "date": "2026-08-04",
+      "value": 4.44,
+      "source": "Bank of England",
+      "fetchedAt": "2026-08-04T17:35:00Z"
+    },
+    {
+      "instrumentId": "uk3y",
+      "date": "2026-08-06",
+      "value": 4.43,
+      "source": "Bank of England",
+      "fetchedAt": "2026-08-06T17:35:00Z"
+    },
+    {
+      "instrumentId": "uk3y",
+      "date": "2026-08-07",
+      "value": 4.45,
+      "source": "Bank of England",
+      "fetchedAt": "2026-08-07T17:35:00Z"
+    },
+    {
+      "instrumentId": "uk3y",
+      "date": "2026-08-10",
+      "value": 4.43,
+      "source": "Bank of England",
+      "fetchedAt": "2026-08-10T17:35:00Z"
+    },
+    {
+      "instrumentId": "uk3y",
+      "date": "2026-08-11",
+      "value": 4.41,
+      "source": "Bank of England",
+      "fetchedAt": "2026-08-11T17:35:00Z"
+    },
+    {
+      "instrumentId": "uk3y",
+      "date": "2026-08-12",
+      "value": 4.4,
+      "source": "Bank of England",
+      "fetchedAt": "2026-08-12T17:35:00Z"
+    },
+    {
+      "instrumentId": "uk3y",
+      "date": "2026-08-13",
+      "value": 4.38,
+      "source": "Bank of England",
+      "fetchedAt": "2026-08-13T17:35:00Z"
+    },
+    {
+      "instrumentId": "uk5y",
+      "date": "2026-08-03",
+      "value": 4.53,
+      "source": "Bank of England",
+      "fetchedAt": "2026-08-03T17:35:00Z"
+    },
+    {
+      "instrumentId": "uk5y",
+      "date": "2026-08-04",
+      "value": 4.51,
+      "source": "Bank of England",
+      "fetchedAt": "2026-08-04T17:35:00Z"
+    },
+    {
+      "instrumentId": "uk5y",
+      "date": "2026-08-06",
+      "value": 4.5,
+      "source": "Bank of England",
+      "fetchedAt": "2026-08-06T17:35:00Z"
+    },
+    {
+      "instrumentId": "uk5y",
+      "date": "2026-08-07",
+      "value": 4.52,
+      "source": "Bank of England",
+      "fetchedAt": "2026-08-07T17:35:00Z"
+    },
+    {
+      "instrumentId": "uk5y",
+      "date": "2026-08-10",
+      "value": 4.5,
+      "source": "Bank of England",
+      "fetchedAt": "2026-08-10T17:35:00Z"
+    },
+    {
+      "instrumentId": "uk5y",
+      "date": "2026-08-11",
+      "value": 4.48,
+      "source": "Bank of England",
+      "fetchedAt": "2026-08-11T17:35:00Z"
+    },
+    {
+      "instrumentId": "uk5y",
+      "date": "2026-08-12",
+      "value": 4.47,
+      "source": "Bank of England",
+      "fetchedAt": "2026-08-12T17:35:00Z"
+    },
+    {
+      "instrumentId": "uk5y",
+      "date": "2026-08-13",
+      "value": 4.45,
+      "source": "Bank of England",
+      "fetchedAt": "2026-08-13T17:35:00Z"
+    },
+    {
+      "instrumentId": "uk10y",
+      "date": "2026-08-03",
+      "value": 4.58,
+      "source": "Bank of England",
+      "fetchedAt": "2026-08-03T17:35:00Z"
+    },
+    {
+      "instrumentId": "uk10y",
+      "date": "2026-08-04",
+      "value": 4.56,
+      "source": "Bank of England",
+      "fetchedAt": "2026-08-04T17:35:00Z"
+    },
+    {
+      "instrumentId": "uk10y",
+      "date": "2026-08-06",
+      "value": 4.55,
+      "source": "Bank of England",
+      "fetchedAt": "2026-08-06T17:35:00Z"
+    },
+    {
+      "instrumentId": "uk10y",
+      "date": "2026-08-07",
+      "value": 4.57,
+      "source": "Bank of England",
+      "fetchedAt": "2026-08-07T17:35:00Z"
+    },
+    {
+      "instrumentId": "uk10y",
+      "date": "2026-08-10",
+      "value": 4.55,
+      "source": "Bank of England",
+      "fetchedAt": "2026-08-10T17:35:00Z"
+    },
+    {
+      "instrumentId": "uk10y",
+      "date": "2026-08-11",
+      "value": 4.53,
+      "source": "Bank of England",
+      "fetchedAt": "2026-08-11T17:35:00Z"
+    },
+    {
+      "instrumentId": "uk10y",
+      "date": "2026-08-12",
+      "value": 4.52,
+      "source": "Bank of England",
+      "fetchedAt": "2026-08-12T17:35:00Z"
+    },
+    {
+      "instrumentId": "uk10y",
+      "date": "2026-08-13",
+      "value": 4.5,
+      "source": "Bank of England",
+      "fetchedAt": "2026-08-13T17:35:00Z"
+    },
+    {
+      "instrumentId": "uk15y",
+      "date": "2026-08-03",
+      "value": 4.7,
+      "source": "Bank of England",
+      "fetchedAt": "2026-08-03T17:35:00Z"
+    },
+    {
+      "instrumentId": "uk15y",
+      "date": "2026-08-04",
+      "value": 4.68,
+      "source": "Bank of England",
+      "fetchedAt": "2026-08-04T17:35:00Z"
+    },
+    {
+      "instrumentId": "uk15y",
+      "date": "2026-08-06",
+      "value": 4.67,
+      "source": "Bank of England",
+      "fetchedAt": "2026-08-06T17:35:00Z"
+    },
+    {
+      "instrumentId": "uk15y",
+      "date": "2026-08-07",
+      "value": 4.69,
+      "source": "Bank of England",
+      "fetchedAt": "2026-08-07T17:35:00Z"
+    },
+    {
+      "instrumentId": "uk15y",
+      "date": "2026-08-10",
+      "value": 4.67,
+      "source": "Bank of England",
+      "fetchedAt": "2026-08-10T17:35:00Z"
+    },
+    {
+      "instrumentId": "uk15y",
+      "date": "2026-08-11",
+      "value": 4.65,
+      "source": "Bank of England",
+      "fetchedAt": "2026-08-11T17:35:00Z"
+    },
+    {
+      "instrumentId": "uk15y",
+      "date": "2026-08-12",
+      "value": 4.64,
+      "source": "Bank of England",
+      "fetchedAt": "2026-08-12T17:35:00Z"
+    },
+    {
+      "instrumentId": "uk15y",
+      "date": "2026-08-13",
+      "value": 4.62,
+      "source": "Bank of England",
+      "fetchedAt": "2026-08-13T17:35:00Z"
+    },
+    {
+      "instrumentId": "uk20y",
+      "date": "2026-08-03",
+      "value": 4.78,
+      "source": "Bank of England",
+      "fetchedAt": "2026-08-03T17:35:00Z"
+    },
+    {
+      "instrumentId": "uk20y",
+      "date": "2026-08-04",
+      "value": 4.76,
+      "source": "Bank of England",
+      "fetchedAt": "2026-08-04T17:35:00Z"
+    },
+    {
+      "instrumentId": "uk20y",
+      "date": "2026-08-06",
+      "value": 4.75,
+      "source": "Bank of England",
+      "fetchedAt": "2026-08-06T17:35:00Z"
+    },
+    {
+      "instrumentId": "uk20y",
+      "date": "2026-08-07",
+      "value": 4.77,
+      "source": "Bank of England",
+      "fetchedAt": "2026-08-07T17:35:00Z"
+    },
+    {
+      "instrumentId": "uk20y",
+      "date": "2026-08-10",
+      "value": 4.75,
+      "source": "Bank of England",
+      "fetchedAt": "2026-08-10T17:35:00Z"
+    },
+    {
+      "instrumentId": "uk20y",
+      "date": "2026-08-11",
+      "value": 4.73,
+      "source": "Bank of England",
+      "fetchedAt": "2026-08-11T17:35:00Z"
+    },
+    {
+      "instrumentId": "uk20y",
+      "date": "2026-08-12",
+      "value": 4.72,
+      "source": "Bank of England",
+      "fetchedAt": "2026-08-12T17:35:00Z"
+    },
+    {
+      "instrumentId": "uk20y",
+      "date": "2026-08-13",
+      "value": 4.7,
+      "source": "Bank of England",
+      "fetchedAt": "2026-08-13T17:35:00Z"
+    },
+    {
+      "instrumentId": "jp6m",
+      "date": "2026-08-03",
+      "value": 1.37,
+      "source": "Bank of Japan",
+      "fetchedAt": "2026-08-03T06:10:00Z"
+    },
+    {
+      "instrumentId": "jp6m",
+      "date": "2026-08-04",
+      "value": 1.38,
+      "source": "Bank of Japan",
+      "fetchedAt": "2026-08-04T06:10:00Z"
+    },
+    {
+      "instrumentId": "jp6m",
+      "date": "2026-08-06",
+      "value": 1.4,
+      "source": "Bank of Japan",
+      "fetchedAt": "2026-08-06T06:10:00Z"
+    },
+    {
+      "instrumentId": "jp6m",
+      "date": "2026-08-07",
+      "value": 1.41,
+      "source": "Bank of Japan",
+      "fetchedAt": "2026-08-07T06:10:00Z"
+    },
+    {
+      "instrumentId": "jp6m",
+      "date": "2026-08-10",
+      "value": 1.43,
+      "source": "Bank of Japan",
+      "fetchedAt": "2026-08-10T06:10:00Z"
+    },
+    {
+      "instrumentId": "jp6m",
+      "date": "2026-08-11",
+      "value": 1.42,
+      "source": "Bank of Japan",
+      "fetchedAt": "2026-08-11T06:10:00Z"
+    },
+    {
+      "instrumentId": "jp6m",
+      "date": "2026-08-12",
+      "value": 1.44,
+      "source": "Bank of Japan",
+      "fetchedAt": "2026-08-12T06:10:00Z"
+    },
+    {
+      "instrumentId": "jp6m",
+      "date": "2026-08-13",
+      "value": 1.45,
+      "source": "Bank of Japan",
+      "fetchedAt": "2026-08-13T06:10:00Z"
+    },
+    {
+      "instrumentId": "jp1y",
+      "date": "2026-08-03",
+      "value": 1.47,
+      "source": "Bank of Japan",
+      "fetchedAt": "2026-08-03T06:10:00Z"
+    },
+    {
+      "instrumentId": "jp1y",
+      "date": "2026-08-04",
+      "value": 1.48,
+      "source": "Bank of Japan",
+      "fetchedAt": "2026-08-04T06:10:00Z"
+    },
+    {
+      "instrumentId": "jp1y",
+      "date": "2026-08-06",
+      "value": 1.5,
+      "source": "Bank of Japan",
+      "fetchedAt": "2026-08-06T06:10:00Z"
+    },
+    {
+      "instrumentId": "jp1y",
+      "date": "2026-08-07",
+      "value": 1.51,
+      "source": "Bank of Japan",
+      "fetchedAt": "2026-08-07T06:10:00Z"
+    },
+    {
+      "instrumentId": "jp1y",
+      "date": "2026-08-10",
+      "value": 1.53,
+      "source": "Bank of Japan",
+      "fetchedAt": "2026-08-10T06:10:00Z"
+    },
+    {
+      "instrumentId": "jp1y",
+      "date": "2026-08-11",
+      "value": 1.52,
+      "source": "Bank of Japan",
+      "fetchedAt": "2026-08-11T06:10:00Z"
+    },
+    {
+      "instrumentId": "jp1y",
+      "date": "2026-08-12",
+      "value": 1.54,
+      "source": "Bank of Japan",
+      "fetchedAt": "2026-08-12T06:10:00Z"
+    },
+    {
+      "instrumentId": "jp1y",
+      "date": "2026-08-13",
+      "value": 1.55,
+      "source": "Bank of Japan",
+      "fetchedAt": "2026-08-13T06:10:00Z"
+    },
+    {
+      "instrumentId": "jp3y",
+      "date": "2026-08-03",
+      "value": 1.6,
+      "source": "Bank of Japan",
+      "fetchedAt": "2026-08-03T06:10:00Z"
+    },
+    {
+      "instrumentId": "jp3y",
+      "date": "2026-08-04",
+      "value": 1.61,
+      "source": "Bank of Japan",
+      "fetchedAt": "2026-08-04T06:10:00Z"
+    },
+    {
+      "instrumentId": "jp3y",
+      "date": "2026-08-06",
+      "value": 1.63,
+      "source": "Bank of Japan",
+      "fetchedAt": "2026-08-06T06:10:00Z"
+    },
+    {
+      "instrumentId": "jp3y",
+      "date": "2026-08-07",
+      "value": 1.64,
+      "source": "Bank of Japan",
+      "fetchedAt": "2026-08-07T06:10:00Z"
+    },
+    {
+      "instrumentId": "jp3y",
+      "date": "2026-08-10",
+      "value": 1.66,
+      "source": "Bank of Japan",
+      "fetchedAt": "2026-08-10T06:10:00Z"
+    },
+    {
+      "instrumentId": "jp3y",
+      "date": "2026-08-11",
+      "value": 1.65,
+      "source": "Bank of Japan",
+      "fetchedAt": "2026-08-11T06:10:00Z"
+    },
+    {
+      "instrumentId": "jp3y",
+      "date": "2026-08-12",
+      "value": 1.67,
+      "source": "Bank of Japan",
+      "fetchedAt": "2026-08-12T06:10:00Z"
+    },
+    {
+      "instrumentId": "jp3y",
+      "date": "2026-08-13",
+      "value": 1.68,
+      "source": "Bank of Japan",
+      "fetchedAt": "2026-08-13T06:10:00Z"
+    },
+    {
+      "instrumentId": "jp5y",
+      "date": "2026-08-03",
+      "value": 1.67,
+      "source": "Bank of Japan",
+      "fetchedAt": "2026-08-03T06:10:00Z"
+    },
+    {
+      "instrumentId": "jp5y",
+      "date": "2026-08-04",
+      "value": 1.68,
+      "source": "Bank of Japan",
+      "fetchedAt": "2026-08-04T06:10:00Z"
+    },
+    {
+      "instrumentId": "jp5y",
+      "date": "2026-08-06",
+      "value": 1.7,
+      "source": "Bank of Japan",
+      "fetchedAt": "2026-08-06T06:10:00Z"
+    },
+    {
+      "instrumentId": "jp5y",
+      "date": "2026-08-07",
+      "value": 1.71,
+      "source": "Bank of Japan",
+      "fetchedAt": "2026-08-07T06:10:00Z"
+    },
+    {
+      "instrumentId": "jp5y",
+      "date": "2026-08-10",
+      "value": 1.73,
+      "source": "Bank of Japan",
+      "fetchedAt": "2026-08-10T06:10:00Z"
+    },
+    {
+      "instrumentId": "jp5y",
+      "date": "2026-08-11",
+      "value": 1.72,
+      "source": "Bank of Japan",
+      "fetchedAt": "2026-08-11T06:10:00Z"
+    },
+    {
+      "instrumentId": "jp5y",
+      "date": "2026-08-12",
+      "value": 1.74,
+      "source": "Bank of Japan",
+      "fetchedAt": "2026-08-12T06:10:00Z"
+    },
+    {
+      "instrumentId": "jp5y",
+      "date": "2026-08-13",
+      "value": 1.75,
+      "source": "Bank of Japan",
+      "fetchedAt": "2026-08-13T06:10:00Z"
+    },
+    {
+      "instrumentId": "jp10y",
+      "date": "2026-08-03",
+      "value": 1.72,
+      "source": "Bank of Japan",
+      "fetchedAt": "2026-08-03T06:10:00Z"
+    },
+    {
+      "instrumentId": "jp10y",
+      "date": "2026-08-04",
+      "value": 1.73,
+      "source": "Bank of Japan",
+      "fetchedAt": "2026-08-04T06:10:00Z"
+    },
+    {
+      "instrumentId": "jp10y",
+      "date": "2026-08-06",
+      "value": 1.75,
+      "source": "Bank of Japan",
+      "fetchedAt": "2026-08-06T06:10:00Z"
+    },
+    {
+      "instrumentId": "jp10y",
+      "date": "2026-08-07",
+      "value": 1.76,
+      "source": "Bank of Japan",
+      "fetchedAt": "2026-08-07T06:10:00Z"
+    },
+    {
+      "instrumentId": "jp10y",
+      "date": "2026-08-10",
+      "value": 1.78,
+      "source": "Bank of Japan",
+      "fetchedAt": "2026-08-10T06:10:00Z"
+    },
+    {
+      "instrumentId": "jp10y",
+      "date": "2026-08-11",
+      "value": 1.77,
+      "source": "Bank of Japan",
+      "fetchedAt": "2026-08-11T06:10:00Z"
+    },
+    {
+      "instrumentId": "jp10y",
+      "date": "2026-08-12",
+      "value": 1.79,
+      "source": "Bank of Japan",
+      "fetchedAt": "2026-08-12T06:10:00Z"
+    },
+    {
+      "instrumentId": "jp10y",
+      "date": "2026-08-13",
+      "value": 1.8,
+      "source": "Bank of Japan",
+      "fetchedAt": "2026-08-13T06:10:00Z"
+    },
+    {
+      "instrumentId": "jp15y",
+      "date": "2026-08-03",
+      "value": 1.84,
+      "source": "Bank of Japan",
+      "fetchedAt": "2026-08-03T06:10:00Z"
+    },
+    {
+      "instrumentId": "jp15y",
+      "date": "2026-08-04",
+      "value": 1.85,
+      "source": "Bank of Japan",
+      "fetchedAt": "2026-08-04T06:10:00Z"
+    },
+    {
+      "instrumentId": "jp15y",
+      "date": "2026-08-06",
+      "value": 1.87,
+      "source": "Bank of Japan",
+      "fetchedAt": "2026-08-06T06:10:00Z"
+    },
+    {
+      "instrumentId": "jp15y",
+      "date": "2026-08-07",
+      "value": 1.88,
+      "source": "Bank of Japan",
+      "fetchedAt": "2026-08-07T06:10:00Z"
+    },
+    {
+      "instrumentId": "jp15y",
+      "date": "2026-08-10",
+      "value": 1.9,
+      "source": "Bank of Japan",
+      "fetchedAt": "2026-08-10T06:10:00Z"
+    },
+    {
+      "instrumentId": "jp15y",
+      "date": "2026-08-11",
+      "value": 1.89,
+      "source": "Bank of Japan",
+      "fetchedAt": "2026-08-11T06:10:00Z"
+    },
+    {
+      "instrumentId": "jp15y",
+      "date": "2026-08-12",
+      "value": 1.91,
+      "source": "Bank of Japan",
+      "fetchedAt": "2026-08-12T06:10:00Z"
+    },
+    {
+      "instrumentId": "jp15y",
+      "date": "2026-08-13",
+      "value": 1.92,
+      "source": "Bank of Japan",
+      "fetchedAt": "2026-08-13T06:10:00Z"
+    },
+    {
+      "instrumentId": "jp20y",
+      "date": "2026-08-03",
+      "value": 1.92,
+      "source": "Bank of Japan",
+      "fetchedAt": "2026-08-03T06:10:00Z"
+    },
+    {
+      "instrumentId": "jp20y",
+      "date": "2026-08-04",
+      "value": 1.93,
+      "source": "Bank of Japan",
+      "fetchedAt": "2026-08-04T06:10:00Z"
+    },
+    {
+      "instrumentId": "jp20y",
+      "date": "2026-08-06",
+      "value": 1.95,
+      "source": "Bank of Japan",
+      "fetchedAt": "2026-08-06T06:10:00Z"
+    },
+    {
+      "instrumentId": "jp20y",
+      "date": "2026-08-07",
+      "value": 1.96,
+      "source": "Bank of Japan",
+      "fetchedAt": "2026-08-07T06:10:00Z"
+    },
+    {
+      "instrumentId": "jp20y",
+      "date": "2026-08-10",
+      "value": 1.98,
+      "source": "Bank of Japan",
+      "fetchedAt": "2026-08-10T06:10:00Z"
+    },
+    {
+      "instrumentId": "jp20y",
+      "date": "2026-08-11",
+      "value": 1.97,
+      "source": "Bank of Japan",
+      "fetchedAt": "2026-08-11T06:10:00Z"
+    },
+    {
+      "instrumentId": "jp20y",
+      "date": "2026-08-12",
+      "value": 1.99,
+      "source": "Bank of Japan",
+      "fetchedAt": "2026-08-12T06:10:00Z"
+    },
+    {
+      "instrumentId": "jp20y",
+      "date": "2026-08-13",
+      "value": 2.0,
+      "source": "Bank of Japan",
+      "fetchedAt": "2026-08-13T06:10:00Z"
+    },
+    {
+      "instrumentId": "cn6m",
+      "date": "2026-08-03",
+      "value": 1.77,
+      "source": "PBoC",
+      "fetchedAt": "2026-08-03T08:10:00Z"
+    },
+    {
+      "instrumentId": "cn6m",
+      "date": "2026-08-04",
+      "value": 1.78,
+      "source": "PBoC",
+      "fetchedAt": "2026-08-04T08:10:00Z"
+    },
+    {
+      "instrumentId": "cn6m",
+      "date": "2026-08-06",
+      "value": 1.77,
+      "source": "PBoC",
+      "fetchedAt": "2026-08-06T08:10:00Z"
+    },
+    {
+      "instrumentId": "cn6m",
+      "date": "2026-08-07",
+      "value": 1.79,
+      "source": "PBoC",
+      "fetchedAt": "2026-08-07T08:10:00Z"
+    },
+    {
+      "instrumentId": "cn6m",
+      "date": "2026-08-10",
+      "value": 1.78,
+      "source": "PBoC",
+      "fetchedAt": "2026-08-10T08:10:00Z"
+    },
+    {
+      "instrumentId": "cn6m",
+      "date": "2026-08-11",
+      "value": 1.77,
+      "source": "PBoC",
+      "fetchedAt": "2026-08-11T08:10:00Z"
+    },
+    {
+      "instrumentId": "cn6m",
+      "date": "2026-08-12",
+      "value": 1.76,
+      "source": "PBoC",
+      "fetchedAt": "2026-08-12T08:10:00Z"
+    },
+    {
+      "instrumentId": "cn6m",
+      "date": "2026-08-13",
+      "value": 1.75,
+      "source": "PBoC",
+      "fetchedAt": "2026-08-13T08:10:00Z"
+    },
+    {
+      "instrumentId": "cn1y",
+      "date": "2026-08-03",
+      "value": 1.87,
+      "source": "PBoC",
+      "fetchedAt": "2026-08-03T08:10:00Z"
+    },
+    {
+      "instrumentId": "cn1y",
+      "date": "2026-08-04",
+      "value": 1.88,
+      "source": "PBoC",
+      "fetchedAt": "2026-08-04T08:10:00Z"
+    },
+    {
+      "instrumentId": "cn1y",
+      "date": "2026-08-06",
+      "value": 1.87,
+      "source": "PBoC",
+      "fetchedAt": "2026-08-06T08:10:00Z"
+    },
+    {
+      "instrumentId": "cn1y",
+      "date": "2026-08-07",
+      "value": 1.89,
+      "source": "PBoC",
+      "fetchedAt": "2026-08-07T08:10:00Z"
+    },
+    {
+      "instrumentId": "cn1y",
+      "date": "2026-08-10",
+      "value": 1.88,
+      "source": "PBoC",
+      "fetchedAt": "2026-08-10T08:10:00Z"
+    },
+    {
+      "instrumentId": "cn1y",
+      "date": "2026-08-11",
+      "value": 1.87,
+      "source": "PBoC",
+      "fetchedAt": "2026-08-11T08:10:00Z"
+    },
+    {
+      "instrumentId": "cn1y",
+      "date": "2026-08-12",
+      "value": 1.86,
+      "source": "PBoC",
+      "fetchedAt": "2026-08-12T08:10:00Z"
+    },
+    {
+      "instrumentId": "cn1y",
+      "date": "2026-08-13",
+      "value": 1.85,
+      "source": "PBoC",
+      "fetchedAt": "2026-08-13T08:10:00Z"
+    },
+    {
+      "instrumentId": "cn3y",
+      "date": "2026-08-03",
+      "value": 2.0,
+      "source": "PBoC",
+      "fetchedAt": "2026-08-03T08:10:00Z"
+    },
+    {
+      "instrumentId": "cn3y",
+      "date": "2026-08-04",
+      "value": 2.01,
+      "source": "PBoC",
+      "fetchedAt": "2026-08-04T08:10:00Z"
+    },
+    {
+      "instrumentId": "cn3y",
+      "date": "2026-08-06",
+      "value": 2.0,
+      "source": "PBoC",
+      "fetchedAt": "2026-08-06T08:10:00Z"
+    },
+    {
+      "instrumentId": "cn3y",
+      "date": "2026-08-07",
+      "value": 2.02,
+      "source": "PBoC",
+      "fetchedAt": "2026-08-07T08:10:00Z"
+    },
+    {
+      "instrumentId": "cn3y",
+      "date": "2026-08-10",
+      "value": 2.01,
+      "source": "PBoC",
+      "fetchedAt": "2026-08-10T08:10:00Z"
+    },
+    {
+      "instrumentId": "cn3y",
+      "date": "2026-08-11",
+      "value": 2.0,
+      "source": "PBoC",
+      "fetchedAt": "2026-08-11T08:10:00Z"
+    },
+    {
+      "instrumentId": "cn3y",
+      "date": "2026-08-12",
+      "value": 1.99,
+      "source": "PBoC",
+      "fetchedAt": "2026-08-12T08:10:00Z"
+    },
+    {
+      "instrumentId": "cn3y",
+      "date": "2026-08-13",
+      "value": 1.98,
+      "source": "PBoC",
+      "fetchedAt": "2026-08-13T08:10:00Z"
+    },
+    {
+      "instrumentId": "cn5y",
+      "date": "2026-08-03",
+      "value": 2.07,
+      "source": "PBoC",
+      "fetchedAt": "2026-08-03T08:10:00Z"
+    },
+    {
+      "instrumentId": "cn5y",
+      "date": "2026-08-04",
+      "value": 2.08,
+      "source": "PBoC",
+      "fetchedAt": "2026-08-04T08:10:00Z"
+    },
+    {
+      "instrumentId": "cn5y",
+      "date": "2026-08-06",
+      "value": 2.07,
+      "source": "PBoC",
+      "fetchedAt": "2026-08-06T08:10:00Z"
+    },
+    {
+      "instrumentId": "cn5y",
+      "date": "2026-08-07",
+      "value": 2.09,
+      "source": "PBoC",
+      "fetchedAt": "2026-08-07T08:10:00Z"
+    },
+    {
+      "instrumentId": "cn5y",
+      "date": "2026-08-10",
+      "value": 2.08,
+      "source": "PBoC",
+      "fetchedAt": "2026-08-10T08:10:00Z"
+    },
+    {
+      "instrumentId": "cn5y",
+      "date": "2026-08-11",
+      "value": 2.07,
+      "source": "PBoC",
+      "fetchedAt": "2026-08-11T08:10:00Z"
+    },
+    {
+      "instrumentId": "cn5y",
+      "date": "2026-08-12",
+      "value": 2.06,
+      "source": "PBoC",
+      "fetchedAt": "2026-08-12T08:10:00Z"
+    },
+    {
+      "instrumentId": "cn5y",
+      "date": "2026-08-13",
+      "value": 2.05,
+      "source": "PBoC",
+      "fetchedAt": "2026-08-13T08:10:00Z"
+    },
+    {
+      "instrumentId": "cn10y",
+      "date": "2026-08-03",
+      "value": 2.12,
+      "source": "PBoC",
+      "fetchedAt": "2026-08-03T08:10:00Z"
+    },
+    {
+      "instrumentId": "cn10y",
+      "date": "2026-08-04",
+      "value": 2.13,
+      "source": "PBoC",
+      "fetchedAt": "2026-08-04T08:10:00Z"
+    },
+    {
+      "instrumentId": "cn10y",
+      "date": "2026-08-06",
+      "value": 2.12,
+      "source": "PBoC",
+      "fetchedAt": "2026-08-06T08:10:00Z"
+    },
+    {
+      "instrumentId": "cn10y",
+      "date": "2026-08-07",
+      "value": 2.14,
+      "source": "PBoC",
+      "fetchedAt": "2026-08-07T08:10:00Z"
+    },
+    {
+      "instrumentId": "cn10y",
+      "date": "2026-08-10",
+      "value": 2.13,
+      "source": "PBoC",
+      "fetchedAt": "2026-08-10T08:10:00Z"
+    },
+    {
+      "instrumentId": "cn10y",
+      "date": "2026-08-11",
+      "value": 2.12,
+      "source": "PBoC",
+      "fetchedAt": "2026-08-11T08:10:00Z"
+    },
+    {
+      "instrumentId": "cn10y",
+      "date": "2026-08-12",
+      "value": 2.11,
+      "source": "PBoC",
+      "fetchedAt": "2026-08-12T08:10:00Z"
+    },
+    {
+      "instrumentId": "cn10y",
+      "date": "2026-08-13",
+      "value": 2.1,
+      "source": "PBoC",
+      "fetchedAt": "2026-08-13T08:10:00Z"
+    },
+    {
+      "instrumentId": "cn15y",
+      "date": "2026-08-03",
+      "value": 2.24,
+      "source": "PBoC",
+      "fetchedAt": "2026-08-03T08:10:00Z"
+    },
+    {
+      "instrumentId": "cn15y",
+      "date": "2026-08-04",
+      "value": 2.25,
+      "source": "PBoC",
+      "fetchedAt": "2026-08-04T08:10:00Z"
+    },
+    {
+      "instrumentId": "cn15y",
+      "date": "2026-08-06",
+      "value": 2.24,
+      "source": "PBoC",
+      "fetchedAt": "2026-08-06T08:10:00Z"
+    },
+    {
+      "instrumentId": "cn15y",
+      "date": "2026-08-07",
+      "value": 2.26,
+      "source": "PBoC",
+      "fetchedAt": "2026-08-07T08:10:00Z"
+    },
+    {
+      "instrumentId": "cn15y",
+      "date": "2026-08-10",
+      "value": 2.25,
+      "source": "PBoC",
+      "fetchedAt": "2026-08-10T08:10:00Z"
+    },
+    {
+      "instrumentId": "cn15y",
+      "date": "2026-08-11",
+      "value": 2.24,
+      "source": "PBoC",
+      "fetchedAt": "2026-08-11T08:10:00Z"
+    },
+    {
+      "instrumentId": "cn15y",
+      "date": "2026-08-12",
+      "value": 2.23,
+      "source": "PBoC",
+      "fetchedAt": "2026-08-12T08:10:00Z"
+    },
+    {
+      "instrumentId": "cn15y",
+      "date": "2026-08-13",
+      "value": 2.22,
+      "source": "PBoC",
+      "fetchedAt": "2026-08-13T08:10:00Z"
+    },
+    {
+      "instrumentId": "cn20y",
+      "date": "2026-08-03",
+      "value": 2.32,
+      "source": "PBoC",
+      "fetchedAt": "2026-08-03T08:10:00Z"
+    },
+    {
+      "instrumentId": "cn20y",
+      "date": "2026-08-04",
+      "value": 2.33,
+      "source": "PBoC",
+      "fetchedAt": "2026-08-04T08:10:00Z"
+    },
+    {
+      "instrumentId": "cn20y",
+      "date": "2026-08-06",
+      "value": 2.32,
+      "source": "PBoC",
+      "fetchedAt": "2026-08-06T08:10:00Z"
+    },
+    {
+      "instrumentId": "cn20y",
+      "date": "2026-08-07",
+      "value": 2.34,
+      "source": "PBoC",
+      "fetchedAt": "2026-08-07T08:10:00Z"
+    },
+    {
+      "instrumentId": "cn20y",
+      "date": "2026-08-10",
+      "value": 2.33,
+      "source": "PBoC",
+      "fetchedAt": "2026-08-10T08:10:00Z"
+    },
+    {
+      "instrumentId": "cn20y",
+      "date": "2026-08-11",
+      "value": 2.32,
+      "source": "PBoC",
+      "fetchedAt": "2026-08-11T08:10:00Z"
+    },
+    {
+      "instrumentId": "cn20y",
+      "date": "2026-08-12",
+      "value": 2.31,
+      "source": "PBoC",
+      "fetchedAt": "2026-08-12T08:10:00Z"
+    },
+    {
+      "instrumentId": "cn20y",
+      "date": "2026-08-13",
+      "value": 2.3,
+      "source": "PBoC",
+      "fetchedAt": "2026-08-13T08:10:00Z"
+    },
+    {
+      "instrumentId": "in6m",
+      "date": "2026-08-03",
+      "value": 6.7,
+      "source": "RBI",
+      "fetchedAt": "2026-08-03T11:40:00Z"
+    },
+    {
+      "instrumentId": "in6m",
+      "date": "2026-08-04",
+      "value": 6.71,
+      "source": "RBI",
+      "fetchedAt": "2026-08-04T11:40:00Z"
+    },
+    {
+      "instrumentId": "in6m",
+      "date": "2026-08-06",
+      "value": 6.69,
+      "source": "RBI",
+      "fetchedAt": "2026-08-06T11:40:00Z"
+    },
+    {
+      "instrumentId": "in6m",
+      "date": "2026-08-07",
+      "value": 6.73,
+      "source": "RBI",
+      "fetchedAt": "2026-08-07T11:40:00Z"
+    },
+    {
+      "instrumentId": "in6m",
+      "date": "2026-08-10",
+      "value": 6.71,
+      "source": "RBI",
+      "fetchedAt": "2026-08-10T11:40:00Z"
+    },
+    {
+      "instrumentId": "in6m",
+      "date": "2026-08-11",
+      "value": 6.69,
+      "source": "RBI",
+      "fetchedAt": "2026-08-11T11:40:00Z"
+    },
+    {
+      "instrumentId": "in6m",
+      "date": "2026-08-12",
+      "value": 6.67,
+      "source": "RBI",
+      "fetchedAt": "2026-08-12T11:40:00Z"
+    },
+    {
+      "instrumentId": "in6m",
+      "date": "2026-08-13",
+      "value": 6.65,
+      "source": "RBI",
+      "fetchedAt": "2026-08-13T11:40:00Z"
+    },
+    {
+      "instrumentId": "in1y",
+      "date": "2026-08-03",
+      "value": 6.8,
+      "source": "RBI",
+      "fetchedAt": "2026-08-03T11:40:00Z"
+    },
+    {
+      "instrumentId": "in1y",
+      "date": "2026-08-04",
+      "value": 6.81,
+      "source": "RBI",
+      "fetchedAt": "2026-08-04T11:40:00Z"
+    },
+    {
+      "instrumentId": "in1y",
+      "date": "2026-08-06",
+      "value": 6.79,
+      "source": "RBI",
+      "fetchedAt": "2026-08-06T11:40:00Z"
+    },
+    {
+      "instrumentId": "in1y",
+      "date": "2026-08-07",
+      "value": 6.83,
+      "source": "RBI",
+      "fetchedAt": "2026-08-07T11:40:00Z"
+    },
+    {
+      "instrumentId": "in1y",
+      "date": "2026-08-10",
+      "value": 6.81,
+      "source": "RBI",
+      "fetchedAt": "2026-08-10T11:40:00Z"
+    },
+    {
+      "instrumentId": "in1y",
+      "date": "2026-08-11",
+      "value": 6.79,
+      "source": "RBI",
+      "fetchedAt": "2026-08-11T11:40:00Z"
+    },
+    {
+      "instrumentId": "in1y",
+      "date": "2026-08-12",
+      "value": 6.77,
+      "source": "RBI",
+      "fetchedAt": "2026-08-12T11:40:00Z"
+    },
+    {
+      "instrumentId": "in1y",
+      "date": "2026-08-13",
+      "value": 6.75,
+      "source": "RBI",
+      "fetchedAt": "2026-08-13T11:40:00Z"
+    },
+    {
+      "instrumentId": "in3y",
+      "date": "2026-08-03",
+      "value": 6.93,
+      "source": "RBI",
+      "fetchedAt": "2026-08-03T11:40:00Z"
+    },
+    {
+      "instrumentId": "in3y",
+      "date": "2026-08-04",
+      "value": 6.94,
+      "source": "RBI",
+      "fetchedAt": "2026-08-04T11:40:00Z"
+    },
+    {
+      "instrumentId": "in3y",
+      "date": "2026-08-06",
+      "value": 6.92,
+      "source": "RBI",
+      "fetchedAt": "2026-08-06T11:40:00Z"
+    },
+    {
+      "instrumentId": "in3y",
+      "date": "2026-08-07",
+      "value": 6.96,
+      "source": "RBI",
+      "fetchedAt": "2026-08-07T11:40:00Z"
+    },
+    {
+      "instrumentId": "in3y",
+      "date": "2026-08-10",
+      "value": 6.94,
+      "source": "RBI",
+      "fetchedAt": "2026-08-10T11:40:00Z"
+    },
+    {
+      "instrumentId": "in3y",
+      "date": "2026-08-11",
+      "value": 6.92,
+      "source": "RBI",
+      "fetchedAt": "2026-08-11T11:40:00Z"
+    },
+    {
+      "instrumentId": "in3y",
+      "date": "2026-08-12",
+      "value": 6.9,
+      "source": "RBI",
+      "fetchedAt": "2026-08-12T11:40:00Z"
+    },
+    {
+      "instrumentId": "in3y",
+      "date": "2026-08-13",
+      "value": 6.88,
+      "source": "RBI",
+      "fetchedAt": "2026-08-13T11:40:00Z"
+    },
+    {
+      "instrumentId": "in5y",
+      "date": "2026-08-03",
+      "value": 7.0,
+      "source": "RBI",
+      "fetchedAt": "2026-08-03T11:40:00Z"
+    },
+    {
+      "instrumentId": "in5y",
+      "date": "2026-08-04",
+      "value": 7.01,
+      "source": "RBI",
+      "fetchedAt": "2026-08-04T11:40:00Z"
+    },
+    {
+      "instrumentId": "in5y",
+      "date": "2026-08-06",
+      "value": 6.99,
+      "source": "RBI",
+      "fetchedAt": "2026-08-06T11:40:00Z"
+    },
+    {
+      "instrumentId": "in5y",
+      "date": "2026-08-07",
+      "value": 7.03,
+      "source": "RBI",
+      "fetchedAt": "2026-08-07T11:40:00Z"
+    },
+    {
+      "instrumentId": "in5y",
+      "date": "2026-08-10",
+      "value": 7.01,
+      "source": "RBI",
+      "fetchedAt": "2026-08-10T11:40:00Z"
+    },
+    {
+      "instrumentId": "in5y",
+      "date": "2026-08-11",
+      "value": 6.99,
+      "source": "RBI",
+      "fetchedAt": "2026-08-11T11:40:00Z"
+    },
+    {
+      "instrumentId": "in5y",
+      "date": "2026-08-12",
+      "value": 6.97,
+      "source": "RBI",
+      "fetchedAt": "2026-08-12T11:40:00Z"
+    },
+    {
+      "instrumentId": "in5y",
+      "date": "2026-08-13",
+      "value": 6.95,
+      "source": "RBI",
+      "fetchedAt": "2026-08-13T11:40:00Z"
+    },
+    {
+      "instrumentId": "in10y",
+      "date": "2026-08-03",
+      "value": 7.05,
+      "source": "RBI",
+      "fetchedAt": "2026-08-03T11:40:00Z"
+    },
+    {
+      "instrumentId": "in10y",
+      "date": "2026-08-04",
+      "value": 7.06,
+      "source": "RBI",
+      "fetchedAt": "2026-08-04T11:40:00Z"
+    },
+    {
+      "instrumentId": "in10y",
+      "date": "2026-08-06",
+      "value": 7.04,
+      "source": "RBI",
+      "fetchedAt": "2026-08-06T11:40:00Z"
+    },
+    {
+      "instrumentId": "in10y",
+      "date": "2026-08-07",
+      "value": 7.08,
+      "source": "RBI",
+      "fetchedAt": "2026-08-07T11:40:00Z"
+    },
+    {
+      "instrumentId": "in10y",
+      "date": "2026-08-10",
+      "value": 7.06,
+      "source": "RBI",
+      "fetchedAt": "2026-08-10T11:40:00Z"
+    },
+    {
+      "instrumentId": "in10y",
+      "date": "2026-08-11",
+      "value": 7.04,
+      "source": "RBI",
+      "fetchedAt": "2026-08-11T11:40:00Z"
+    },
+    {
+      "instrumentId": "in10y",
+      "date": "2026-08-12",
+      "value": 7.02,
+      "source": "RBI",
+      "fetchedAt": "2026-08-12T11:40:00Z"
+    },
+    {
+      "instrumentId": "in10y",
+      "date": "2026-08-13",
+      "value": 7.0,
+      "source": "RBI",
+      "fetchedAt": "2026-08-13T11:40:00Z"
+    },
+    {
+      "instrumentId": "in15y",
+      "date": "2026-08-03",
+      "value": 7.17,
+      "source": "RBI",
+      "fetchedAt": "2026-08-03T11:40:00Z"
+    },
+    {
+      "instrumentId": "in15y",
+      "date": "2026-08-04",
+      "value": 7.18,
+      "source": "RBI",
+      "fetchedAt": "2026-08-04T11:40:00Z"
+    },
+    {
+      "instrumentId": "in15y",
+      "date": "2026-08-06",
+      "value": 7.16,
+      "source": "RBI",
+      "fetchedAt": "2026-08-06T11:40:00Z"
+    },
+    {
+      "instrumentId": "in15y",
+      "date": "2026-08-07",
+      "value": 7.2,
+      "source": "RBI",
+      "fetchedAt": "2026-08-07T11:40:00Z"
+    },
+    {
+      "instrumentId": "in15y",
+      "date": "2026-08-10",
+      "value": 7.18,
+      "source": "RBI",
+      "fetchedAt": "2026-08-10T11:40:00Z"
+    },
+    {
+      "instrumentId": "in15y",
+      "date": "2026-08-11",
+      "value": 7.16,
+      "source": "RBI",
+      "fetchedAt": "2026-08-11T11:40:00Z"
+    },
+    {
+      "instrumentId": "in15y",
+      "date": "2026-08-12",
+      "value": 7.14,
+      "source": "RBI",
+      "fetchedAt": "2026-08-12T11:40:00Z"
+    },
+    {
+      "instrumentId": "in15y",
+      "date": "2026-08-13",
+      "value": 7.12,
+      "source": "RBI",
+      "fetchedAt": "2026-08-13T11:40:00Z"
+    },
+    {
+      "instrumentId": "in20y",
+      "date": "2026-08-03",
+      "value": 7.25,
+      "source": "RBI",
+      "fetchedAt": "2026-08-03T11:40:00Z"
+    },
+    {
+      "instrumentId": "in20y",
+      "date": "2026-08-04",
+      "value": 7.26,
+      "source": "RBI",
+      "fetchedAt": "2026-08-04T11:40:00Z"
+    },
+    {
+      "instrumentId": "in20y",
+      "date": "2026-08-06",
+      "value": 7.24,
+      "source": "RBI",
+      "fetchedAt": "2026-08-06T11:40:00Z"
+    },
+    {
+      "instrumentId": "in20y",
+      "date": "2026-08-07",
+      "value": 7.28,
+      "source": "RBI",
+      "fetchedAt": "2026-08-07T11:40:00Z"
+    },
+    {
+      "instrumentId": "in20y",
+      "date": "2026-08-10",
+      "value": 7.26,
+      "source": "RBI",
+      "fetchedAt": "2026-08-10T11:40:00Z"
+    },
+    {
+      "instrumentId": "in20y",
+      "date": "2026-08-11",
+      "value": 7.24,
+      "source": "RBI",
+      "fetchedAt": "2026-08-11T11:40:00Z"
+    },
+    {
+      "instrumentId": "in20y",
+      "date": "2026-08-12",
+      "value": 7.22,
+      "source": "RBI",
+      "fetchedAt": "2026-08-12T11:40:00Z"
+    },
+    {
+      "instrumentId": "in20y",
+      "date": "2026-08-13",
+      "value": 7.2,
+      "source": "RBI",
+      "fetchedAt": "2026-08-13T11:40:00Z"
     }
   ],
   "macroIndicators": [

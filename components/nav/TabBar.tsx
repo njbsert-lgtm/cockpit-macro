@@ -1,9 +1,7 @@
 "use client";
 
-import { Suspense } from "react";
 import Link from "next/link";
-import { usePathname, useSearchParams } from "next/navigation";
-import { ZONE_PARAM } from "@/lib/zone-param";
+import { usePathname } from "next/navigation";
 
 type Tab = { href: string; label: string; disabled?: boolean };
 
@@ -17,12 +15,10 @@ const TABS: Tab[] = [
 function TabLink({
   tab,
   active,
-  qs,
   variant,
 }: {
   tab: (typeof TABS)[number];
   active: boolean;
-  qs: string;
   variant: "mobile" | "desktop";
 }) {
   const base =
@@ -47,7 +43,7 @@ function TabLink({
 
   return (
     <Link
-      href={`${tab.href}${qs ? `?${qs}` : ""}`}
+      href={tab.href}
       className={`${base} focus-visible:outline-3 focus-visible:-outline-offset-2 focus-visible:outline-white ${
         active
           ? variant === "mobile"
@@ -64,11 +60,14 @@ function TabLink({
   );
 }
 
-function TabBarInner() {
+/**
+ * Chaque onglet gère sa propre zone, quand il en a une : Macro par le sélecteur du bandeau,
+ * Marchés par sa propre rangée de zones, Notes n'a plus de notion de zone du tout. Il n'y a
+ * donc plus de contexte partagé à faire suivre d'un onglet à l'autre — chaque lien pointe sur
+ * l'URL nue de sa page, sans reprendre le paramètre de la page courante.
+ */
+export function TabBar() {
   const pathname = usePathname();
-  const searchParams = useSearchParams();
-  const zone = searchParams.get(ZONE_PARAM);
-  const qs = zone ? `${ZONE_PARAM}=${zone}` : "";
 
   return (
     <>
@@ -79,13 +78,7 @@ function TabBarInner() {
       >
         <div className="mx-auto flex max-w-content gap-1">
           {TABS.map((tab) => (
-            <TabLink
-              key={tab.href}
-              tab={tab}
-              active={pathname.startsWith(tab.href)}
-              qs={qs}
-              variant="desktop"
-            />
+            <TabLink key={tab.href} tab={tab} active={pathname.startsWith(tab.href)} variant="desktop" />
           ))}
         </div>
       </nav>
@@ -96,23 +89,9 @@ function TabBarInner() {
         className="fixed inset-x-0 bottom-0 z-30 flex border-t border-white/15 bg-deep md:hidden"
       >
         {TABS.map((tab) => (
-          <TabLink
-            key={tab.href}
-            tab={tab}
-            active={pathname.startsWith(tab.href)}
-            qs={qs}
-            variant="mobile"
-          />
+          <TabLink key={tab.href} tab={tab} active={pathname.startsWith(tab.href)} variant="mobile" />
         ))}
       </nav>
     </>
-  );
-}
-
-export function TabBar() {
-  return (
-    <Suspense fallback={null}>
-      <TabBarInner />
-    </Suspense>
   );
 }

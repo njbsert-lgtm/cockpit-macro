@@ -1,14 +1,6 @@
-import type { Note, Zone } from "./types";
-import { zoneMatches } from "./zones";
+import type { Note } from "./types";
 import { getNotes } from "./content";
 import { isoWeekRange } from "./iso-week";
-
-/** La dernière note — tous types confondus — qui concerne la zone donnée. */
-export function getLatestNoteForZone(zone: Zone): Note | null {
-  const matching = getNotes().filter((e) => zoneMatches(e.zones, zone));
-  if (matching.length === 0) return null;
-  return [...matching].sort((a, b) => b.date.localeCompare(a.date))[0];
-}
 
 export type ArchiveWeek = {
   isoWeek: string;
@@ -18,17 +10,15 @@ export type ArchiveWeek = {
   isCurrentWeek: boolean;
   hebdo: Note | null;
   specials: Note[];
-  /** Rien, dans cette semaine, ne concerne la zone sélectionnée. */
-  emptyForZone: boolean;
 };
 
 /**
  * Colonne vertébrale hebdomadaire de l'archive, du plus ancien au plus récent, avec les
- * spéciales indentées sous leur semaine. Le trou (aucune hebdo publiée) est distinct du cas
- * où des notes existent cette semaine-là mais aucune ne concerne la zone sélectionnée — et
- * distinct de la semaine en cours, dont l'hebdo n'est simplement pas encore parue.
+ * spéciales indentées sous leur semaine. Les notes ne se filtrent plus par zone — l'archive
+ * montre tout, donc le seul trou possible est l'absence réelle de hebdo cette semaine-là,
+ * distincte de la semaine en cours dont l'hebdo n'est simplement pas encore parue.
  */
-export function buildArchiveWeeks(zone: Zone): ArchiveWeek[] {
+export function buildArchiveWeeks(): ArchiveWeek[] {
   const notes = getNotes();
   if (notes.length === 0) return [];
 
@@ -42,7 +32,6 @@ export function buildArchiveWeeks(zone: Zone): ArchiveWeek[] {
     const specials = thisWeek
       .filter((e) => e.kind === "speciale")
       .sort((a, b) => a.date.localeCompare(b.date));
-    const zoneFiltered = thisWeek.filter((e) => zoneMatches(e.zones, zone));
     const isCurrentWeek = isoWeek === currentWeek;
 
     return {
@@ -51,7 +40,6 @@ export function buildArchiveWeeks(zone: Zone): ArchiveWeek[] {
       isCurrentWeek,
       hebdo,
       specials,
-      emptyForZone: thisWeek.length > 0 && zoneFiltered.length === 0,
     };
   });
 }

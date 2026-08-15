@@ -4,8 +4,6 @@ import { useState } from "react";
 import Link from "next/link";
 import type { ArchiveWeek } from "@/lib/archive";
 import { formatDateLong } from "@/lib/format";
-import { ZONE_LABELS } from "@/lib/zones";
-import type { Zone } from "@/lib/types";
 
 type TypeFilter = "tout" | "hebdo" | "speciale";
 
@@ -36,12 +34,10 @@ export type ArchiveDriverOption = { id: string; label: string };
 
 export function ArchiveList({
   weeks,
-  zone,
   drivers,
   revisionsBySlug,
 }: {
   weeks: ArchiveWeek[];
-  zone: Zone;
   /** Les drivers proposés au filtre — libellés résolus côté serveur. */
   drivers: ArchiveDriverOption[];
   /** Pour chaque slug de note, les drivers qu'elle a révisés. */
@@ -115,20 +111,14 @@ export function ArchiveList({
               </div>
 
               <div className="px-3.5 py-3">
-                {week.emptyForZone && (
-                  <p className="text-13-5 italic text-mute">
-                    Aucune note ne concerne {ZONE_LABELS[zone]} cette semaine.
-                  </p>
-                )}
-
-                {!week.emptyForZone && week.isGap && (
+                {week.isGap && (
                   <p className="text-13-5 italic text-rust">
                     Discipline rompue : aucune note, pas même une hebdo courte, n&rsquo;a été
                     publiée cette semaine-là.
                   </p>
                 )}
 
-                {!week.emptyForZone && !week.isGap && !showHebdo && showSpecials.length === 0 && (
+                {!week.isGap && !showHebdo && showSpecials.length === 0 && (
                   <p className="text-13-5 italic text-mute">
                     Rien dans cette semaine ne correspond aux filtres.
                   </p>

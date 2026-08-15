@@ -7,6 +7,8 @@ import {
   formatDailyChange,
   formatInstrumentValue,
   getClassPerformance,
+  getRatesInstruments,
+  isRateCountryZone,
   parseAssetClass,
 } from "@/lib/marches";
 import { getInstrumentsByAssetClass, getObservations } from "@/lib/data";
@@ -25,7 +27,16 @@ async function simulateLoad() {
 }
 
 function buildRows(assetClass: AssetClass, zone: Zone): InstrumentRow[] {
-  return getInstrumentsByAssetClass(assetClass, zone).map((instrument) => {
+  // Obligations : `getRatesInstruments` choisit elle-même entre la courbe complète d'un pays
+  // et un point de repère (le 10 ans) par pays pour Toutes / Zone euro / Émergents — sinon la
+  // liste plate mélangerait 65 maturités de neuf pays. `isCurve` ne sert plus qu'à l'affichage
+  // : le pays est déjà porté par le libellé (« OAT 6 mois ») et par la rangée de zones
+  // au-dessus, répéter « France » sur les sept lignes n'ajouterait rien.
+  const isCurve = assetClass === "rates" && isRateCountryZone(zone);
+  const instruments =
+    assetClass === "rates" ? getRatesInstruments(zone) : getInstrumentsByAssetClass(assetClass, zone);
+
+  return instruments.map((instrument) => {
     const obs = getObservations(instrument.id);
     const latest = latestObservation(obs);
     const change = dailyChange(obs);
@@ -46,7 +57,7 @@ function buildRows(assetClass: AssetClass, zone: Zone): InstrumentRow[] {
         : previous
           ? `Variation de séance non calculable : la clôture précédente date du ${formatDateLong(previous.date)}, au-delà des ${MAX_SESSION_GAP_DAYS} jours qui séparent deux séances consécutives.`
           : "Variation de séance non calculable : la série ne compte qu'une seule clôture.",
-      zoneTag: instrument.zones[0] ? ZONE_LABELS[instrument.zones[0]] : null,
+      zoneTag: isCurve ? null : instrument.zones[0] ? ZONE_LABELS[instrument.zones[0]] : null,
     };
   });
 }
@@ -59,6 +70,7 @@ async function MarchesContent({ assetClass, zone }: { assetClass: AssetClass; zo
     return { assetClass: c, ytd: perf.ytd, total: perf.total };
   });
   const rows = buildRows(assetClass, zone);
+  const isCurve = assetClass === "rates" && isRateCountryZone(zone);
 
   return (
     <div className="mx-auto max-w-content px-4 py-8 md:px-6">
@@ -66,6 +78,11 @@ async function MarchesContent({ assetClass, zone }: { assetClass: AssetClass; zo
       <h1 className="mt-1 font-display text-26 font-extrabold text-ink">
         {ASSET_CLASS_LABELS[assetClass]}
       </h1>
+      {isCurve && (
+        <p className="mt-1 font-mono text-12-5 text-mute">
+          Courbe {ZONE_LABELS[zone]} — 6 mois à 20 ans.
+        </p>
+      )}
 
       <FilterRows assetClass={assetClass} zone={zone} summaries={summaries} />
 
