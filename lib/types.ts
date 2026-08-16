@@ -117,7 +117,45 @@ export type Note = {
   driverOrder: string[]; // ordre d'intensité des drivers à cette date, jugement manuel
   trendRefs: string[]; // tendances de fond touchées
   instrumentRefs: string[]; // instruments cités
+  veilleItemRefs: string[]; // items de veille cités comme pièces à conviction, ou dans « Le fil de la semaine »
   sources: Array<{ label: string; url: string }>;
+};
+
+/**
+ * La grille des cinq canaux de transmission (cahier des charges, § Veille) : la clé qui rend
+ * un item exploitable même sans jugement humain — un mot-clé de canal peut suffire à le faire
+ * survivre à la passe 1, au même titre qu'un mot-clé de driver.
+ */
+export type VeilleChannel =
+  | "taux-reel"
+  | "nature-choc"
+  | "fonction-reaction"
+  | "dollar"
+  | "positionnement";
+
+export type VeilleStatus = "nouveau" | "verse" | "archive" | "ignore";
+
+/**
+ * Un item de veille — lien et métadonnées, jamais le texte intégral (droit d'auteur, cahier
+ * des charges). Vit en base : c'est de la donnée automatique, quotidienne, pas de l'analyse
+ * versionnée. `driverRefs`/`channels` sont posés par la passe 1, déterministe — un mot-clé
+ * reconnu, pas un jugement. `isSignal` vaut `true` pour tout item qui a survécu à la passe 1 ;
+ * c'est un point d'extension pour la passe 2 (classification par l'API Claude), pas encore
+ * construite.
+ */
+export type VeilleItem = {
+  id: string; // hash stable de (source + url) — l'upsert le rend idempotent
+  title: string;
+  url: string;
+  source: string; // 'GDELT' | 'Fed' | 'SEC EDGAR' | ...
+  publishedAt: string;
+  zones: Zone[];
+  driverRefs: string[];
+  channels: VeilleChannel[];
+  isSignal: boolean;
+  status: VeilleStatus;
+  attachedToBlock: string | null; // BlockName de lib/notes.ts — pas importé ici pour éviter un cycle
+  draftNoteSlug: string | null; // la note en préparation à laquelle l'item est promis
 };
 
 export type AlertTarget =

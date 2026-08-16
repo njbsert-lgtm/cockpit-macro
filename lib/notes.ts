@@ -21,6 +21,7 @@ export const BLOCK_NAMES = [
   "CeQueJavaisMalLu",
   "CeQueJeSurveille",
   "RecapDesSpeciales",
+  "LeFilDeLaSemaine",
 ] as const;
 
 export type BlockName = (typeof BLOCK_NAMES)[number];
@@ -32,11 +33,16 @@ export const BLOCK_TITLES: Record<BlockName, string> = {
   CeQueJavaisMalLu: "Ce que j'avais mal lu",
   CeQueJeSurveille: "Ce que je surveille",
   RecapDesSpeciales: "Ce que les spéciales de la semaine ont établi",
+  LeFilDeLaSemaine: "Le fil de la semaine",
 };
 
 /**
  * L'ordre porte du sens : « ce que j'avais mal lu » placé en tête d'une note n'a pas la
  * même valeur qu'après la révision des scénarios. L'ordre canonique est donc imposé.
+ *
+ * `LeFilDeLaSemaine` ferme toujours la marche, après `RecapDesSpeciales` : la chronologie des
+ * items de veille vient en complément du jugement, jamais avant lui. Balise auto-porteuse —
+ * son contenu n'est pas rédigé, il est résolu au rendu depuis `Note.veilleItemRefs`.
  */
 const CANONICAL_ORDER: Record<NoteKind, BlockName[]> = {
   hebdo: [
@@ -46,9 +52,11 @@ const CANONICAL_ORDER: Record<NoteKind, BlockName[]> = {
     "CeQueJavaisMalLu",
     "CeQueJeSurveille",
     "RecapDesSpeciales",
+    "LeFilDeLaSemaine",
   ],
   // Exiger « ce que j'avais mal lu » trente minutes après un choc n'a aucun sens : une
-  // spéciale ne requiert que trois blocs (cahier des charges).
+  // spéciale ne requiert que trois blocs (cahier des charges). Le fil de la semaine est un
+  // exercice de recul hebdomadaire, pas une réaction à chaud : réservé aux hebdos.
   speciale: ["CeQuiAChange", "RevisionDesScenarios", "CeQueJeSurveille"],
 };
 
@@ -116,6 +124,7 @@ const frontmatterSchema = z.object({
   driverOrder: z.array(z.string()).min(1),
   trendRefs: z.array(z.string()).default([]),
   instrumentRefs: z.array(z.string()).default([]),
+  veilleItemRefs: z.array(z.string()).default([]),
   sources: z
     .array(z.object({ label: z.string().min(1), url: z.string().url() }))
     .default([]),
@@ -291,6 +300,7 @@ export function parseNote(slug: string, source: string): ParsedNote {
       driverOrder: fm.driverOrder,
       trendRefs: fm.trendRefs,
       instrumentRefs: fm.instrumentRefs,
+      veilleItemRefs: fm.veilleItemRefs,
       sources: fm.sources,
     },
     body: file.content,

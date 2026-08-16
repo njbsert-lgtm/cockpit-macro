@@ -82,6 +82,47 @@ create table if not exists series_health (
 create index if not exists series_health_source_idx on series_health (source);
 
 -- ---------------------------------------------------------------------------
+-- Veille
+-- ---------------------------------------------------------------------------
+
+-- Liens et métadonnées, jamais le texte intégral d'un article (droit d'auteur, cahier des
+-- charges). `id` est un hash stable de (source, url) : un même article revu deux jours de
+-- suite s'upserte sur lui-même plutôt que de dupliquer la ligne.
+--
+-- `driver_refs` et `channels` sont posés par la passe 1, déterministe (mots-clés, pas de
+-- jugement) : un item qui n'en porte aucun n'est jamais écrit ici, il est écarté avant.
+
+create table if not exists veille_items (
+  id                text primary key,
+  title             text not null,
+  url               text not null,
+  source            text not null,
+  published_at      timestamptz not null,
+  zones             text[] not null default '{}',
+  driver_refs       text[] not null default '{}',
+  channels          text[] not null default '{}',
+  is_signal         boolean not null default true,
+  status            text not null default 'nouveau'
+                      check (status in ('nouveau', 'verse', 'archive', 'ignore')),
+  attached_to_block text,
+  draft_note_slug   text,
+  collected_at      timestamptz not null default now()
+);
+
+create index if not exists veille_items_status_idx on veille_items (status, published_at desc);
+
+-- L'état d'avancement d'une collecte qui déborde le budget de temps d'un seul passage — GDELT
+-- interroge (thème × pays) une combinaison à la fois ; si le passage du jour s'arrête à mi-
+-- parcours, celui de demain reprend à la combinaison suivante plutôt que de tout refaire ou de
+-- rater le reste indéfiniment.
+
+create table if not exists veille_cursor (
+  source     text primary key,   -- 'GDELT'
+  position   integer not null default 0,
+  updated_at timestamptz not null default now()
+);
+
+-- ---------------------------------------------------------------------------
 -- Sécurité
 -- ---------------------------------------------------------------------------
 
@@ -92,13 +133,21 @@ alter table observations       enable row level security;
 alter table macro_observations enable row level security;
 alter table macro_indicators   enable row level security;
 alter table series_health      enable row level security;
+alter table veille_items       enable row level security;
+alter table veille_cursor      enable row level security;
 
 drop policy if exists observations_read       on observations;
 drop policy if exists macro_observations_read on macro_observations;
 drop policy if exists macro_indicators_read   on macro_indicators;
 drop policy if exists series_health_read      on series_health;
+drop policy if exists veille_items_read       on veille_items;
 
 create policy observations_read       on observations       for select using (true);
 create policy macro_observations_read on macro_observations for select using (true);
 create policy macro_indicators_read   on macro_indicators   for select using (true);
 create policy series_health_read      on series_health      for select using (true);
+-- `/triage` lit les items par la clé anonyme ; les trois actions (verser, archiver, ignorer)
+-- écrivent par Server Action, avec la clé de service, jamais depuis le navigateur.
+create policy veille_items_read       on veille_items       for select using (true);
+-- veille_cursor n'a pas de politique de lecture : c'est un détail d'implémentation de la
+-- collecte, jamais affiché, seule la clé de service y touche.

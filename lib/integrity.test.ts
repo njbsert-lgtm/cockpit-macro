@@ -47,6 +47,7 @@ function note(over: Partial<Note> = {}): Note {
     driverOrder: ["rates"],
     trendRefs: [],
     instrumentRefs: [],
+    veilleItemRefs: [],
     sources: [],
     ...over,
   };

@@ -488,10 +488,34 @@ type Note = {
   // blocs MDX obligatoires — hebdo : whatChanged, whatConfirmed, scenarioRevisions,
   //   whatIGotWrong, whatIWatch, plus specialsRecap si des spéciales ont paru dans la semaine
   // blocs MDX obligatoires — spéciale : whatChanged, scenarioRevisions, whatIWatch
+  // bloc MDX facultatif — hebdo uniquement, toujours en dernier : leFilDeLaSemaine,
+  //   la chronologie des items de veille retenus, rendu depuis veilleItemRefs
   driverOrder: string[];     // ordre d'intensité des drivers à cette date, jugement manuel
   trendRefs: string[];       // tendances de fond touchées
   instrumentRefs: string[];  // instruments cités
+  veilleItemRefs: string[];  // items de veille cités comme pièces à conviction, ou dans « Le fil de la semaine »
   sources: Array<{ label: string; url: string }>;
+};
+
+// La grille des cinq canaux de transmission : un item de veille s'y rattache au même titre
+// qu'à un driver, par mot-clé, en passe 1.
+type VeilleChannel = 'taux-reel' | 'nature-choc' | 'fonction-reaction' | 'dollar' | 'positionnement';
+
+// Lien et métadonnées, jamais le texte intégral (droit d'auteur). Vit en base : c'est de la
+// donnée automatique, quotidienne — pas de l'analyse versionnée dans content/.
+type VeilleItem = {
+  id: string;                 // hash stable de (source + url) — l'upsert le rend idempotent
+  title: string;
+  url: string;
+  source: string;             // 'GDELT' | 'Fed' | 'SEC EDGAR' | ...
+  publishedAt: string;
+  zones: Zone[];
+  driverRefs: string[];
+  channels: VeilleChannel[];
+  isSignal: boolean;
+  status: 'nouveau' | 'verse' | 'archive' | 'ignore';
+  attachedToBlock: string | null;  // le bloc analytique auquel l'item sert de pièce à conviction
+  draftNoteSlug: string | null;    // la note en préparation à laquelle l'item est promis
 };
 
 type AlertRule = {
