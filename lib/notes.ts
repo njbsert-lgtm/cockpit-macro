@@ -60,7 +60,12 @@ const CANONICAL_ORDER: Record<NoteKind, BlockName[]> = {
   speciale: ["CeQuiAChange", "RevisionDesScenarios", "CeQueJeSurveille"],
 };
 
-const REQUIRED_BLOCKS: Record<NoteKind, BlockName[]> = {
+/**
+ * Exporté pour `/triage` : « un item versé s'attache à l'un des cinq blocs analytiques »
+ * (cahier des charges) — exactement les blocs obligatoires d'une hebdo, ni `RecapDesSpeciales`
+ * ni `LeFilDeLaSemaine`, qui ne sont pas des blocs de jugement.
+ */
+export const REQUIRED_BLOCKS: Record<NoteKind, BlockName[]> = {
   hebdo: [
     "CeQuiAChange",
     "CeQuiSestConfirme",

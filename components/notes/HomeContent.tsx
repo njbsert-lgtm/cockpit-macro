@@ -1,4 +1,5 @@
 import { getActiveDrivers, getLatestNote } from "@/lib/content";
+import { getPendingVeilleCount } from "@/lib/veille/queries";
 import { RegimeHeader } from "./RegimeHeader";
 import { NotesShelf } from "./NotesShelf";
 import { EmptyState } from "@/components/states/EmptyState";
@@ -15,6 +16,7 @@ export async function HomeContent() {
 
   const latestNote = getLatestNote();
   const drivers = getActiveDrivers();
+  const pendingVeilleCount = await getPendingVeilleCount();
 
   if (!latestNote) {
     return (
@@ -31,7 +33,7 @@ export async function HomeContent() {
 
   return (
     <>
-      <RegimeHeader note={latestNote} drivers={drivers} />
+      <RegimeHeader note={latestNote} drivers={drivers} pendingVeilleCount={pendingVeilleCount} />
       <div className="mx-auto max-w-content px-4 py-8 md:px-6">
         <NotesShelf />
       </div>

@@ -406,8 +406,14 @@ le prix et l'analyse : on doit pouvoir partir d'un chiffre et remonter à ce qu'
 
 ## Onglet 4 — Veille *(étape 5)*
 
-File des items collectés et classés « signal », en attente de tri. Trois actions par item :
-verser dans la note en cours de rédaction, archiver, ignorer. Compteur en pastille sur l'onglet.
+File des items collectés et classés « signal », en attente de tri, à `/triage` — accessible
+depuis un bouton dans l'onglet Notes portant le compteur d'items en attente. Groupée par jour,
+les jours de plus de trois jours repliés par défaut ; purge automatique au-delà de quinze jours.
+
+Trois actions par item, en Server Actions écrivant avec la clé de service :
+- **Verser** — l'item se rattache à l'un des cinq blocs analytiques de la note en préparation
+  (`attachedToBlock`, `draftNoteSlug`) ; il devient une pièce à conviction citable dans ce bloc.
+- **Archiver** ou **ignorer** — retire l'item de la file sans le rattacher à rien.
 
 ---
 
