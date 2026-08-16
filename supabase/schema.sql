@@ -122,6 +122,22 @@ create table if not exists veille_cursor (
   updated_at timestamptz not null default now()
 );
 
+-- Santé de la collecte de veille — la même idée que `series_health`, mais dans une table à
+-- part, jamais lue par `lib/freshness-summary.ts`. C'est cette séparation, et non un simple
+-- champ `source` distinct, qui garantit qu'un échec de veille ne peut pas se lire comme un
+-- échec FRED dans l'indicateur de fraîcheur de la barre persistante : les deux vivent dans des
+-- tables différentes, l'une publique, l'autre non.
+
+create table if not exists veille_health (
+  collector             text primary key,   -- 'GDELT' | 'institutional' | 'EDGAR'
+  last_attempt_at       timestamptz,
+  last_success_at       timestamptz,
+  last_error            text,
+  consecutive_failures  integer not null default 0,
+  items_written         integer not null default 0,
+  updated_at            timestamptz not null default now()
+);
+
 -- ---------------------------------------------------------------------------
 -- Sécurité
 -- ---------------------------------------------------------------------------
@@ -135,6 +151,7 @@ alter table macro_indicators   enable row level security;
 alter table series_health      enable row level security;
 alter table veille_items       enable row level security;
 alter table veille_cursor      enable row level security;
+alter table veille_health      enable row level security;
 
 drop policy if exists observations_read       on observations;
 drop policy if exists macro_observations_read on macro_observations;
@@ -149,5 +166,7 @@ create policy series_health_read      on series_health      for select using (tr
 -- `/triage` lit les items par la clé anonyme ; les trois actions (verser, archiver, ignorer)
 -- écrivent par Server Action, avec la clé de service, jamais depuis le navigateur.
 create policy veille_items_read       on veille_items       for select using (true);
--- veille_cursor n'a pas de politique de lecture : c'est un détail d'implémentation de la
--- collecte, jamais affiché, seule la clé de service y touche.
+-- veille_cursor et veille_health n'ont pas de politique de lecture : ce sont des détails
+-- d'implémentation de la collecte, jamais affichés, seule la clé de service y touche. C'est ce
+-- qui empêche `veille_health` de fuiter dans l'indicateur de fraîcheur de la barre persistante,
+-- qui lit `series_health` par la clé anonyme.

@@ -592,7 +592,15 @@ Gratuites, en accès programmatique. Clés en variables d'environnement, jamais 
 | Métaux | **metals.dev** ou via FMP | Vérifier argent et cuivre |
 
 Contraintes dans le code :
-- **Un appel par instrument par jour.** Cron à 6 h UTC, jamais à la demande.
+- **Un appel par instrument par jour.** Cron à 6 h UTC, jamais à la demande. Le plan Hobby
+  n'autorise qu'un seul déclenchement quotidien : la route du cron est un **orchestrateur** qui
+  exécute FRED puis la veille, en deux modules indépendants — jamais un second cron. FRED
+  s'exécute et écrit en premier, sans exception ; la veille est enveloppée dans son propre
+  `try`/`catch` pour qu'une panne ou une exception là-bas n'efface rien de ce que FRED a déjà
+  produit. Chaque module journalise son résultat dans sa propre table de santé
+  (`series_health` pour FRED, `veille_health` pour la veille), et seul `series_health` alimente
+  l'indicateur de fraîcheur de la barre persistante — un incident de veille ne peut donc jamais
+  s'y lire comme un incident FRED.
 - Toute réponse passe par un schéma Zod. Une réponse malformée est journalisée et ignorée,
   elle n'écrase jamais la dernière valeur valide.
 - Si une source tombe : dernière valeur connue **avec sa date**, pas un tiret, jamais zéro.
