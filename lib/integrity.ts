@@ -1,6 +1,7 @@
 import type {
   DriverInput,
   Note,
+  Outlook,
   ScenarioVersion,
   Trend,
 } from "./types";
@@ -28,6 +29,7 @@ export type ContentGraph = {
   trends: Trend[];
   notes: Note[];
   scenarios: ScenarioVersion[];
+  outlooks: Outlook[];
   instrumentIds: ReadonlySet<string>;
 };
 
@@ -43,11 +45,12 @@ export function checkIntegrity(graph: ContentGraph): void {
   checkTrends(graph, { driverIds, noteSlugs });
   checkNotes(graph, { driverIds, trendIds });
   checkScenarios(graph, { driverIds, noteSlugs });
+  checkOutlooks(graph, { driverIds, trendIds });
 }
 
 // ---------------------------------------------------------------------------
 
-function checkDuplicateIds({ drivers, trends, notes }: ContentGraph) {
+function checkDuplicateIds({ drivers, trends, notes, outlooks }: ContentGraph) {
   const dup = <T>(items: T[], key: (i: T) => string, where: string) => {
     const seen = new Set<string>();
     for (const item of items) {
@@ -59,6 +62,7 @@ function checkDuplicateIds({ drivers, trends, notes }: ContentGraph) {
   dup(drivers, (d) => d.id, "content/drivers.ts");
   dup(trends, (t) => t.id, "content/tendances.ts");
   dup(notes, (e) => e.slug, "content/notes");
+  dup(outlooks, (o) => o.id, "content/outlooks.ts");
 }
 
 // ---------------------------------------------------------------------------
@@ -262,6 +266,34 @@ function checkScenarios(
       throw new IntegrityError(
         `content/scenarios.ts (${key})`,
         `versions non contiguës : ${numbers.join(", ")} — attendu ${expected.join(", ")}`,
+      );
+    }
+  }
+}
+
+// ---------------------------------------------------------------------------
+
+function checkOutlooks(
+  { outlooks }: ContentGraph,
+  refs: { driverIds: ReadonlySet<string>; trendIds: ReadonlySet<string> },
+) {
+  for (const outlook of outlooks) {
+    const where = `content/outlooks.ts (${outlook.id})`;
+
+    for (const id of outlook.driverRefs) {
+      if (!refs.driverIds.has(id)) {
+        throw new IntegrityError(where, `driver inconnu « ${id} » dans driverRefs`);
+      }
+    }
+    for (const id of outlook.trendRefs) {
+      if (!refs.trendIds.has(id)) {
+        throw new IntegrityError(where, `tendance inconnue « ${id} » dans trendRefs`);
+      }
+    }
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(outlook.publishedAt)) {
+      throw new IntegrityError(
+        where,
+        `publishedAt doit être une date AAAA-MM-JJ, reçu « ${outlook.publishedAt} »`,
       );
     }
   }

@@ -1,6 +1,7 @@
 import { DRIVERS } from "@/content/drivers";
 import { TRENDS } from "@/content/tendances";
 import { SCENARIO_VERSIONS } from "@/content/scenarios";
+import { OUTLOOKS } from "@/content/outlooks";
 import { getInstruments } from "./data";
 import { checkIntegrity, currentVersion } from "./integrity";
 import { activeDrivers, deriveDrivers } from "./drivers";
@@ -11,7 +12,7 @@ import {
   validateNoteChain,
   type ParsedNote,
 } from "./notes";
-import type { Driver, Note, Trend, Zone } from "./types";
+import type { Driver, Note, Outlook, Trend, Zone } from "./types";
 import { zoneMatches } from "./zones";
 
 // ---------------------------------------------------------------------------
@@ -33,6 +34,7 @@ function loadContent() {
     trends: TRENDS,
     notes,
     scenarios: SCENARIO_VERSIONS,
+    outlooks: OUTLOOKS,
     instrumentIds: new Set(getInstruments().map((i) => i.id)),
   });
 
@@ -167,4 +169,17 @@ export function getCurrentBranches(driverId: string) {
   return branches
     .map((b) => currentVersion(SCENARIO_VERSIONS, driverId, b))
     .filter((v): v is NonNullable<typeof v> => v !== null);
+}
+
+// ---------------------------------------------------------------------------
+// Outlooks
+// ---------------------------------------------------------------------------
+
+/** Du plus récent au plus ancien. */
+export function getOutlooks(): Outlook[] {
+  return [...OUTLOOKS].sort((a, b) => b.publishedAt.localeCompare(a.publishedAt));
+}
+
+export function getOutlook(id: string): Outlook | null {
+  return OUTLOOKS.find((o) => o.id === id) ?? null;
 }

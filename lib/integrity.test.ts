@@ -6,11 +6,13 @@ import { parseNote, readNoteSources } from "./notes";
 import { DRIVERS } from "@/content/drivers";
 import { TRENDS } from "@/content/tendances";
 import { SCENARIO_VERSIONS } from "@/content/scenarios";
+import { OUTLOOKS } from "@/content/outlooks";
 import { getInstruments } from "./data";
 import { deriveDrivers, activeDrivers } from "./drivers";
 import type {
   DriverInput,
   Note,
+  Outlook,
   ScenarioVersion,
   Trend,
 } from "./types";
@@ -98,12 +100,30 @@ function branches(driverId = "rates", over: Partial<ScenarioVersion>[] = []): Sc
   return list.map((v, i) => ({ ...v, ...(over[i] ?? {}) }));
 }
 
+function outlook(over: Partial<Outlook> = {}): Outlook {
+  return {
+    id: "jpmorgan-mid-2026",
+    bank: "J.P. Morgan",
+    bankMonogram: "JPM",
+    title: "Mid-Year Outlook 2026",
+    periodCovered: "Mid-year 2026",
+    publishedAt: "2026-07-01",
+    summary: "…",
+    highlights: ["…"],
+    driverRefs: [],
+    trendRefs: [],
+    sourceUrl: "https://example.org/outlook.pdf",
+    ...over,
+  };
+}
+
 function graph(over: Partial<ContentGraph> = {}): ContentGraph {
   return {
     drivers: [driver()],
     trends: [trend()],
     notes: [note()],
     scenarios: branches(),
+    outlooks: [],
     instrumentIds: new Set(["us10y"]),
     ...over,
   };
@@ -364,6 +384,7 @@ describe("la note de test à référence morte", () => {
       trends: TRENDS,
       notes: [...notes.map((e) => e.meta), fixture().meta],
       scenarios: SCENARIO_VERSIONS,
+      outlooks: OUTLOOKS,
       instrumentIds: new Set(getInstruments().map((i) => i.id)),
     };
     expect(() => checkIntegrity(graph)).toThrow(
@@ -378,8 +399,38 @@ describe("la note de test à référence morte", () => {
       trends: TRENDS,
       notes: notes.map((e) => e.meta),
       scenarios: SCENARIO_VERSIONS,
+      outlooks: OUTLOOKS,
       instrumentIds: new Set(getInstruments().map((i) => i.id)),
     };
     expect(() => checkIntegrity(graph)).not.toThrow();
+  });
+});
+
+// ---------------------------------------------------------------------------
+
+describe("références mortes — outlook", () => {
+  it("refuse un identifiant en double", () => {
+    const g = graph({ outlooks: [outlook(), outlook()] });
+    expect(() => checkIntegrity(g)).toThrow(/identifiant en double : « jpmorgan-mid-2026 »/);
+  });
+
+  it("refuse un driver inexistant dans driverRefs", () => {
+    const g = graph({ outlooks: [outlook({ driverRefs: ["fantome"] })] });
+    expect(() => checkIntegrity(g)).toThrow(/driver inconnu « fantome » dans driverRefs/);
+  });
+
+  it("refuse une tendance inexistante dans trendRefs", () => {
+    const g = graph({ outlooks: [outlook({ trendRefs: ["fantome"] })] });
+    expect(() => checkIntegrity(g)).toThrow(/tendance inconnue « fantome » dans trendRefs/);
+  });
+
+  it("refuse une date de publication mal formée", () => {
+    const g = graph({ outlooks: [outlook({ publishedAt: "juillet 2026" })] });
+    expect(() => checkIntegrity(g)).toThrow(/publishedAt doit être une date AAAA-MM-JJ/);
+  });
+
+  it("accepte un outlook qui cite un driver et une tendance réels", () => {
+    const g = graph({ outlooks: [outlook({ driverRefs: ["rates"], trendRefs: ["desinflation"] })] });
+    expect(() => checkIntegrity(g)).not.toThrow();
   });
 });

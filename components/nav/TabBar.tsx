@@ -3,13 +3,13 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-type Tab = { href: string; label: string; disabled?: boolean };
+type Tab = { href: string; label: string };
 
 const TABS: Tab[] = [
   { href: "/", label: "Notes" },
   { href: "/macro", label: "Macro" },
   { href: "/marches", label: "Marchés" },
-  { href: "/veille", label: "Veille", disabled: true },
+  { href: "/outlook", label: "Outlook" },
 ];
 
 /**
@@ -35,21 +35,6 @@ function TabLink({
     variant === "mobile"
       ? "flex flex-1 flex-col items-center gap-1 py-2.5 font-mono text-10-5 uppercase tracking-wide"
       : "px-3.5 py-2.5 font-mono text-xs uppercase tracking-wide border-b-2";
-
-  if (tab.disabled) {
-    return (
-      <span
-        className={`${base} cursor-not-allowed text-white/35`}
-        title="Disponible à l'étape 5"
-        aria-disabled="true"
-      >
-        {tab.label}
-        <span className="ml-1 inline-block rounded-xs bg-white/15 px-1 font-mono text-9 text-white/60">
-          0
-        </span>
-      </span>
-    );
-  }
 
   return (
     <Link

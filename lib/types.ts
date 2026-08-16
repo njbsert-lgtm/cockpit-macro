@@ -211,6 +211,28 @@ export type ScenarioVersion = {
 };
 
 /**
+ * L'outlook d'une banque privée — analyse rédigée hors de l'application (résumé produit avec
+ * l'assistance d'un LLM, en dehors du site) puis collée à la main dans `content/outlooks.ts`.
+ * Aucun appel API en direct depuis l'app, aucun scraping des sites des banques — même principe
+ * que l'interdiction de Bloomberg/Reuters/FactSet (§ Veille) : leurs conditions d'utilisation
+ * interdisent l'extraction automatisée, et le condensé ici est une lecture, pas une citation.
+ */
+export type Outlook = {
+  id: string; // 'jpmorgan-mid-2026'
+  bank: string; // 'J.P. Morgan'
+  /** Identité typographique de la banque — le design n'embarque pas de logos externes. */
+  bankMonogram: string; // 'JPM'
+  title: string; // 'Mid-Year Outlook 2026'
+  periodCovered: string; // libellé humain, ex. 'Mid-year 2026' — pas une date ISO stricte
+  publishedAt: string; // date ISO de publication, saisie à la main
+  summary: string; // le condensé, un ou plusieurs paragraphes
+  highlights: string[]; // les points majeurs mis en avant, une ligne chacun
+  driverRefs: string[]; // les drivers que l'outlook reprend
+  trendRefs: string[]; // les tendances de fond que l'outlook reprend
+  sourceUrl: string; // lien vers le document original
+};
+
+/**
  * `seed.json` ne porte que des **données** : ce qui viendra d'APIs publiques à l'étape 3.
  * L'analyse — notes, tendances, scénarios — vit dans `content/`, versionnée dans le repo,
  * pour rester lisible même si l'automatisation des données casse.

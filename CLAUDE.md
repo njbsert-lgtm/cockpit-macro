@@ -47,10 +47,11 @@ Barre d'onglets en bas sur mobile, horizontale en haut sur desktop. Jamais de ha
 | **Notes** *(défaut)* | Que s'est-il passé et qu'est-ce que ça implique ? | Quotidienne |
 | **Macro** | Où en sont les économies ? | Hebdomadaire |
 | **Marchés** | Où en sont les prix ? | Quotidienne |
-| **Veille** | Qu'est-ce que je dois trier ? | Quotidienne |
+| **Outlook** | Qu'est-ce que les grandes banques anticipent ? | À la publication |
 
-L'onglet Veille existe dès l'étape 1 mais reste désactivé jusqu'à l'étape 5. La place est
-réservée : ajouter un onglet plus tard, c'est refaire la navigation.
+La veille n'a plus d'onglet : elle est un atelier interne, pas un écran qu'on consulte pour
+lui-même. La file de tri vit à `/triage`, ouverte depuis un bouton compteur sur l'onglet Notes
+(voir Onglet 4bis, plus bas).
 
 ### La barre persistante
 
@@ -66,7 +67,7 @@ partagé par les quatre onglets : chaque onglet qui a besoin d'une notion de zon
 | **Macro** | Le sélecteur du bandeau, seul endroit où il apparaît. État dans l'URL : `?zone=fr`. |
 | **Marchés** | Sa propre rangée de zones, à l'intérieur de l'écran (voir Onglet 3). Un filtre local, pas le bandeau. |
 | **Notes** | Aucune notion de zone. L'écran d'accueil (`/`) et le fil (`/notes`) montrent tout. |
-| **Veille** | Sans objet. |
+| **Outlook** | Sans objet. |
 
 Changer de zone sur Macro ne touche ni Marchés ni Notes, et réciproquement : ce sont des
 états indépendants, chacun dans l'URL de sa propre page, partageable et rechargeable.
@@ -404,11 +405,37 @@ le prix et l'analyse : on doit pouvoir partir d'un chiffre et remonter à ce qu'
 
 ---
 
-## Onglet 4 — Veille *(étape 5)*
+## Onglet 4 — Outlook
 
-File des items collectés et classés « signal », en attente de tri, à `/triage` — accessible
-depuis un bouton dans l'onglet Notes portant le compteur d'items en attente. Groupée par jour,
-les jours de plus de trois jours repliés par défaut ; purge automatique au-delà de quinze jours.
+Les derniers outlooks stratégiques des grandes banques privées (J.P. Morgan, Goldman Sachs,
+BNP Paribas, HSBC, UBS…), condensés et reliés au maillage driver/tendance existant.
+
+**Liste** (`/outlook`) — une carte par outlook : la banque (identité typographique, pas une
+image — le design n'embarque pas de logos externes), le titre de la publication, la période
+couverte (« Mid-year 2026 », un libellé humain, pas une date ISO), la date de publication.
+
+**Détail** (`/outlook/[id]`) — le condensé, ses points majeurs, les drivers et tendances de
+fond que la publication met en avant (pastilles cliquables vers leurs pages respectives), et
+en dernier un lien vers le document original.
+
+**Contenu rédigé hors de l'application, jamais scrapé.** Même principe que l'interdiction de
+Bloomberg/Reuters/FactSet (§ Veille) : le condensé est produit avec l'assistance d'un modèle
+en dehors du site, à partir du document original lu à la main, puis collé dans
+`content/outlooks.ts` — de l'analyse versionnée, comme les notes et les tendances, pas de la
+donnée automatique. Aucun outlook n'est inventé au nom d'une banque : le fichier est vide tant
+que rien n'a été réellement lu, et `/outlook` l'affiche comme un état vide plutôt que de
+fabriquer un exemple.
+
+---
+
+## Onglet 4bis — La veille, en atelier interne
+
+Sans onglet dédié : la file de tri vit à `/triage`, ouverte depuis un bouton compteur sur
+l'écran d'accueil de l'onglet Notes. Ce n'est pas un écran qu'on consulte pour lui-même, c'est
+l'antichambre de la note en préparation.
+
+File des items collectés et classés « signal », en attente de tri. Groupée par jour, les jours
+de plus de trois jours repliés par défaut ; purge automatique au-delà de quinze jours.
 
 Trois actions par item, en Server Actions écrivant avec la clé de service :
 - **Verser** — l'item se rattache à l'un des cinq blocs analytiques de la note en préparation
@@ -522,6 +549,22 @@ type VeilleItem = {
   status: 'nouveau' | 'verse' | 'archive' | 'ignore';
   attachedToBlock: string | null;  // le bloc analytique auquel l'item sert de pièce à conviction
   draftNoteSlug: string | null;    // la note en préparation à laquelle l'item est promis
+};
+
+// L'outlook d'une banque privée — analyse versionnée dans content/, comme les notes et les
+// tendances, jamais scrapée : condensé produit hors de l'app puis collé à la main.
+type Outlook = {
+  id: string;                 // 'jpmorgan-mid-2026'
+  bank: string;                // 'J.P. Morgan'
+  bankMonogram: string;        // 'JPM' — identité typographique, pas un logo externe
+  title: string;               // 'Mid-Year Outlook 2026'
+  periodCovered: string;       // libellé humain, ex. 'Mid-year 2026'
+  publishedAt: string;         // date ISO, saisie à la main
+  summary: string;             // le condensé, un ou plusieurs paragraphes
+  highlights: string[];        // les points majeurs mis en avant, une ligne chacun
+  driverRefs: string[];
+  trendRefs: string[];
+  sourceUrl: string;           // lien vers le document original
 };
 
 type AlertRule = {
