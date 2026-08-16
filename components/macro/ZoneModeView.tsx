@@ -1,10 +1,11 @@
 import type { Zone } from "@/lib/types";
 import { getMacroIndicatorsByZone } from "@/lib/data";
+import { loadMacroObservations, observationsOf } from "@/lib/observations";
 import { zoneAncestors, ZONE_LABELS } from "@/lib/zones";
 import { EmptyState } from "@/components/states/EmptyState";
 import { IndicatorCard } from "./IndicatorCard";
 
-export function ZoneModeView({ zone }: { zone: Zone }) {
+export async function ZoneModeView({ zone }: { zone: Zone }) {
   const indicators = getMacroIndicatorsByZone(zone);
 
   if (indicators.length === 0) {
@@ -18,6 +19,9 @@ export function ZoneModeView({ zone }: { zone: Zone }) {
 
   const order = zone === "global" ? undefined : zoneAncestors(zone);
   const groupKeys = order ?? [...new Set(indicators.map((i) => i.zone))].sort();
+  // Un seul chargement pour toute la grille, avant le rendu : les cartes sont construites
+  // dans le JSX, où l'on ne peut pas attendre une promesse par carte.
+  const bySeries = await loadMacroObservations(indicators.map((i) => i.id));
 
   return (
     <div className="flex flex-col gap-8">
@@ -38,7 +42,11 @@ export function ZoneModeView({ zone }: { zone: Zone }) {
             </h3>
             <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
               {inGroup.map((indicator) => (
-                <IndicatorCard key={indicator.id} indicator={indicator} />
+                <IndicatorCard
+                  key={indicator.id}
+                  indicator={indicator}
+                  observations={observationsOf(bySeries, indicator.id)}
+                />
               ))}
             </div>
           </section>

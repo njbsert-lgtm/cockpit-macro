@@ -1,12 +1,17 @@
-import type { MacroIndicator } from "@/lib/types";
-import { getMacroObservations } from "@/lib/data";
+import type { MacroIndicator, Observation } from "@/lib/types";
 import { formatIndicatorValue } from "@/lib/macro";
 import { formatDateLong, formatDateShort } from "@/lib/format";
 import { DataValue } from "@/components/states/DataValue";
 import { Sparkline } from "./Sparkline";
 
-export function IndicatorCard({ indicator }: { indicator: MacroIndicator }) {
-  const obs = [...getMacroObservations(indicator.id)].sort((a, b) => a.date.localeCompare(b.date));
+export function IndicatorCard({
+  indicator,
+  observations,
+}: {
+  indicator: MacroIndicator;
+  observations: Observation[];
+}) {
+  const obs = [...observations].sort((a, b) => a.date.localeCompare(b.date));
   const latest = obs.at(-1) ?? null;
   const previous = obs.length > 1 ? obs[obs.length - 2] : null;
   const variation = latest && previous ? latest.value - previous.value : null;

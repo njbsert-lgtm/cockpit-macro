@@ -1,5 +1,6 @@
-import type { AssetClass, Instrument, Zone } from "./types";
-import { getInstrumentsByAssetClass, getObservations } from "./data";
+import type { AssetClass, Instrument, Observation, Zone } from "./types";
+import { getInstrumentsByAssetClass } from "./data";
+import { observationsOf, type ObservationsBySeries } from "./observations";
 import { zoneMatches } from "./zones";
 import {
   dailyChange,
@@ -125,13 +126,17 @@ export type ClassPerformance = {
  * ouvre. Les instruments sans base YTD saisie — les deux spreads — sortent de la moyenne au
  * lieu d'y entrer pour zéro.
  */
-export function getClassPerformance(assetClass: AssetClass, zone?: Zone): ClassPerformance {
+export function getClassPerformance(
+  assetClass: AssetClass,
+  zone: Zone | undefined,
+  bySeries: ObservationsBySeries,
+): ClassPerformance {
   const instruments =
     assetClass === "rates" && zone
       ? getRatesInstruments(zone)
       : getInstrumentsByAssetClass(assetClass, zone);
   const perInstrument = instruments.map((i) => {
-    const obs = getObservations(i.id);
+    const obs = observationsOf(bySeries, i.id);
     return {
       ytd: ytdPerformance(i, obs),
       oneMonth: oneMonthPerformance(obs)?.pct ?? null,
@@ -150,8 +155,7 @@ export function getClassPerformance(assetClass: AssetClass, zone?: Zone): ClassP
   };
 }
 
-export function instrumentPerformances(instrument: Instrument) {
-  const obs = getObservations(instrument.id);
+export function instrumentPerformances(instrument: Instrument, obs: Observation[]) {
   return {
     ytd: ytdPerformance(instrument, obs),
     oneMonth: oneMonthPerformance(obs)?.pct ?? null,

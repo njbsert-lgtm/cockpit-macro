@@ -1,16 +1,17 @@
 import type { Zone } from "@/lib/types";
 import { getIndicatorsForMetric, METRIC_LABELS, formatIndicatorValue } from "@/lib/macro";
-import { getMacroObservations } from "@/lib/data";
+import { loadMacroObservations, observationsOf } from "@/lib/observations";
 import { ALL_ZONES, ZONE_LABELS, zoneAncestors } from "@/lib/zones";
 import { formatDateLong } from "@/lib/format";
 import { DataValue } from "@/components/states/DataValue";
 import { MetricSelector } from "./MetricSelector";
 
-export function ComparisonView({ metric, zone }: { metric: string; zone: Zone }) {
+export async function ComparisonView({ metric, zone }: { metric: string; zone: Zone }) {
   const indicators = getIndicatorsForMetric(metric);
   const byZone = new Map(indicators.map((i) => [i.zone, i]));
   const relevantZones = zoneAncestors(zone);
   const rows = ALL_ZONES.filter((z) => z !== "global");
+  const bySeries = await loadMacroObservations(indicators.map((i) => i.id));
 
   return (
     <div>
@@ -24,7 +25,7 @@ export function ComparisonView({ metric, zone }: { metric: string; zone: Zone })
       <div className="mt-4 flex flex-col divide-y divide-line-2 border border-line bg-card">
         {rows.map((z) => {
           const indicator = byZone.get(z);
-          const obs = indicator ? getMacroObservations(indicator.id) : [];
+          const obs = indicator ? observationsOf(bySeries, indicator.id) : [];
           const latest = [...obs].sort((a, b) => a.date.localeCompare(b.date)).at(-1) ?? null;
           const highlighted = relevantZones.includes(z);
 

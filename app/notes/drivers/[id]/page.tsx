@@ -8,7 +8,8 @@ import {
   getScenarioVersionsByDriver,
   getTrend,
 } from "@/lib/content";
-import { getInstrument, getObservations } from "@/lib/data";
+import { getInstrument } from "@/lib/data";
+import { loadObservations, observationsOf } from "@/lib/observations";
 import { getAlertsForInstrument } from "@/lib/alerts";
 import { formatInstrumentValue } from "@/lib/marches";
 import { formatDateLong, formatSignedPct } from "@/lib/format";
@@ -26,6 +27,13 @@ import { TREND_STATUS_CLASS, TREND_STATUS_LABEL } from "@/lib/trend-labels";
 export function generateStaticParams() {
   return getDrivers().map((d) => ({ id: d.id }));
 }
+
+/**
+ * La page est pré-rendue, mais elle affiche la valeur du jour des instruments pilotés : sans
+ * revalidation, elle figerait les chiffres à la date du build. Une heure suffit largement
+ * pour une collecte quotidienne, et le cron révalide lui-même après chaque passage.
+ */
+export const revalidate = 3600;
 
 function SectionTitle({ children }: { children: React.ReactNode }) {
   return (
@@ -46,6 +54,9 @@ export default async function DriverPage({ params }: { params: Promise<{ id: str
     .filter((b): b is NonNullable<typeof b> => Boolean(b));
 
   const revisions = getNotesRevising(driver.id);
+  // Chargé avant le rendu : la liste des instruments pilotés est construite dans le JSX, où
+  // l'on ne peut pas attendre une promesse par ligne.
+  const bySeries = await loadObservations(driver.instrumentRefs);
 
   return (
     <div className="mx-auto max-w-content px-4 py-8 md:px-6">
@@ -111,7 +122,7 @@ export default async function DriverPage({ params }: { params: Promise<{ id: str
       <ul className="mt-4 flex flex-col divide-y divide-line-2 border border-line bg-card">
         {driver.instrumentRefs.map((instrumentId) => {
           const instrument = getInstrument(instrumentId)!;
-          const obs = [...getObservations(instrumentId)].sort((a, b) =>
+          const obs = [...observationsOf(bySeries, instrumentId)].sort((a, b) =>
             a.date.localeCompare(b.date),
           );
           const latest = obs.at(-1) ?? null;

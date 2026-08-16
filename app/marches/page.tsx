@@ -11,7 +11,8 @@ import {
   isRateCountryZone,
   parseAssetClass,
 } from "@/lib/marches";
-import { getInstrumentsByAssetClass, getObservations } from "@/lib/data";
+import { getInstrumentsByAssetClass } from "@/lib/data";
+import { loadObservations, observationsOf, type ObservationsBySeries } from "@/lib/observations";
 import { dailyChange, latestObservation, MAX_SESSION_GAP_DAYS } from "@/lib/performance";
 import { freshnessTier } from "@/lib/freshness";
 import { ZONE_LABELS } from "@/lib/zones";
@@ -26,7 +27,11 @@ async function simulateLoad() {
   await new Promise((resolve) => setTimeout(resolve, 300));
 }
 
-function buildRows(assetClass: AssetClass, zone: Zone): InstrumentRow[] {
+function buildRows(
+  assetClass: AssetClass,
+  zone: Zone,
+  bySeries: ObservationsBySeries,
+): InstrumentRow[] {
   // Obligations : `getRatesInstruments` choisit elle-même entre la courbe complète d'un pays
   // et un point de repère (le 10 ans) par pays pour Toutes / Zone euro / Émergents — sinon la
   // liste plate mélangerait 65 maturités de neuf pays. `isCurve` ne sert plus qu'à l'affichage
@@ -37,7 +42,7 @@ function buildRows(assetClass: AssetClass, zone: Zone): InstrumentRow[] {
     assetClass === "rates" ? getRatesInstruments(zone) : getInstrumentsByAssetClass(assetClass, zone);
 
   return instruments.map((instrument) => {
-    const obs = getObservations(instrument.id);
+    const obs = observationsOf(bySeries, instrument.id);
     const latest = latestObservation(obs);
     const change = dailyChange(obs);
     const sorted = [...obs].sort((a, b) => a.date.localeCompare(b.date));
@@ -65,11 +70,21 @@ function buildRows(assetClass: AssetClass, zone: Zone): InstrumentRow[] {
 async function MarchesContent({ assetClass, zone }: { assetClass: AssetClass; zone: Zone }) {
   await simulateLoad();
 
+  // Un seul chargement pour tout l'écran : les quatre boutons de classe et la liste. Sans ça,
+  // chaque bouton relancerait sa propre lecture — quatre-vingts requêtes là où une suffit.
+  const needed = new Set<string>();
+  for (const c of ASSET_CLASS_ORDER) {
+    const instruments =
+      c === "rates" ? getRatesInstruments(zone) : getInstrumentsByAssetClass(c, zone);
+    for (const i of instruments) needed.add(i.id);
+  }
+  const bySeries = await loadObservations([...needed]);
+
   const summaries: ClassSummary[] = ASSET_CLASS_ORDER.map((c) => {
-    const perf = getClassPerformance(c, zone);
+    const perf = getClassPerformance(c, zone, bySeries);
     return { assetClass: c, ytd: perf.ytd, total: perf.total };
   });
-  const rows = buildRows(assetClass, zone);
+  const rows = buildRows(assetClass, zone, bySeries);
   const isCurve = assetClass === "rates" && isRateCountryZone(zone);
 
   return (

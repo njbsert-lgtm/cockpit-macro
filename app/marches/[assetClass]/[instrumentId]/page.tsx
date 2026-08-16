@@ -8,7 +8,8 @@ import {
   formatInstrumentValue,
   instrumentPerformances,
 } from "@/lib/marches";
-import { getInstrument, getObservations } from "@/lib/data";
+import { getInstrument } from "@/lib/data";
+import { loadObservationsFor } from "@/lib/observations";
 import { getDriversForInstrument, getNotes } from "@/lib/content";
 import { BRANCH_LABELS } from "@/lib/scenario-labels";
 import { formatDateLong } from "@/lib/format";
@@ -36,9 +37,11 @@ export default async function InstrumentPage({
   const searchParamsResolved = await searchParams;
   const zone = parseZone(searchParamsResolved[ZONE_PARAM]);
 
-  const obs = [...getObservations(instrument.id)].sort((a, b) => a.date.localeCompare(b.date));
+  const obs = [...(await loadObservationsFor(instrument.id))].sort((a, b) =>
+    a.date.localeCompare(b.date),
+  );
   const latest = obs.at(-1) ?? null;
-  const perf = instrumentPerformances(instrument);
+  const perf = instrumentPerformances(instrument, obs);
 
   const mentions = getNotes()
     .filter((e) => e.instrumentRefs.includes(instrument.id))
