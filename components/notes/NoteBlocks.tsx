@@ -3,17 +3,19 @@ import { compileMDX } from "next-mdx-remote/rsc";
 import type { Note } from "@/lib/types";
 import { formatDateLong } from "@/lib/format";
 import { getNote, getNoteBody, getTrend } from "@/lib/content";
-import { noteMdxComponents } from "./mdx-blocks";
+import { getVeilleItemsByIds } from "@/lib/veille/queries";
+import { createNoteMdxComponents } from "./mdx-blocks";
 
 export async function NoteBlocks({ note }: { note: Note }) {
   const comparesTo = note.comparesTo ? getNote(note.comparesTo) : null;
   const body = getNoteBody(note.slug);
+  const veilleItems = await getVeilleItemsByIds(note.veilleItemRefs);
 
   // Le corps est validé au chargement du corpus : s'il manque ici, c'est une incohérence
   // interne, pas une note mal écrite.
   const { content } = await compileMDX({
     source: body ?? "",
-    components: noteMdxComponents,
+    components: createNoteMdxComponents(veilleItems),
     options: { parseFrontmatter: false },
   });
 

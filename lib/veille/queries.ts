@@ -21,6 +21,9 @@ type Row = {
   draft_note_slug: string | null;
 };
 
+const SELECT_COLUMNS =
+  "id, title, url, source, published_at, zones, driver_refs, channels, is_signal, status, attached_to_block, draft_note_slug";
+
 function fromRow(row: Row): VeilleItem {
   return {
     id: row.id,
@@ -46,11 +49,29 @@ export async function getPendingVeilleItems(): Promise<VeilleItem[]> {
   try {
     const { data, error } = await client
       .from("veille_items")
-      .select(
-        "id, title, url, source, published_at, zones, driver_refs, channels, is_signal, status, attached_to_block, draft_note_slug",
-      )
+      .select(SELECT_COLUMNS)
       .eq("status", "nouveau")
       .order("published_at", { ascending: false });
+    if (error || !data) return [];
+    return (data as Row[]).map(fromRow);
+  } catch {
+    return [];
+  }
+}
+
+/**
+ * Les items cités par une note (`Note.veilleItemRefs`), pour les pastilles de preuve et le
+ * fil de la semaine. Une note reste analytique et lisible même si la base est injoignable ou
+ * qu'un item a été purgé (au-delà de quinze jours) : les identifiants qui ne résolvent pas
+ * sont simplement absents du résultat, jamais une erreur de rendu.
+ */
+export async function getVeilleItemsByIds(ids: string[]): Promise<VeilleItem[]> {
+  if (ids.length === 0) return [];
+  const client = getReadClient();
+  if (!client) return [];
+
+  try {
+    const { data, error } = await client.from("veille_items").select(SELECT_COLUMNS).in("id", ids);
     if (error || !data) return [];
     return (data as Row[]).map(fromRow);
   } catch {

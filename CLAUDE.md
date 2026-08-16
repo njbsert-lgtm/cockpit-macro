@@ -171,6 +171,18 @@ chaque bloc force un jugement. Le gabarit MDX doit refuser de compiler si un blo
 Les nouvelles individuelles sont des **pièces à conviction** citées à l'intérieur de ces blocs,
 pas des sections autonomes. Une nouvelle qui ne sert aucun des cinq blocs ne rentre pas.
 
+**Comment un item versé depuis `/triage` devient une pièce à conviction.** Le rattachement se
+fait à deux niveaux, jamais mélangés :
+- `Note.veilleItemRefs` (frontmatter) est la liste versionnée, décidée par l'auteur, de tout ce
+  que la note cite — pour la trajectoire et pour `LeFilDeLaSemaine`.
+- `VeilleItem.attachedToBlock`, posé par l'action « Verser » de `/triage`, dit *où* dans la note
+  l'item apparaît : chaque bloc affiche en pied de section les pièces qui lui sont attachées,
+  résolues au rendu, après le texte rédigé — jamais avant, jamais à sa place.
+
+Un item purgé (au-delà de quinze jours) ou une base injoignable ne casse jamais le rendu : la
+pastille ou la ligne du fil disparaît, silencieusement — la note reste lisible même quand la
+donnée automatique n'est plus là, exactement le principe directeur du cahier.
+
 ### Cadence : hebdomadaire fixe + notes spéciales
 
 **La note hebdomadaire est le squelette.** Elle paraît le dimanche soir, qu'il se soit passé

@@ -143,6 +143,43 @@ describe("blocs obligatoires selon le type", () => {
   });
 });
 
+describe("LeFilDeLaSemaine — facultatif, hebdo uniquement, toujours en dernier", () => {
+  it("accepte une hebdo qui l'ajoute après les cinq blocs obligatoires", () => {
+    const blocks: BlockName[] = [...HEBDO_BLOCKS, "LeFilDeLaSemaine"];
+    expect(() => parseNote("2026-S33", source({}, blocks))).not.toThrow();
+  });
+
+  it("accepte une hebdo qui l'ajoute après RecapDesSpeciales", () => {
+    const blocks: BlockName[] = [...HEBDO_BLOCKS, "RecapDesSpeciales", "LeFilDeLaSemaine"];
+    expect(() => parseNote("2026-S33", source({}, blocks))).not.toThrow();
+  });
+
+  it("refuse une hebdo qui le place avant les blocs obligatoires", () => {
+    const blocks: BlockName[] = ["LeFilDeLaSemaine", ...HEBDO_BLOCKS];
+    expect(() => parseNote("2026-S33", source({}, blocks))).toThrow(/ordre des blocs non canonique/);
+  });
+
+  it("refuse une hebdo qui le place entre RecapDesSpeciales et le reste", () => {
+    const blocks: BlockName[] = [
+      ...HEBDO_BLOCKS.slice(0, 3),
+      "LeFilDeLaSemaine",
+      ...HEBDO_BLOCKS.slice(3),
+      "RecapDesSpeciales",
+    ];
+    expect(() => parseNote("2026-S33", source({}, blocks))).toThrow(/ordre des blocs non canonique/);
+  });
+
+  it("reste facultatif — une hebdo sans lui reste valide", () => {
+    expect(() => parseNote("2026-S33", source({}, HEBDO_BLOCKS))).not.toThrow();
+  });
+
+  it("est interdit dans une spéciale — sa structure allégée doit rester distincte", () => {
+    const fm = { kind: "speciale", trigger: "Brent ±8 %" };
+    const blocks: BlockName[] = [...SPECIALE_BLOCKS, "LeFilDeLaSemaine"];
+    expect(() => parseNote("2026-S33-E1", source(fm, blocks))).toThrow(/interdit dans une spéciale/);
+  });
+});
+
 describe("frontmatter", () => {
   it("refuse un type incohérent avec la forme du slug", () => {
     expect(() => parseNote("2026-S33-E1", source({ kind: "hebdo" }))).toThrow(
