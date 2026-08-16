@@ -339,10 +339,11 @@ classe sans revenir en arrière.
 
 **Rangée 1 — la classe d'actifs.** Quatre boutons : Actions · Obligations · Matières
 premières · Devises. **Pas d'onglet « Vue d'ensemble »** : une classe est toujours
-sélectionnée, Actions par défaut. Chaque bouton porte le nom de la classe et, en dessous en
-plus petit, la **performance YTD des instruments que le bouton ouvre** — moyenne simple non
-pondérée, filtrée par la zone courante. Le chiffre décrit donc exactement ce qu'un clic
-affiche ; il n'y a pas d'agrégat qui parle d'autre chose que de la liste.
+sélectionnée, Actions par défaut. Chaque bouton ne porte que le nom de la classe — pas de
+performance agrégée en dessous. Une moyenne simple des indices suivis n'est pas un chiffre
+défendable : ça n'est l'indice de personne. La performance se lit instrument par instrument,
+dans la liste ; pour un repère global sur les actions, la classe inclut **MSCI ACWI** —
+un indice réel, investissable, plutôt qu'une moyenne fabriquée.
 
 **Rangée 2 — la zone.** Boutons à défilement horizontal, **« Toutes » en tête et par
 défaut**. C'est le seul sélecteur de zone de l'onglet Marchés — la barre persistante n'en a

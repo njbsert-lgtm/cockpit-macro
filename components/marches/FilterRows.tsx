@@ -6,13 +6,6 @@ import { ASSET_CLASS_LABELS, ASSET_CLASS_ORDER, ASSET_CLASS_PARAM, DEFAULT_ASSET
 import { ALL_ZONES, ZONE_LABELS } from "@/lib/zones";
 import { DEFAULT_ZONE, ZONE_PARAM } from "@/lib/zone-param";
 
-/** Le résumé chiffré porté par un bouton de classe — calculé côté serveur, affiché ici. */
-export type ClassSummary = {
-  assetClass: AssetClass;
-  ytd: number | null;
-  total: number;
-};
-
 /**
  * Un vrai bouton, pas du texte souligné : fond clair, bordure fine, rayon 2 px, 44 px de haut
  * au minimum pour rester atteignable au pouce. L'état sélectionné s'annonce par `aria-pressed`
@@ -26,20 +19,7 @@ const BUTTON_BASE =
 const BUTTON_OFF = "border-line bg-paper text-ink hover:border-deep";
 const BUTTON_ON = "border-ink bg-ink text-white";
 
-function formatYtd(pct: number): string {
-  const sign = pct > 0 ? "+" : "";
-  return `${sign}${pct.toFixed(1).replace(".", ",")} %`;
-}
-
-export function FilterRows({
-  assetClass,
-  zone,
-  summaries,
-}: {
-  assetClass: AssetClass;
-  zone: Zone;
-  summaries: ClassSummary[];
-}) {
+export function FilterRows({ assetClass, zone }: { assetClass: AssetClass; zone: Zone }) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -58,12 +38,13 @@ export function FilterRows({
     router.push(`${pathname}${qs ? `?${qs}` : ""}`, { scroll: false });
   }
 
-  const summaryOf = (c: AssetClass) => summaries.find((s) => s.assetClass === c);
-
   return (
     <div className="mt-5 flex flex-col gap-2.5">
       {/* Rangée 1 — la classe d'actifs. Quatre boutons, aucun état « vue d'ensemble » : une
-          classe est toujours sélectionnée. */}
+          classe est toujours sélectionnée. Pas de performance agrégée sous le nom : une
+          moyenne non pondérée de la classe entière n'est pas un chiffre qu'on peut défendre
+          comme représentatif — la performance se lit instrument par instrument, dans la
+          liste. */}
       <div
         role="group"
         aria-label="Classe d'actifs"
@@ -71,44 +52,17 @@ export function FilterRows({
       >
         {ASSET_CLASS_ORDER.map((c) => {
           const active = c === assetClass;
-          const summary = summaryOf(c);
-          const ytdClass = active
-            ? summary?.ytd != null && summary.ytd < 0
-              ? "text-rust-tint"
-              : "text-teal-bg"
-            : summary?.ytd != null && summary.ytd < 0
-              ? "text-rust"
-              : "text-teal";
-
           return (
             <button
               key={c}
               type="button"
               aria-pressed={active}
               onClick={() => setParam(ASSET_CLASS_PARAM, c, DEFAULT_ASSET_CLASS)}
-              className={`${BUTTON_BASE} ${active ? BUTTON_ON : BUTTON_OFF} flex flex-col items-center justify-center gap-0.5 px-2`}
+              className={`${BUTTON_BASE} ${active ? BUTTON_ON : BUTTON_OFF} px-2`}
             >
               <span className="font-display text-12-5 font-bold leading-tight sm:text-14">
                 {ASSET_CLASS_LABELS[c]}
               </span>
-              {summary?.total === 0 ? (
-                <span
-                  className={`font-mono text-10 leading-none ${active ? "text-white/70" : "text-mute"}`}
-                >
-                  aucun
-                </span>
-              ) : summary?.ytd == null ? (
-                <span
-                  className={`font-mono text-10 leading-none ${active ? "text-white/70" : "text-mute"}`}
-                  title="Aucune base de clôture au 31 décembre n'est saisie pour les instruments de cette classe"
-                >
-                  YTD n. d.
-                </span>
-              ) : (
-                <span className={`font-mono text-10 leading-none tabular-nums ${ytdClass}`}>
-                  {formatYtd(summary.ytd)}
-                </span>
-              )}
             </button>
           );
         })}

@@ -104,6 +104,17 @@
       "note": "Plus de 29 Md$ de sorties au S1, facture pétrolière. Flux Twelve Data instable sur cette ligne."
     },
     {
+      "id": "acwi",
+      "label": "MSCI ACWI",
+      "assetClass": "equity",
+      "zones": [
+        "global"
+      ],
+      "unit": "index",
+      "ytdBasis": 780,
+      "note": "Indice actions mondial, marchés développés et émergents — le repère global de la classe, pas la moyenne des indices suivis."
+    },
+    {
       "id": "us10y",
       "label": "US 10 ans",
       "assetClass": "rates",
@@ -5182,6 +5193,62 @@
       "value": 7.2,
       "source": "RBI",
       "fetchedAt": "2026-08-13T11:40:00Z"
+    },
+    {
+      "instrumentId": "acwi",
+      "date": "2025-08-13",
+      "value": 760,
+      "source": "Financial Modeling Prep",
+      "fetchedAt": "2025-08-13T21:05:00Z"
+    },
+    {
+      "instrumentId": "acwi",
+      "date": "2025-12-31",
+      "value": 780,
+      "source": "Financial Modeling Prep",
+      "fetchedAt": "2025-12-31T21:05:00Z"
+    },
+    {
+      "instrumentId": "acwi",
+      "date": "2026-07-13",
+      "value": 815,
+      "source": "Financial Modeling Prep",
+      "fetchedAt": "2026-07-13T21:05:00Z"
+    },
+    {
+      "instrumentId": "acwi",
+      "date": "2026-07-27",
+      "value": 822,
+      "source": "Financial Modeling Prep",
+      "fetchedAt": "2026-07-27T21:05:00Z"
+    },
+    {
+      "instrumentId": "acwi",
+      "date": "2026-08-03",
+      "value": 828,
+      "source": "Financial Modeling Prep",
+      "fetchedAt": "2026-08-03T21:05:00Z"
+    },
+    {
+      "instrumentId": "acwi",
+      "date": "2026-08-10",
+      "value": 833,
+      "source": "Financial Modeling Prep",
+      "fetchedAt": "2026-08-10T21:05:00Z"
+    },
+    {
+      "instrumentId": "acwi",
+      "date": "2026-08-12",
+      "value": 835,
+      "source": "Financial Modeling Prep",
+      "fetchedAt": "2026-08-12T21:05:00Z"
+    },
+    {
+      "instrumentId": "acwi",
+      "date": "2026-08-13",
+      "value": 836.5,
+      "source": "Financial Modeling Prep",
+      "fetchedAt": "2026-08-13T21:05:00Z"
     }
   ],
   "macroIndicators": [

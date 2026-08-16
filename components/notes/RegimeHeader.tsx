@@ -1,6 +1,5 @@
 import Link from "next/link";
 import type { Driver, Note } from "@/lib/types";
-import { formatDateLong } from "@/lib/format";
 import { DriverCards } from "./DriverCards";
 
 export function RegimeHeader({
@@ -13,10 +12,10 @@ export function RegimeHeader({
   return (
     <div className="bg-deep px-4 py-6 text-white md:px-6 md:py-8">
       <div className="mx-auto max-w-content">
-        <p className="font-mono text-11 font-semibold uppercase tracking-widest-2 text-deep-fg-muted">
-          Régime au {formatDateLong(note.date)}
-        </p>
-        <h1 className="mt-2.5 max-w-[22ch] font-display text-display font-extrabold tracking-tight text-white">
+        {/* La phrase de régime s'affiche seule, sans étiquette de date : la date figure déjà
+            à côté de la semaine ISO, sur la carte-article qui a mené jusqu'ici et sur l'en-tête
+            de la note elle-même. La répéter ici serait redondant. */}
+        <h1 className="max-w-[22ch] font-display text-display font-extrabold tracking-tight text-white">
           {note.regimeStatement}
         </h1>
         <dl className="mt-6 grid grid-cols-2 gap-px bg-white/20 md:grid-cols-4">

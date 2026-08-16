@@ -2,11 +2,9 @@ import { Suspense } from "react";
 import { parseZone, ZONE_PARAM } from "@/lib/zone-param";
 import {
   ASSET_CLASS_LABELS,
-  ASSET_CLASS_ORDER,
   ASSET_CLASS_PARAM,
   formatDailyChange,
   formatInstrumentValue,
-  getClassPerformance,
   getRatesInstruments,
   isRateCountryZone,
   parseAssetClass,
@@ -17,8 +15,8 @@ import { dailyChange, latestObservation, MAX_SESSION_GAP_DAYS } from "@/lib/perf
 import { freshnessTier } from "@/lib/freshness";
 import { ZONE_LABELS } from "@/lib/zones";
 import { formatDateLong } from "@/lib/format";
-import type { AssetClass, Zone } from "@/lib/types";
-import { FilterRows, type ClassSummary } from "@/components/marches/FilterRows";
+import type { AssetClass, Instrument, Zone } from "@/lib/types";
+import { FilterRows } from "@/components/marches/FilterRows";
 import { InstrumentList, type InstrumentRow } from "@/components/marches/InstrumentList";
 import { MarchesSkeleton } from "@/components/marches/MarchesSkeleton";
 import { EmptyState } from "@/components/states/EmptyState";
@@ -27,19 +25,25 @@ async function simulateLoad() {
   await new Promise((resolve) => setTimeout(resolve, 300));
 }
 
+function instrumentsFor(assetClass: AssetClass, zone: Zone): Instrument[] {
+  // Obligations : `getRatesInstruments` choisit elle-même entre la courbe complète d'un pays
+  // et un point de repère (le 10 ans) par pays pour Toutes / Zone euro / Émergents — sinon la
+  // liste plate mélangerait 65 maturités de neuf pays.
+  return assetClass === "rates"
+    ? getRatesInstruments(zone)
+    : getInstrumentsByAssetClass(assetClass, zone);
+}
+
 function buildRows(
   assetClass: AssetClass,
   zone: Zone,
+  instruments: Instrument[],
   bySeries: ObservationsBySeries,
 ): InstrumentRow[] {
-  // Obligations : `getRatesInstruments` choisit elle-même entre la courbe complète d'un pays
-  // et un point de repère (le 10 ans) par pays pour Toutes / Zone euro / Émergents — sinon la
-  // liste plate mélangerait 65 maturités de neuf pays. `isCurve` ne sert plus qu'à l'affichage
-  // : le pays est déjà porté par le libellé (« OAT 6 mois ») et par la rangée de zones
-  // au-dessus, répéter « France » sur les sept lignes n'ajouterait rien.
+  // `isCurve` ne sert qu'à l'affichage : le pays est déjà porté par le libellé
+  // (« OAT 6 mois ») et par la rangée de zones au-dessus, répéter « France » sur les sept
+  // lignes n'ajouterait rien.
   const isCurve = assetClass === "rates" && isRateCountryZone(zone);
-  const instruments =
-    assetClass === "rates" ? getRatesInstruments(zone) : getInstrumentsByAssetClass(assetClass, zone);
 
   return instruments.map((instrument) => {
     const obs = observationsOf(bySeries, instrument.id);
@@ -70,21 +74,9 @@ function buildRows(
 async function MarchesContent({ assetClass, zone }: { assetClass: AssetClass; zone: Zone }) {
   await simulateLoad();
 
-  // Un seul chargement pour tout l'écran : les quatre boutons de classe et la liste. Sans ça,
-  // chaque bouton relancerait sa propre lecture — quatre-vingts requêtes là où une suffit.
-  const needed = new Set<string>();
-  for (const c of ASSET_CLASS_ORDER) {
-    const instruments =
-      c === "rates" ? getRatesInstruments(zone) : getInstrumentsByAssetClass(c, zone);
-    for (const i of instruments) needed.add(i.id);
-  }
-  const bySeries = await loadObservations([...needed]);
-
-  const summaries: ClassSummary[] = ASSET_CLASS_ORDER.map((c) => {
-    const perf = getClassPerformance(c, zone, bySeries);
-    return { assetClass: c, ytd: perf.ytd, total: perf.total };
-  });
-  const rows = buildRows(assetClass, zone, bySeries);
+  const instruments = instrumentsFor(assetClass, zone);
+  const bySeries = await loadObservations(instruments.map((i) => i.id));
+  const rows = buildRows(assetClass, zone, instruments, bySeries);
   const isCurve = assetClass === "rates" && isRateCountryZone(zone);
 
   return (
@@ -99,7 +91,7 @@ async function MarchesContent({ assetClass, zone }: { assetClass: AssetClass; zo
         </p>
       )}
 
-      <FilterRows assetClass={assetClass} zone={zone} summaries={summaries} />
+      <FilterRows assetClass={assetClass} zone={zone} />
 
       <div className="mt-5">
         {rows.length === 0 ? (
