@@ -349,9 +349,14 @@ ni Macro.
 **Sur Obligations, choisir un pays affiche sa courbe complète** — 6 mois · 1 an · 3 ans ·
 5 ans · 10 ans · 15 ans · 20 ans, du plus court au plus long — au lieu du point de repère
 unique. « Toutes », « Zone euro » et « Émergents » restent sur le repère à 10 ans, un par
-pays : afficher les sept maturités des neuf pays en même temps ferait un mur de 65 lignes, pas
+pays : afficher toutes les maturités des neuf pays en même temps ferait un mur de lignes, pas
 une liste. `Zone euro` et `Émergents` sont des agrégats, pas des émetteurs : ils n'ont pas de
 courbe qui leur soit propre, seulement celles de leurs pays membres.
+
+**Une courbe n'a que les maturités que sa source publie.** Le Trésor américain ne cote pas de
+15 ans — ses taux constants s'arrêtent à 10 puis sautent à 20 — donc la courbe US en compte
+six et non sept. Aucune interpolation : un point qu'une source ne publie pas n'existe pas, et
+l'inventer serait de la donnée fabriquée.
 
 **Style des boutons.** De vrais boutons, jamais du texte en gras souligné : fond `--paper`,
 bordure fine, rayon 2 px. À l'état actif, fond `--ink` et texte blanc. **Hauteur minimale
