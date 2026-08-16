@@ -1,50 +1,103 @@
-import type { Zone } from "./types";
-import { zoneMatches } from "./zones";
 import { freshnessTier, type FreshnessTier, worstTier } from "./freshness";
-import {
-  getInstrumentsByZone,
-  getMacroIndicatorsByZone,
-  getObservations,
-  getMacroObservations,
-} from "./data";
+import { getInstruments, getMacroIndicators, getObservations, getMacroObservations } from "./data";
+import { getReadClient } from "./supabase";
 
 export type SourceFreshness = {
   source: string;
   fetchedAt: string;
   tier: FreshnessTier;
+  /** Renseigné quand la dernière tentative a échoué — l'état 5 du cahier nomme la cause. */
+  error?: string;
 };
 
 /**
- * Point de fraîcheur par source pour une zone : le relevé le plus ancien de chaque source
- * (le pire cas), pas le plus récent — c'est ce qui doit piloter l'alerte visuelle.
+ * Fraîcheur par source, dans l'ordre du plus ancien au plus récent.
+ *
+ * Elle est **par source et non par zone** : le point de la barre persistante dit si la
+ * collecte fonctionne, une question qui n'a pas de géographie. La zone ne pilote plus que
+ * l'onglet Macro depuis que le sélecteur y a été cantonné.
+ *
+ * Pour les séries collectées, la vérité vient de `series_health` : c'est la seule table qui
+ * distingue « FRED n'a pas répondu » de « FRED a répondu, il n'y a rien de neuf ». Pour tout
+ * le reste, la fraîcheur se lit sur le relevé le plus ancien du seed — le pire cas, pas le
+ * meilleur, parce que c'est lui qui doit déclencher l'alerte visuelle.
  */
-export function getFreshnessSummaryForZone(
-  zone: Zone,
-  now: Date = new Date(),
-): SourceFreshness[] {
-  const oldestBySource = new Map<string, string>();
+export async function getFreshnessSummary(now: Date = new Date()): Promise<SourceFreshness[]> {
+  const bySource = new Map<string, SourceFreshness>();
 
-  const record = (source: string, fetchedAt: string) => {
-    const current = oldestBySource.get(source);
-    if (!current || fetchedAt < current) oldestBySource.set(source, fetchedAt);
+  const record = (entry: SourceFreshness) => {
+    const current = bySource.get(entry.source);
+    // Le relevé le plus ancien l'emporte : une source n'est à jour que si toutes ses séries
+    // le sont.
+    if (!current || entry.fetchedAt < current.fetchedAt) bySource.set(entry.source, entry);
   };
 
-  for (const instrument of getInstrumentsByZone(zone)) {
-    const obs = getObservations(instrument.id);
-    const latest = [...obs].sort((a, b) => a.date.localeCompare(b.date)).at(-1);
-    if (latest) record(latest.source, latest.fetchedAt);
+  for (const entry of await readSeriesHealth(now)) record(entry);
+  for (const entry of readSeedFreshness(now)) record(entry);
+
+  return [...bySource.values()].sort((a, b) => a.fetchedAt.localeCompare(b.fetchedAt));
+}
+
+async function readSeriesHealth(now: Date): Promise<SourceFreshness[]> {
+  const client = getReadClient();
+  if (!client) return [];
+
+  try {
+    const { data, error } = await client
+      .from("series_health")
+      .select("source, last_success_at, last_error, consecutive_failures");
+    if (error || !data) return [];
+
+    return (
+      data as Array<{
+        source: string;
+        last_success_at: string | null;
+        last_error: string | null;
+        consecutive_failures: number;
+      }>
+    )
+      .filter((row) => row.last_success_at !== null)
+      .map((row) => ({
+        source: row.source,
+        fetchedAt: row.last_success_at!,
+        tier: freshnessTier(row.last_success_at, now),
+        error: row.consecutive_failures > 0 ? (row.last_error ?? undefined) : undefined,
+      }));
+  } catch {
+    // Base injoignable : la fraîcheur du seed prend le relais, comme les valeurs elles-mêmes.
+    return [];
+  }
+}
+
+function readSeedFreshness(now: Date): SourceFreshness[] {
+  const entries: SourceFreshness[] = [];
+
+  const latestOf = (obs: ReturnType<typeof getObservations>) =>
+    [...obs].sort((a, b) => a.date.localeCompare(b.date)).at(-1);
+
+  for (const instrument of getInstruments()) {
+    const latest = latestOf(getObservations(instrument.id));
+    if (latest) {
+      entries.push({
+        source: latest.source,
+        fetchedAt: latest.fetchedAt,
+        tier: freshnessTier(latest.fetchedAt, now),
+      });
+    }
   }
 
-  for (const indicator of getMacroIndicatorsByZone(zone)) {
-    if (!zoneMatches([indicator.zone], zone)) continue;
-    const obs = getMacroObservations(indicator.id);
-    const latest = [...obs].sort((a, b) => a.date.localeCompare(b.date)).at(-1);
-    if (latest) record(latest.source, latest.fetchedAt);
+  for (const indicator of getMacroIndicators()) {
+    const latest = latestOf(getMacroObservations(indicator.id));
+    if (latest) {
+      entries.push({
+        source: latest.source,
+        fetchedAt: latest.fetchedAt,
+        tier: freshnessTier(latest.fetchedAt, now),
+      });
+    }
   }
 
-  return [...oldestBySource.entries()]
-    .map(([source, fetchedAt]) => ({ source, fetchedAt, tier: freshnessTier(fetchedAt, now) }))
-    .sort((a, b) => a.fetchedAt.localeCompare(b.fetchedAt));
+  return entries;
 }
 
 export function getOverallTier(summary: SourceFreshness[]): FreshnessTier {

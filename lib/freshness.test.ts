@@ -1,19 +1,31 @@
 import { describe, expect, it } from "vitest";
-import { freshnessTier, oldestFetchedAt, worstTier } from "./freshness";
+import {
+  freshnessTier,
+  oldestFetchedAt,
+  worstTier,
+  FRESH_MAX_HOURS,
+  STALE_MAX_HOURS,
+} from "./freshness";
 
 const NOW = new Date("2026-08-13T12:00:00Z");
 
+/** Décale `NOW` de `hours` heures vers le passé, pour raisonner en âge et non en date. */
+function agedBy(hours: number): string {
+  return new Date(NOW.getTime() - hours * 60 * 60 * 1000).toISOString();
+}
+
 describe("freshnessTier", () => {
-  it("est 'frais' sous 24h", () => {
-    expect(freshnessTier("2026-08-13T00:00:01Z", NOW)).toBe("frais");
+  it("est 'frais' au lendemain d'une collecte réussie", () => {
+    expect(freshnessTier(agedBy(1), NOW)).toBe("frais");
+    expect(freshnessTier(agedBy(24), NOW)).toBe("frais");
   });
 
-  it("est 'perime' entre 24 et 48h", () => {
-    expect(freshnessTier("2026-08-12T00:00:00Z", NOW)).toBe("perime");
+  it("est 'perime' après une collecte manquée", () => {
+    expect(freshnessTier(agedBy(30), NOW)).toBe("perime");
   });
 
-  it("est 'erreur' au-delà de 48h", () => {
-    expect(freshnessTier("2026-08-10T00:00:00Z", NOW)).toBe("erreur");
+  it("est 'erreur' après deux collectes manquées", () => {
+    expect(freshnessTier(agedBy(60), NOW)).toBe("erreur");
   });
 
   it("est 'absente' sans fetchedAt", () => {
@@ -21,9 +33,25 @@ describe("freshnessTier", () => {
     expect(freshnessTier(undefined, NOW)).toBe("absente");
   });
 
-  it("respecte les bornes exactes 24h et 48h", () => {
-    expect(freshnessTier("2026-08-12T12:00:00Z", NOW)).toBe("perime"); // exactement 24h
-    expect(freshnessTier("2026-08-11T12:00:00Z", NOW)).toBe("erreur"); // exactement 48h
+  it("respecte ses bornes exactes", () => {
+    expect(freshnessTier(agedBy(FRESH_MAX_HOURS - 0.01), NOW)).toBe("frais");
+    expect(freshnessTier(agedBy(FRESH_MAX_HOURS), NOW)).toBe("perime");
+    expect(freshnessTier(agedBy(STALE_MAX_HOURS - 0.01), NOW)).toBe("perime");
+    expect(freshnessTier(agedBy(STALE_MAX_HOURS), NOW)).toBe("erreur");
+  });
+
+  it("absorbe la dérive des crons Hobby, qui peuvent tarder d'une heure", () => {
+    // Deux passages quotidiens sains, l'un à 06:00 et le suivant à 06:55 le lendemain :
+    // 24 h 55 d'écart. Sous un seuil strict à 24 h, ce tuyau parfaitement sain passerait en
+    // ambre — c'est précisément ce que la marge de deux heures évite.
+    expect(freshnessTier(agedBy(24.92), NOW)).toBe("frais");
+    expect(FRESH_MAX_HOURS).toBeGreaterThan(24);
+    expect(STALE_MAX_HOURS).toBeGreaterThan(48);
+  });
+
+  it("bascule quand même en ambre si une collecte entière est sautée", () => {
+    // Le but de la marge est d'absorber la dérive, pas de masquer un passage manqué.
+    expect(freshnessTier(agedBy(48), NOW)).toBe("perime");
   });
 });
 

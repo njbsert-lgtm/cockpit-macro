@@ -5,8 +5,24 @@ export type FreshnessTier = "frais" | "perime" | "erreur" | "absente";
 const HOUR = 60 * 60 * 1000;
 
 /**
- * Fraîcheur calculée à partir de `fetchedAt`, jamais déclarée : vert sous 24 h, ambre entre
- * 24 et 48 h, rouge au-delà. `absente` quand il n'y a tout simplement aucun relevé.
+ * Les paliers du cahier des charges sont à 24 h et 48 h — une et deux collectes manquées,
+ * la collecte étant quotidienne. Ils sont élargis de deux heures parce que les crons du plan
+ * Hobby de Vercel ne sont pas ponctuels : un déclenchement peut arriver jusqu'à une heure
+ * après l'horaire prévu, donc deux passages consécutifs parfaitement sains peuvent être
+ * espacés de près de 25 h. Sans cette marge, un tuyau qui fonctionne passerait régulièrement
+ * en ambre — et un indicateur qui crie sans raison finit par ne plus être lu.
+ */
+export const FRESH_MAX_HOURS = 26;
+export const STALE_MAX_HOURS = 50;
+
+/**
+ * Fraîcheur calculée à partir de `fetchedAt`, jamais déclarée. `absente` quand il n'y a tout
+ * simplement aucun relevé.
+ *
+ * Elle mesure **l'âge de notre copie, pas celui du chiffre**. Le cron re-confirme chaque jour
+ * la dernière observation de chaque série, même quand la valeur n'a pas bougé : un samedi,
+ * un jour férié ou une série mensuelle publiée il y a trois semaines restent donc verts. Une
+ * série qui ne bouge pas n'est pas une série périmée — seule une collecte en échec l'est.
  */
 export function freshnessTier(
   fetchedAt: string | null | undefined,
@@ -14,8 +30,8 @@ export function freshnessTier(
 ): FreshnessTier {
   if (!fetchedAt) return "absente";
   const ageHours = (now.getTime() - new Date(fetchedAt).getTime()) / HOUR;
-  if (ageHours < 24) return "frais";
-  if (ageHours < 48) return "perime";
+  if (ageHours < FRESH_MAX_HOURS) return "frais";
+  if (ageHours < STALE_MAX_HOURS) return "perime";
   return "erreur";
 }
 
