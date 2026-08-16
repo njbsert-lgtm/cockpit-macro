@@ -570,6 +570,68 @@ Contraintes dans le code :
 - Si une source tombe : dernière valeur connue **avec sa date**, pas un tiret, jamais zéro.
 - Les bases YTD sont saisies à la main une fois par an dans un fichier de configuration.
 
+### Ce qu'une source publie fait foi
+
+Une série est collectée telle que sa source la publie — unité, fréquence, maturités. Quand
+la source diverge de ce que le seed déclarait, **c'est la source qui a raison** et la
+configuration est corrigée, jamais la donnée. Le Trésor américain ne cotant pas de 15 ans,
+la courbe US en compte six ; les Fed funds sont quotidiens et non mensuels ; le solde
+budgétaire fédéral est annuel et non trimestriel.
+
+Une transformation d'unité est demandée à la source, jamais calculée chez nous : `units=pc1`
+fait renvoyer un glissement annuel par FRED, ce qui transforme un indice de prix en taux
+d'inflation sans coûter un second appel.
+
+**Chaque série porte des bornes de plausibilité** dans `config/fred-series.ts`. Une valeur
+en dehors fait rejeter *toute la réponse*, pas seulement le point fautif : si l'unité n'est
+pas celle qu'on croit, ce n'est pas une observation qui est fausse, c'est la série entière.
+Mieux vaut garder la dernière valeur valide et journaliser que stocker un indice là où on
+attend un taux.
+
+Rien ne passe en collecte automatique sans être sorti vert de `npm run fred:check`, qui
+confronte les métadonnées réelles de chaque série à ce que la configuration déclare.
+
+### Fraîcheur et retard : deux signaux à ne pas confondre
+
+C'est ce qui décide si l'indicateur de la barre reste lisible ou devient du bruit.
+
+**La fraîcheur** répond à « notre copie est-elle récente ? ». Elle se calcule sur la date du
+relevé, jamais sur celle du chiffre, et pilote le point vert / ambre / rouge.
+
+Le principe qui règle les week-ends, les fériés et les séries mensuelles d'un seul coup :
+**re-confirmer est une écriture.** Chaque passage réécrit la dernière observation de chaque
+série même quand la valeur n'a pas bougé. Un samedi, FRED renvoie la clôture de vendredi, on
+la réécrit, le relevé date d'aujourd'hui : vert. Un CPI publié il y a trois semaines : vert.
+**Une série qui ne bouge pas n'est jamais périmée** — seule une collecte en échec l'est.
+
+Les paliers sont à **26 h et 50 h**, et non 24 h et 48 h : les crons du plan Hobby peuvent
+tarder d'une heure, donc deux passages sains peuvent être espacés de près de 25 h. Sans cette
+marge, un tuyau qui fonctionne passerait régulièrement en ambre — et un indicateur qui crie
+sans raison finit par ne plus être lu.
+
+**Le retard de publication** répond à une autre question : « la source a-t-elle cessé de
+publier ? ». Il se calcule sur la date de l'observation, et il existe parce que la fraîcheur
+ne le verrait pas — si FRED répond bien mais que le BLS saute une publication, notre copie
+reste fraîche. Il s'affiche sur l'indicateur concerné et **ne fait jamais rougir le point de
+la barre** : ce n'est pas un problème de collecte, et un point rouge pour une raison sur
+laquelle le lecteur ne peut rien agir finit par être ignoré.
+
+Le retard se compte en **jours ouvrés** pour les séries quotidiennes, avec trois jours de
+tolérance. Aucun calendrier de fériés n'est maintenu — nous ne l'avons pas, et l'inventer
+serait de la donnée fabriquée. Trois jours ouvrés absorbent un férié isolé comme un pont, tout
+en laissant voir une source qui s'est vraiment tue.
+
+### Repli sur le seed
+
+Les deux sources ne se mélangent **jamais pour un même identifiant** : une série moitié base
+moitié seed mentirait sur la provenance de ses points. Un instrument non couvert par une
+série active lit le seed ; un instrument couvert lit la base, et retombe sur le seed si elle
+est vide, en erreur ou injoignable. Le site reste utilisable sans base du tout.
+
+Le **catalogue** d'instruments et d'indicateurs reste dans `data/seed.json` : c'est de la
+configuration, pas une série temporelle, et le contrôle d'intégrité du contenu en dépend de
+façon synchrone au chargement du module.
+
 ---
 
 ## Veille : d'où viennent les nouvelles
@@ -675,6 +737,17 @@ Observer trois jours avant d'ajouter Eurostat et l'INSEE, puis l'EIA, puis actio
 Les deux spreads sont calculés et stockés dès que le Bund, l'OAT et le 10 ans US sont en place :
 ils ont besoin de trois clôtures d'historique avant que leurs alertes puissent s'évaluer.
 
+Périmètre FRED : la courbe souveraine US (6 mois à 20 ans, sans le 15 ans), l'inflation
+totale et sous-jacente, le chômage, les salaires, le taux directeur, la croissance, la dette
+et le solde budgétaire. `us-current-account` et `us-pmi` restent au seed, avec leur raison
+écrite dans `config/fred-series.ts` — la première parce qu'elle est publiée en dollars et non
+en part du PIB, la seconde parce que l'ISM a fait retirer ses indices de FRED.
+
+Mise en service, dans l'ordre : exécuter `supabase/schema.sql`, renseigner les variables de
+`.env.example`, lancer `npm run fred:check` et n'activer que les séries sorties vertes, puis
+laisser le cron tourner. Le site fonctionne à chaque étape de cette séquence, y compris
+avant la première — c'est ce que garantit le repli sur le seed.
+
 **Étape 4 — Confort.**
 Mode comparaison de l'onglet Macro, graphiques de séries, recherche dans les notes,
 export d'une note en PDF. **Moteur d'alertes** : une fois les données automatiques en
@@ -698,9 +771,11 @@ Ne pas commencer par l'étape 3 ni par l'étape 5.
 - Aucune donnée inventée : si une valeur manque, l'interface le dit
 - Tests sur la logique de filtrage par zone, le calcul de performance YTD, la validation des
   blocs obligatoires selon le type de note, le rattachement des spéciales à leur semaine
-  ISO, et **le moteur d'alertes** : franchissement de seuil, fenêtre glissante, période de
-  silence, calcul des spreads, gestion des clôtures manquantes. C'est la logique la plus
-  facile à casser sans s'en apercevoir. Le reste se vérifie à l'œil.
+  ISO, **la collecte** (rejet d'une réponse malformée sans écriture, valeurs manquantes
+  écartées sans être remplacées, réponse vide traitée comme un succès, bornes de plausibilité,
+  repli sur le seed, jours ouvrés) et **le moteur d'alertes** : franchissement de seuil,
+  fenêtre glissante, période de silence, calcul des spreads, gestion des clôtures manquantes.
+  C'est la logique la plus facile à casser sans s'en apercevoir. Le reste se vérifie à l'œil.
 
 ## Avertissement en pied de page
 
