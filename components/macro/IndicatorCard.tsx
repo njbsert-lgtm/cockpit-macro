@@ -1,3 +1,4 @@
+import Link from "next/link";
 import type { MacroIndicator, Observation } from "@/lib/types";
 import { formatIndicatorValue } from "@/lib/macro";
 import { formatDateLong, formatDateShort } from "@/lib/format";
@@ -17,7 +18,10 @@ export function IndicatorCard({
   const variation = latest && previous ? latest.value - previous.value : null;
 
   return (
-    <div className="border border-line bg-card p-4">
+    <Link
+      href={`/macro/${indicator.id}`}
+      className="block border border-line bg-card p-4 hover:border-deep focus-visible:outline-3 focus-visible:-outline-offset-2 focus-visible:outline-deep"
+    >
       <div className="flex items-start justify-between gap-3">
         <h3 className="font-display text-15 font-bold text-ink">{indicator.label}</h3>
         {variation !== null && (
@@ -57,6 +61,6 @@ export function IndicatorCard({
           ? `Prochaine publication : ${formatDateLong(indicator.nextRelease)}`
           : "Prochaine date de publication non communiquée"}
       </p>
-    </div>
+    </Link>
   );
 }

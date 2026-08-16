@@ -16,7 +16,7 @@ import { formatDateLong } from "@/lib/format";
 import type { AssetClass } from "@/lib/types";
 import { DataValue } from "@/components/states/DataValue";
 import { PerfValue } from "@/components/marches/PerfValue";
-import { InstrumentChart } from "@/components/marches/InstrumentChart";
+import { HistoryChart } from "@/components/charts/HistoryChart";
 
 function isAssetClass(value: string): value is AssetClass {
   return (ASSET_CLASS_ORDER as string[]).includes(value);
@@ -98,7 +98,7 @@ export default async function InstrumentPage({
       </dl>
 
       <div className="mt-6">
-        <InstrumentChart points={obs.map((o) => ({ date: o.date, value: o.value }))} />
+        <HistoryChart points={obs.map((o) => ({ date: o.date, value: o.value }))} />
       </div>
 
       <div className="mt-5 border-l-3 border-line bg-paper px-3.5 py-3">

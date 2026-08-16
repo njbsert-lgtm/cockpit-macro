@@ -3,7 +3,9 @@
 import { CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { formatDateShort } from "@/lib/format";
 
-export function InstrumentChart({
+/** Graphique de série générique, réutilisé pour un instrument de marché comme pour un
+ * indicateur macro : les deux ne sont qu'une suite de points datés. */
+export function HistoryChart({
   points,
 }: {
   points: Array<{ date: string; value: number }>;

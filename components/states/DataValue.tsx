@@ -33,12 +33,15 @@ export function DataValue({
 
   const tier = freshnessTier(fetchedAt, now);
 
+  // Le chiffre lui-même reste en --ink dans tous les cas : c'est une valeur réelle, pas une
+  // valeur fausse — seule notre copie est en retard. Ne le peindre en rouge ou en ambre donne
+  // l'impression que la donnée est erronée, alors que c'est la fraîcheur de la collecte qui
+  // est en cause. Le signal reste porté par le point, la couleur du sous-texte et le libellé
+  // écrit — jamais par la couleur seule, et jamais par la couleur du chiffre.
   if (tier === "erreur" || tier === "absente") {
     return (
       <span className="inline-flex flex-col gap-1">
-        <span
-          className={`font-mono font-semibold tabular-nums text-rust ${valueClass}`}
-        >
+        <span className={`font-mono font-semibold tabular-nums text-ink ${valueClass}`}>
           {value}
         </span>
         <span className="inline-flex items-center gap-1.5 font-mono text-11 text-rust">
@@ -52,9 +55,7 @@ export function DataValue({
   if (tier === "perime") {
     return (
       <span className="inline-flex flex-col gap-1">
-        <span
-          className={`font-mono font-semibold tabular-nums text-ochre ${valueClass}`}
-        >
+        <span className={`font-mono font-semibold tabular-nums text-ink ${valueClass}`}>
           {value}
         </span>
         <span className="inline-flex items-center gap-1.5 font-mono text-11 text-ochre">

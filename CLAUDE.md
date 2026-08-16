@@ -324,6 +324,9 @@ Japon · Chine · Inde · Émergents (agrégat).
 Chaque indicateur affiche **la prochaine date de publication**. Savoir quand la donnée sort
 compte autant que sa valeur.
 
+Un clic sur un indicateur — carte en mode zone, ligne en mode comparaison — ouvre sa fiche :
+la série complète en graphique et son historique en table, date par date.
+
 ---
 
 ## Onglet 3 — Marchés
