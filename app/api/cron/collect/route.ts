@@ -3,6 +3,9 @@ import { revalidatePath } from "next/cache";
 import { getWriteClient } from "@/lib/supabase";
 import { runIngest } from "@/lib/ingest";
 import { runVeilleCollect, type VeilleCollector, type VeilleReport } from "@/lib/veille/collect";
+import { collectInstitutional } from "@/lib/veille/sources/institutional";
+import { collectEdgar } from "@/lib/veille/sources/edgar";
+import { collectGdelt } from "@/lib/veille/sources/gdelt";
 
 /**
  * L'orchestrateur de la collecte quotidienne. Déclenché par le cron Vercel à 6 h UTC, jamais à
@@ -21,10 +24,14 @@ export const maxDuration = 60;
 // encore proprement même si un collecteur a consommé son budget jusqu'au bout.
 const TOTAL_BUDGET_MS = 55_000;
 
-// Peuplée au fil de la construction du pipeline de collecte (tâche suivante) : GDELT, les flux
-// institutionnels, SEC EDGAR. Une liste vide est un passage valide — l'orchestrateur tourne,
-// FRED s'exécute, la veille ne fait rien à journaliser.
-const VEILLE_COLLECTORS: VeilleCollector[] = [];
+// Les flux institutionnels et EDGAR d'abord : peu de requêtes, rapides, de haute autorité.
+// GDELT en dernier — c'est le seul dont la collecte se découpe sur plusieurs passages via un
+// curseur, donc celui qui peut légitimement se voir couper le budget sans rien perdre.
+const VEILLE_COLLECTORS: VeilleCollector[] = [
+  { name: "institutional", run: collectInstitutional },
+  { name: "SEC EDGAR", run: collectEdgar },
+  { name: "GDELT", run: collectGdelt },
+];
 
 export async function GET(request: Request) {
   // Sans ce contrôle, n'importe qui peut déclencher vos appels FRED et brûler votre quota.

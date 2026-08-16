@@ -1,19 +1,27 @@
 import { describe, expect, it } from "vitest";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { runVeilleCollect, type VeilleCollector } from "./collect";
+import type { RawVeilleCandidate } from "./filter";
 
 type Write = { table: string; rows: unknown[] };
 type Delete = { table: string; column: string; value: unknown };
 
 /**
- * Un faux client Supabase qui couvre les trois formes utilisées par `collect.ts` : l'upsert de
- * santé, la lecture du compteur d'échecs précédent, et la purge par suppression filtrée.
+ * Un faux client Supabase qui couvre les formes utilisées par `collect.ts` : l'upsert de santé
+ * et d'items, la lecture du compteur d'échecs précédent, le comptage du jour, et la purge.
  */
-function fakeClient(options: { existingFailures?: Record<string, number>; deletedIds?: string[] } = {}) {
+function fakeClient(
+  options: {
+    existingFailures?: Record<string, number>;
+    deletedIds?: string[];
+    alreadyToday?: number;
+  } = {},
+) {
   const writes: Write[] = [];
   const deletes: Delete[] = [];
   const existingFailures = options.existingFailures ?? {};
   const deletedIds = options.deletedIds ?? [];
+  const alreadyToday = options.alreadyToday ?? 0;
 
   const client = {
     from(table: string) {
@@ -22,7 +30,11 @@ function fakeClient(options: { existingFailures?: Record<string, number>; delete
           writes.push({ table, rows: Array.isArray(rows) ? rows : [rows] });
           return Promise.resolve({ error: null });
         },
-        select() {
+        select(_columns?: string, opts?: { count?: string; head?: boolean }) {
+          if (opts?.count) {
+            // Le comptage du jour (`countItemsCollectedToday`) : `.select(..., {count,head}).gte(...)`.
+            return { gte: () => Promise.resolve({ count: alreadyToday, error: null }) };
+          }
           return {
             eq(column: string, value: unknown) {
               const key = typeof value === "string" ? value : undefined;
@@ -64,6 +76,18 @@ function collector(name: string, run: VeilleCollector["run"]): VeilleCollector {
   return { name, run };
 }
 
+function candidate(overrides: Partial<RawVeilleCandidate> = {}): RawVeilleCandidate {
+  return {
+    title: "La Fed maintient son taux directeur",
+    url: "https://example.org/fed-taux",
+    source: "Federal Reserve",
+    sourceAuthority: 3,
+    publishedAt: "2026-08-16T00:00:00Z",
+    zones: ["us"],
+    ...overrides,
+  };
+}
+
 describe("runVeilleCollect — isolation par collecteur", () => {
   it("l'échec d'un collecteur n'empêche pas les suivants de s'exécuter", async () => {
     const { client, writes } = fakeClient();
@@ -75,7 +99,7 @@ describe("runVeilleCollect — isolation par collecteur", () => {
       }),
       collector("B", async () => {
         order.push("B");
-        return { written: 3 };
+        return { candidates: [candidate()] };
       }),
     ];
 
@@ -83,8 +107,8 @@ describe("runVeilleCollect — isolation par collecteur", () => {
 
     expect(order).toEqual(["A", "B"]);
     expect(report.outcomes).toEqual([
-      { collector: "A", ok: false, written: 0, skipped: false, error: "panne réseau" },
-      { collector: "B", ok: true, written: 3, skipped: false },
+      { collector: "A", ok: false, harvested: 0, skipped: false, error: "panne réseau" },
+      { collector: "B", ok: true, harvested: 1, skipped: false },
     ]);
     const health = rowsFor(writes, "veille_health");
     expect(health.find((r) => r.collector === "A")?.last_error).toBe("panne réseau");
@@ -93,7 +117,7 @@ describe("runVeilleCollect — isolation par collecteur", () => {
 
   it("n'écrit jamais dans series_health — la table est distincte de celle de FRED", async () => {
     const { client, writes } = fakeClient();
-    const collectors = [collector("GDELT", async () => ({ written: 1 }))];
+    const collectors = [collector("GDELT", async () => ({ candidates: [candidate()] }))];
 
     await runVeilleCollect(client, { now: NOW, budgetMs: 10_000, collectors });
 
@@ -121,8 +145,8 @@ describe("runVeilleCollect — budget de temps", () => {
   it("marque un collecteur skipped, pas en échec, quand le budget est épuisé", async () => {
     const { client } = fakeClient();
     const collectors = [
-      collector("institutional", async () => ({ written: 1 })),
-      collector("GDELT", async () => ({ written: 99 })),
+      collector("institutional", async () => ({ candidates: [candidate()] })),
+      collector("GDELT", async () => ({ candidates: [candidate()] })),
     ];
 
     // Budget quasi nul : le premier collecteur ne devrait déjà plus avoir le temps de démarrer.
@@ -134,11 +158,102 @@ describe("runVeilleCollect — budget de temps", () => {
 
   it("laisse un collecteur lent consommer le reste du budget sans bloquer le rapport", async () => {
     const { client } = fakeClient();
-    const collectors = [collector("GDELT", async () => ({ written: 12 }))];
+    const collectors = [collector("GDELT", async () => ({ candidates: [candidate(), candidate()] }))];
 
     const report = await runVeilleCollect(client, { now: NOW, budgetMs: 5_000, collectors });
 
-    expect(report.outcomes).toEqual([{ collector: "GDELT", ok: true, written: 12, skipped: false }]);
+    expect(report.outcomes).toEqual([{ collector: "GDELT", ok: true, harvested: 2, skipped: false }]);
+  });
+});
+
+describe("runVeilleCollect — passe 1 : filtre par mot-clé", () => {
+  it("écarte un candidat qui ne cite ni driver ni canal de transmission", async () => {
+    const { client } = fakeClient();
+    const collectors = [
+      collector("institutional", async () => ({
+        candidates: [candidate({ title: "Le musée du Louvre prolonge une exposition" })],
+      })),
+    ];
+
+    const report = await runVeilleCollect(client, { now: NOW, budgetMs: 10_000, collectors });
+
+    expect(report.gated).toBe(0);
+    expect(report.written).toBe(0);
+  });
+
+  it("retient un candidat dont le titre cite un mot-clé de driver", async () => {
+    const { client, writes } = fakeClient();
+    const collectors = [
+      collector("institutional", async () => ({
+        candidates: [candidate({ title: "La Fed maintient son taux directeur" })],
+      })),
+    ];
+
+    const report = await runVeilleCollect(client, { now: NOW, budgetMs: 10_000, collectors });
+
+    expect(report.gated).toBe(1);
+    expect(report.written).toBe(1);
+    const item = rowsFor(writes, "veille_items")[0];
+    expect(item.driver_refs).toEqual(["rates"]);
+    expect(item.status).toBe("nouveau");
+  });
+
+  it("retient un candidat dont le driverRefs est pré-attaché par le collecteur (EDGAR)", async () => {
+    const { client } = fakeClient();
+    const collectors = [
+      collector("SEC EDGAR", async () => ({
+        candidates: [
+          candidate({
+            title: "Nvidia — dépôt 8-K du 2026-08-15",
+            driverRefs: ["ai"],
+          }),
+        ],
+      })),
+    ];
+
+    const report = await runVeilleCollect(client, { now: NOW, budgetMs: 10_000, collectors });
+
+    expect(report.gated).toBe(1);
+  });
+});
+
+describe("runVeilleCollect — plafond quotidien", () => {
+  it("classe par autorité de source puis par correspondance thématique avant de couper", async () => {
+    const { client, writes } = fakeClient();
+    const collectors = [
+      collector("mixte", async () => ({
+        candidates: [
+          candidate({ title: "Fed rate hike", source: "GDELT", sourceAuthority: 1, url: "u1" }),
+          candidate({
+            title: "Fed rate hike affects real yield",
+            source: "Federal Reserve",
+            sourceAuthority: 3,
+            url: "u2",
+          }),
+        ],
+      })),
+    ];
+
+    const report = await runVeilleCollect(client, { now: NOW, budgetMs: 10_000, collectors });
+
+    expect(report.written).toBe(2);
+    const items = rowsFor(writes, "veille_items");
+    // La source la plus autorisée en tête.
+    expect(items[0].source).toBe("Federal Reserve");
+    expect(items[1].source).toBe("GDELT");
+  });
+
+  it("ne retient rien si le plafond du jour est déjà atteint", async () => {
+    const { client, writes } = fakeClient({ alreadyToday: 40 });
+    const collectors = [
+      collector("institutional", async () => ({ candidates: [candidate()] })),
+    ];
+
+    const report = await runVeilleCollect(client, { now: NOW, budgetMs: 10_000, collectors });
+
+    expect(report.gated).toBe(1);
+    expect(report.written).toBe(0);
+    expect(rowsFor(writes, "veille_items")).toHaveLength(0);
   });
 });
 

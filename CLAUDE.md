@@ -694,8 +694,21 @@ qu'on cherche à filtrer.
 
 ### Le pipeline de tri, en trois passes
 
-**Passe 1 — Filtre déterministe, sans IA.** Liste d'entités et de mots-clés surveillés.
-Élimine 90 % du volume pour zéro euro et zéro latence.
+**Passe 1 — Filtre déterministe, sans IA.** Liste d'entités et de mots-clés surveillés
+(`config/veille-taxonomy.ts`). Élimine 90 % du volume pour zéro euro et zéro latence.
+Un item qui ne cite ni un mot-clé de driver ni un mot-clé d'un des cinq canaux de transmission
+est écarté avant même d'être écrit — c'est ce qui rend une couverture large (GDELT en
+détection large, tout le flux institutionnel) tenable sans passe 2. Pour SEC EDGAR, le
+rattachement est posé en configuration plutôt que par mot-clé : un dépôt réglementaire ne cite
+jamais « intelligence artificielle » dans son titre, mais l'émetteur qui l'a déposé est
+déjà rattaché à un driver dans `EDGAR_TRACKED_ISSUERS`.
+
+**Plafond quotidien.** 40 items maximum transmis à la passe 2 par jour, classés par autorité de
+la source (communiqué officiel avant détection GDELT) puis par correspondance thématique
+(nombre de mots-clés reconnus). Ce qui dépasse n'est simplement pas écrit ce jour-là — la
+file se régénère le lendemain, elle ne rattrape pas le trop-plein. GDELT découpe sa collecte en
+requêtes thème × pays traitées une à la fois, retenues par un curseur (`veille_cursor`) qui
+reprend au tour suivant si le budget de temps d'un passage s'épuise avant la fin.
 
 **Passe 2 — Classification par l'API Claude.** Sortie JSON stricte :
 `{ nature, markets[], zones[], horizon, channels[], isSignal, trendRefs[], reasoning }`.

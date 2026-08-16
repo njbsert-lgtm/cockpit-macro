@@ -129,11 +129,14 @@ create table if not exists veille_cursor (
 -- tables différentes, l'une publique, l'autre non.
 
 create table if not exists veille_health (
-  collector             text primary key,   -- 'GDELT' | 'institutional' | 'EDGAR'
+  collector             text primary key,   -- 'GDELT' | 'institutional' | 'SEC EDGAR'
   last_attempt_at       timestamptz,
   last_success_at       timestamptz,
   last_error            text,
   consecutive_failures  integer not null default 0,
+  -- Candidats bruts remontés par ce collecteur, avant la passe 1 et le plafond quotidien
+  -- centralisés (`lib/veille/collect.ts`) — pas le nombre effectivement écrit en base, qui
+  -- dépend de la concurrence avec les autres collecteurs ce jour-là.
   items_written         integer not null default 0,
   updated_at            timestamptz not null default now()
 );

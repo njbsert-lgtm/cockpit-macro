@@ -1,10 +1,19 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
+import type { VeilleItem } from "@/lib/types";
+import {
+  applyKeywordGate,
+  DAILY_TRANSMISSION_CAP,
+  rankAndCap,
+  toVeilleItem,
+  type FilteredVeilleCandidate,
+  type RawVeilleCandidate,
+} from "./filter";
 
 /**
  * Le second module de l'orchestrateur cron (`app/api/cron/collect/route.ts`) : la collecte de
  * veille, indépendante de FRED.
  *
- * Trois garanties, dans l'ordre où le cahier des charges les pose :
+ * Quatre garanties, dans l'ordre où le cahier des charges les pose :
  *
  * 1. **Isolation par collecteur.** L'échec de l'un — erreur réseau, exception — n'empêche pas
  *    les suivants de s'exécuter, au même titre que `runIngest` isole chaque série FRED.
@@ -16,6 +25,10 @@ import type { SupabaseClient } from "@supabase/supabase-js";
  *    durée ; un collecteur qui n'a pas eu sa chance ce passage-ci est marqué `skipped`, pas en
  *    échec, et la retrouve au passage suivant — via `veille_cursor` pour ceux qui en tiennent
  *    un (GDELT, dont la collecte se découpe en requêtes thème × pays).
+ * 4. **Passe 1 et plafond centralisés.** Chaque collecteur ne fait que remonter des candidats
+ *    bruts ; le filtre par mot-clé, le classement par autorité de source et le plafond
+ *    quotidien de 40 items s'appliquent une fois tous les candidats réunis — sinon un
+ *    collecteur isolé ne pourrait jamais savoir combien de place il lui reste face aux autres.
  */
 
 export type VeilleCollectorContext = {
@@ -26,15 +39,16 @@ export type VeilleCollectorContext = {
 };
 
 export type VeilleCollector = {
-  /** Clé dans `veille_health` — 'GDELT', 'institutional', 'EDGAR'. */
+  /** Clé dans `veille_health` — 'GDELT', 'institutional', 'SEC EDGAR'. */
   name: string;
-  run: (ctx: VeilleCollectorContext) => Promise<{ written: number }>;
+  run: (ctx: VeilleCollectorContext) => Promise<{ candidates: RawVeilleCandidate[] }>;
 };
 
 export type VeilleCollectorOutcome = {
   collector: string;
   ok: boolean;
-  written: number;
+  /** Candidats bruts remontés par ce collecteur, avant la passe 1. */
+  harvested: number;
   /** Budget épuisé avant que ce collecteur n'ait pu démarrer — pas un échec. */
   skipped: boolean;
   error?: string;
@@ -44,6 +58,10 @@ export type VeilleReport = {
   startedAt: string;
   finishedAt: string;
   outcomes: VeilleCollectorOutcome[];
+  /** Combien de candidats ont survécu à la passe 1 (un driver ou un canal reconnu). */
+  gated: number;
+  /** Combien ont effectivement été écrits, après le plafond quotidien. */
+  written: number;
   purged: number;
 };
 
@@ -62,28 +80,81 @@ export async function runVeilleCollect(
   const startedAt = now.toISOString();
   const deadline = Date.now() + Math.max(0, options.budgetMs);
   const outcomes: VeilleCollectorOutcome[] = [];
+  const allCandidates: RawVeilleCandidate[] = [];
 
   for (const collector of options.collectors) {
     const remaining = deadline - Date.now();
     if (remaining < MIN_COLLECTOR_BUDGET_MS) {
-      outcomes.push({ collector: collector.name, ok: true, written: 0, skipped: true });
+      outcomes.push({ collector: collector.name, ok: true, harvested: 0, skipped: true });
       continue;
     }
 
     try {
-      const result = await collector.run({ client, now, budgetMs: remaining });
-      outcomes.push({ collector: collector.name, ok: true, written: result.written, skipped: false });
-      await recordVeilleSuccess(client, collector.name, result.written, now);
+      const { candidates } = await collector.run({ client, now, budgetMs: remaining });
+      allCandidates.push(...candidates);
+      outcomes.push({ collector: collector.name, ok: true, harvested: candidates.length, skipped: false });
+      await recordVeilleSuccess(client, collector.name, candidates.length, now);
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err);
-      outcomes.push({ collector: collector.name, ok: false, written: 0, skipped: false, error: message });
+      outcomes.push({ collector: collector.name, ok: false, harvested: 0, skipped: false, error: message });
       await recordVeilleFailure(client, collector.name, message, now);
     }
   }
 
+  const gatedCandidates = allCandidates
+    .map(applyKeywordGate)
+    .filter((c): c is FilteredVeilleCandidate => c !== null);
+
+  const alreadyToday = await countItemsCollectedToday(client, now);
+  const remainingSlots = DAILY_TRANSMISSION_CAP - alreadyToday;
+  const toWrite = rankAndCap(gatedCandidates, remainingSlots).map(toVeilleItem);
+  const written = await writeItems(client, toWrite, now);
+
   const purged = await purgeOldItems(client, now);
 
-  return { startedAt, finishedAt: new Date().toISOString(), outcomes, purged };
+  return {
+    startedAt,
+    finishedAt: new Date().toISOString(),
+    outcomes,
+    gated: gatedCandidates.length,
+    written,
+    purged,
+  };
+}
+
+async function countItemsCollectedToday(client: SupabaseClient, now: Date): Promise<number> {
+  const startOfDay = new Date(now);
+  startOfDay.setUTCHours(0, 0, 0, 0);
+
+  const { count, error } = await client
+    .from("veille_items")
+    .select("id", { count: "exact", head: true })
+    .gte("collected_at", startOfDay.toISOString());
+  if (error || count === null) return 0;
+  return count;
+}
+
+async function writeItems(client: SupabaseClient, items: VeilleItem[], now: Date): Promise<number> {
+  if (items.length === 0) return 0;
+
+  const rows = items.map((item) => ({
+    id: item.id,
+    title: item.title,
+    url: item.url,
+    source: item.source,
+    published_at: item.publishedAt,
+    zones: item.zones,
+    driver_refs: item.driverRefs,
+    channels: item.channels,
+    is_signal: item.isSignal,
+    status: item.status,
+    attached_to_block: item.attachedToBlock,
+    draft_note_slug: item.draftNoteSlug,
+    collected_at: now.toISOString(),
+  }));
+
+  const { error } = await client.from("veille_items").upsert(rows, { onConflict: "id" });
+  return error ? 0 : items.length;
 }
 
 async function purgeOldItems(client: SupabaseClient, now: Date): Promise<number> {
@@ -96,7 +167,7 @@ async function purgeOldItems(client: SupabaseClient, now: Date): Promise<number>
 async function recordVeilleSuccess(
   client: SupabaseClient,
   collector: string,
-  written: number,
+  harvested: number,
   now: Date,
 ): Promise<void> {
   const timestamp = now.toISOString();
@@ -107,7 +178,7 @@ async function recordVeilleSuccess(
       last_success_at: timestamp,
       last_error: null,
       consecutive_failures: 0,
-      items_written: written,
+      items_written: harvested,
       updated_at: timestamp,
     },
     { onConflict: "collector" },
