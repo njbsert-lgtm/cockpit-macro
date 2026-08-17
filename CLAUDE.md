@@ -65,7 +65,7 @@ partagé par les quatre onglets : chaque onglet qui a besoin d'une notion de zon
 | Onglet | Zone |
 |---|---|
 | **Macro** | Le sélecteur du bandeau, seul endroit où il apparaît. État dans l'URL : `?zone=fr`. |
-| **Marchés** | Sa propre rangée de zones, à l'intérieur de l'écran (voir Onglet 3). Un filtre local, pas le bandeau. |
+| **Marchés** | Sa propre rangée de zones, **sur Obligations uniquement** (voir Onglet 3). Un filtre local, pas le bandeau. |
 | **Notes** | Aucune notion de zone. L'écran d'accueil (`/`) et le fil (`/notes`) montrent tout. |
 | **Outlook** | Sans objet. |
 
@@ -182,6 +182,11 @@ fait à deux niveaux, jamais mélangés :
 Un item purgé (au-delà de quinze jours) ou une base injoignable ne casse jamais le rendu : la
 pastille ou la ligne du fil disparaît, silencieusement — la note reste lisible même quand la
 donnée automatique n'est plus là, exactement le principe directeur du cahier.
+
+**Les sources se déclarent bloc par bloc, jamais pour la note entière.** `Note.sources` est une
+carte « nom de bloc → sources » : on doit pouvoir savoir de quelle source vient telle
+affirmation, ce qu'une liste unique en pied de note ne dit pas. La validation refuse une source
+rattachée à un bloc que la note ne porte pas — elle ne s'afficherait nulle part.
 
 ### Cadence : hebdomadaire fixe + notes spéciales
 
@@ -358,10 +363,12 @@ défendable : ça n'est l'indice de personne. La performance se lit instrument p
 dans la liste ; pour un repère global sur les actions, la classe inclut **MSCI ACWI** —
 un indice réel, investissable, plutôt qu'une moyenne fabriquée.
 
-**Rangée 2 — la zone.** Boutons à défilement horizontal, **« Toutes » en tête et par
-défaut**. C'est le seul sélecteur de zone de l'onglet Marchés — la barre persistante n'en a
-plus, elle est réservée à Macro. Un choix ici reste local à Marchés ; il ne touche ni Notes
-ni Macro.
+**Rangée 2 — la zone, sur Obligations uniquement.** Boutons à défilement horizontal,
+**« Toutes » en tête et par défaut**. Une courbe souveraine appartient à un émetteur ; un
+indice actions, une devise ou une matière première sont mondiaux, et les filtrer par pays
+masquait une partie de la liste sans rien apprendre. Les trois autres classes n'ont donc pas
+de rangée de zones du tout et affichent l'ensemble des instruments suivis. Un choix ici reste
+local à Marchés ; il ne touche ni Notes ni Macro.
 
 **Sur Obligations, choisir un pays affiche sa courbe complète** — 6 mois · 1 an · 3 ans ·
 5 ans · 10 ans · 15 ans · 20 ans, du plus court au plus long — au lieu du point de repère
@@ -410,7 +417,10 @@ de produire un 404 : un paramètre d'URL se saisit à la main, il ne doit pas ca
 
 ### La fiche instrument
 
-Graphique de la série, les performances sur plusieurs horizons, **les drivers qui le
+Graphique de la série avec son **échelle de temps** — 5 ans · 3 ans · 1 an · YTD · 6 mois ·
+3 mois · 1 mois · 1 semaine —, ancrée sur le dernier relevé et non sur la date du jour : une
+série qui a cessé d'être publiée doit continuer à montrer son historique. La période
+réellement couverte est écrite sous le graphique. Puis les performances sur plusieurs horizons, **les drivers qui le
 pilotent** avec leur branche dominante — cliquables vers la page du driver —, et **les
 passages de notes qui le mentionnent**, du plus récent au plus ancien. C'est la jonction entre
 le prix et l'analyse : on doit pouvoir partir d'un chiffre et remonter à ce qu'on en avait dit.
@@ -539,7 +549,9 @@ type Note = {
   trendRefs: string[];       // tendances de fond touchées
   instrumentRefs: string[];  // instruments cités
   veilleItemRefs: string[];  // items de veille cités comme pièces à conviction, ou dans « Le fil de la semaine »
-  sources: Array<{ label: string; url: string }>;
+  // Les sources, par bloc analytique et non par note : « quelle affirmation vient d'où ».
+  // Une source rattachée à un bloc absent de la note est refusée à la validation.
+  sources: Partial<Record<string, Array<{ label: string; url: string }>>>;
 };
 
 // La grille des cinq canaux de transmission : un item de veille s'y rattache au même titre
