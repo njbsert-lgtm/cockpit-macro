@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { parseZone, ZONE_PARAM } from "@/lib/zone-param";
+import { DEFAULT_ZONE, parseZone, ZONE_PARAM } from "@/lib/zone-param";
 import {
   ASSET_CLASS_LABELS,
   ASSET_CLASS_PARAM,
@@ -96,8 +96,16 @@ async function MarchesContent({ assetClass, zone }: { assetClass: AssetClass; zo
       <div className="mt-5">
         {rows.length === 0 ? (
           <EmptyState
-            title={`Aucun instrument de cette classe pour ${ZONE_LABELS[zone]}`}
-            description="Choisissez « Toutes » dans la rangée des zones pour voir l'ensemble des instruments suivis, ou une autre classe d'actifs."
+            title={
+              assetClass === "rates"
+                ? `Aucun instrument de cette classe pour ${ZONE_LABELS[zone]}`
+                : "Aucun instrument suivi dans cette classe"
+            }
+            description={
+              assetClass === "rates"
+                ? "Choisissez « Toutes » dans la rangée des zones pour voir l'ensemble des instruments suivis, ou une autre classe d'actifs."
+                : "Choisissez une autre classe d'actifs dans la rangée au-dessus."
+            }
           />
         ) : (
           <InstrumentList rows={rows} />
@@ -118,8 +126,13 @@ export default async function MarchesPage({
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
   const params = await searchParams;
-  const zone = parseZone(params[ZONE_PARAM]);
   const assetClass = parseAssetClass(params[ASSET_CLASS_PARAM]);
+  // Seules les obligations ont une notion de zone : une courbe souveraine appartient à un
+  // émetteur. Un indice actions, une devise ou une matière première sont mondiaux — les
+  // filtrer par pays revenait à masquer une partie de la liste sans rien apprendre. Les trois
+  // autres classes sont donc figées sur la vue d'ensemble, et un `?zone=` traînant dans l'URL
+  // est ignoré plutôt que d'appliquer un filtre qui n'a plus de commande à l'écran.
+  const zone = assetClass === "rates" ? parseZone(params[ZONE_PARAM]) : DEFAULT_ZONE;
 
   return (
     <Suspense key={`${assetClass}-${zone}`} fallback={<MarchesSkeleton />}>

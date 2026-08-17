@@ -28,12 +28,16 @@ export function FilterRows({ assetClass, zone }: { assetClass: AssetClass; zone:
    * Les deux filtres vivent dans la même chaîne de requête et ne s'écrasent pas : changer de
    * classe conserve la zone, et changer de zone conserve la classe. La zone est écrite avec la
    * même convention que le sélecteur de la barre persistante — paramètre supprimé sur la
-   * valeur par défaut — pour que les deux commandes pilotent un seul et même état.
+   * valeur par défaut.
+   *
+   * Quitter les obligations retire la zone de l'URL : elle n'a plus de commande à l'écran, et
+   * la laisser traîner ferait revenir un filtre invisible en retournant sur les obligations.
    */
   function setParam(key: string, value: string, defaultValue: string) {
     const params = new URLSearchParams(searchParams.toString());
     if (value === defaultValue) params.delete(key);
     else params.set(key, value);
+    if (key === ASSET_CLASS_PARAM && value !== "rates") params.delete(ZONE_PARAM);
     const qs = params.toString();
     router.push(`${pathname}${qs ? `?${qs}` : ""}`, { scroll: false });
   }
@@ -68,8 +72,10 @@ export function FilterRows({ assetClass, zone }: { assetClass: AssetClass; zone:
         })}
       </div>
 
-      {/* Rangée 2 — la zone. Même état que le sélecteur de la barre persistante, présenté
-          autrement : ce n'est pas un second filtre, c'est le contexte global rendu tactile. */}
+      {/* Rangée 2 — la zone, réservée aux obligations : une courbe souveraine appartient à un
+          émetteur, alors qu'un indice actions, une devise ou une matière première sont
+          mondiaux. Les filtrer par pays masquait une partie de la liste sans rien apprendre. */}
+      {assetClass === "rates" && (
       <div
         role="group"
         aria-label="Zone"
@@ -90,6 +96,7 @@ export function FilterRows({ assetClass, zone }: { assetClass: AssetClass; zone:
           );
         })}
       </div>
+      )}
     </div>
   );
 }
