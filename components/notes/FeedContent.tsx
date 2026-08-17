@@ -1,4 +1,9 @@
-import { getActiveDrivers, getChangeExcerpt, getRevisingDriversByNote } from "@/lib/content";
+import {
+  getActiveDrivers,
+  getChangeExcerpt,
+  getNoteBlocks,
+  getRevisingDriversByNote,
+} from "@/lib/content";
 import { buildNotesFeed } from "@/lib/notes-feed";
 import { NotesFeedList, type FeedListItem } from "./NotesFeedList";
 
@@ -21,6 +26,7 @@ export async function FeedContent() {
           kind: "note",
           note: item.note,
           excerpt: getChangeExcerpt(item.note.slug),
+          blocks: getNoteBlocks(item.note.slug),
           drivers: revisionsBySlug.get(item.note.slug) ?? [],
         },
   );

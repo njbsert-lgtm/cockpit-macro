@@ -3,38 +3,16 @@ import path from "node:path";
 import matter from "gray-matter";
 import { z } from "zod";
 import type { Note, NoteKind, VeilleChannel, Zone } from "./types";
+import { BLOCK_NAMES, BLOCK_TITLES, REQUIRED_BLOCKS, type BlockName } from "./note-blocks";
+
+export { BLOCK_NAMES, BLOCK_TITLES, REQUIRED_BLOCKS };
+export type { BlockName };
 
 export const NOTES_DIR = path.join(process.cwd(), "content", "notes");
 
 // ---------------------------------------------------------------------------
 // Les blocs analytiques
 // ---------------------------------------------------------------------------
-
-/**
- * Les blocs sont des composants nommés dans le corps MDX, pas des titres markdown : un titre
- * mal orthographié disparaît en silence, un composant inconnu est rejeté à la validation.
- */
-export const BLOCK_NAMES = [
-  "CeQuiAChange",
-  "CeQuiSestConfirme",
-  "RevisionDesScenarios",
-  "CeQueJavaisMalLu",
-  "CeQueJeSurveille",
-  "RecapDesSpeciales",
-  "LeFilDeLaSemaine",
-] as const;
-
-export type BlockName = (typeof BLOCK_NAMES)[number];
-
-export const BLOCK_TITLES: Record<BlockName, string> = {
-  CeQuiAChange: "Ce qui a changé",
-  CeQuiSestConfirme: "Ce qui s'est confirmé",
-  RevisionDesScenarios: "Révision des scénarios",
-  CeQueJavaisMalLu: "Ce que j'avais mal lu",
-  CeQueJeSurveille: "Ce que je surveille",
-  RecapDesSpeciales: "Ce que les spéciales de la semaine ont établi",
-  LeFilDeLaSemaine: "Le fil de la semaine",
-};
 
 /**
  * L'ordre porte du sens : « ce que j'avais mal lu » placé en tête d'une note n'a pas la
@@ -57,22 +35,6 @@ const CANONICAL_ORDER: Record<NoteKind, BlockName[]> = {
   // Exiger « ce que j'avais mal lu » trente minutes après un choc n'a aucun sens : une
   // spéciale ne requiert que trois blocs (cahier des charges). Le fil de la semaine est un
   // exercice de recul hebdomadaire, pas une réaction à chaud : réservé aux hebdos.
-  speciale: ["CeQuiAChange", "RevisionDesScenarios", "CeQueJeSurveille"],
-};
-
-/**
- * Exporté pour `/triage` : « un item versé s'attache à l'un des cinq blocs analytiques »
- * (cahier des charges) — exactement les blocs obligatoires d'une hebdo, ni `RecapDesSpeciales`
- * ni `LeFilDeLaSemaine`, qui ne sont pas des blocs de jugement.
- */
-export const REQUIRED_BLOCKS: Record<NoteKind, BlockName[]> = {
-  hebdo: [
-    "CeQuiAChange",
-    "CeQuiSestConfirme",
-    "RevisionDesScenarios",
-    "CeQueJavaisMalLu",
-    "CeQueJeSurveille",
-  ],
   speciale: ["CeQuiAChange", "RevisionDesScenarios", "CeQueJeSurveille"],
 };
 

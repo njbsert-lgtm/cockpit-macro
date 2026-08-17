@@ -10,6 +10,7 @@ import {
   parseNote,
   readNoteSources,
   validateNoteChain,
+  type BlockName,
   type ParsedNote,
 } from "./notes";
 import type { Driver, Note, Outlook, Trend, Zone } from "./types";
@@ -41,6 +42,7 @@ function loadContent() {
   return {
     notes,
     bodies: new Map(parsed.map((p) => [p.meta.slug, p.body])),
+    blocks: new Map(parsed.map((p) => [p.meta.slug, p.blocks])),
     drivers: deriveDrivers(DRIVERS, notes, SCENARIO_VERSIONS),
   };
 }
@@ -69,6 +71,14 @@ export function getChangeExcerpt(slug: string): string | null {
   const body = CONTENT.bodies.get(slug);
   if (!body) return null;
   return extractBlockText(body, "CeQuiAChange");
+}
+
+/**
+ * Les blocs analytiques effectivement présents dans une note — ce que l'archive dépliante
+ * confronte aux blocs obligatoires de son type pour afficher son compteur de validation.
+ */
+export function getNoteBlocks(slug: string): BlockName[] {
+  return CONTENT.blocks.get(slug) ?? [];
 }
 
 export function getNotesByZone(zone: Zone): Note[] {
