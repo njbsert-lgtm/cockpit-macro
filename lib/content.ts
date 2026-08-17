@@ -96,6 +96,17 @@ export function getDriver(id: string): Driver | null {
   return CONTENT.drivers.find((d) => d.id === id) ?? null;
 }
 
+/**
+ * Les drivers actifs accompagnés de leurs trois branches courantes — ce dont la carte de
+ * driver a besoin pour tracer ses jauges, en une seule passe plutôt qu'un accès par carte.
+ */
+export function getActiveDriversWithBranches() {
+  return getActiveDrivers().map((driver) => ({
+    driver,
+    branches: getCurrentBranches(driver.id),
+  }));
+}
+
 /** Les drivers à afficher en carte, dans l'ordre d'intensité de la dernière note. */
 export function getActiveDrivers(): Driver[] {
   const latest = getLatestNote();

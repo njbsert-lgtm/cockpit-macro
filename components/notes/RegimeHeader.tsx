@@ -1,76 +1,87 @@
 import Link from "next/link";
-import type { Driver, Note } from "@/lib/types";
-import { DriverCards } from "./DriverCards";
+import type { Note } from "@/lib/types";
+import { formatDateLong } from "@/lib/format";
+import { DriverCards, type DriverWithBranches } from "./DriverCards";
+import { SectionHeader } from "./SectionHeader";
 
+/**
+ * Couche 1 : le régime en une phrase, les indicateurs clés, puis les cartes de driver.
+ *
+ * Plus de bandeau sombre — DESIGN.md ne prévoit aucune surface de ce type : le régime est le
+ * titre de page (27px, poids 700), et la hiérarchie tient par la typographie seule.
+ */
 export function RegimeHeader({
   note,
   drivers = [],
   pendingVeilleCount,
 }: {
   note: Note;
-  drivers?: Driver[];
+  drivers?: DriverWithBranches[];
   /**
    * Omis sur la page d'une note individuelle, qui ne recharge pas la file de veille pour un
    * bouton secondaire : afficher un « 0 » par défaut mentirait sur l'état réel de la file.
-   * Le bouton Triage ne s'affiche que là où le compte a été passé — l'écran d'accueil.
    */
   pendingVeilleCount?: number;
 }) {
   return (
-    <div className="bg-encre px-4 py-6 text-white md:px-6 md:py-8">
-      <div className="mx-auto max-w-colonne md:max-w-content">
-        {/* La phrase de régime s'affiche seule, sans étiquette de date : la date figure déjà
-            à côté de la semaine ISO, sur la carte-article qui a mené jusqu'ici et sur l'en-tête
-            de la note elle-même. La répéter ici serait redondant. */}
-        <h1 className="max-w-[22ch] text-27 font-semibold tracking-tight text-white">
-          {note.regimeStatement}
-        </h1>
-        <dl className="mt-6 grid grid-cols-2 gap-px bg-white/20 md:grid-cols-4">
-          {note.keyIndicators.map((ind) => (
-            <div key={ind.label} className="bg-encre px-3.5 py-3">
-              <dt className="text-10-5 uppercase tracking-cap text-tenu">
-                {ind.label}
-              </dt>
-              <dd className="mt-1.5 text-15 font-bold leading-tight text-white">
-                {ind.value}
-              </dd>
-            </div>
-          ))}
-        </dl>
+    <div className="mx-auto max-w-colonne px-4.5 pt-6 md:max-w-content md:px-6">
+      <p className="text-9-5 font-semibold uppercase tracking-cap text-tenu">
+        Régime au {formatDateLong(note.date)}
+      </p>
+      <h1 className="mt-1.5 max-w-[28ch] text-27 font-bold leading-[1.2] tracking-titre text-encre">
+        {note.regimeStatement}
+      </h1>
 
-        <DriverCards drivers={drivers} />
-
-        {(drivers.length > 0 || pendingVeilleCount !== undefined) && (
-          <div className="mt-4 flex flex-wrap items-center gap-3">
-            {drivers.length > 0 && (
-              <p className="text-11 text-doux">
-                <Link
-                  href="/notes/tendances"
-                  className="underline decoration-white/40 underline-offset-4 hover:decoration-white"
-                >
-                  Voir les tendances de fond →
-                </Link>
-              </p>
-            )}
-
-            {pendingVeilleCount !== undefined && (
-              <Link
-                href="/triage"
-                className="inline-flex min-h-11 items-center gap-2 rounded-rc border border-trait bg-page px-3 py-1.5 text-12-5 text-encre hover:border-k-choc"
-              >
-                Triage
-                <span
-                  aria-hidden="true"
-                  className="rounded-rp bg-encre px-1.5 py-0.5 text-10-5 text-white"
-                >
-                  {pendingVeilleCount}
-                </span>
-                <span className="sr-only">
-                  {pendingVeilleCount} item{pendingVeilleCount > 1 ? "s" : ""} en attente de tri
-                </span>
-              </Link>
-            )}
+      <dl className="mt-5 grid grid-cols-2 overflow-hidden rounded-rc border border-trait md:grid-cols-4">
+        {note.keyIndicators.map((ind, i) => (
+          <div
+            key={ind.label}
+            className={`px-3.5 py-3 ${i % 2 === 1 ? "border-l border-trait" : ""} ${
+              i >= 2 ? "border-t border-trait md:border-t-0" : ""
+            } md:border-l md:first:border-l-0`}
+          >
+            <dt className="text-9-5 font-semibold uppercase tracking-cap text-tenu">{ind.label}</dt>
+            <dd className="mt-1 text-13 font-semibold leading-tight text-encre">{ind.value}</dd>
           </div>
+        ))}
+      </dl>
+
+      {drivers.length > 0 && (
+        <div className="mt-7">
+          <SectionHeader
+            title="Ce qui fait bouger le marché"
+            count={`${drivers.length} actifs`}
+            note="Ordonnés par intensité courante — un jugement posé à la note, pas un calcul."
+          />
+          <DriverCards drivers={drivers} />
+        </div>
+      )}
+
+      <div className="mt-5 flex flex-wrap items-center gap-2">
+        {drivers.length > 0 && (
+          <Link
+            href="/notes/tendances"
+            className="inline-flex min-h-11 items-center rounded-rb border border-trait bg-page px-4 text-13 font-medium text-encre transition-colors hover:border-trait-f"
+          >
+            Tendances de fond ›
+          </Link>
+        )}
+        {pendingVeilleCount !== undefined && (
+          <Link
+            href="/triage"
+            className="inline-flex min-h-11 items-center gap-2 rounded-rb border border-trait bg-page px-4 text-13 font-medium text-encre transition-colors hover:border-trait-f"
+          >
+            Triage
+            <span
+              aria-hidden="true"
+              className="rounded-rp bg-repos px-1.5 py-0.5 text-11 tabular-nums text-doux"
+            >
+              {pendingVeilleCount}
+            </span>
+            <span className="sr-only">
+              {pendingVeilleCount} item{pendingVeilleCount > 1 ? "s" : ""} en attente de tri
+            </span>
+          </Link>
         )}
       </div>
     </div>

@@ -118,6 +118,15 @@ export type Note = {
   trendRefs: string[]; // tendances de fond touchées
   instrumentRefs: string[]; // instruments cités
   veilleItemRefs: string[]; // items de veille cités comme pièces à conviction, ou dans « Le fil de la semaine »
+  /**
+   * Les canaux de transmission par lesquels la note s'explique, du plus explicatif au moins.
+   * Le premier est le canal dominant : il donne sa couleur à la bande de la carte.
+   *
+   * Saisi à la main dans le frontmatter, comme le reste de l'analyse — surtout pas dérivé des
+   * `veilleItemRefs`, qui vivent en base et sont purgés à quinze jours : la carte d'une note
+   * de l'an dernier perdrait sa couleur du jour au lendemain.
+   */
+  channels: VeilleChannel[];
   sources: Array<{ label: string; url: string }>;
 };
 

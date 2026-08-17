@@ -199,7 +199,7 @@ export default async function DriverPage({ params }: { params: Promise<{ id: str
                 <div className="flex flex-wrap items-center gap-2">
                   <span className="text-14-5 font-bold text-encre">{trend.title}</span>
                   <span
-                    className={`px-2 py-0.5 text-10-5 font-semibold uppercase tracking-cap ${TREND_STATUS_CLASS[trend.status]}`}
+                    className={`rounded-rp px-2 py-0.5 text-9-5 font-semibold uppercase tracking-cap ${TREND_STATUS_CLASS[trend.status]}`}
                   >
                     {TREND_STATUS_LABEL[trend.status]}
                   </span>

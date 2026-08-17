@@ -1,4 +1,4 @@
-import { getActiveDrivers, getLatestNote } from "@/lib/content";
+import { getActiveDriversWithBranches, getLatestNote } from "@/lib/content";
 import { getPendingVeilleCount } from "@/lib/veille/queries";
 import { RegimeHeader } from "./RegimeHeader";
 import { NotesShelf } from "./NotesShelf";
@@ -15,7 +15,7 @@ export async function HomeContent() {
   await simulateLoad();
 
   const latestNote = getLatestNote();
-  const drivers = getActiveDrivers();
+  const drivers = getActiveDriversWithBranches();
   const pendingVeilleCount = await getPendingVeilleCount();
 
   if (!latestNote) {

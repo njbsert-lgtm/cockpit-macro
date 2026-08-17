@@ -50,6 +50,7 @@ function note(over: Partial<Note> = {}): Note {
     trendRefs: [],
     instrumentRefs: [],
     veilleItemRefs: [],
+    channels: [],
     sources: [],
     ...over,
   };

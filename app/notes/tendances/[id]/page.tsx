@@ -95,7 +95,7 @@ export default async function TrendPage({
               <span className="absolute -left-[21px] top-1.5 h-2.5 w-2.5 rounded-rp bg-encre" />
               <div className="flex flex-wrap items-baseline gap-2">
                 <span
-                  className={`px-2 py-0.5 text-10-5 font-semibold uppercase tracking-cap ${STATUS_CLASS[h.status]}`}
+                  className={`rounded-rp px-2 py-0.5 text-9-5 font-semibold uppercase tracking-cap ${STATUS_CLASS[h.status]}`}
                 >
                   {STATUS_LABEL[h.status]}
                 </span>

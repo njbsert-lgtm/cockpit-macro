@@ -2,7 +2,7 @@ import { readFileSync, readdirSync } from "node:fs";
 import path from "node:path";
 import matter from "gray-matter";
 import { z } from "zod";
-import type { Note, NoteKind, Zone } from "./types";
+import type { Note, NoteKind, VeilleChannel, Zone } from "./types";
 
 export const NOTES_DIR = path.join(process.cwd(), "content", "notes");
 
@@ -112,6 +112,14 @@ const ZONES = [
   "global",
 ] as const satisfies readonly Zone[];
 
+const CHANNELS = [
+  "taux-reel",
+  "nature-choc",
+  "fonction-reaction",
+  "dollar",
+  "positionnement",
+] as const satisfies readonly VeilleChannel[];
+
 const isoDate = z
   .string()
   .regex(/^\d{4}-\d{2}-\d{2}$/, "date attendue au format AAAA-MM-JJ");
@@ -130,6 +138,7 @@ const frontmatterSchema = z.object({
   trendRefs: z.array(z.string()).default([]),
   instrumentRefs: z.array(z.string()).default([]),
   veilleItemRefs: z.array(z.string()).default([]),
+  channels: z.array(z.enum(CHANNELS)).default([]),
   sources: z
     .array(z.object({ label: z.string().min(1), url: z.string().url() }))
     .default([]),
@@ -306,6 +315,7 @@ export function parseNote(slug: string, source: string): ParsedNote {
       trendRefs: fm.trendRefs,
       instrumentRefs: fm.instrumentRefs,
       veilleItemRefs: fm.veilleItemRefs,
+      channels: fm.channels,
       sources: fm.sources,
     },
     body: file.content,
