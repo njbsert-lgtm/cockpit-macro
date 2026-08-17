@@ -16,7 +16,7 @@ export function DriverCards({ drivers }: { drivers: Driver[] }) {
 
   return (
     <section className="mt-6" aria-label="Les drivers du moment">
-      <h2 className="font-mono text-10 font-semibold uppercase tracking-wider-2 text-deep-fg-muted">
+      <h2 className="text-10-5 font-semibold uppercase tracking-cap text-tenu">
         Ce qui fait bouger le marché
       </h2>
       <ol className="mt-2.5 grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3">
@@ -24,21 +24,21 @@ export function DriverCards({ drivers }: { drivers: Driver[] }) {
           <li key={driver.id}>
             <Link
               href={`/notes/drivers/${driver.id}`}
-              className="flex h-full flex-col border border-line bg-card px-3.5 py-3 hover:border-ochre focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-white"
+              className="flex h-full flex-col rounded-rc border border-trait bg-page px-3.5 py-3 hover:border-k-choc"
             >
               <span className="flex items-baseline gap-2">
-                <span className="font-mono text-10 font-semibold text-mute">{i + 1}</span>
-                <span className="font-mono text-10 uppercase tracking-wider text-mute">
+                <span className="text-10-5 font-semibold text-tenu">{i + 1}</span>
+                <span className="text-10-5 uppercase tracking-cap text-tenu">
                   {driver.label}
                 </span>
               </span>
-              <span className="mt-1 font-display text-14-5 font-bold leading-snug text-ink">
+              <span className="mt-1 text-14-5 font-bold leading-snug text-encre">
                 {driver.question}
               </span>
-              <span className="mt-2 border-t border-line-2 pt-2 font-display text-13-5 font-bold text-ochre">
+              <span className="mt-2 border-t border-trait pt-2 text-13 font-bold text-k-choc">
                 {BRANCH_LABELS[driver.dominantBranchId] ?? driver.dominantBranchId}
               </span>
-              <span className="mt-0.5 font-mono text-10-5 text-mute">
+              <span className="mt-0.5 text-10-5 text-tenu">
                 révisé le {formatDateShort(driver.lastRevisedAt)}
               </span>
             </Link>

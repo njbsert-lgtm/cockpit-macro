@@ -21,8 +21,8 @@ function FilterButton({
       type="button"
       aria-pressed={active}
       onClick={onClick}
-      className={`border px-3 py-1.5 font-mono text-12-5 font-medium ${
-        active ? "border-ink bg-ink text-white" : "border-line bg-paper text-ink-2 hover:border-mute"
+      className={`border px-3 py-1.5 text-12-5 font-medium ${
+        active ? "border-encre bg-encre text-white" : "border-trait bg-repos text-doux hover:border-trait-f"
       }`}
     >
       {children}
@@ -61,9 +61,9 @@ export function NotesFeedList({
 
   return (
     <div>
-      <div className="flex flex-col gap-2 border border-line bg-card p-3">
+      <div className="flex flex-col gap-2 rounded-rc border border-trait bg-page p-3">
         <div className="flex flex-wrap items-center gap-2">
-          <span className="w-14 font-mono text-10-5 uppercase tracking-wider text-mute">Type</span>
+          <span className="w-14 text-10-5 uppercase tracking-cap text-tenu">Type</span>
           <FilterButton active={typeFilter === "tout"} onClick={() => setTypeFilter("tout")}>
             Tout
           </FilterButton>
@@ -75,7 +75,7 @@ export function NotesFeedList({
           </FilterButton>
         </div>
         <div className="flex flex-wrap items-center gap-2">
-          <span className="w-14 font-mono text-10-5 uppercase tracking-wider text-mute">Driver</span>
+          <span className="w-14 text-10-5 uppercase tracking-cap text-tenu">Driver</span>
           <FilterButton active={driverFilter === "tout"} onClick={() => setDriverFilter("tout")}>
             Tout
           </FilterButton>
@@ -100,9 +100,9 @@ export function NotesFeedList({
             item.kind === "gap" ? (
               <li
                 key={`gap-${item.isoWeek}`}
-                className="flex items-center gap-2 border-l-2 border-rust bg-rust-bg/40 px-3 py-2 font-mono text-11-5 text-ink-2"
+                className="flex items-center gap-2 border-l-2 border-k-choc bg-k-choc/8 px-3 py-2 text-11 text-doux"
               >
-                <span className="font-semibold text-rust">{item.isoWeek}</span>
+                <span className="font-semibold text-k-choc">{item.isoWeek}</span>
                 aucune hebdo publiée — discipline rompue
               </li>
             ) : (

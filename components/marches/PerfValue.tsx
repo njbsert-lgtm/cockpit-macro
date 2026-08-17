@@ -9,12 +9,12 @@ export function PerfValue({
   size?: "sm" | "md" | "lg";
   unavailableReason?: string;
 }) {
-  const cls = size === "lg" ? "text-22" : size === "sm" ? "text-13" : "text-15";
+  const cls = size === "lg" ? "text-17" : size === "sm" ? "text-13" : "text-15";
 
   if (pct === null) {
     return (
       <span
-        className={`font-mono italic text-mute ${size === "sm" ? "text-xs" : "text-13"}`}
+        className={`italic text-tenu ${size === "sm" ? "text-12" : "text-13"}`}
         title={unavailableReason}
       >
         non disponible
@@ -22,10 +22,10 @@ export function PerfValue({
     );
   }
 
-  const colorClass = pct > 0 ? "text-teal" : pct < 0 ? "text-rust" : "text-mute";
+  const colorClass = pct > 0 ? "text-hausse" : pct < 0 ? "text-baisse" : "text-tenu";
 
   return (
-    <span className={`font-mono font-semibold tabular-nums ${colorClass} ${cls}`}>
+    <span className={`font-semibold tabular-nums ${colorClass} ${cls}`}>
       {formatSignedPct(pct)}
     </span>
   );

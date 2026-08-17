@@ -1,7 +1,7 @@
 export function SkeletonLine({ width = "100%" }: { width?: string }) {
   return (
     <div
-      className="h-4 animate-pulse rounded-xs bg-line-2"
+      className="h-4 animate-pulse rounded-rp bg-trait"
       style={{ width }}
       aria-hidden="true"
     />
@@ -11,7 +11,7 @@ export function SkeletonLine({ width = "100%" }: { width?: string }) {
 export function SkeletonBlock({ className = "" }: { className?: string }) {
   return (
     <div
-      className={`animate-pulse rounded-xs bg-line-2 ${className}`}
+      className={`animate-pulse rounded-rp bg-trait ${className}`}
       aria-hidden="true"
     />
   );
@@ -20,7 +20,7 @@ export function SkeletonBlock({ className = "" }: { className?: string }) {
 /** Squelette d'une rangée de tableau de cotations (label, valeur, commentaire). */
 export function SkeletonRow() {
   return (
-    <div className="flex items-center gap-4 border-b border-line-2 py-3">
+    <div className="flex items-center gap-4 border-b border-trait py-3">
       <SkeletonLine width="40%" />
       <SkeletonLine width="20%" />
       <SkeletonLine width="30%" />
@@ -30,7 +30,7 @@ export function SkeletonRow() {
 
 export function SkeletonCard() {
   return (
-    <div className="border border-line bg-card p-5">
+    <div className="rounded-rc border border-trait bg-page p-5">
       <SkeletonLine width="30%" />
       <div className="mt-3">
         <SkeletonLine width="80%" />

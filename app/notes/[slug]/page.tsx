@@ -25,10 +25,10 @@ export default async function NotePage({
   return (
     <>
       <RegimeHeader note={note} />
-      <div className="mx-auto max-w-content px-4 py-8 md:px-6">
+      <div className="mx-auto max-w-colonne md:max-w-content px-4.5 py-7 md:px-6">
         <Link
           href="/notes"
-          className="mb-4 inline-block font-mono text-xs text-deep underline decoration-line underline-offset-4 hover:decoration-deep"
+          className="mb-4 inline-block text-12 text-encre underline decoration-trait underline-offset-4 hover:decoration-encre"
         >
           ← Retour aux notes
         </Link>

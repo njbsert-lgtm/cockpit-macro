@@ -18,23 +18,23 @@ export async function ComparisonView({ metric, zone }: { metric: string; zone: Z
     <div>
       <MetricSelector current={metric} />
 
-      <p className="mt-4 max-w-[64ch] text-14-5 text-mute">
+      <p className="mt-4 max-w-[64ch] text-14-5 text-tenu">
         {METRIC_LABELS[metric]}, toutes zones. C&rsquo;est ici que les divergences de politique
         monétaire ou de cycle deviennent visibles d&rsquo;un coup d&rsquo;œil.
       </p>
 
-      <div className="mt-4 flex flex-col divide-y divide-line-2 border border-line bg-card">
+      <div className="mt-4 flex flex-col divide-y divide-trait rounded-rc border border-trait bg-page">
         {rows.map((z) => {
           const indicator = byZone.get(z);
           const obs = indicator ? observationsOf(bySeries, indicator.id) : [];
           const latest = [...obs].sort((a, b) => a.date.localeCompare(b.date)).at(-1) ?? null;
           const highlighted = relevantZones.includes(z);
           const rowClass = `flex flex-wrap items-center justify-between gap-3 px-4 py-3 ${
-            highlighted ? "bg-paper" : ""
+            highlighted ? "bg-repos" : ""
           }`;
 
           const zoneLabel = (
-            <span className={`font-display text-14-5 font-bold ${highlighted ? "text-ink" : "text-ink-2"}`}>
+            <span className={`text-14-5 font-bold ${highlighted ? "text-encre" : "text-doux"}`}>
               {ZONE_LABELS[z]}
             </span>
           );
@@ -45,7 +45,7 @@ export async function ComparisonView({ metric, zone }: { metric: string; zone: Z
             return (
               <div key={z} className={rowClass}>
                 {zoneLabel}
-                <span className="font-mono text-13 italic text-mute">non suivi</span>
+                <span className="text-13 italic text-tenu">non suivi</span>
               </div>
             );
           }
@@ -54,7 +54,7 @@ export async function ComparisonView({ metric, zone }: { metric: string; zone: Z
             <Link
               key={z}
               href={`/macro/${indicator.id}`}
-              className={`${rowClass} hover:bg-line-2 focus-visible:outline-3 focus-visible:-outline-offset-2 focus-visible:outline-deep`}
+              className={`${rowClass} hover:bg-trait`}
             >
               {zoneLabel}
               <DataValue
@@ -72,7 +72,7 @@ export async function ComparisonView({ metric, zone }: { metric: string; zone: Z
       {(() => {
         const withRelease = indicators.find((i) => i.nextRelease && relevantZones.includes(i.zone));
         return withRelease ? (
-          <p className="mt-3 font-mono text-11 text-mute">
+          <p className="mt-3 text-11 text-tenu">
             Prochaine publication ({ZONE_LABELS[withRelease.zone]}) :{" "}
             {formatDateLong(withRelease.nextRelease!)}
           </p>

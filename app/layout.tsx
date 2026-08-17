@@ -1,26 +1,19 @@
 import type { Metadata } from "next";
-import { Inter, Bricolage_Grotesque, IBM_Plex_Mono } from "next/font/google";
+import { IBM_Plex_Sans } from "next/font/google";
 import { PersistentBar } from "@/components/persistent-bar/PersistentBar";
 import { TabBar } from "@/components/nav/TabBar";
 import { Footer } from "@/components/Footer";
 import "./globals.css";
 
-const inter = Inter({
-  variable: "--font-inter",
+/**
+ * IBM Plex Sans exclusivement (DESIGN.md). Bricolage Grotesque et Inter sont retirés du
+ * projet ; IBM Plex Mono l'est aussi — c'est `font-variant-numeric: tabular-nums` qui aligne
+ * désormais les chiffres, pas une seconde famille.
+ */
+const plexSans = IBM_Plex_Sans({
+  variable: "--font-plex-sans",
   subsets: ["latin"],
-  display: "swap",
-});
-
-const bricolage = Bricolage_Grotesque({
-  variable: "--font-bricolage",
-  subsets: ["latin"],
-  display: "swap",
-});
-
-const plexMono = IBM_Plex_Mono({
-  variable: "--font-plex-mono",
-  subsets: ["latin"],
-  weight: ["400", "500", "600"],
+  weight: ["400", "500", "600", "700"],
   display: "swap",
 });
 
@@ -37,9 +30,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="fr">
-      <body
-        className={`${inter.variable} ${bricolage.variable} ${plexMono.variable} font-sans antialiased`}
-      >
+      <body className={`${plexSans.variable} font-sans`}>
         <PersistentBar />
         <TabBar />
         <main>{children}</main>

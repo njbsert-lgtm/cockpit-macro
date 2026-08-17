@@ -1,72 +1,108 @@
 @import "tailwindcss";
 
+/* Les jetons de DESIGN.md, définis une seule fois. Aucune valeur en dur dans un composant. */
 @theme {
-  --color-paper: #f2f3ef;
-  --color-card: #ffffff;
-  --color-ink: #14171c;
-  --color-ink-2: #333a45;
-  --color-mute: #5c6473;
-  --color-line: #d8dbd4;
-  --color-line-2: #e9ebe6;
+  /* Surfaces et encre */
+  --color-page: #ffffff; /* fond général et fond de carte */
+  --color-repos: #f4f5f6; /* zones creuses : segments, jauges, blocs dépliés */
+  --color-encre: #12161a; /* texte principal, état actif */
+  --color-doux: #5e6a70; /* texte secondaire, corps de carte */
+  --color-tenu: #8b959a; /* métadonnées, dates, libellés */
+  --color-trait: #e4e7e9; /* bordures au repos */
+  --color-trait-f: #cdd3d6; /* bordures au survol, pointillés */
 
-  --color-deep: #0e4553;
+  /* Performance — exclusivement réservé aux chiffres. Ne touche jamais un contenu. */
+  --color-hausse: #0f8a6a;
+  --color-baisse: #c2334a;
 
-  --color-ochre: #8a5d00;
-  --color-ochre-bg: #fbf3e0;
-  --color-rust: #a3382a;
-  --color-rust-bg: #fbedea;
-  --color-teal: #136055;
-  --color-teal-bg: #e7f2ef;
+  /* Les cinq canaux de transmission — qualifient un contenu, jamais un chiffre. */
+  --color-k-taux: #2f5fd0; /* taux réels */
+  --color-k-choc: #a85a18; /* nature du choc */
+  --color-k-reac: #6b4e9e; /* fonction de réaction */
+  --color-k-usd: #0e7490; /* dollar */
+  --color-k-pos: #4a5a66; /* positionnement */
 
-  /* Texte sur fond --color-deep (bandeau, pied de page) : jamais du blanc pur, pour rester
-     dans la famille bleu pétrole plutôt que de couper le contraste. */
-  --color-deep-fg: #d3e2e5;
-  --color-deep-fg-muted: #9fc0c6;
-  --color-rust-tint: #f0b9ae;
+  /* Point de canal éteint — la seule valeur de gris propre aux pastilles de pied de carte. */
+  --color-eteint: #e0e3e5;
 
-  --font-sans: var(--font-inter), system-ui, -apple-system, sans-serif;
-  --font-display: var(--font-bricolage), system-ui, sans-serif;
-  --font-mono: var(--font-plex-mono), monospace;
+  /* IBM Plex Sans exclusivement — plus de Bricolage Grotesque, plus d'Inter, plus de mono. */
+  --font-sans: var(--font-plex-sans), system-ui, -apple-system, sans-serif;
 
-  /* Échelle typographique étendue — les paliers Tailwind par défaut (xs=12, base=16, xl=20)
-     couvrent une partie des besoins ; le reste du gabarit dense (tableaux de cotations,
-     étiquettes mono) a besoin de paliers plus fins entre eux. Toute taille de police du
-     produit vient d'ici, jamais d'une valeur arbitraire posée dans un composant. */
-  --text-9: 0.5625rem;
-  --text-10: 0.625rem;
-  --text-10-5: 0.65625rem;
-  --text-11: 0.6875rem;
-  --text-11-5: 0.71875rem;
-  --text-12-5: 0.78125rem;
-  --text-13: 0.8125rem;
-  --text-13-5: 0.84375rem;
-  --text-14: 0.875rem;
-  --text-14-5: 0.90625rem;
-  --text-15: 0.9375rem;
-  --text-15-5: 0.96875rem;
-  --text-17: 1.0625rem;
-  --text-22: 1.375rem;
-  --text-26: 1.625rem;
-  --text-28: 1.75rem;
-  /* Titre du régime en une phrase — fluide entre le mobile et le desktop. */
-  --text-display: clamp(1.5rem, 4.6vw, 2.375rem);
-  --text-display--line-height: 1.1;
+  /* Rayons */
+  --radius-rc: 16px; /* cartes */
+  --radius-rb: 10px; /* boutons, champs */
+  --radius-rp: 999px; /* pastilles, segments */
 
-  /* Suivi de lettres — 0.1em existe déjà nativement (tracking-widest) ; ces deux paliers
-     complètent l'échelle pour les libellés mono très serrés du bandeau. */
-  --tracking-wider-2: 0.12em;
-  --tracking-widest-2: 0.14em;
+  /* Transition unique. Aucune animation décorative. */
+  --default-transition-duration: 160ms;
+  --default-transition-timing-function: cubic-bezier(0.2, 0.7, 0.3, 1);
 
-  /* Largeur de la colonne de contenu, partagée par toutes les pages. */
+  /* Échelle typographique — chaque palier est attesté dans DESIGN.md, aucun intermédiaire
+     improvisé. Toute taille de police du produit vient d'ici. */
+  --text-9-5: 0.59375rem; /* étiquettes capitales, borne basse */
+  --text-10-5: 0.65625rem; /* libellé d'onglet */
+  --text-11: 0.6875rem; /* métadonnées, intertitre de mois */
+  --text-11-5: 0.71875rem; /* sous-titre de branche */
+  --text-12: 0.75rem; /* compteur de section, ligne de contexte */
+  --text-12-5: 0.78125rem; /* corps de carte, ligne de note */
+  --text-13: 0.8125rem; /* marque, chips, boutons, nom de branche */
+  --text-14-5: 0.90625rem; /* titre de tendance */
+  --text-15: 0.9375rem; /* corps */
+  --text-15-5: 0.96875rem; /* titre de carte */
+  --text-17: 1.0625rem; /* titre de section */
+  --text-27: 1.6875rem; /* titre de page */
+
+  /* Suivi de lettres : titres serrés, étiquettes capitales ouvertes. */
+  --tracking-titre: -0.015em;
+  --tracking-cap: 0.09em;
+
+  /* Colonne unique de 520px sur mobile ; le desktop garde sa largeur et ses grilles. */
+  --container-colonne: 32.5rem; /* 520px */
   --container-content: 66.25rem; /* 1060px */
-
-  --shadow-flat: 0 4px 0 0 rgb(0 0 0 / 8%);
-  --shadow-active-tab: inset 0 3px 0 0 var(--color-ink);
 }
 
-body {
-  background: var(--color-paper);
-  color: var(--color-ink);
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background: var(--color-page);
+    color: var(--color-encre);
+    font-size: 0.9375rem; /* 15px */
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    /* Dégage la barre d'onglets fixée en bas. */
+    padding-bottom: 78px;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-weight: 600;
+    line-height: 1.2;
+    letter-spacing: var(--tracking-titre);
+  }
+
+  /* Un chiffre ne change jamais de chasse d'une ligne à l'autre. */
+  :where(table, th, td, time, data, output) {
+    font-variant-numeric: tabular-nums;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-k-taux);
+    outline-offset: 2px;
+  }
+}
+
+/* Rangée défilante sans barre visible, qui laisse voir le bord de l'élément suivant. */
+@utility sans-barre {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
 }
 
 .tabular-nums {
@@ -74,11 +110,16 @@ body {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
   *,
   *::before,
   *::after {
-    animation-duration: 0.01ms !important;
+    animation-duration: 1ms !important;
     animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
+    transition-duration: 1ms !important;
+    scroll-behavior: auto !important;
   }
 }

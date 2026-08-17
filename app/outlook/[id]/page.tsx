@@ -24,10 +24,10 @@ export default async function OutlookDetailPage({
   const trends = outlook.trendRefs.map((ref) => getTrend(ref)).filter((t) => t !== null);
 
   return (
-    <div className="mx-auto max-w-content px-4 py-8 md:px-6">
+    <div className="mx-auto max-w-colonne md:max-w-content px-4.5 py-7 md:px-6">
       <Link
         href="/outlook"
-        className="mb-4 inline-block font-mono text-xs text-deep underline decoration-line underline-offset-4 hover:decoration-deep"
+        className="mb-4 inline-block text-12 text-encre underline decoration-trait underline-offset-4 hover:decoration-encre"
       >
         ← Retour aux outlooks
       </Link>
@@ -35,29 +35,29 @@ export default async function OutlookDetailPage({
       <div className="flex items-center gap-3">
         <span
           aria-hidden="true"
-          className="flex h-11 w-11 shrink-0 items-center justify-center border border-line bg-paper font-mono text-13 font-bold text-ink"
+          className="flex h-11 w-11 shrink-0 items-center justify-center rounded-rc border border-trait bg-repos text-13 font-bold text-encre"
         >
           {outlook.bankMonogram}
         </span>
         <div className="min-w-0">
-          <p className="font-mono text-11 uppercase tracking-wider text-mute">
+          <p className="text-11 uppercase tracking-cap text-tenu">
             {outlook.bank} · {outlook.periodCovered}
           </p>
-          <h1 className="font-display text-22 font-extrabold leading-tight text-ink">{outlook.title}</h1>
+          <h1 className="text-17 font-semibold leading-tight text-encre">{outlook.title}</h1>
         </div>
       </div>
-      <p className="mt-2 font-mono text-11 text-mute">Publié le {formatDateLong(outlook.publishedAt)}</p>
+      <p className="mt-2 text-11 text-tenu">Publié le {formatDateLong(outlook.publishedAt)}</p>
 
-      <div className="mt-6 max-w-[68ch] whitespace-pre-line text-15 leading-relaxed text-ink-2">
+      <div className="mt-6 max-w-[68ch] whitespace-pre-line text-15 leading-relaxed text-doux">
         {outlook.summary}
       </div>
 
       {outlook.highlights.length > 0 && (
         <div className="mt-6">
-          <h2 className="font-mono text-11 uppercase tracking-wider text-mute">Points majeurs</h2>
+          <h2 className="text-11 uppercase tracking-cap text-tenu">Points majeurs</h2>
           <ul className="mt-2.5 flex flex-col gap-2">
             {outlook.highlights.map((highlight, i) => (
-              <li key={i} className="border-l-2 border-line-2 pl-3 text-14-5 leading-snug text-ink-2">
+              <li key={i} className="border-l-2 border-trait pl-3 text-14-5 leading-snug text-doux">
                 {highlight}
               </li>
             ))}
@@ -67,13 +67,13 @@ export default async function OutlookDetailPage({
 
       {(drivers.length > 0 || trends.length > 0) && (
         <div className="mt-6">
-          <h2 className="font-mono text-11 uppercase tracking-wider text-mute">Drivers et tendances repris</h2>
+          <h2 className="text-11 uppercase tracking-cap text-tenu">Drivers et tendances repris</h2>
           <ul aria-label="Drivers et tendances repris" className="mt-2.5 flex flex-wrap gap-1.5">
             {drivers.map((driver) => (
               <li key={`driver-${driver.id}`}>
                 <Link
                   href={`/notes/drivers/${driver.id}`}
-                  className="inline-block border border-line bg-paper px-1.5 py-0.5 font-mono text-10-5 uppercase tracking-wide text-ink-2 hover:border-deep hover:text-deep"
+                  className="inline-block rounded-rc border border-trait bg-repos px-1.5 py-0.5 text-10-5 uppercase tracking-wide text-doux hover:border-trait-f hover:text-encre"
                 >
                   {driver.label}
                 </Link>
@@ -83,7 +83,7 @@ export default async function OutlookDetailPage({
               <li key={`trend-${trend.id}`}>
                 <Link
                   href={`/notes/tendances/${trend.id}`}
-                  className="inline-block border border-line bg-paper px-1.5 py-0.5 font-mono text-10-5 uppercase tracking-wide text-ink-2 hover:border-deep hover:text-deep"
+                  className="inline-block rounded-rc border border-trait bg-repos px-1.5 py-0.5 text-10-5 uppercase tracking-wide text-doux hover:border-trait-f hover:text-encre"
                 >
                   {trend.title}
                 </Link>
@@ -93,12 +93,12 @@ export default async function OutlookDetailPage({
         </div>
       )}
 
-      <p className="mt-8 border-t border-line pt-4">
+      <p className="mt-8 border-t border-trait pt-4">
         <a
           href={outlook.sourceUrl}
           target="_blank"
           rel="noreferrer"
-          className="font-mono text-12-5 text-deep underline decoration-line-2 underline-offset-4 hover:decoration-deep"
+          className="text-12-5 text-encre underline decoration-trait underline-offset-4 hover:decoration-encre"
         >
           Voir le document original →
         </a>

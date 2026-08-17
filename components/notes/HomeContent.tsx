@@ -20,8 +20,8 @@ export async function HomeContent() {
 
   if (!latestNote) {
     return (
-      <div className="bg-deep px-4 py-8 md:px-6">
-        <div className="mx-auto max-w-content">
+      <div className="bg-encre px-4.5 py-7 md:px-6">
+        <div className="mx-auto max-w-colonne md:max-w-content">
           <EmptyState
             title="Aucune note n'a encore été publiée"
             description="La première note hebdomadaire fera apparaître le régime en une phrase et les drivers en en-tête."
@@ -34,7 +34,7 @@ export async function HomeContent() {
   return (
     <>
       <RegimeHeader note={latestNote} drivers={drivers} pendingVeilleCount={pendingVeilleCount} />
-      <div className="mx-auto max-w-content px-4 py-8 md:px-6">
+      <div className="mx-auto max-w-colonne md:max-w-content px-4.5 py-7 md:px-6">
         <NotesShelf />
       </div>
     </>

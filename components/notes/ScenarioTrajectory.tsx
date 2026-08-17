@@ -21,9 +21,9 @@ const HEIGHT = 190;
 // pas « tension » ou « détente ». Le trait pointillé double l'information pour ne pas
 // dépendre de la seule couleur.
 const STROKES = [
-  { color: "var(--color-deep)", dash: undefined },
-  { color: "var(--color-ochre)", dash: "6 4" },
-  { color: "var(--color-rust)", dash: "2 4" },
+  { color: "var(--color-k-taux)", dash: undefined },
+  { color: "var(--color-k-choc)", dash: "6 4" },
+  { color: "var(--color-k-pos)", dash: "2 4" },
 ];
 
 type Point = { x: number; y: number; revised: boolean };
@@ -38,7 +38,7 @@ export function ScenarioTrajectory({
   const dates = [...new Set(versions.map((v) => v.date))].sort();
   if (dates.length < 2) {
     return (
-      <p className="border border-dashed border-line px-4 py-6 text-center text-13-5 text-mute">
+      <p className="border border-dashed border-trait px-4 py-6 text-center text-13 text-tenu">
         Une seule date de révision pour l&rsquo;instant : la trajectoire apparaîtra dès la
         deuxième.
       </p>
@@ -85,7 +85,7 @@ export function ScenarioTrajectory({
     .join(" ; ");
 
   return (
-    <div className="border border-line bg-card p-4">
+    <div className="rounded-rc border border-trait bg-page p-4">
       <ul className="mb-3 flex flex-wrap gap-x-5 gap-y-2">
         {lines.map((l) => (
           <li key={l.branchId} className="flex items-center gap-2">
@@ -100,7 +100,7 @@ export function ScenarioTrajectory({
                 strokeDasharray={l.stroke.dash}
               />
             </svg>
-            <span className="font-mono text-11-5 text-ink-2">
+            <span className="text-11 text-doux">
               {BRANCH_LABELS[l.branchId] ?? l.branchId}
             </span>
           </li>
@@ -130,7 +130,7 @@ export function ScenarioTrajectory({
                 x={LEFT - 20}
                 y={ROW_Y[row] + 4}
                 textAnchor="end"
-                className="fill-mute font-mono"
+                className="fill-mute"
                 fontSize="11"
               >
                 {LIKELIHOOD_SHORT[row]}
@@ -144,7 +144,7 @@ export function ScenarioTrajectory({
               x={xOf(date)}
               y={HEIGHT - 14}
               textAnchor="middle"
-              className="fill-mute font-mono"
+              className="fill-mute"
               fontSize="11"
             >
               {formatDateShort(date)}
@@ -179,7 +179,7 @@ export function ScenarioTrajectory({
         </svg>
       </div>
 
-      <p className="mt-2 font-mono text-11 text-mute">
+      <p className="mt-2 text-11 text-tenu">
         Un cercle marque une révision ; entre deux cercles, la vraisemblance a été maintenue.
       </p>
     </div>

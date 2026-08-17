@@ -26,10 +26,10 @@ export async function FeedContent() {
   );
 
   return (
-    <div className="mx-auto max-w-content px-4 py-8 md:px-6">
-      <p className="font-mono text-11 uppercase tracking-wider text-mute">Notes</p>
-      <h1 className="mt-1 font-display text-26 font-extrabold text-ink">Toutes les notes</h1>
-      <p className="mt-2 max-w-[64ch] text-15 text-mute">
+    <div className="mx-auto max-w-colonne md:max-w-content px-4.5 py-7 md:px-6">
+      <p className="text-11 uppercase tracking-cap text-tenu">Notes</p>
+      <h1 className="mt-1 text-27 font-semibold text-encre">Toutes les notes</h1>
+      <p className="mt-2 max-w-[64ch] text-15 text-tenu">
         De la plus récente à la plus ancienne, hebdos et spéciales confondues. Une semaine sans
         hebdo apparaît comme une ligne discrète plutôt que de disparaître du fil.
       </p>

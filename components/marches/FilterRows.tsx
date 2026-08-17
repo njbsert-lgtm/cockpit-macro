@@ -15,9 +15,9 @@ import { DEFAULT_ZONE, ZONE_PARAM } from "@/lib/zone-param";
 // conflit dans la feuille de style et c'est l'ordre de compilation, pas l'ordre d'écriture,
 // qui tranche.
 const BUTTON_BASE =
-  "min-h-11 rounded-xs border py-1.5 text-center focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-deep";
-const BUTTON_OFF = "border-line bg-paper text-ink hover:border-deep";
-const BUTTON_ON = "border-ink bg-ink text-white";
+  "min-h-11 rounded-rp border py-1.5 text-center";
+const BUTTON_OFF = "border-trait bg-repos text-encre hover:border-trait-f";
+const BUTTON_ON = "border-encre bg-encre text-white";
 
 export function FilterRows({ assetClass, zone }: { assetClass: AssetClass; zone: Zone }) {
   const router = useRouter();
@@ -60,7 +60,7 @@ export function FilterRows({ assetClass, zone }: { assetClass: AssetClass; zone:
               onClick={() => setParam(ASSET_CLASS_PARAM, c, DEFAULT_ASSET_CLASS)}
               className={`${BUTTON_BASE} ${active ? BUTTON_ON : BUTTON_OFF} px-2`}
             >
-              <span className="font-display text-12-5 font-bold leading-tight sm:text-14">
+              <span className="text-12-5 font-bold leading-tight sm:text-14-5">
                 {ASSET_CLASS_LABELS[c]}
               </span>
             </button>
@@ -83,7 +83,7 @@ export function FilterRows({ assetClass, zone }: { assetClass: AssetClass; zone:
               type="button"
               aria-pressed={active}
               onClick={() => setParam(ZONE_PARAM, z, DEFAULT_ZONE)}
-              className={`${BUTTON_BASE} ${active ? BUTTON_ON : BUTTON_OFF} shrink-0 whitespace-nowrap px-3 font-mono text-12-5`}
+              className={`${BUTTON_BASE} ${active ? BUTTON_ON : BUTTON_OFF} shrink-0 whitespace-nowrap px-3 text-12-5`}
             >
               {z === DEFAULT_ZONE ? "Toutes" : ZONE_LABELS[z]}
             </button>

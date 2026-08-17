@@ -790,14 +790,21 @@ la formulation d'un journaliste l'est.
 
 ## Design
 
-- Fond clair `#F2F3EF`, cartes blanches, texte `#14171C`
-- Barre persistante et pied en bleu pétrole `#0E4553`, texte blanc pur
-- Accents : ocre `#8A5D00` (tension), rouille `#A3382A` (risque), vert-bleu `#136055` (détente)
-- **Contraste minimum 7:1 sur tout le texte de corps.** Contrainte, pas préférence.
-- Inter (corps), Bricolage Grotesque (titres), IBM Plex Mono (chiffres, en `tabular-nums`)
-- Élément signature : la **chaîne de transmission** en pastilles reliées par des flèches,
-  horizontale sur desktop, verticale sur mobile
-- Mobile d'abord. Pas d'animation décorative, pas de dégradés, coins arrondis ≤ 2 px.
+**La charte graphique vit dans [`DESIGN.md`](./DESIGN.md), qui fait seul autorité.**
+
+Jetons, typographie, mise en page, composants, interaction : tout y est défini une fois.
+Aucune valeur de couleur, de rayon, de taille ou de durée ne se décide ici ni dans un
+composant. Une mesure absente de `DESIGN.md` se demande, elle ne s'improvise pas.
+
+Deux points d'articulation avec le présent cahier, qui ne sont pas des décisions de design
+et restent donc tranchés ici :
+
+- **La largeur.** `DESIGN.md` pose une colonne unique de 520 px. Elle s'applique sur mobile ;
+  le desktop garde sa largeur et ses grilles, sans quoi l'étagère à trois cartes de l'onglet
+  Notes et le mode comparaison de l'onglet Macro deviendraient illisibles.
+- **La règle chromatique** de `DESIGN.md` — couleurs de canal pour le contenu, vert et rouge
+  pour les seuls chiffres — s'étend à l'indicateur de fraîcheur, dont le vert / ambre / rouge
+  est prescrit plus haut : c'est un état de collecte, ni un chiffre ni un contenu éditorial.
 
 ## Les cinq états, à concevoir dès l'étape 1
 

@@ -4,14 +4,14 @@ import { Line, LineChart, ResponsiveContainer, YAxis } from "recharts";
 
 export function Sparkline({
   points,
-  color = "var(--color-deep)",
+  color = "var(--color-encre)",
 }: {
   points: number[];
   color?: string;
 }) {
   if (points.length < 2) {
     return (
-      <div className="flex h-10 items-center font-mono text-11 text-mute">
+      <div className="flex h-10 items-center text-11 text-tenu">
         Historique insuffisant
       </div>
     );

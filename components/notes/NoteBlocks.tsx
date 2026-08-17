@@ -20,31 +20,31 @@ export async function NoteBlocks({ note }: { note: Note }) {
   });
 
   return (
-    <article className="border border-line bg-card">
-      <header className="border-b border-line px-4 py-4 md:px-5">
+    <article className="rounded-rc border border-trait bg-page">
+      <header className="border-b border-trait px-4 py-4 md:px-5">
         <div className="flex flex-wrap items-center gap-2">
           <span
-            className={`font-mono text-10 font-semibold uppercase tracking-wider px-2 py-1 ${
-              note.kind === "hebdo" ? "bg-deep text-white" : "bg-ochre-bg text-ochre"
+            className={`text-10-5 font-semibold uppercase tracking-cap px-2 py-1 ${
+              note.kind === "hebdo" ? "bg-encre text-white" : "bg-k-choc/11 text-k-choc"
             }`}
           >
             {note.kind === "hebdo" ? "Note hebdomadaire" : "Note spéciale"}
           </span>
-          <span className="font-mono text-xs text-mute">{note.slug}</span>
-          <span className="font-mono text-xs text-mute">· {formatDateLong(note.date)}</span>
+          <span className="text-12 text-tenu">{note.slug}</span>
+          <span className="text-12 text-tenu">· {formatDateLong(note.date)}</span>
         </div>
         {note.trigger && (
-          <p className="mt-2.5 border-l-3 border-rust bg-rust-bg px-3 py-2 text-13-5 text-ink-2">
-            <span className="font-mono text-10-5 font-semibold uppercase tracking-wider text-rust">
+          <p className="mt-2.5 border-l-3 border-k-choc bg-k-choc/11 px-3 py-2 text-13 text-doux">
+            <span className="text-10-5 font-semibold uppercase tracking-cap text-k-choc">
               Seuil déclenché
             </span>{" "}
             — {note.trigger}
           </p>
         )}
         {comparesTo && (
-          <p className="mt-2 font-mono text-11-5 text-mute">
+          <p className="mt-2 text-11 text-tenu">
             Comparée à{" "}
-            <Link href={`/notes/${comparesTo.slug}`} className="underline decoration-line underline-offset-4">
+            <Link href={`/notes/${comparesTo.slug}`} className="underline decoration-trait underline-offset-4">
               {comparesTo.slug}
             </Link>{" "}
             du {formatDateLong(comparesTo.date)}
@@ -55,10 +55,10 @@ export async function NoteBlocks({ note }: { note: Note }) {
       <div className="px-4 md:px-5">{content}</div>
 
       {(note.trendRefs.length > 0 || note.sources.length > 0) && (
-        <footer className="border-t border-line px-4 py-4 md:px-5">
+        <footer className="border-t border-trait px-4 py-4 md:px-5">
           {note.trendRefs.length > 0 && (
             <div className="flex flex-wrap items-center gap-2">
-              <span className="font-mono text-10-5 uppercase tracking-wider text-mute">
+              <span className="text-10-5 uppercase tracking-cap text-tenu">
                 Tendances touchées :
               </span>
               {note.trendRefs.map((id) => {
@@ -68,7 +68,7 @@ export async function NoteBlocks({ note }: { note: Note }) {
                   <Link
                     key={id}
                     href={`/notes/tendances/${id}`}
-                    className="border border-line-2 bg-paper px-2 py-1 font-mono text-11 text-ink-2 hover:border-deep hover:text-deep"
+                    className="rounded-rc border border-trait bg-repos px-2 py-1 text-11 text-doux hover:border-trait-f hover:text-encre"
                   >
                     {trend.title}
                   </Link>
@@ -77,10 +77,10 @@ export async function NoteBlocks({ note }: { note: Note }) {
             </div>
           )}
           {note.sources.length > 0 && (
-            <ul className="mt-3 flex flex-wrap gap-x-4 gap-y-1 font-mono text-11 text-mute">
+            <ul className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-11 text-tenu">
               {note.sources.map((s) => (
                 <li key={s.url}>
-                  <a href={s.url} target="_blank" rel="noreferrer" className="hover:text-deep hover:underline">
+                  <a href={s.url} target="_blank" rel="noreferrer" className="hover:text-encre hover:underline">
                     {s.label}
                   </a>
                 </li>

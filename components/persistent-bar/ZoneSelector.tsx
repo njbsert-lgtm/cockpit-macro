@@ -30,10 +30,10 @@ export function ZoneSelector() {
           const qs = params.toString();
           router.push(`${pathname}${qs ? `?${qs}` : ""}`, { scroll: false });
         }}
-        className="border border-white/25 bg-white/10 px-2.5 py-1.5 font-mono text-12-5 font-medium tracking-wide text-white [color-scheme:dark] focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-white"
+        className="border border-white/25 bg-white/10 px-2.5 py-1.5 text-12-5 font-medium tracking-wide text-white [color-scheme:dark]"
       >
         {ALL_ZONES.map((z) => (
-          <option key={z} value={z} className="text-ink">
+          <option key={z} value={z} className="text-encre">
             {ZONE_LABELS[z]}
           </option>
         ))}

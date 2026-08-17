@@ -5,9 +5,9 @@ import type { ScenarioVersion } from "@/lib/types";
 import { BRANCH_LABELS, IMPACT_LABELS, LIKELIHOOD_LABELS } from "@/lib/scenario-labels";
 
 const DIRECTION_CLASS: Record<string, string> = {
-  up: "text-teal",
-  down: "text-rust",
-  flat: "text-mute",
+  up: "text-hausse",
+  down: "text-baisse",
+  flat: "text-tenu",
 };
 
 const DIRECTION_ARROW: Record<string, string> = {
@@ -19,11 +19,11 @@ const DIRECTION_ARROW: Record<string, string> = {
 function BranchBody({ branch }: { branch: ScenarioVersion }) {
   return (
     <>
-      <p className="text-14-5 text-ink-2">{branch.thesis}</p>
+      <p className="text-14-5 text-doux">{branch.thesis}</p>
 
       {branch.likelihoodChangedFrom && (
-        <p className="mt-3 border-l-3 border-ochre bg-ochre-bg px-3 py-2 text-13 text-ink-2">
-          <span className="font-mono text-10-5 font-semibold uppercase tracking-wider text-ochre">
+        <p className="mt-3 border-l-3 border-k-choc bg-k-choc/11 px-3 py-2 text-13 text-doux">
+          <span className="text-10-5 font-semibold uppercase tracking-cap text-k-choc">
             Révision
           </span>{" "}
           — {LIKELIHOOD_LABELS[branch.likelihoodChangedFrom]} →{" "}
@@ -35,28 +35,28 @@ function BranchBody({ branch }: { branch: ScenarioVersion }) {
         {(["eq", "fi", "fx", "cm"] as const).map((key) => {
           const impact = branch.impacts[key];
           return (
-            <div key={key} className="border-t border-line-2 pt-2">
-              <dt className="font-mono text-10 font-semibold uppercase tracking-wider text-mute">
+            <div key={key} className="border-t border-trait pt-2">
+              <dt className="text-10-5 font-semibold uppercase tracking-cap text-tenu">
                 {IMPACT_LABELS[key]}
               </dt>
               <dd>
                 <span
-                  className={`font-display text-13-5 font-bold ${DIRECTION_CLASS[impact.direction]}`}
+                  className={`text-13 font-bold ${DIRECTION_CLASS[impact.direction]}`}
                 >
                   {DIRECTION_ARROW[impact.direction]} {impact.label}
                 </span>
-                <span className="mt-0.5 block text-13 text-ink-2">{impact.text}</span>
+                <span className="mt-0.5 block text-13 text-doux">{impact.text}</span>
               </dd>
             </div>
           );
         })}
       </dl>
 
-      <div className="mt-3 border-l-3 border-ink bg-paper px-3 py-2.5">
-        <p className="font-mono text-10-5 font-semibold uppercase tracking-wider text-mute">
+      <div className="mt-3 border-l-3 border-encre bg-repos px-3 py-2.5">
+        <p className="text-10-5 font-semibold uppercase tracking-cap text-tenu">
           Signaux à surveiller
         </p>
-        <p className="mt-1 text-13 text-ink-2">{branch.watchSignals}</p>
+        <p className="mt-1 text-13 text-doux">{branch.watchSignals}</p>
       </div>
     </>
   );
@@ -71,12 +71,12 @@ function BranchHeading({
 }) {
   return (
     <>
-      <span className="block font-display text-15 font-bold text-ink">
+      <span className="block text-15 font-bold text-encre">
         {BRANCH_LABELS[branch.branchId] ?? branch.branchId}
       </span>
       <span
-        className={`mt-0.5 block font-mono text-11 tracking-wide ${
-          dominant ? "font-semibold text-ochre" : "text-mute"
+        className={`mt-0.5 block text-11 tracking-wide ${
+          dominant ? "font-semibold text-k-choc" : "text-tenu"
         }`}
       >
         {LIKELIHOOD_LABELS[branch.likelihood]}
@@ -106,7 +106,7 @@ export function DriverBranches({
     <>
       {/* Mobile : onglets. */}
       <div className="md:hidden">
-        <div role="tablist" aria-label="Branches du scénario" className="flex flex-col border border-line">
+        <div role="tablist" aria-label="Branches du scénario" className="flex flex-col border border-trait">
           {branches.map((b, i) => (
             <button
               key={b.branchId}
@@ -123,8 +123,8 @@ export function DriverBranches({
                 setSelected(next.branchId);
                 document.getElementById(`branche-${next.branchId}`)?.focus();
               }}
-              className={`border-b border-line px-4 py-3 text-left last:border-b-0 focus-visible:outline-3 focus-visible:-outline-offset-3 focus-visible:outline-ochre ${
-                b.branchId === active.branchId ? "bg-card shadow-active-tab" : "bg-paper"
+              className={`border-b border-trait px-4 py-3 text-left last:border-b-0 focus-visible:-outline-offset-3 ${
+                b.branchId === active.branchId ? "bg-page shadow-active-tab" : "bg-repos"
               }`}
             >
               <BranchHeading branch={b} dominant={b.branchId === dominantBranchId} />
@@ -135,19 +135,19 @@ export function DriverBranches({
           role="tabpanel"
           id={`panneau-${active.branchId}`}
           aria-labelledby={`branche-${active.branchId}`}
-          className="border border-t-0 border-line bg-card p-4"
+          className="border border-t-0 border-trait bg-page p-4"
         >
           <BranchBody branch={active} />
         </div>
       </div>
 
       {/* Desktop : les trois côte à côte, comparables. */}
-      <div className="hidden gap-px bg-line md:grid md:grid-cols-3 md:border md:border-line">
+      <div className="hidden gap-px bg-trait md:grid md:grid-cols-3 md:border md:border-trait">
         {branches.map((b) => (
-          <section key={b.branchId} className="bg-card p-4">
+          <section key={b.branchId} className="bg-page p-4">
             <header
               className={`border-b-2 pb-2 ${
-                b.branchId === dominantBranchId ? "border-ink" : "border-line-2"
+                b.branchId === dominantBranchId ? "border-encre" : "border-trait"
               }`}
             >
               <BranchHeading branch={b} dominant={b.branchId === dominantBranchId} />

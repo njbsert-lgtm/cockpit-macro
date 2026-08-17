@@ -20,14 +20,14 @@ export function IndicatorCard({
   return (
     <Link
       href={`/macro/${indicator.id}`}
-      className="block border border-line bg-card p-4 hover:border-deep focus-visible:outline-3 focus-visible:-outline-offset-2 focus-visible:outline-deep"
+      className="block rounded-rc border border-trait bg-page p-4 hover:border-trait-f"
     >
       <div className="flex items-start justify-between gap-3">
-        <h3 className="font-display text-15 font-bold text-ink">{indicator.label}</h3>
+        <h3 className="text-15 font-bold text-encre">{indicator.label}</h3>
         {variation !== null && (
           <span
-            className={`shrink-0 font-mono text-xs font-semibold tabular-nums ${
-              variation > 0 ? "text-ochre" : variation < 0 ? "text-teal" : "text-mute"
+            className={`shrink-0 text-12 font-semibold tabular-nums ${
+              variation > 0 ? "text-hausse" : variation < 0 ? "text-baisse" : "text-tenu"
             }`}
             title={`Depuis le relevé du ${formatDateShort(previous!.date)}`}
           >
@@ -46,7 +46,7 @@ export function IndicatorCard({
             source={latest.source}
           />
         ) : (
-          <span className="font-mono text-13 italic text-mute">Aucun relevé pour l&rsquo;instant</span>
+          <span className="text-13 italic text-tenu">Aucun relevé pour l&rsquo;instant</span>
         )}
       </div>
 
@@ -56,7 +56,7 @@ export function IndicatorCard({
         </div>
       )}
 
-      <p className="mt-3 font-mono text-11 text-mute">
+      <p className="mt-3 text-11 text-tenu">
         {indicator.nextRelease
           ? `Prochaine publication : ${formatDateLong(indicator.nextRelease)}`
           : "Prochaine date de publication non communiquée"}

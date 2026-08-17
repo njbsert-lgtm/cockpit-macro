@@ -15,17 +15,17 @@ export default function TrendsIndexPage() {
   });
 
   return (
-    <div className="mx-auto max-w-content px-4 py-8 md:px-6">
+    <div className="mx-auto max-w-colonne md:max-w-content px-4.5 py-7 md:px-6">
       <Link
         href="/notes"
-        className="mb-4 inline-block font-mono text-xs text-deep underline decoration-line underline-offset-4 hover:decoration-deep"
+        className="mb-4 inline-block text-12 text-encre underline decoration-trait underline-offset-4 hover:decoration-encre"
       >
         ← Retour aux notes
       </Link>
 
-      <p className="font-mono text-11 uppercase tracking-wider text-mute">Notes</p>
-      <h1 className="mt-1 font-display text-26 font-extrabold text-ink">Tendances de fond</h1>
-      <p className="mt-2 max-w-[64ch] text-15 text-mute">
+      <p className="text-11 uppercase tracking-cap text-tenu">Notes</p>
+      <h1 className="mt-1 text-27 font-semibold text-encre">Tendances de fond</h1>
+      <p className="mt-2 max-w-[64ch] text-15 text-tenu">
         Ce qui est durablement vrai, par opposition aux drivers, qui sont les incertitudes
         actives. Une tendance se lit sur des années : son intérêt est de voir si elle tient ou
         si elle s&rsquo;érode sans qu&rsquo;on le remarque.
@@ -37,21 +37,21 @@ export default function TrendsIndexPage() {
             .sort((a, b) => a.date.localeCompare(b.date))
             .at(-1);
           return (
-            <li key={trend.id} className="border border-line bg-card">
+            <li key={trend.id} className="rounded-rc border border-trait bg-page">
               <Link
                 href={`/notes/tendances/${trend.id}`}
-                className="block px-4 py-3.5 hover:bg-paper"
+                className="block px-4 py-3.5 hover:bg-repos"
               >
                 <div className="flex flex-wrap items-center gap-2">
                   <span
-                    className={`px-2 py-0.5 font-mono text-10 font-semibold uppercase tracking-wider ${TREND_STATUS_CLASS[trend.status]}`}
+                    className={`px-2 py-0.5 text-10-5 font-semibold uppercase tracking-cap ${TREND_STATUS_CLASS[trend.status]}`}
                   >
                     {TREND_STATUS_LABEL[trend.status]}
                   </span>
-                  <h2 className="font-display text-16 font-bold text-ink">{trend.title}</h2>
+                  <h2 className="text-15 font-bold text-encre">{trend.title}</h2>
                 </div>
-                <p className="mt-1.5 max-w-[70ch] text-14 text-ink-2">{trend.thesis}</p>
-                <p className="mt-2 font-mono text-11 text-mute">
+                <p className="mt-1.5 max-w-[70ch] text-14-5 text-doux">{trend.thesis}</p>
+                <p className="mt-2 text-11 text-tenu">
                   {trend.statusHistory.length} passage
                   {trend.statusHistory.length > 1 ? "s" : ""}
                   {last && ` · dernier le ${formatDateLong(last.date)}`}

@@ -20,10 +20,10 @@ export type InstrumentRow = {
 };
 
 const DATE_TONE: Record<FreshnessTier, string> = {
-  frais: "text-mute",
-  perime: "text-ochre",
-  erreur: "text-rust",
-  absente: "text-mute",
+  frais: "text-tenu",
+  perime: "text-k-choc",
+  erreur: "text-baisse",
+  absente: "text-tenu",
 };
 
 /**
@@ -34,14 +34,14 @@ const DATE_TONE: Record<FreshnessTier, string> = {
 function ChangePill({ change, direction }: { change: string; direction: "up" | "down" | "flat" }) {
   const tone =
     direction === "up"
-      ? "bg-teal-bg text-teal"
+      ? "bg-hausse/11 text-hausse"
       : direction === "down"
-        ? "bg-rust-bg text-rust"
-        : "bg-line-2 text-ink-2";
+        ? "bg-baisse/11 text-baisse"
+        : "bg-trait text-doux";
 
   return (
     <span
-      className={`inline-block rounded-xs px-1.5 py-0.5 font-mono text-11 font-semibold tabular-nums ${tone}`}
+      className={`inline-block rounded-rp px-1.5 py-0.5 text-11 font-semibold tabular-nums ${tone}`}
     >
       {change}
     </span>
@@ -50,17 +50,17 @@ function ChangePill({ change, direction }: { change: string; direction: "up" | "
 
 export function InstrumentList({ rows }: { rows: InstrumentRow[] }) {
   return (
-    <ul className="border border-line bg-card" aria-label="Instruments de la classe sélectionnée">
+    <ul className="rounded-rc border border-trait bg-page" aria-label="Instruments de la classe sélectionnée">
       {rows.map((row) => (
-        <li key={row.id} className="border-b border-line-2 last:border-b-0">
+        <li key={row.id} className="border-b border-trait last:border-b-0">
           <Link
             href={row.href}
-            className="flex min-h-11 items-center justify-between gap-3 px-3 py-3 hover:bg-paper focus-visible:outline-3 focus-visible:-outline-offset-2 focus-visible:outline-deep"
+            className="flex min-h-11 items-center justify-between gap-3 px-3 py-3 hover:bg-repos"
           >
             <span className="min-w-0">
-              <span className="block font-display text-14-5 font-bold text-ink">{row.label}</span>
+              <span className="block text-14-5 font-bold text-encre">{row.label}</span>
               {row.zoneTag && (
-                <span className="mt-0.5 block font-mono text-10-5 uppercase tracking-wide text-mute">
+                <span className="mt-0.5 block text-10-5 uppercase tracking-wide text-tenu">
                   {row.zoneTag}
                 </span>
               )}
@@ -69,10 +69,10 @@ export function InstrumentList({ rows }: { rows: InstrumentRow[] }) {
             <span className="shrink-0 text-right">
               {row.value === null || row.date === null ? (
                 /* Aucun relevé du tout : on le dit, on n'affiche pas un zéro. */
-                <span className="font-mono text-13 italic text-mute">non suivi</span>
+                <span className="text-13 italic text-tenu">non suivi</span>
               ) : (
                 <>
-                  <span className="block font-mono text-15 font-semibold tabular-nums text-ink">
+                  <span className="block text-15 font-semibold tabular-nums text-encre">
                     {row.value}
                   </span>
                   <span className="mt-1 flex items-center justify-end gap-1.5">
@@ -80,7 +80,7 @@ export function InstrumentList({ rows }: { rows: InstrumentRow[] }) {
                       <>
                         <ChangePill change={row.change} direction={row.direction} />
                         <span
-                          className={`inline-flex items-center gap-1.5 font-mono text-10-5 ${DATE_TONE[row.tier]}`}
+                          className={`inline-flex items-center gap-1.5 text-10-5 ${DATE_TONE[row.tier]}`}
                           title={formatDateLong(row.date)}
                         >
                           {row.tier !== "frais" && <FreshnessDot tier={row.tier} />}
@@ -92,8 +92,8 @@ export function InstrumentList({ rows }: { rows: InstrumentRow[] }) {
                          valeur connue — déjà au-dessus — en la datant explicitement, et on dit
                          pourquoi la variation manque. */
                       <span
-                        className={`inline-flex items-center gap-1.5 font-mono text-10-5 ${
-                          row.tier === "frais" ? "text-ochre" : DATE_TONE[row.tier]
+                        className={`inline-flex items-center gap-1.5 text-10-5 ${
+                          row.tier === "frais" ? "text-k-choc" : DATE_TONE[row.tier]
                         }`}
                         title={row.changeUnavailableReason ?? undefined}
                       >

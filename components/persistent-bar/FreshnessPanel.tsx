@@ -51,7 +51,7 @@ export function FreshnessPanel({
         type="button"
         onClick={() => setOpen((o) => !o)}
         aria-expanded={open}
-        className="flex items-center gap-2 rounded-xs bg-white/10 px-2.5 py-1.5 font-mono text-11-5 tracking-wide text-deep-fg hover:bg-white/15 focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-white"
+        className="flex items-center gap-2 rounded-rp bg-white/10 px-2.5 py-1.5 text-11 tracking-wide text-doux hover:bg-white/15"
       >
         <FreshnessDot tier={tier} />
         {oldest ? (
@@ -62,12 +62,12 @@ export function FreshnessPanel({
       </button>
 
       {open && (
-        <div className="absolute right-0 top-full z-50 mt-1.5 w-80 max-w-[85vw] border border-line bg-card p-3 text-ink shadow-flat">
-          <p className="mb-2 font-mono text-10-5 font-semibold uppercase tracking-wider text-mute">
+        <div className="absolute right-0 top-full z-50 mt-1.5 w-80 max-w-[85vw] rounded-rc border border-trait bg-page p-3 text-encre shadow-flat">
+          <p className="mb-2 text-10-5 font-semibold uppercase tracking-cap text-tenu">
             Fraîcheur par source
           </p>
           {summary.length === 0 ? (
-            <p className="text-13-5 text-mute">Aucune source suivie pour l&rsquo;instant.</p>
+            <p className="text-13 text-tenu">Aucune source suivie pour l&rsquo;instant.</p>
           ) : (
             <ul className="flex flex-col gap-2">
               {summary.map((s) => (
@@ -77,13 +77,13 @@ export function FreshnessPanel({
                       <FreshnessDot tier={s.tier} />
                       {s.source}
                     </span>
-                    <span className="font-mono text-11-5 text-mute">
+                    <span className="text-11 text-tenu">
                       {formatDateTime(s.fetchedAt)} · {TIER_LABEL[s.tier]}
                     </span>
                   </span>
                   {/* État 5 du cahier : nommer la source en cause, pas seulement la signaler. */}
                   {s.error && (
-                    <span className="mt-1 block border-l-2 border-rust pl-2 font-mono text-11 text-rust">
+                    <span className="mt-1 block border-l-2 border-baisse pl-2 text-11 text-baisse">
                       {s.error}
                     </span>
                   )}

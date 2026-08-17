@@ -10,10 +10,10 @@ export default async function TriagePage() {
   const groups = groupByDay(items);
 
   return (
-    <div className="mx-auto max-w-content px-4 py-8 md:px-6">
-      <p className="font-mono text-11 uppercase tracking-wider text-mute">Notes</p>
-      <h1 className="mt-1 font-display text-26 font-extrabold text-ink">Triage</h1>
-      <p className="mt-2 max-w-[64ch] text-15 text-mute">
+    <div className="mx-auto max-w-colonne md:max-w-content px-4.5 py-7 md:px-6">
+      <p className="text-11 uppercase tracking-cap text-tenu">Notes</p>
+      <h1 className="mt-1 text-27 font-semibold text-encre">Triage</h1>
+      <p className="mt-2 max-w-[64ch] text-15 text-tenu">
         Les items qui ont survécu à la passe 1 — un driver ou un canal de transmission reconnu —,
         groupés par jour, en attente d&rsquo;un jugement humain. Verser rattache un item à l&rsquo;un
         des cinq blocs analytiques de la note en préparation ; archiver ou ignorer le retire de la
@@ -28,7 +28,7 @@ export default async function TriagePage() {
             action={
               <Link
                 href="/"
-                className="inline-block border border-line bg-paper px-3 py-1.5 font-mono text-12-5 text-ink-2 hover:border-deep hover:text-deep"
+                className="inline-block rounded-rc border border-trait bg-repos px-3 py-1.5 text-12-5 text-doux hover:border-trait-f hover:text-encre"
               >
                 Revenir aux Notes
               </Link>

@@ -29,16 +29,16 @@ export function NoteCard({
   return (
     <Link
       href={`/notes/${note.slug}`}
-      className={`flex h-full flex-col border border-line bg-card hover:border-deep focus-visible:outline-3 focus-visible:-outline-offset-2 focus-visible:outline-deep ${className}`}
+      className={`flex h-full flex-col overflow-hidden rounded-rc border border-trait bg-page hover:border-trait-f ${className}`}
     >
       {/* Le bandeau encode le type par la couleur ; le libellé texte juste en dessous porte
           la même information en clair, pour ne pas s'appuyer sur la couleur seule. */}
-      <span aria-hidden="true" className={`h-1.5 w-full shrink-0 ${isSpeciale ? "bg-rust" : "bg-ink"}`} />
+      <span aria-hidden="true" className={`h-1.5 w-full shrink-0 ${isSpeciale ? "bg-k-choc" : "bg-encre"}`} />
 
       <span className="flex flex-1 flex-col px-3.5 py-3">
-        <span className="flex flex-wrap items-center gap-x-2 gap-y-0.5 font-mono text-10-5 text-mute">
+        <span className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-10-5 text-tenu">
           <span
-            className={`font-semibold uppercase tracking-wider ${isSpeciale ? "text-rust" : "text-ink-2"}`}
+            className={`font-semibold uppercase tracking-cap ${isSpeciale ? "text-k-choc" : "text-doux"}`}
           >
             {isSpeciale ? "Spéciale" : "Hebdo"}
           </span>
@@ -47,18 +47,18 @@ export function NoteCard({
           <span>{formatDateShort(note.date)}</span>
         </span>
 
-        <span className="mt-2 line-clamp-3 font-display text-17 font-extrabold leading-snug text-ink">
+        <span className="mt-2 line-clamp-3 text-17 font-semibold leading-snug text-encre">
           {note.regimeStatement}
         </span>
 
-        {excerpt && <span className="mt-2 line-clamp-2 text-13 text-ink-2">{excerpt}</span>}
+        {excerpt && <span className="mt-2 line-clamp-2 text-13 text-doux">{excerpt}</span>}
 
         {drivers.length > 0 && (
           <span className="mt-auto flex flex-wrap gap-1.5 pt-3">
             {drivers.map((d) => (
               <span
                 key={d.id}
-                className="border border-line-2 bg-paper px-1.5 py-0.5 font-mono text-9 uppercase tracking-wide text-ink-2"
+                className="rounded-rc border border-trait bg-repos px-1.5 py-0.5 text-9-5 uppercase tracking-wide text-doux"
               >
                 {d.label}
               </span>

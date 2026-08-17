@@ -37,7 +37,7 @@ export const revalidate = 3600;
 
 function SectionTitle({ children }: { children: React.ReactNode }) {
   return (
-    <h2 className="mt-10 font-display text-22 font-extrabold text-ink">{children}</h2>
+    <h2 className="mt-10 text-17 font-semibold text-encre">{children}</h2>
   );
 }
 
@@ -59,38 +59,38 @@ export default async function DriverPage({ params }: { params: Promise<{ id: str
   const bySeries = await loadObservations(driver.instrumentRefs);
 
   return (
-    <div className="mx-auto max-w-content px-4 py-8 md:px-6">
+    <div className="mx-auto max-w-colonne md:max-w-content px-4.5 py-7 md:px-6">
       <Link
         href="/notes"
-        className="mb-4 inline-block font-mono text-xs text-deep underline decoration-line underline-offset-4 hover:decoration-deep"
+        className="mb-4 inline-block text-12 text-encre underline decoration-trait underline-offset-4 hover:decoration-encre"
       >
         ← Retour aux notes
       </Link>
 
       {/* 1 — La question et la branche dominante */}
-      <p className="font-mono text-11 uppercase tracking-wider text-mute">
+      <p className="text-11 uppercase tracking-cap text-tenu">
         Driver · {driver.label}
         {driver.retiredAt && " · retiré"}
       </p>
-      <h1 className="mt-1.5 max-w-[28ch] font-display text-28 font-extrabold leading-tight text-ink">
+      <h1 className="mt-1.5 max-w-[28ch] text-27 font-semibold leading-tight text-encre">
         {driver.question}
       </h1>
-      <p className="mt-3 text-16 text-ink-2">
+      <p className="mt-3 text-15 text-doux">
         Aujourd&rsquo;hui, la branche dominante est{" "}
-        <strong className="font-semibold text-ink">
+        <strong className="font-semibold text-encre">
           {BRANCH_LABELS[driver.dominantBranchId] ?? driver.dominantBranchId}
         </strong>
         {" — "}
         <Link
           href={`/notes/${driver.lastRevisedIn}`}
-          className="text-deep underline decoration-line underline-offset-4"
+          className="text-encre underline decoration-trait underline-offset-4"
         >
           révisée le {formatDateLong(driver.lastRevisedAt)}
         </Link>
         .
       </p>
       {driver.retiredAt && (
-        <p className="mt-3 border-l-3 border-mute bg-paper px-3.5 py-2.5 text-13-5 text-ink-2">
+        <p className="mt-3 border-l-3 border-trait-f bg-repos px-3.5 py-2.5 text-13 text-doux">
           Ce driver a été retiré le {formatDateLong(driver.retiredAt)} : il ne figure plus en
           en-tête des notes. Sa page reste consultable — on ne supprime pas une lecture
           passée.
@@ -99,7 +99,7 @@ export default async function DriverPage({ params }: { params: Promise<{ id: str
 
       {/* 2 — Les trois branches */}
       <SectionTitle>Les trois branches</SectionTitle>
-      <p className="mt-1 max-w-[64ch] text-15 text-mute">
+      <p className="mt-1 max-w-[64ch] text-15 text-tenu">
         Comparables côte à côte : la thèse, les impacts par classe d&rsquo;actifs, et ce qui
         confirmerait ou infirmerait chacune.
       </p>
@@ -109,7 +109,7 @@ export default async function DriverPage({ params }: { params: Promise<{ id: str
 
       {/* 3 — La trajectoire */}
       <SectionTitle>Trajectoire</SectionTitle>
-      <p className="mt-1 max-w-[64ch] text-15 text-mute">
+      <p className="mt-1 max-w-[64ch] text-15 text-tenu">
         Comment la vraisemblance de chaque branche a évolué — la vue qui montre si la lecture a
         suivi les données ou couru derrière les prix.
       </p>
@@ -119,7 +119,7 @@ export default async function DriverPage({ params }: { params: Promise<{ id: str
 
       {/* 4 — Les instruments pilotés */}
       <SectionTitle>Les instruments qu&rsquo;il pilote</SectionTitle>
-      <ul className="mt-4 flex flex-col divide-y divide-line-2 border border-line bg-card">
+      <ul className="mt-4 flex flex-col divide-y divide-trait rounded-rc border border-trait bg-page">
         {driver.instrumentRefs.map((instrumentId) => {
           const instrument = getInstrument(instrumentId)!;
           const obs = [...observationsOf(bySeries, instrumentId)].sort((a, b) =>
@@ -133,7 +133,7 @@ export default async function DriverPage({ params }: { params: Promise<{ id: str
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <Link
                   href={`/marches/${instrument.assetClass}/${instrumentId}`}
-                  className="font-display text-14-5 font-bold text-ink hover:text-deep"
+                  className="text-14-5 font-bold text-encre hover:text-encre"
                 >
                   {instrument.label}
                 </Link>
@@ -146,7 +146,7 @@ export default async function DriverPage({ params }: { params: Promise<{ id: str
                     size="sm"
                   />
                 ) : (
-                  <span className="font-mono text-13 italic text-mute">aucun relevé</span>
+                  <span className="text-13 italic text-tenu">aucun relevé</span>
                 )}
               </div>
               {alerts.length > 0 && (
@@ -154,9 +154,9 @@ export default async function DriverPage({ params }: { params: Promise<{ id: str
                   {alerts.map(({ rule, event }) => (
                     <li
                       key={`${event.ruleId}-${event.firedAt}`}
-                      className="border-l-3 border-rust bg-rust-bg px-3 py-1.5 text-13 text-ink-2"
+                      className="border-l-3 border-k-choc bg-k-choc/11 px-3 py-1.5 text-13 text-doux"
                     >
-                      <span className="font-mono text-10-5 font-semibold uppercase tracking-wider text-rust">
+                      <span className="text-10-5 font-semibold uppercase tracking-cap text-k-choc">
                         Alerte
                       </span>{" "}
                       {rule.label} — {event.direction === "up" ? "hausse" : "baisse"} de{" "}
@@ -169,7 +169,7 @@ export default async function DriverPage({ params }: { params: Promise<{ id: str
                           {" · "}
                           <Link
                             href={`/notes/${event.noteSlug}`}
-                            className="text-deep underline decoration-line underline-offset-4"
+                            className="text-encre underline decoration-trait underline-offset-4"
                           >
                             {event.noteSlug}
                           </Link>
@@ -194,17 +194,17 @@ export default async function DriverPage({ params }: { params: Promise<{ id: str
             <li key={trendId}>
               <Link
                 href={`/notes/tendances/${trendId}`}
-                className="block border border-line bg-card px-3.5 py-3 hover:border-deep"
+                className="block rounded-rc border border-trait bg-page px-3.5 py-3 hover:border-trait-f"
               >
                 <div className="flex flex-wrap items-center gap-2">
-                  <span className="font-display text-14-5 font-bold text-ink">{trend.title}</span>
+                  <span className="text-14-5 font-bold text-encre">{trend.title}</span>
                   <span
-                    className={`px-2 py-0.5 font-mono text-10 font-semibold uppercase tracking-wider ${TREND_STATUS_CLASS[trend.status]}`}
+                    className={`px-2 py-0.5 text-10-5 font-semibold uppercase tracking-cap ${TREND_STATUS_CLASS[trend.status]}`}
                   >
                     {TREND_STATUS_LABEL[trend.status]}
                   </span>
                 </div>
-                <span className="mt-1 block font-mono text-11 text-mute">
+                <span className="mt-1 block text-11 text-tenu">
                   {canInvalidate
                     ? "Ce driver pourrait la faire tomber"
                     : "Ce driver l’alimente, sans pouvoir l’invalider"}
@@ -224,12 +224,12 @@ export default async function DriverPage({ params }: { params: Promise<{ id: str
             <li key={note.slug}>
               <Link
                 href={`/notes/${note.slug}`}
-                className="block border border-line-2 bg-card px-3.5 py-2.5 hover:border-deep"
+                className="block rounded-rc border border-trait bg-page px-3.5 py-2.5 hover:border-trait-f"
               >
-                <span className="font-display text-14 font-bold text-ink">
+                <span className="text-14-5 font-bold text-encre">
                   {note.regimeStatement}
                 </span>
-                <span className="mt-1 block font-mono text-11 text-mute">
+                <span className="mt-1 block text-11 text-tenu">
                   {note.slug} · {formatDateLong(note.date)} ·{" "}
                   {revised
                     .map(

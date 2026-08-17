@@ -27,7 +27,7 @@ export function DataValue({
 
   if (value === null || date === null) {
     return (
-      <span className="font-mono text-13 italic text-mute">non suivi</span>
+      <span className="text-13 italic text-tenu">non suivi</span>
     );
   }
 
@@ -41,10 +41,10 @@ export function DataValue({
   if (tier === "erreur" || tier === "absente") {
     return (
       <span className="inline-flex flex-col gap-1">
-        <span className={`font-mono font-semibold tabular-nums text-ink ${valueClass}`}>
+        <span className={`font-semibold tabular-nums text-encre ${valueClass}`}>
           {value}
         </span>
-        <span className="inline-flex items-center gap-1.5 font-mono text-11 text-rust">
+        <span className="inline-flex items-center gap-1.5 text-11 text-baisse">
           <FreshnessDot tier={tier} />
           dernière valeur connue du {formatDateShort(date)} · source : {source}
         </span>
@@ -55,10 +55,10 @@ export function DataValue({
   if (tier === "perime") {
     return (
       <span className="inline-flex flex-col gap-1">
-        <span className={`font-mono font-semibold tabular-nums text-ink ${valueClass}`}>
+        <span className={`font-semibold tabular-nums text-encre ${valueClass}`}>
           {value}
         </span>
-        <span className="inline-flex items-center gap-1.5 font-mono text-11 text-ochre">
+        <span className="inline-flex items-center gap-1.5 text-11 text-k-choc">
           <FreshnessDot tier={tier} />
           périmé · relevé du {formatDateShort(date)}
         </span>
@@ -68,10 +68,10 @@ export function DataValue({
 
   return (
     <span className="inline-flex flex-col gap-1">
-      <span className={`font-mono font-semibold tabular-nums text-ink ${valueClass}`}>
+      <span className={`font-semibold tabular-nums text-encre ${valueClass}`}>
         {value}
       </span>
-      <span className="font-mono text-11 text-mute" title={formatDateLong(date)}>
+      <span className="text-11 text-tenu" title={formatDateLong(date)}>
         au {formatDateShort(date)}
       </span>
     </span>

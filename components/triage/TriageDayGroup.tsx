@@ -17,14 +17,14 @@ export function TriageDayGroup({
   const label = formatDateLong(group.date);
 
   return (
-    <details open={!collapsedByDefault} className="border border-line bg-card">
+    <details open={!collapsedByDefault} className="rounded-rc border border-trait bg-page">
       <summary className="flex min-h-11 cursor-pointer list-none items-center justify-between gap-3 px-4 py-3 [&::-webkit-details-marker]:hidden">
-        <span className="font-display text-15 font-bold text-ink">{label}</span>
-        <span className="font-mono text-11 text-mute">
+        <span className="text-15 font-bold text-encre">{label}</span>
+        <span className="text-11 text-tenu">
           {group.items.length} item{group.items.length > 1 ? "s" : ""}
         </span>
       </summary>
-      <ul aria-label={`Items du ${label}`} className="divide-y divide-line border-t border-line">
+      <ul aria-label={`Items du ${label}`} className="divide-y divide-trait border-t border-trait">
         {group.items.map((item) => (
           <li key={item.id}>
             <TriageItemRow item={item} />

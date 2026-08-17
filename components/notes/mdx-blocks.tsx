@@ -20,7 +20,7 @@ function EvidencePills({ items }: { items: VeilleItem[] }) {
             target="_blank"
             rel="noreferrer"
             title={item.title}
-            className="inline-block max-w-[26ch] truncate border border-line-2 bg-paper px-1.5 py-0.5 align-bottom font-mono text-10-5 text-ink-2 hover:border-deep hover:text-deep"
+            className="inline-block max-w-[26ch] truncate rounded-rc border border-trait bg-repos px-1.5 py-0.5 align-bottom text-10-5 text-doux hover:border-trait-f hover:text-encre"
           >
             {item.source} · {item.title}
           </a>
@@ -46,11 +46,11 @@ function Block({
   children?: React.ReactNode;
 }) {
   return (
-    <section className="border-t border-line py-4 first:border-t-0">
-      <h4 className="font-mono text-11 font-semibold uppercase tracking-wider text-mute">
+    <section className="border-t border-trait py-4 first:border-t-0">
+      <h4 className="text-11 font-semibold uppercase tracking-cap text-tenu">
         {BLOCK_TITLES[name]}
       </h4>
-      <div className="mt-2 max-w-[70ch] text-15-5 leading-relaxed text-ink-2 [&>p]:mt-3 [&>p:first-child]:mt-0">
+      <div className="mt-2 max-w-[70ch] text-15-5 leading-relaxed text-doux [&>p]:mt-3 [&>p:first-child]:mt-0">
         {children}
       </div>
       <EvidencePills items={evidence} />
@@ -68,23 +68,23 @@ function LeFilDeLaSemaineBlock({ items }: { items: VeilleItem[] }) {
   const chronological = sortChronologically(items);
 
   return (
-    <section className="border-t border-line py-4">
-      <h4 className="font-mono text-11 font-semibold uppercase tracking-wider text-mute">
+    <section className="border-t border-trait py-4">
+      <h4 className="text-11 font-semibold uppercase tracking-cap text-tenu">
         {BLOCK_TITLES.LeFilDeLaSemaine}
       </h4>
       <ul className="mt-2.5 flex flex-col gap-1.5">
         {chronological.map((item) => (
-          <li key={item.id} className="flex flex-wrap items-baseline gap-x-2 text-13-5 leading-snug text-ink-2">
-            <span className="shrink-0 font-mono text-10-5 text-mute">{formatDateShort(item.publishedAt)}</span>
+          <li key={item.id} className="flex flex-wrap items-baseline gap-x-2 text-13 leading-snug text-doux">
+            <span className="shrink-0 text-10-5 text-tenu">{formatDateShort(item.publishedAt)}</span>
             <a
               href={item.url}
               target="_blank"
               rel="noreferrer"
-              className="hover:text-deep hover:underline"
+              className="hover:text-encre hover:underline"
             >
               {item.title}
             </a>
-            <span className="shrink-0 font-mono text-10-5 text-mute">— {item.source}</span>
+            <span className="shrink-0 text-10-5 text-tenu">— {item.source}</span>
           </li>
         ))}
       </ul>

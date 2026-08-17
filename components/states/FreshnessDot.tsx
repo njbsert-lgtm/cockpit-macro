@@ -2,10 +2,10 @@ import type { FreshnessTier } from "@/lib/freshness";
 import { TIER_LABEL } from "@/lib/freshness";
 
 const TIER_COLOR: Record<FreshnessTier, string> = {
-  frais: "bg-teal",
-  perime: "bg-ochre",
-  erreur: "bg-rust",
-  absente: "bg-mute",
+  frais: "bg-hausse",
+  perime: "bg-k-choc",
+  erreur: "bg-baisse",
+  absente: "bg-tenu",
 };
 
 export function FreshnessDot({
@@ -18,11 +18,11 @@ export function FreshnessDot({
   return (
     <span className="inline-flex items-center gap-2">
       <span
-        className={`inline-block h-[7px] w-[7px] shrink-0 rounded-full ${TIER_COLOR[tier]}`}
+        className={`inline-block h-[7px] w-[7px] shrink-0 rounded-rp ${TIER_COLOR[tier]}`}
         aria-hidden="true"
       />
       {withLabel && (
-        <span className="font-mono text-11 tracking-wide text-mute">
+        <span className="text-11 tracking-wide text-tenu">
           {TIER_LABEL[tier]}
         </span>
       )}

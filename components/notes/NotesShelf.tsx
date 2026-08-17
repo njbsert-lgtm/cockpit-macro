@@ -20,10 +20,10 @@ export function NotesShelf() {
     <section className="mt-10">
       <Link
         href="/notes"
-        className="group flex items-baseline gap-1.5 text-ink hover:text-deep focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-deep"
+        className="group flex items-baseline gap-1.5 text-encre hover:text-encre"
       >
-        <h2 className="font-display text-22 font-extrabold">Notes</h2>
-        <span aria-hidden="true" className="font-display text-22 font-extrabold text-mute group-hover:text-deep">
+        <h2 className="text-17 font-semibold">Notes</h2>
+        <span aria-hidden="true" className="text-17 font-semibold text-tenu group-hover:text-encre">
           ›
         </span>
       </Link>

@@ -12,28 +12,28 @@ export function HistoryChart({
 }) {
   if (points.length < 2) {
     return (
-      <div className="flex h-56 items-center justify-center border border-dashed border-line text-13-5 text-mute">
+      <div className="flex h-56 items-center justify-center border border-dashed border-trait text-13 text-tenu">
         Historique insuffisant pour tracer un graphique.
       </div>
     );
   }
 
   return (
-    <div className="h-56 w-full border border-line bg-card p-3">
+    <div className="h-56 w-full rounded-rc border border-trait bg-page p-3">
       <ResponsiveContainer width="100%" height="100%">
         <LineChart data={points} margin={{ top: 8, right: 12, bottom: 0, left: 0 }}>
           <CartesianGrid stroke="var(--color-line-2)" vertical={false} />
           <XAxis
             dataKey="date"
             tickFormatter={(d: string) => formatDateShort(d)}
-            tick={{ fontSize: 10.5, fill: "var(--color-mute)", fontFamily: "var(--font-mono)" }}
+            tick={{ fontSize: 10.5, fill: "var(--color-mute)", fontFamily: "var(--)" }}
             axisLine={{ stroke: "var(--color-line)" }}
             tickLine={false}
             minTickGap={40}
           />
           <YAxis
             domain={["auto", "auto"]}
-            tick={{ fontSize: 10.5, fill: "var(--color-mute)", fontFamily: "var(--font-mono)" }}
+            tick={{ fontSize: 10.5, fill: "var(--color-mute)", fontFamily: "var(--)" }}
             axisLine={false}
             tickLine={false}
             width={48}
@@ -45,13 +45,13 @@ export function HistoryChart({
               border: "1px solid var(--color-line)",
               borderRadius: 0,
               fontSize: 12.5,
-              fontFamily: "var(--font-mono)",
+              fontFamily: "var(--)",
             }}
           />
           <Line
             type="monotone"
             dataKey="value"
-            stroke="var(--color-deep)"
+            stroke="var(--color-encre)"
             strokeWidth={2}
             dot={{ r: 2.5 }}
             isAnimationActive={false}

@@ -80,13 +80,13 @@ async function MarchesContent({ assetClass, zone }: { assetClass: AssetClass; zo
   const isCurve = assetClass === "rates" && isRateCountryZone(zone);
 
   return (
-    <div className="mx-auto max-w-content px-4 py-8 md:px-6">
-      <p className="font-mono text-11 uppercase tracking-wider text-mute">Marchés</p>
-      <h1 className="mt-1 font-display text-26 font-extrabold text-ink">
+    <div className="mx-auto max-w-colonne md:max-w-content px-4.5 py-7 md:px-6">
+      <p className="text-11 uppercase tracking-cap text-tenu">Marchés</p>
+      <h1 className="mt-1 text-27 font-semibold text-encre">
         {ASSET_CLASS_LABELS[assetClass]}
       </h1>
       {isCurve && (
-        <p className="mt-1 font-mono text-12-5 text-mute">
+        <p className="mt-1 text-12-5 text-tenu">
           Courbe {ZONE_LABELS[zone]} — 6 mois à 20 ans.
         </p>
       )}
@@ -104,7 +104,7 @@ async function MarchesContent({ assetClass, zone }: { assetClass: AssetClass; zo
         )}
       </div>
 
-      <p className="mt-3 font-mono text-11 text-mute">
+      <p className="mt-3 text-11 text-tenu">
         Variation entre les deux dernières clôtures. Les taux et les spreads sont exprimés en
         points de base, les autres instruments en pourcentage.
       </p>

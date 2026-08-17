@@ -11,9 +11,9 @@ export function EmptyState({
   action?: React.ReactNode;
 }) {
   return (
-    <div className="border border-dashed border-line bg-card px-6 py-10 text-center">
-      <p className="font-display text-lg font-bold text-ink">{title}</p>
-      <p className="mx-auto mt-2 max-w-md text-15 text-mute">{description}</p>
+    <div className="rounded-rc border border-dashed border-trait bg-page px-6 py-10 text-center">
+      <p className="text-17 font-bold text-encre">{title}</p>
+      <p className="mx-auto mt-2 max-w-md text-15 text-tenu">{description}</p>
       {action && <div className="mt-4">{action}</div>}
     </div>
   );

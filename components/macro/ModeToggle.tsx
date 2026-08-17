@@ -18,13 +18,13 @@ export function ModeToggle({ mode }: { mode: "zone" | "compare" }) {
   }
 
   return (
-    <div className="inline-flex border border-line" role="group" aria-label="Mode de lecture">
+    <div className="inline-flex border border-trait" role="group" aria-label="Mode de lecture">
       <button
         type="button"
         aria-pressed={mode === "zone"}
         onClick={() => setMode("zone")}
-        className={`px-3.5 py-2 font-mono text-12-5 font-medium ${
-          mode === "zone" ? "bg-ink text-white" : "bg-paper text-ink-2 hover:bg-line-2"
+        className={`px-3.5 py-2 text-12-5 font-medium ${
+          mode === "zone" ? "bg-encre text-white" : "bg-repos text-doux hover:bg-trait"
         }`}
       >
         Mode zone
@@ -33,8 +33,8 @@ export function ModeToggle({ mode }: { mode: "zone" | "compare" }) {
         type="button"
         aria-pressed={mode === "compare"}
         onClick={() => setMode("compare")}
-        className={`border-l border-line px-3.5 py-2 font-mono text-12-5 font-medium ${
-          mode === "compare" ? "bg-ink text-white" : "bg-paper text-ink-2 hover:bg-line-2"
+        className={`border-l border-trait px-3.5 py-2 text-12-5 font-medium ${
+          mode === "compare" ? "bg-encre text-white" : "bg-repos text-doux hover:bg-trait"
         }`}
       >
         Mode comparaison
