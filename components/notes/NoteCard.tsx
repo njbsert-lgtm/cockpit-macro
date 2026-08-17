@@ -76,30 +76,30 @@ export function NoteCard({
       />
 
       <span className="flex flex-1 flex-col p-[15px]">
-        <span className="flex items-center justify-between gap-2">
-          <span className="flex min-w-0 items-center gap-1.5">
-            {dominant && (
-              <span
-                className={`shrink-0 rounded-rp border border-current px-1.5 py-px text-9-5 font-semibold uppercase tracking-cap ${CHANNEL_TEXT[dominant]}`}
-              >
-                {CHANNEL_LABELS[dominant]}
-              </span>
-            )}
-            <span className="shrink-0 text-9-5 font-semibold uppercase tracking-cap text-tenu">
-              {note.kind === "hebdo" ? "Hebdo" : "Spéciale"}
-            </span>
-          </span>
-          {isToday(note.date, now) ? (
+        <span className="flex items-center gap-2">
+          {/* La pastille se comprime avant tout le reste : un libellé de canal long ne doit
+              jamais pousser le type et la date l'un sur l'autre. */}
+          {dominant && (
             <span
-              className={`shrink-0 text-11 font-semibold ${dominant ? CHANNEL_TEXT[dominant] : "text-encre"}`}
+              className={`min-w-0 truncate rounded-rp border border-current px-1.5 py-px text-9-5 font-semibold uppercase tracking-cap ${CHANNEL_TEXT[dominant]}`}
             >
-              Aujourd&rsquo;hui
-            </span>
-          ) : (
-            <span className="shrink-0 text-11 tabular-nums text-tenu">
-              {formatDateShort(note.date)}
+              {CHANNEL_LABELS[dominant]}
             </span>
           )}
+          <span className="ml-auto flex shrink-0 items-center gap-1.5">
+            <span className="text-9-5 font-semibold uppercase tracking-cap text-tenu">
+              {note.kind === "hebdo" ? "Hebdo" : "Spéciale"}
+            </span>
+            {isToday(note.date, now) ? (
+              <span
+                className={`text-11 font-semibold ${dominant ? CHANNEL_TEXT[dominant] : "text-encre"}`}
+              >
+                Aujourd&rsquo;hui
+              </span>
+            ) : (
+              <span className="text-11 tabular-nums text-tenu">{formatDateShort(note.date)}</span>
+            )}
+          </span>
         </span>
 
         <span className="mt-2 line-clamp-3 text-15-5 font-semibold leading-[1.25] tracking-titre text-encre">
@@ -113,7 +113,7 @@ export function NoteCard({
           {/* Le décompte, ou la semaine ISO tant qu'aucun canal n'est déclaré — plutôt qu'un
               « 0 canal » qui se lirait comme un jugement porté. */}
           <span className="text-11 tabular-nums text-tenu">
-            {count > 0 ? `${count} canal${count > 1 ? "ux" : ""}` : note.isoWeek}
+            {count > 0 ? `${count} ${count > 1 ? "canaux" : "canal"}` : note.isoWeek}
           </span>
         </span>
       </span>
