@@ -101,9 +101,14 @@ const frontmatterSchema = z.object({
   instrumentRefs: z.array(z.string()).default([]),
   veilleItemRefs: z.array(z.string()).default([]),
   channels: z.array(z.enum(CHANNELS)).default([]),
+  // Une carte « nom de bloc → sources ». La validation du nom de bloc et de sa présence dans
+  // la note se fait après l'analyse du corps, dans `parseNote` : le schéma ne voit pas le MDX.
   sources: z
-    .array(z.object({ label: z.string().min(1), url: z.string().url() }))
-    .default([]),
+    .record(
+      z.string(),
+      z.array(z.object({ label: z.string().min(1), url: z.string().url() })).min(1),
+    )
+    .default({}),
 });
 
 // ---------------------------------------------------------------------------
@@ -249,6 +254,23 @@ export function parseNote(slug: string, source: string): ParsedNote {
       throw new NoteValidationError(
         slug,
         `bloc « <${block}> » interdit dans une ${fm.kind === "hebdo" ? "hebdo" : "spéciale"} — la structure allégée des spéciales doit rester distincte`,
+      );
+    }
+  }
+
+  // Une source rattachée à un bloc que la note ne porte pas ne s'afficherait nulle part :
+  // elle serait perdue en silence, ce qui est exactement ce que la validation doit empêcher.
+  for (const block of Object.keys(fm.sources)) {
+    if (!(BLOCK_NAMES as readonly string[]).includes(block)) {
+      throw new NoteValidationError(
+        slug,
+        `sources : bloc inconnu « ${block} ». Blocs valides : ${BLOCK_NAMES.join(", ")}`,
+      );
+    }
+    if (!seen.has(block as BlockName)) {
+      throw new NoteValidationError(
+        slug,
+        `sources : le bloc « ${block} » n'existe pas dans cette note — sa source ne s'afficherait nulle part`,
       );
     }
   }

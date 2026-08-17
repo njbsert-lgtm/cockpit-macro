@@ -19,7 +19,7 @@ function note(over: Partial<Note> = {}): Note {
     instrumentRefs: [],
     veilleItemRefs: [],
     channels: [],
-    sources: [],
+    sources: {},
     ...over,
   };
 }

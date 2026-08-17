@@ -15,7 +15,7 @@ export async function NoteBlocks({ note }: { note: Note }) {
   // interne, pas une note mal écrite.
   const { content } = await compileMDX({
     source: body ?? "",
-    components: createNoteMdxComponents(veilleItems),
+    components: createNoteMdxComponents(veilleItems, note.sources),
     options: { parseFrontmatter: false },
   });
 
@@ -54,39 +54,29 @@ export async function NoteBlocks({ note }: { note: Note }) {
 
       <div className="px-4 md:px-5">{content}</div>
 
-      {(note.trendRefs.length > 0 || note.sources.length > 0) && (
+      {/* Les sources ne sont plus listées ici : elles vivent désormais dans le bloc qu'elles
+          étayent, pour qu'on sache quelle affirmation vient d'où. Le pied ne garde que les
+          tendances touchées, qui concernent la note entière. */}
+      {note.trendRefs.length > 0 && (
         <footer className="border-t border-trait px-4 py-4 md:px-5">
-          {note.trendRefs.length > 0 && (
-            <div className="flex flex-wrap items-center gap-2">
-              <span className="text-10-5 uppercase tracking-cap text-tenu">
-                Tendances touchées :
-              </span>
-              {note.trendRefs.map((id) => {
-                const trend = getTrend(id);
-                if (!trend) return null;
-                return (
-                  <Link
-                    key={id}
-                    href={`/notes/tendances/${id}`}
-                    className="rounded-rc border border-trait bg-repos px-2 py-1 text-11 text-doux hover:border-trait-f hover:text-encre"
-                  >
-                    {trend.title}
-                  </Link>
-                );
-              })}
-            </div>
-          )}
-          {note.sources.length > 0 && (
-            <ul className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-11 text-tenu">
-              {note.sources.map((s) => (
-                <li key={s.url}>
-                  <a href={s.url} target="_blank" rel="noreferrer" className="hover:text-encre hover:underline">
-                    {s.label}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          )}
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="text-9-5 font-semibold uppercase tracking-cap text-tenu">
+              Tendances touchées
+            </span>
+            {note.trendRefs.map((id) => {
+              const trend = getTrend(id);
+              if (!trend) return null;
+              return (
+                <Link
+                  key={id}
+                  href={`/notes/tendances/${id}`}
+                  className="rounded-rp border border-trait bg-repos px-2 py-0.5 text-11 text-doux transition-colors hover:border-trait-f hover:text-encre"
+                >
+                  {trend.title}
+                </Link>
+              );
+            })}
+          </div>
         </footer>
       )}
     </article>

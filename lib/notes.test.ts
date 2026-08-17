@@ -18,6 +18,7 @@ type Fm = {
   regimeStatement?: string;
   trendRefs?: string[];
   instrumentRefs?: string[];
+  sources?: string;
 };
 
 function source(fm: Fm = {}, blocks: BlockName[] = HEBDO_BLOCKS): string {
@@ -35,7 +36,7 @@ function source(fm: Fm = {}, blocks: BlockName[] = HEBDO_BLOCKS): string {
     'driverOrder: ["rates"]',
     `trendRefs: ${JSON.stringify(fm.trendRefs ?? [])}`,
     `instrumentRefs: ${JSON.stringify(fm.instrumentRefs ?? [])}`,
-    "sources: []",
+    fm.sources ?? "sources: {}",
   ];
   const body = blocks.map((b) => `<${b}>\n\nTexte du bloc.\n\n</${b}>`).join("\n\n");
   return `---\n${lines.join("\n")}\n---\n\n${body}\n`;
@@ -177,6 +178,62 @@ describe("LeFilDeLaSemaine — facultatif, hebdo uniquement, toujours en dernier
     const fm = { kind: "speciale", trigger: "Brent ±8 %" };
     const blocks: BlockName[] = [...SPECIALE_BLOCKS, "LeFilDeLaSemaine"];
     expect(() => parseNote("2026-S33-E1", source(fm, blocks))).toThrow(/interdit dans une spéciale/);
+  });
+});
+
+describe("sources par bloc", () => {
+  const withSources = (yaml: string, blocks?: BlockName[]) =>
+    source({ sources: yaml }, blocks);
+
+  it("accepte des sources rattachées à un bloc présent", () => {
+    const yaml = [
+      "sources:",
+      "  CeQuiAChange:",
+      "    - label: Bureau of Labor Statistics",
+      "      url: 'https://www.bls.gov/'",
+    ].join("\n");
+    expect(() => parseNote("2026-S33", withSources(yaml))).not.toThrow();
+  });
+
+  it("refuse un nom de bloc inconnu plutôt que de perdre la source en silence", () => {
+    const yaml = [
+      "sources:",
+      "  CeQuiAChanger:",
+      "    - label: BLS",
+      "      url: 'https://www.bls.gov/'",
+    ].join("\n");
+    expect(() => parseNote("2026-S33", withSources(yaml))).toThrow(
+      /sources : bloc inconnu « CeQuiAChanger »/,
+    );
+  });
+
+  it("refuse une source rattachée à un bloc que la note ne porte pas", () => {
+    // `RecapDesSpeciales` est un bloc valide, mais absent de cette note : sa source ne
+    // s'afficherait nulle part.
+    const yaml = [
+      "sources:",
+      "  RecapDesSpeciales:",
+      "    - label: BLS",
+      "      url: 'https://www.bls.gov/'",
+    ].join("\n");
+    expect(() => parseNote("2026-S33", withSources(yaml))).toThrow(
+      /le bloc « RecapDesSpeciales » n'existe pas dans cette note/,
+    );
+  });
+
+  it("refuse un bloc déclaré sans aucune source", () => {
+    const yaml = ["sources:", "  CeQuiAChange: []"].join("\n");
+    expect(() => parseNote("2026-S33", withSources(yaml))).toThrow(/frontmatter invalide/);
+  });
+
+  it("refuse une URL qui n'en est pas une", () => {
+    const yaml = [
+      "sources:",
+      "  CeQuiAChange:",
+      "    - label: BLS",
+      "      url: 'pas-une-url'",
+    ].join("\n");
+    expect(() => parseNote("2026-S33", withSources(yaml))).toThrow(/frontmatter invalide/);
   });
 });
 

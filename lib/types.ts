@@ -127,7 +127,12 @@ export type Note = {
    * de l'an dernier perdrait sa couleur du jour au lendemain.
    */
   channels: VeilleChannel[];
-  sources: Array<{ label: string; url: string }>;
+  /**
+   * Les sources, **par bloc analytique** et non par note : on doit pouvoir savoir quelle
+   * affirmation vient d'où. La clé est un nom de bloc (`CeQuiAChange`…) ; un bloc absent de
+   * la note ne peut pas en porter, sa source ne s'afficherait nulle part.
+   */
+  sources: Partial<Record<string, Array<{ label: string; url: string }>>>;
 };
 
 /**

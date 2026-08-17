@@ -1,5 +1,7 @@
 import { BLOCK_TITLES, type BlockName } from "@/lib/notes";
-import type { VeilleItem } from "@/lib/types";
+import type { Note, VeilleItem } from "@/lib/types";
+
+type NoteSource = { label: string; url: string };
 import { formatDateShort } from "@/lib/format";
 import { groupEvidenceByBlock, sortChronologically } from "@/lib/veille/evidence";
 
@@ -36,13 +38,40 @@ function EvidencePills({ items }: { items: VeilleItem[] }) {
  * note à l'autre. Les pièces à conviction versées vers ce bloc depuis `/triage` s'affichent
  * en pied de section, après le jugement écrit — jamais avant.
  */
+/**
+ * Les sources du bloc — d'où viennent les chiffres qu'il avance. Elles sont déclarées bloc par
+ * bloc dans le frontmatter, pas en pied de note : une liste unique en bas ne dit pas quelle
+ * affirmation vient d'où.
+ */
+function BlockSources({ sources }: { sources: NoteSource[] }) {
+  if (sources.length === 0) return null;
+  return (
+    <p className="mt-3 flex flex-wrap items-baseline gap-x-3 gap-y-1 text-11 text-tenu">
+      <span className="font-semibold uppercase tracking-cap">Sources</span>
+      {sources.map((s) => (
+        <a
+          key={s.url}
+          href={s.url}
+          target="_blank"
+          rel="noreferrer"
+          className="underline decoration-trait underline-offset-4 transition-colors hover:text-encre hover:decoration-encre"
+        >
+          {s.label}
+        </a>
+      ))}
+    </p>
+  );
+}
+
 function Block({
   name,
   evidence,
+  sources,
   children,
 }: {
   name: BlockName;
   evidence: VeilleItem[];
+  sources: NoteSource[];
   children?: React.ReactNode;
 }) {
   return (
@@ -54,6 +83,7 @@ function Block({
         {children}
       </div>
       <EvidencePills items={evidence} />
+      <BlockSources sources={sources} />
     </section>
   );
 }
@@ -97,26 +127,31 @@ function LeFilDeLaSemaineBlock({ items }: { items: VeilleItem[] }) {
  * besoin des items de veille résolus pour *cette* note (`NoteBlocks.tsx` les charge avant
  * d'appeler `compileMDX`), ce qu'une carte de composants figée ne peut pas porter.
  */
-export function createNoteMdxComponents(veilleItems: VeilleItem[]) {
+export function createNoteMdxComponents(
+  veilleItems: VeilleItem[],
+  sources: Note["sources"],
+) {
   const byBlock = groupEvidenceByBlock(veilleItems);
   const evidenceFor = (name: BlockName) => byBlock.get(name) ?? [];
+  const sourcesFor = (name: BlockName) => sources[name] ?? [];
+  const props = (name: BlockName) => ({ evidence: evidenceFor(name), sources: sourcesFor(name) });
 
   return {
-    CeQuiAChange: (p: BlockProps) => <Block name="CeQuiAChange" evidence={evidenceFor("CeQuiAChange")} {...p} />,
+    CeQuiAChange: (p: BlockProps) => <Block name="CeQuiAChange" {...props("CeQuiAChange")} {...p} />,
     CeQuiSestConfirme: (p: BlockProps) => (
-      <Block name="CeQuiSestConfirme" evidence={evidenceFor("CeQuiSestConfirme")} {...p} />
+      <Block name="CeQuiSestConfirme" {...props("CeQuiSestConfirme")} {...p} />
     ),
     RevisionDesScenarios: (p: BlockProps) => (
-      <Block name="RevisionDesScenarios" evidence={evidenceFor("RevisionDesScenarios")} {...p} />
+      <Block name="RevisionDesScenarios" {...props("RevisionDesScenarios")} {...p} />
     ),
     CeQueJavaisMalLu: (p: BlockProps) => (
-      <Block name="CeQueJavaisMalLu" evidence={evidenceFor("CeQueJavaisMalLu")} {...p} />
+      <Block name="CeQueJavaisMalLu" {...props("CeQueJavaisMalLu")} {...p} />
     ),
     CeQueJeSurveille: (p: BlockProps) => (
-      <Block name="CeQueJeSurveille" evidence={evidenceFor("CeQueJeSurveille")} {...p} />
+      <Block name="CeQueJeSurveille" {...props("CeQueJeSurveille")} {...p} />
     ),
     RecapDesSpeciales: (p: BlockProps) => (
-      <Block name="RecapDesSpeciales" evidence={evidenceFor("RecapDesSpeciales")} {...p} />
+      <Block name="RecapDesSpeciales" {...props("RecapDesSpeciales")} {...p} />
     ),
     LeFilDeLaSemaine: () => <LeFilDeLaSemaineBlock items={veilleItems} />,
   };
