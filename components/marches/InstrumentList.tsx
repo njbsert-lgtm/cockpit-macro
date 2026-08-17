@@ -22,7 +22,7 @@ export type InstrumentRow = {
 const DATE_TONE: Record<FreshnessTier, string> = {
   frais: "text-tenu",
   perime: "text-k-choc",
-  erreur: "text-baisse",
+  erreur: "text-doux",
   absente: "text-tenu",
 };
 

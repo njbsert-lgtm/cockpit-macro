@@ -4,9 +4,14 @@ import { useState } from "react";
 import type { ScenarioVersion } from "@/lib/types";
 import { BRANCH_LABELS, IMPACT_LABELS, LIKELIHOOD_LABELS } from "@/lib/scenario-labels";
 
+/**
+ * Un libellé d'impact (« Hausse forte, élargie ») est du contenu, pas une performance : la
+ * règle chromatique de DESIGN.md lui interdit le vert et le rouge. La direction est portée par
+ * la flèche et par le mot lui-même, jamais par la couleur seule.
+ */
 const DIRECTION_CLASS: Record<string, string> = {
-  up: "text-hausse",
-  down: "text-baisse",
+  up: "text-encre",
+  down: "text-encre",
   flat: "text-tenu",
 };
 
@@ -124,7 +129,7 @@ export function DriverBranches({
                 document.getElementById(`branche-${next.branchId}`)?.focus();
               }}
               className={`border-b border-trait px-4 py-3 text-left last:border-b-0 focus-visible:-outline-offset-3 ${
-                b.branchId === active.branchId ? "bg-page shadow-active-tab" : "bg-repos"
+                b.branchId === active.branchId ? "bg-page text-encre" : "bg-repos"
               }`}
             >
               <BranchHeading branch={b} dominant={b.branchId === dominantBranchId} />

@@ -3,21 +3,25 @@ import Link from "next/link";
 import { ZoneSelector } from "./ZoneSelector";
 import { FreshnessIndicator } from "./FreshnessIndicator";
 
+/**
+ * La barre de zone, collante en haut (DESIGN.md) : blanc à 95 % avec flou, bordure basse
+ * `--trait`. La marque à gauche en 13px poids 700, le segment de zone à droite.
+ *
+ * Le segment ne s'affiche que sur Macro — seul onglet à avoir une notion de zone globale
+ * (cahier des charges) ; l'indicateur de fraîcheur, lui, reste sur tous les écrans.
+ */
 export function PersistentBar() {
   return (
-    <header className="sticky top-0 z-30 bg-encre px-4 py-3 text-white">
-      <div className="mx-auto flex max-w-colonne md:max-w-content flex-wrap items-center justify-between gap-2.5">
-        <Link
-          href="/"
-          className="text-13 font-semibold uppercase tracking-cap text-white"
-        >
+    <header className="sticky top-0 z-30 border-b border-trait bg-page/95 backdrop-blur-[14px]">
+      <div className="mx-auto flex h-[47px] max-w-colonne items-center justify-between gap-3 px-4.5 md:max-w-content md:px-6">
+        <Link href="/" className="shrink-0 text-13 font-bold tracking-titre text-encre">
           Cockpit macro
         </Link>
-        <div className="flex flex-wrap items-center gap-2">
-          <Suspense fallback={<span className="text-11 text-white/40">Zone…</span>}>
+        <div className="flex min-w-0 items-center gap-2">
+          <Suspense fallback={null}>
             <ZoneSelector />
           </Suspense>
-          <Suspense fallback={<span className="text-11 text-white/40">Fraîcheur…</span>}>
+          <Suspense fallback={null}>
             <FreshnessIndicator />
           </Suspense>
         </div>

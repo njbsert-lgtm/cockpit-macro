@@ -51,18 +51,25 @@ export function FreshnessPanel({
         type="button"
         onClick={() => setOpen((o) => !o)}
         aria-expanded={open}
-        className="flex items-center gap-2 rounded-rp bg-white/10 px-2.5 py-1.5 text-11 tracking-wide text-doux hover:bg-white/15"
+        className="flex shrink-0 items-center gap-1.5 rounded-rp bg-repos px-2.5 py-1.5 text-11 text-doux transition-colors hover:text-encre"
       >
         <FreshnessDot tier={tier} />
+        {/* La date entière n'a pas sa place dans une barre de 47px sur mobile : le point
+            porte l'alerte, le panneau porte le détail. */}
         {oldest ? (
-          <span>Données au {formatDateTime(oldest.fetchedAt)}</span>
+          <>
+            <span className="hidden sm:inline">Données au {formatDateTime(oldest.fetchedAt)}</span>
+            <span className="sr-only sm:hidden">
+              Fraîcheur des données — {formatDateTime(oldest.fetchedAt)}
+            </span>
+          </>
         ) : (
-          <span>Aucune source suivie</span>
+          <span>Aucune source</span>
         )}
       </button>
 
       {open && (
-        <div className="absolute right-0 top-full z-50 mt-1.5 w-80 max-w-[85vw] rounded-rc border border-trait bg-page p-3 text-encre shadow-flat">
+        <div className="absolute right-0 top-full z-50 mt-1.5 w-80 max-w-[85vw] rounded-rc border border-trait bg-page p-3 text-encre">
           <p className="mb-2 text-10-5 font-semibold uppercase tracking-cap text-tenu">
             Fraîcheur par source
           </p>
@@ -83,7 +90,7 @@ export function FreshnessPanel({
                   </span>
                   {/* État 5 du cahier : nommer la source en cause, pas seulement la signaler. */}
                   {s.error && (
-                    <span className="mt-1 block border-l-2 border-baisse pl-2 text-11 text-baisse">
+                    <span className="mt-1 block border-l-2 border-k-choc pl-2 text-11 text-doux">
                       {s.error}
                     </span>
                   )}
