@@ -226,7 +226,21 @@ describe("cohérence de la configuration Eurostat avec le reste du dispositif", 
 
 describe("eurostatSeriesKey", () => {
   it("porte le dataset et toutes ses dimensions : la clé dit quelle série a été lue", () => {
-    expect(eurostatSeriesKey(CPI)).toBe("prc_hicp_manr?freq=M,unit=RCH_A,coicop=CP00,geo=FR");
+    // Le format, sur une série de laboratoire : la clé ne doit pas se contenter du dataset,
+    // sinon deux séries voisines partageraient la même ligne de santé.
+    const laboratoire: EurostatMapping = {
+      ...CPI,
+      dataset: "un_dataset",
+      dimensions: { freq: "M", unit: "RCH_A", geo: "FR" },
+    };
+    expect(eurostatSeriesKey(laboratoire)).toBe("un_dataset?freq=M,unit=RCH_A,geo=FR");
+  });
+
+  it("reste unique série par série sur la configuration réelle", () => {
+    // Vérifié sur le contenu réel plutôt que sur une chaîne figée : une correction de
+    // nomenclature côté source ne doit pas faire échouer un test qui porte sur l'unicité.
+    const keys = EUROSTAT_SERIES.map(eurostatSeriesKey);
+    expect(new Set(keys).size).toBe(keys.length);
   });
 
   it("distingue deux séries du même dataset qui ne diffèrent que par une dimension", () => {

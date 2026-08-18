@@ -169,7 +169,9 @@ const ZONES = ["EA", "FR", "DE", "ES", "IT"];
 
 export const EUROSTAT_SERIES: EurostatMapping[] = [
   // --- Inflation totale (IPCH, glissement annuel) --------------------------
-  ...ZONES.map((g) => hicp(g, "CP00", "cpi")),
+  // `TOTAL` : l'ensemble des postes. En ECOICOP v2 il remplace `CP00`, qui n'existe plus —
+  // les codes `CP…` ne désignent plus que des postes, jamais l'agrégat.
+  ...ZONES.map((g) => hicp(g, "TOTAL", "cpi")),
 
   // --- Inflation sous-jacente ----------------------------------------------
   // `TOT_X_NRG_FOOD` : hors énergie, alimentation, alcool et tabac — la définition que la BCE
