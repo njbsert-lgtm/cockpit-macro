@@ -735,16 +735,34 @@ tolérance. Aucun calendrier de fériés n'est maintenu — nous ne l'avons pas,
 serait de la donnée fabriquée. Trois jours ouvrés absorbent un férié isolé comme un pont, tout
 en laissant voir une source qui s'est vraiment tue.
 
-### Repli sur le seed
+### Aucune donnée en dur — le cap
 
-Les deux sources ne se mélangent **jamais pour un même identifiant** : une série moitié base
-moitié seed mentirait sur la provenance de ses points. Un instrument non couvert par une
-série active lit le seed ; un instrument couvert lit la base, et retombe sur le seed si elle
-est vide, en erreur ou injoignable. Le site reste utilisable sans base du tout.
+**Seule une valeur collectée par API a le droit de s'afficher.** Une valeur écrite à la main
+dans `data/seed.json` ne doit jamais apparaître comme si elle était une donnée : ni chiffre,
+ni graphique, ni ligne de fraîcheur. Un indicateur qu'aucune source ne collecte affiche l'état
+vide — « non suivi » —, pas une valeur figée le jour où le seed a été écrit.
 
-Le **catalogue** d'instruments et d'indicateurs reste dans `data/seed.json` : c'est de la
-configuration, pas une série temporelle, et le contrôle d'intégrité du contenu en dépend de
-façon synchrone au chargement du module.
+La raison est celle de tout le cahier : une valeur en dur est indistinguable d'une vraie à
+l'écran, elle vieillit sans le dire, et elle rend l'interface menteuse au moment précis où on
+la consulte pour décider. Mieux vaut un trou signalé qu'un chiffre plausible et faux.
+
+**État cible : `data/seed.json` ne contient plus aucune série temporelle**, seulement le
+catalogue — instruments, indicateurs, leurs libellés, zones, unités et bases YTD. C'est de la
+configuration, pas de la donnée, et le contrôle d'intégrité du contenu en dépend de façon
+synchrone au chargement du module.
+
+**La transition est progressive, source par source.** Au moment où cette règle est posée, 6
+instruments sur 83 et 8 indicateurs sur 69 sont réellement collectés : l'appliquer d'un coup
+viderait l'application. Chaque source branchée fait donc basculer son périmètre — les séries
+qu'elle couvre passent en collecté, leurs valeurs en dur sont retirées du seed. Les séries
+qu'aucune source ne couvre encore affichent l'état vide plutôt qu'un chiffre inventé.
+
+Corollaire déjà appliqué : **l'indicateur de fraîcheur ne liste que les sources collectées.**
+Une série servie par le seed n'a rien à dire sur la santé d'une collecte, et une source
+configurée dont rien n'est remonté s'affiche « jamais collectée » plutôt que de disparaître.
+
+Tant qu'une série reste en transition, les deux origines ne se mélangent **jamais pour un même
+identifiant** : une série moitié base moitié seed mentirait sur la provenance de ses points.
 
 ---
 

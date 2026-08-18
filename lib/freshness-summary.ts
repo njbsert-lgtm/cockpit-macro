@@ -1,5 +1,4 @@
 import { freshnessTier, type FreshnessTier, worstTier } from "./freshness";
-import { getInstruments, getMacroIndicators, getObservations, getMacroObservations } from "./data";
 import { getReadClient } from "./supabase";
 import { ENABLED_SERIES } from "@/config/fred-series";
 import { ENABLED_EUROSTAT_SERIES, EUROSTAT_SOURCE } from "@/config/eurostat-series";
@@ -21,10 +20,13 @@ export type SourceFreshness = {
  * collecte fonctionne, une question qui n'a pas de géographie. La zone ne pilote plus que
  * l'onglet Macro depuis que le sélecteur y a été cantonné.
  *
- * Pour les sources collectées, la vérité vient de `series_health` et de nulle part ailleurs :
- * c'est la seule table qui distingue « FRED n'a pas répondu » de « FRED a répondu, il n'y a
- * rien de neuf ». Pour les autres, la fraîcheur se lit sur le relevé le plus ancien du seed —
- * le pire cas, pas le meilleur, parce que c'est lui qui doit déclencher l'alerte visuelle.
+ * **Seules les sources réellement collectées y figurent.** Une série servie par le seed n'a
+ * rien à dire sur la santé d'une collecte : elle ne vieillit pas, elle est simplement écrite
+ * en dur. Les faire figurer noyait les quelques sources qui comptent sous une trentaine de
+ * lignes rouges permanentes — et un indicateur qui crie sans raison finit par ne plus être lu.
+ *
+ * La vérité vient donc de `series_health` et de nulle part ailleurs : c'est la seule table qui
+ * distingue « FRED n'a pas répondu » de « FRED a répondu, il n'y a rien de neuf ».
  */
 export async function getFreshnessSummary(now: Date = new Date()): Promise<SourceFreshness[]> {
   const bySource = new Map<string, SourceFreshness>();
@@ -37,7 +39,6 @@ export async function getFreshnessSummary(now: Date = new Date()): Promise<Sourc
   };
 
   for (const entry of await readSeriesHealth(now)) record(entry);
-  for (const entry of readSeedFreshness(now)) record(entry);
 
   // Une source configurée dont rien n'est encore remonté : elle doit se voir, et se lire comme
   // « jamais collectée » plutôt que de disparaître du panneau. Un tuyau qu'on a branché mais
@@ -88,49 +89,10 @@ async function readSeriesHealth(now: Date): Promise<SourceFreshness[]> {
         error: row.consecutive_failures > 0 ? (row.last_error ?? undefined) : undefined,
       }));
   } catch {
-    // Base injoignable : la fraîcheur du seed prend le relais, comme les valeurs elles-mêmes.
+    // Base injoignable : les sources configurées ressortiront « jamais collectée », ce qui est
+    // exact — nous n'avons aucune preuve qu'elles aient collecté quoi que ce soit.
     return [];
   }
-}
-
-/**
- * La fraîcheur des séries lues sur le seed.
- *
- * **Une entrée du seed ne parle jamais au nom d'une source configurée.** C'est la règle qui
- * manquait, et elle a coûté cher : la fusion retenant le relevé le plus ancien, une ligne du
- * seed étiquetée « FRED » avec une date figée écrasait silencieusement ce que le cron venait
- * d'écrire. L'indicateur devenait incapable de répondre à la seule question qu'on lui pose.
- *
- * Le piège ne se limitait pas aux séries collectées, qu'il aurait suffi d'exclure une à une :
- * `us-current-account` reste volontairement au seed — FRED le publie en dollars et non en part
- * du PIB — mais son entrée porte quand même l'étiquette « FRED ». Une série qu'on ne collecte
- * pas n'a pourtant rien à dire sur la santé d'une collecte.
- *
- * D'où le filtre au niveau de la source et non de la série : pour FRED et Eurostat, la vérité
- * est dans `series_health`, un point c'est tout — y compris quand c'est le seed qui fournit
- * les valeurs affichées faute de base. « D'où vient le chiffre » et « la collecte
- * fonctionne-t-elle » sont deux questions distinctes, et les mêler rend la seconde muette.
- */
-function readSeedFreshness(now: Date): SourceFreshness[] {
-  const collectees = new Set(configuredSources());
-  const entries: SourceFreshness[] = [];
-
-  const latestOf = (obs: ReturnType<typeof getObservations>) =>
-    [...obs].sort((a, b) => a.date.localeCompare(b.date)).at(-1);
-
-  const push = (latest: ReturnType<typeof latestOf>) => {
-    if (!latest || collectees.has(latest.source)) return;
-    entries.push({
-      source: latest.source,
-      fetchedAt: latest.fetchedAt,
-      tier: freshnessTier(latest.fetchedAt, now),
-    });
-  };
-
-  for (const instrument of getInstruments()) push(latestOf(getObservations(instrument.id)));
-  for (const indicator of getMacroIndicators()) push(latestOf(getMacroObservations(indicator.id)));
-
-  return entries;
 }
 
 export function getOverallTier(summary: SourceFreshness[]): FreshnessTier {

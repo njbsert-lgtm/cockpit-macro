@@ -6,8 +6,8 @@ import { FRED_SOURCE } from "./fred";
 
 const NOW = new Date("2026-08-18T12:00:00Z");
 
-describe("getFreshnessSummary — la copie du seed ne masque pas la collecte", () => {
-  it("n'emprunte jamais la date du seed pour une source collectée", async () => {
+describe("getFreshnessSummary — seules les sources collectées figurent", () => {
+  it("n'emprunte jamais la date du seed, même pour une source qui y est étiquetée", async () => {
     // Le bug : une entrée du seed étiquetée « FRED » et datée d'avril écrasait ce que le cron
     // venait d'écrire, la fusion retenant le relevé le plus ancien. `us-current-account` en
     // est le cas le plus retors — il n'est même pas collecté, mais son entrée porte quand même
@@ -42,5 +42,21 @@ describe("getFreshnessSummary — la copie du seed ne masque pas la collecte", (
     expect(sansReleve.length).toBeGreaterThan(0);
     // Toutes avant la première source datée.
     expect(summary.slice(0, sansReleve.length).every((s) => s.fetchedAt === null)).toBe(true);
+  });
+});
+
+describe("getFreshnessSummary — aucune donnée en dur ne s'y affiche", () => {
+  it("ne liste que les sources configurées, jamais celles du seed", async () => {
+    const summary = await getFreshnessSummary(NOW);
+    const sources = summary.map((s) => s.source);
+
+    // Le seed étiquette une trentaine de sources — BLS, BCE, Destatis, S&P Global… Aucune
+    // n'est collectée, aucune n'a donc à parler de la santé de la collecte.
+    for (const seedOnly of ["BLS", "BCE", "Destatis", "S&P Global", "Twelve Data"]) {
+      expect(sources).not.toContain(seedOnly);
+    }
+    // Il ne reste que ce qui est réellement branché.
+    expect(sources).toContain(FRED_SOURCE);
+    expect(sources.length).toBeLessThanOrEqual(2);
   });
 });
