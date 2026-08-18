@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
-import { getWriteClient } from "@/lib/supabase";
+import { getWriteClient, missingSupabaseConfig } from "@/lib/supabase";
 import { runEurostatIngest, runIngest, type IngestReport } from "@/lib/ingest";
 import { runVeilleCollect, type VeilleCollector, type VeilleReport } from "@/lib/veille/collect";
 import { collectInstitutional } from "@/lib/veille/sources/institutional";
@@ -56,8 +56,14 @@ export async function GET(request: Request) {
 
   const client = getWriteClient();
   if (!client) {
+    // Nommer les variables absentes plutôt que de constater la panne : une configuration
+    // incomplète est le premier motif d'échec d'une mise en service, et « pas configuré »
+    // n'aide personne à savoir laquelle il manque.
     return NextResponse.json(
-      { error: "Supabase n'est pas configuré côté écriture" },
+      {
+        error: "Supabase n'est pas configuré côté écriture",
+        variablesManquantes: missingSupabaseConfig(),
+      },
       { status: 500 },
     );
   }
