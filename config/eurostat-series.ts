@@ -61,10 +61,34 @@ export const EUROSTAT_SOURCE = "Eurostat";
 /**
  * Les zones couvertes. `EA` désigne la zone euro **à composition évolutive** : à chaque date,
  * le bloc tel qu'il était alors. C'est ce qui correspond au chiffre publié à l'époque, au prix
- * d'un périmètre qui change en cours de série — choix assumé plutôt que `EA20`, dont la
- * composition est figée et les points antérieurs recalculés.
+ * d'un périmètre qui change en cours de série — choix assumé plutôt qu'un agrégat figé, dont
+ * la composition est fixe et les points antérieurs recalculés.
+ *
+ * Mais tous les datasets ne publient pas `EA`, et c'est la source qui tranche, pas nous : le
+ * code de la zone euro est donc déclaré par dataset, pas une fois pour toutes. Voir
+ * `EURO_AREA_GEO` plus bas. Les codes pays, eux, sont les mêmes partout.
  */
 const GEO: Record<string, Zone> = { EA: "ez", FR: "fr", DE: "de", ES: "es", IT: "it" };
+
+/**
+ * Le code de la zone euro, par dataset — vérifié série par série avec
+ * `npm run eurostat:explore -- <dataset> geo`.
+ *
+ * `une_rt_m` ne publie pas `EA` : sa seule zone euro est `EA21`, à composition figée (les 21
+ * pays de 2026, historique recalculé). Le taux de chômage de la zone euro est donc sur un
+ * périmètre différent de son inflation et de son PIB. C'est une entorse à l'homogénéité, mais
+ * l'alternative serait de fabriquer un agrégat que la source ne publie pas.
+ */
+const EURO_AREA_GEO: Record<string, string> = {
+  prc_hicp_manr: "EA",
+  namq_10_gdp: "EA",
+  une_rt_m: "EA21",
+};
+
+/** Traduit notre code de zone en code Eurostat pour un dataset donné. */
+function geoFor(geo: string, dataset: string): string {
+  return geo === "EA" ? (EURO_AREA_GEO[dataset] ?? "EA") : geo;
+}
 
 const INFLATION_BOUNDS = { min: -5, max: 25 };
 // Élargies après le premier contrôle à blanc : l'Espagne a fait −21,5 % au deuxième trimestre
@@ -115,7 +139,14 @@ function unemployment(geo: string): EurostatMapping {
     dataset: "une_rt_m",
     // `age` et `sex` doivent être fixés : sans eux, Eurostat sert toutes les tranches d'âge et
     // les deux sexes, et la réponse porte plusieurs valeurs par mois.
-    dimensions: { freq: "M", unit: "PC_ACT", s_adj: "SA", age: "TOTAL", sex: "T", geo },
+    dimensions: {
+      freq: "M",
+      unit: "PC_ACT",
+      s_adj: "SA",
+      age: "TOTAL",
+      sex: "T",
+      geo: geoFor(geo, "une_rt_m"),
+    },
     cadence: "monthly",
     zone: GEO[geo],
     plausible: UNEMPLOYMENT_BOUNDS,
