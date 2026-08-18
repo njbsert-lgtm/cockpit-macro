@@ -80,7 +80,7 @@ const GEO: Record<string, Zone> = { EA: "ez", FR: "fr", DE: "de", ES: "es", IT: 
  * l'alternative serait de fabriquer un agrégat que la source ne publie pas.
  */
 const EURO_AREA_GEO: Record<string, string> = {
-  prc_hicp_manr: "EA",
+  prc_hicp_minr: "EA",
   namq_10_gdp: "EA",
   une_rt_m: "EA21",
 };
@@ -102,12 +102,22 @@ function idFor(geo: string, suffix: string): string {
   return `${GEO[geo]}-${suffix}`;
 }
 
-function hicp(geo: string, coicop: string, suffix: string): EurostatMapping {
+/**
+ * L'IPCH mensuel, sur le dataset **ECOICOP ver.2**.
+ *
+ * Le précédent, `prc_hicp_manr`, est gelé : son titre au catalogue porte « (1997-2025) » et il
+ * s'arrête à décembre 2025. Le laisser branché aurait donné une inflation figée huit mois en
+ * arrière — pas un chiffre faux, mais un demi-produit. La refonte a renommé la dimension de
+ * nomenclature, `coicop` devenant `coicop18` : rien ne pouvait passer en silence, Eurostat
+ * aurait rejeté l'ancienne.
+ */
+function hicp(geo: string, coicop18: string, suffix: string): EurostatMapping {
   return {
     target: { kind: "macro", id: idFor(geo, suffix) },
-    dataset: "prc_hicp_manr",
+    dataset: "prc_hicp_minr",
     // `unit=RCH_A` : taux de variation annuel, déjà en pourcentage — pas d'indice à convertir.
-    dimensions: { freq: "M", unit: "RCH_A", coicop, geo },
+    // Ce dataset sert aussi des indices (`I25`, `I15`), d'où l'importance de le fixer.
+    dimensions: { freq: "M", unit: "RCH_A", coicop18, geo: geoFor(geo, "prc_hicp_minr") },
     cadence: "monthly",
     zone: GEO[geo],
     plausible: INFLATION_BOUNDS,
