@@ -1,4 +1,4 @@
--- Cockpit macro — schéma des données (étape 3).
+-- Marguerite — schéma des données (étape 3).
 --
 -- Ne contient que des **données** : séries temporelles collectées et santé de la collecte.
 -- L'analyse (notes, tendances, scénarios) vit dans `content/`, versionnée dans le dépôt, et

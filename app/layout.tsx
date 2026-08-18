@@ -18,7 +18,7 @@ const plexSans = IBM_Plex_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "Cockpit macro & géopolitique",
+  title: "Marguerite",
   description:
     "Tableau de bord macroéconomique et géopolitique personnel — support d'analyse, pas un conseil en investissement.",
 };

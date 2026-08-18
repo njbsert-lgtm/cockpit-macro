@@ -15,7 +15,7 @@ export function PersistentBar() {
     <header className="sticky top-0 z-30 border-b border-trait bg-page/95 backdrop-blur-[14px]">
       <div className="mx-auto flex h-[47px] max-w-colonne items-center justify-between gap-3 px-4.5 md:max-w-content md:px-6">
         <Link href="/" className="shrink-0 text-13 font-bold tracking-titre text-encre">
-          Cockpit macro
+          Marguerite
         </Link>
         <div className="flex min-w-0 items-center gap-2">
           <Suspense fallback={null}>

@@ -1,4 +1,4 @@
-# Charte de design — Longue-vue
+# Charte de design — Marguerite
 
 **Cette charte remplace toutes les indications de design antérieures de CLAUDE.md.**
 Référence visuelle canonique : `/design/carnet-canaux.html`. En cas de doute, ce fichier
@@ -98,7 +98,7 @@ indispensable ne repose sur `--tenu` seul.
 `position:sticky; top:0`, fond blanc à 95 % avec `backdrop-filter: blur(14px)`,
 bordure basse `--trait`.
 
-À gauche la marque **Longue-vue** en 13px poids 700. À droite un **segment** :
+À gauche la marque **Marguerite** en 13px poids 700. À droite un **segment** :
 fond `--repos`, rayon `--rp`, padding 3px. Chaque bouton en 12px poids 500, couleur `--doux` ;
 l'actif prend fond `--encre` et texte blanc.
 

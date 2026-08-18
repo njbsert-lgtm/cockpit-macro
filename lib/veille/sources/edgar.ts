@@ -14,7 +14,7 @@ const RECENT_FILINGS_LOOKBACK_DAYS = 7;
 // La SEC exige un User-Agent identifiable pour l'API `data.sec.gov` — voir
 // https://www.sec.gov/os/webmaster-faq#developers. À renseigner en variable d'environnement
 // avec une adresse de contact réelle avant mise en service.
-const USER_AGENT = process.env.SEC_EDGAR_USER_AGENT ?? "cockpit-macro (contact non renseigné)";
+const USER_AGENT = process.env.SEC_EDGAR_USER_AGENT ?? "Marguerite (contact non renseigné)";
 
 const submissionsSchema = z.object({
   filings: z.object({

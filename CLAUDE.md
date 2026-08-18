@@ -1,4 +1,4 @@
-# Cockpit Macro — cahier des charges
+# Marguerite — cahier des charges
 
 ## Ce qu'on construit
 
