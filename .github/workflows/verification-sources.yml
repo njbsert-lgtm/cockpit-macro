@@ -20,8 +20,9 @@ on:
           - eurostat
           - fred
           - les-deux
+          - explorer-eurostat
       series:
-        description: "Séries à vérifier, séparées par une espace (vide = toutes)"
+        description: "Séries à vérifier (vide = toutes). En mode explorer : « catalogue <terme> » ou « <dataset> <dimension> »"
         type: string
         required: false
         default: ""
@@ -55,6 +56,23 @@ jobs:
             echo '```'
           } >> "$GITHUB_STEP_SUMMARY"
           npm run eurostat:check --silent -- $SERIES 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
+          code=$?
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          exit $code
+
+      - name: Exploration Eurostat
+        # Sert quand un code est refusé ou manquant : on lit la nomenclature de la source au
+        # lieu de deviner un remplaçant.
+        if: ${{ inputs.source == 'explorer-eurostat' }}
+        env:
+          ARGS: ${{ inputs.series }}
+        run: |
+          set +e -o pipefail
+          {
+            echo '## Exploration Eurostat'
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+          npm run eurostat:explore --silent -- $ARGS 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
           code=$?
           echo '```' >> "$GITHUB_STEP_SUMMARY"
           exit $code

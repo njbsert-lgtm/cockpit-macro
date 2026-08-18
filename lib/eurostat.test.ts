@@ -117,6 +117,17 @@ describe("parseEurostatResponse — le piège des séries multidimensionnelles",
     );
     expect(r.ok).toBe(true);
   });
+
+  it("distingue un code inconnu d'une dimension ouverte, et dit où chercher le bon", () => {
+    // Taille 0 : le code demandé n'existe pas dans ce dataset — le contraire d'un mélange de
+    // séries. Les confondre enverrait corriger au mauvais endroit.
+    const r = parseEurostatResponse(hicp, payload({ size: [1, 1, 1, 0, 3] }));
+    expect(r.ok).toBe(false);
+    if (r.ok) return;
+    expect(r.error).toMatch(/code inconnu de ce dataset : geo=EA/);
+    expect(r.error).toMatch(/eurostat:explore -- prc_hicp_manr geo/);
+    expect(r.error).not.toMatch(/dimension non fixée/);
+  });
 });
 
 describe("parseEurostatResponse — bornes de plausibilité", () => {

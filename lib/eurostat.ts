@@ -119,9 +119,26 @@ export function parseEurostatResponse(
   }
 
   // Garde-fou n° 1 : toute dimension autre que le temps doit être réduite à une seule valeur.
-  const open = data.id
-    .map((name, i) => ({ name, size: data.size[i] }))
-    .filter((d) => d.name !== "time" && d.size !== 1);
+  // Taille 0 et taille supérieure à 1 sont deux pannes différentes, et les confondre envoie
+  // chercher au mauvais endroit : 0 veut dire que le code demandé n'existe pas dans ce dataset,
+  // plus de 1 que la dimension n'a pas été fixée et que plusieurs séries sont mélangées.
+  const dimensions = data.id.map((name, i) => ({ name, size: data.size[i] }));
+
+  const unknown = dimensions.filter((d) => d.name !== "time" && d.size === 0);
+  if (unknown.length > 0) {
+    const named = unknown
+      .map((d) => `${d.name}=${mapping.dimensions[d.name] ?? "?"}`)
+      .join(", ");
+    return {
+      ok: false,
+      error:
+        `code inconnu de ce dataset : ${named}. La source ne publie pas cette valeur — ` +
+        `chercher le bon code avec « npm run eurostat:explore -- ${mapping.dataset} ` +
+        `${unknown[0].name} », série non écrite`,
+    };
+  }
+
+  const open = dimensions.filter((d) => d.name !== "time" && d.size > 1);
   if (open.length > 0) {
     const named = open.map((d) => `${d.name} (${d.size} valeurs)`).join(", ");
     return {

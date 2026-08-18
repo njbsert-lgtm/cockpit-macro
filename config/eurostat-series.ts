@@ -67,7 +67,10 @@ export const EUROSTAT_SOURCE = "Eurostat";
 const GEO: Record<string, Zone> = { EA: "ez", FR: "fr", DE: "de", ES: "es", IT: "it" };
 
 const INFLATION_BOUNDS = { min: -5, max: 25 };
-const GDP_BOUNDS = { min: -20, max: 20 };
+// Élargies après le premier contrôle à blanc : l'Espagne a fait −21,5 % au deuxième trimestre
+// 2020, une valeur parfaitement réelle que des bornes à ±20 rejetaient. Les bornes servent à
+// attraper une erreur d'unité, pas à censurer un choc — c'est la source qui a raison.
+const GDP_BOUNDS = { min: -35, max: 35 };
 const UNEMPLOYMENT_BOUNDS = { min: 0, max: 30 };
 
 /** Suffixe d'identifiant par zone : `EA` → `ez-cpi`, `FR` → `fr-cpi`. */
