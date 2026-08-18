@@ -7,7 +7,7 @@ import { formatDateLong, formatDateShort } from "@/lib/format";
 import { ZONE_LABELS } from "@/lib/zones";
 import { ZONE_PARAM } from "@/lib/zone-param";
 import { DataValue } from "@/components/states/DataValue";
-import { HistoryChart } from "@/components/charts/HistoryChart";
+import { HistorySection } from "@/components/charts/HistorySection";
 
 /** Un an de revalidation en heure suffit largement pour une collecte quotidienne. */
 export const revalidate = 3600;
@@ -61,7 +61,7 @@ export default async function MacroIndicatorPage({
       </p>
 
       <div className="mt-6">
-        <HistoryChart points={obs.map((o) => ({ date: o.date, value: o.value }))} />
+        <HistorySection points={obs.map((o) => ({ date: o.date, value: o.value }))} />
       </div>
 
       <section className="mt-10">

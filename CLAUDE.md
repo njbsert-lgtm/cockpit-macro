@@ -343,7 +343,10 @@ Chaque indicateur affiche **la prochaine date de publication**. Savoir quand la 
 compte autant que sa valeur.
 
 Un clic sur un indicateur — carte en mode zone, ligne en mode comparaison — ouvre sa fiche :
-la série complète en graphique et son historique en table, date par date.
+la série en graphique, avec la même échelle de temps que la fiche instrument, et son historique
+en table, date par date. Une fenêtre plus courte que la cadence de publication — « 1 semaine »
+sur une série mensuelle — affiche l'état vide plutôt qu'un graphique à un point : c'est une
+information sur la série, pas une panne.
 
 ---
 
