@@ -1,0 +1,84 @@
+# Vérification à blanc des sources de données, lancée à la main depuis GitHub.
+#
+# Raison d'être : les scripts `npm run fred:check` et `npm run eurostat:check` ont besoin d'un
+# accès réseau sortant vers les APIs publiques. Ce workflow l'apporte sans rien installer sur
+# une machine : onglet « Actions » du dépôt, « Vérification des sources », « Run workflow ».
+#
+# Ne collecte rien, n'écrit ni en base ni dans la configuration. C'est un contrôle.
+
+name: Vérification des sources
+
+on:
+  workflow_dispatch:
+    inputs:
+      source:
+        description: "Quelle source vérifier"
+        type: choice
+        required: true
+        default: eurostat
+        options:
+          - eurostat
+          - fred
+          - les-deux
+      series:
+        description: "Séries à vérifier, séparées par une espace (vide = toutes)"
+        type: string
+        required: false
+        default: ""
+
+jobs:
+  verifier:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Eurostat
+        if: ${{ inputs.source == 'eurostat' || inputs.source == 'les-deux' }}
+        env:
+          # Passé par l'environnement et non interpolé dans le script : une saisie libre ne doit
+          # jamais devenir du shell.
+          SERIES: ${{ inputs.series }}
+        # `set +e` parce que GitHub lance ce script avec `bash -e` : sans ça, un script en échec
+        # couperait avant d'avoir refermé le bloc du résumé. `pipefail` pour que le code de
+        # sortie survive au `tee` — un run rouge doit rester rouge.
+        run: |
+          set +e -o pipefail
+          {
+            echo '## Eurostat'
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+          npm run eurostat:check --silent -- $SERIES 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
+          code=$?
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          exit $code
+
+      - name: FRED
+        # `always()` pour que FRED soit quand même vérifié après un Eurostat rouge.
+        if: ${{ always() && (inputs.source == 'fred' || inputs.source == 'les-deux') }}
+        env:
+          SERIES: ${{ inputs.series }}
+          # La clé FRED est un secret du dépôt. Sans elle, l'étape le dit au lieu d'échouer sur
+          # une erreur d'authentification qu'on prendrait pour un problème de série.
+          FRED_API_KEY: ${{ secrets.FRED_API_KEY }}
+        run: |
+          set +e -o pipefail
+          if [ -z "$FRED_API_KEY" ]; then
+            echo "FRED_API_KEY absente des secrets du dépôt — étape sautée." >> "$GITHUB_STEP_SUMMARY"
+            echo "FRED_API_KEY absente des secrets du dépôt — étape sautée."
+            exit 0
+          fi
+          {
+            echo '## FRED'
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+          npm run fred:check --silent -- $SERIES 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
+          code=$?
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          exit $code
