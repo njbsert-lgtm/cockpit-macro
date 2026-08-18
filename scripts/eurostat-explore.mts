@@ -1,8 +1,10 @@
 /**
  * Exploration d'Eurostat, pour choisir un code plutôt que le deviner.
  *
- *   npm run eurostat:explore -- catalogue hicp        cherche un dataset par mot-clé
- *   npm run eurostat:explore -- une_rt_m geo          liste les codes d'une dimension
+ *   npm run eurostat:explore -- catalogue hicp             cherche un dataset par mot-clé
+ *   npm run eurostat:explore -- une_rt_m geo               liste les codes d'une dimension
+ *   npm run eurostat:explore -- prc_hicp_minr unit coicop  plusieurs dimensions d'un coup
+ *   npm run eurostat:explore -- prc_hicp_minr coicop=TOT   filtre les codes contenant « TOT »
  *
  * Le pendant de `eurostat:check` : celui-ci vérifie ce qui est déjà déclaré, celui-là sert
  * quand un code manque ou qu'un code refusé doit être remplacé. Un identifiant de dimension
@@ -12,10 +14,11 @@
  */
 const BASE = "https://ec.europa.eu/eurostat/api/dissemination";
 
-const [mode, argument] = process.argv.slice(2);
+const [mode, ...rest] = process.argv.slice(2);
+const argument = rest[0];
 
 if (!mode) {
-  console.error("Usage : eurostat:explore -- catalogue <terme>  |  <dataset> <dimension>");
+  console.error("Usage : eurostat:explore -- catalogue <terme>  |  <dataset> <dimension…>");
   process.exit(1);
 }
 
@@ -37,9 +40,8 @@ if (mode === "catalogue") {
 }
 
 const dataset = mode;
-const dimension = argument;
-if (!dimension) {
-  console.error("Préciser la dimension à lister, ex. : eurostat:explore -- une_rt_m geo");
+if (rest.length === 0) {
+  console.error("Préciser la ou les dimensions à lister, ex. : eurostat:explore -- une_rt_m geo");
   process.exit(1);
 }
 
@@ -60,13 +62,34 @@ const payload = (await response.json()) as {
 const dims = payload.id ?? [];
 console.log(`${dataset} — dimensions : ${dims.map((d, i) => `${d}(${payload.size?.[i]})`).join(" · ")}\n`);
 
-const found = payload.dimension?.[dimension];
-if (!found) {
-  console.error(`Dimension « ${dimension} » absente de ${dataset}.`);
-  process.exit(1);
+// La période couverte : c'est elle qui trahit un dataset gelé au profit d'un successeur.
+const periods = Object.keys(payload.dimension?.time?.category?.label ?? {});
+if (periods.length > 0) console.log(`dernière période servie : ${periods.at(-1)}\n`);
+
+let missing = 0;
+for (const requested of rest) {
+  // « coicop=TOT » : la dimension, puis un filtre sur le code ou le libellé. Certaines
+  // nomenclatures comptent des centaines de postes, et tout imprimer noie la réponse.
+  const [dimension, filter] = requested.split("=");
+  const found = payload.dimension?.[dimension];
+  if (!found) {
+    console.error(`Dimension « ${dimension} » absente de ${dataset}.`);
+    missing += 1;
+    continue;
+  }
+
+  const needle = (filter ?? "").toLowerCase();
+  const entries = Object.entries(found.category?.label ?? {}).filter(
+    ([code, label]) =>
+      needle === "" ||
+      code.toLowerCase().includes(needle) ||
+      label.toLowerCase().includes(needle),
+  );
+
+  const suffix = filter ? ` contenant « ${filter} »` : "";
+  console.log(`${dimension} — ${entries.length} code(s)${suffix} :\n`);
+  for (const [code, label] of entries) console.log(`  ${code.padEnd(18)} ${label}`);
+  console.log("");
 }
 
-const labels = found.category?.label ?? {};
-const entries = Object.entries(labels);
-console.log(`${dimension} — ${entries.length} code(s) :\n`);
-for (const [code, label] of entries) console.log(`  ${code.padEnd(16)} ${label}`);
+process.exit(missing > 0 ? 1 : 0);
