@@ -56,7 +56,7 @@ export function FreshnessPanel({
         <FreshnessDot tier={tier} />
         {/* La date entière n'a pas sa place dans une barre de 47px sur mobile : le point
             porte l'alerte, le panneau porte le détail. */}
-        {oldest ? (
+        {oldest?.fetchedAt ? (
           <>
             <span className="hidden sm:inline">Données au {formatDateTime(oldest.fetchedAt)}</span>
             <span className="sr-only sm:hidden">
@@ -64,7 +64,7 @@ export function FreshnessPanel({
             </span>
           </>
         ) : (
-          <span>Aucune source</span>
+          <span>{oldest ? "Jamais collecté" : "Aucune source"}</span>
         )}
       </button>
 
@@ -85,7 +85,9 @@ export function FreshnessPanel({
                       {s.source}
                     </span>
                     <span className="text-11 text-tenu">
-                      {formatDateTime(s.fetchedAt)} · {TIER_LABEL[s.tier]}
+                      {s.fetchedAt
+                        ? `${formatDateTime(s.fetchedAt)} · ${TIER_LABEL[s.tier]}`
+                        : "jamais collectée"}
                     </span>
                   </span>
                   {/* État 5 du cahier : nommer la source en cause, pas seulement la signaler. */}
