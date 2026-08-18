@@ -5,13 +5,14 @@ import {
   ASSET_CLASS_PARAM,
   formatDailyChange,
   formatInstrumentValue,
+  formatYtd,
   getRatesInstruments,
   isRateCountryZone,
   parseAssetClass,
 } from "@/lib/marches";
 import { getInstrumentsByAssetClass } from "@/lib/data";
 import { loadObservations, observationsOf, type ObservationsBySeries } from "@/lib/observations";
-import { dailyChange, latestObservation, MAX_SESSION_GAP_DAYS } from "@/lib/performance";
+import { dailyChange, latestObservation, MAX_SESSION_GAP_DAYS, ytdChange } from "@/lib/performance";
 import { freshnessTier } from "@/lib/freshness";
 import { ZONE_LABELS } from "@/lib/zones";
 import { formatDateLong } from "@/lib/format";
@@ -49,6 +50,7 @@ function buildRows(
     const obs = observationsOf(bySeries, instrument.id);
     const latest = latestObservation(obs);
     const change = dailyChange(obs);
+    const ytd = ytdChange(instrument, obs);
     const sorted = [...obs].sort((a, b) => a.date.localeCompare(b.date));
     const previous = sorted.at(-2) ?? null;
 
@@ -61,6 +63,9 @@ function buildRows(
       tier: freshnessTier(latest?.fetchedAt),
       change: change ? formatDailyChange(instrument, change) : null,
       direction: change?.direction ?? null,
+      ytd: formatYtd(instrument, obs),
+      // Un écart exactement nul reste « flat » : il ne se peint ni en vert ni en rouge.
+      ytdDirection: ytd === null ? null : ytd.absolute > 0 ? "up" : ytd.absolute < 0 ? "down" : "flat",
       changeUnavailableReason: change
         ? null
         : previous

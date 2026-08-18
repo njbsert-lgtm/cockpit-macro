@@ -1,11 +1,18 @@
 import { formatSignedPct } from "@/lib/format";
 
+/**
+ * Une performance chiffrée. `formatted` permet d'imposer l'unité qui se lit — les points de
+ * base pour un taux ou un spread — là où le pourcentage relatif n'informerait personne ;
+ * `pct` reste ce qui donne le signe, donc la couleur.
+ */
 export function PerfValue({
   pct,
+  formatted,
   size = "md",
   unavailableReason = "historique insuffisant pour ce calcul",
 }: {
   pct: number | null;
+  formatted?: string | null;
   size?: "sm" | "md" | "lg";
   unavailableReason?: string;
 }) {
@@ -26,7 +33,7 @@ export function PerfValue({
 
   return (
     <span className={`font-semibold tabular-nums ${colorClass} ${cls}`}>
-      {formatSignedPct(pct)}
+      {formatted ?? formatSignedPct(pct)}
     </span>
   );
 }

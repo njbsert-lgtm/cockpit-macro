@@ -7,8 +7,10 @@ import {
   oneMonthPerformance,
   oneYearPerformance,
   performanceSince,
+  ytdChange,
   ytdPerformance,
 } from "./performance";
+import { formatYtd } from "./marches";
 import type { Instrument, Observation } from "./types";
 
 const obs = (date: string, value: number): Observation => ({
@@ -162,5 +164,46 @@ describe("dailyChange", () => {
 
   it("ne divise pas par zéro sur un spread nul la veille", () => {
     expect(dailyChange([obs("2026-08-11", 0), obs("2026-08-12", 0.15)])).toBeNull();
+  });
+});
+
+describe("ytdChange — l'unité qui se lit", () => {
+  const rate: Instrument = {
+    id: "us10y",
+    label: "US 10 ans",
+    assetClass: "rates",
+    zones: ["us"],
+    unit: "percent",
+    ytdBasis: 4.0,
+    note: "",
+  };
+  const index: Instrument = { ...rate, id: "spx", assetClass: "equity", unit: "index", ytdBasis: 5450 };
+
+  const obs = (value: number): Observation[] => [
+    { instrumentId: "x", date: "2026-08-13", value, source: "s", fetchedAt: "2026-08-13T06:00:00Z" },
+  ];
+
+  it("rend l'écart absolu et l'écart relatif, à l'appelant de choisir", () => {
+    const y = ytdChange(rate, obs(4.5))!;
+    expect(y.absolute).toBeCloseTo(0.5, 10);
+    expect(y.pct).toBeCloseTo(12.5, 10);
+  });
+
+  it("formate un taux en points de base, jamais en pourcentage relatif", () => {
+    // 4,00 % → 4,50 % : +50 bps. « +12,5 % » serait exact mais n'informerait personne.
+    expect(formatYtd(rate, obs(4.5))).toBe("+50 bps");
+  });
+
+  it("formate un indice en pourcentage", () => {
+    expect(formatYtd(index, obs(5967))).toBe("+9,49 %");
+  });
+
+  it("rend null quand la base n'a pas été saisie — jamais un zéro", () => {
+    expect(ytdChange({ ...rate, ytdBasis: null }, obs(4.5))).toBeNull();
+    expect(formatYtd({ ...rate, ytdBasis: null }, obs(4.5))).toBeNull();
+  });
+
+  it("rend null sans aucune observation", () => {
+    expect(ytdChange(rate, [])).toBeNull();
   });
 });

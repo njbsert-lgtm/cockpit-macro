@@ -40,17 +40,36 @@ export function performanceSince(
 }
 
 /**
- * Performance depuis le 1er janvier, basée sur `Instrument.ytdBasis` (clôture du 31 décembre,
- * saisie à la main) plutôt que sur une observation de la série. `null` si la base n'a pas
- * encore été saisie ou si aucune observation n'existe.
+ * Écart depuis le 1er janvier, basé sur `Instrument.ytdBasis` (clôture du 31 décembre, saisie
+ * à la main) plutôt que sur une observation de la série.
+ *
+ * Rend l'écart **absolu** et l'écart **relatif**, comme `dailyChange` : c'est l'appelant qui
+ * choisit lequel afficher, selon l'unité de l'instrument. Un taux se lit en points de base —
+ * dire qu'un 10 ans à 4,50 % « gagne 12,5 % » sur une base à 4,00 % n'informe personne, alors
+ * que « +50 bps » se lit immédiatement.
+ *
+ * `null` si la base n'a pas encore été saisie — les deux spreads n'en ont pas — ou si aucune
+ * observation n'existe. Jamais un zéro à la place.
  */
+export type YtdChange = { absolute: number; pct: number; basis: number; toDate: string };
+
+export function ytdChange(instrument: Instrument, obs: Observation[]): YtdChange | null {
+  const latest = latestObservation(obs);
+  if (instrument.ytdBasis === null || instrument.ytdBasis === 0 || !latest) return null;
+  return {
+    absolute: latest.value - instrument.ytdBasis,
+    pct: ((latest.value - instrument.ytdBasis) / instrument.ytdBasis) * 100,
+    basis: instrument.ytdBasis,
+    toDate: latest.date,
+  };
+}
+
+/** Le seul écart relatif, pour les appelants qui n'affichent qu'un pourcentage. */
 export function ytdPerformance(
   instrument: Instrument,
   obs: Observation[],
 ): number | null {
-  const latest = latestObservation(obs);
-  if (instrument.ytdBasis === null || !latest) return null;
-  return ((latest.value - instrument.ytdBasis) / instrument.ytdBasis) * 100;
+  return ytdChange(instrument, obs)?.pct ?? null;
 }
 
 function addDays(isoDate: string, days: number): string {

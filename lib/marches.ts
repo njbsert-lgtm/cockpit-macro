@@ -3,6 +3,7 @@ import { getInstrumentsByAssetClass } from "./data";
 import { zoneMatches } from "./zones";
 import {
   dailyChange,
+  ytdChange,
   oneMonthPerformance,
   oneYearPerformance,
   ytdPerformance,
@@ -131,6 +132,20 @@ export function formatInstrumentValue(instrument: Instrument, value: number): st
  * C'est aussi l'unité dans laquelle le cahier des charges exprime les seuils d'alerte.
  */
 export function formatDailyChange(instrument: Instrument, change: DailyChange): string {
-  if (instrument.unit === "percent") return formatSignedBps(change.absolute * 100);
-  return formatSignedPct(change.pct, 2);
+  return formatChange(instrument, change.absolute, change.pct);
+}
+
+/**
+ * La règle d'unité, partagée par la variation de séance et l'écart depuis le 1er janvier : un
+ * taux ou un spread se lit en points de base, tout le reste en pourcentage.
+ */
+export function formatChange(instrument: Instrument, absolute: number, pct: number): string {
+  if (instrument.unit === "percent") return formatSignedBps(absolute * 100);
+  return formatSignedPct(pct, 2);
+}
+
+/** L'écart depuis le 1er janvier, dans l'unité qui se lit. `null` si la base manque. */
+export function formatYtd(instrument: Instrument, obs: Observation[]): string | null {
+  const ytd = ytdChange(instrument, obs);
+  return ytd === null ? null : formatChange(instrument, ytd.absolute, ytd.pct);
 }

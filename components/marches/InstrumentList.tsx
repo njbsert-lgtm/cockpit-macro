@@ -16,6 +16,9 @@ export type InstrumentRow = {
   direction: "up" | "down" | "flat" | null;
   /** Ce que la pastille remplace quand la variation manque : pourquoi elle n'existe pas. */
   changeUnavailableReason: string | null;
+  /** Écart depuis le 1er janvier, déjà formaté — en bps pour les taux, en % sinon. */
+  ytd: string | null;
+  ytdDirection: "up" | "down" | "flat" | null;
   zoneTag: string | null;
 };
 
@@ -75,6 +78,28 @@ export function InstrumentList({ rows }: { rows: InstrumentRow[] }) {
                   <span className="block text-15 font-semibold tabular-nums text-encre">
                     {row.value}
                   </span>
+                  {/* L'écart depuis le 1er janvier, en lecture directe : sans lui, il fallait
+                      ouvrir la fiche pour savoir où en est l'année. Absent quand la base du
+                      31 décembre n'a pas été saisie — les deux spreads, notamment. */}
+                  {row.ytd !== null && row.ytdDirection !== null && (
+                    <span className="mt-0.5 flex items-baseline justify-end gap-1.5">
+                      <span className="text-9-5 font-semibold uppercase tracking-cap text-tenu">
+                        YTD
+                      </span>
+                      <span
+                        className={`text-12 font-semibold tabular-nums ${
+                          row.ytdDirection === "up"
+                            ? "text-hausse"
+                            : row.ytdDirection === "down"
+                              ? "text-baisse"
+                              : "text-tenu"
+                        }`}
+                      >
+                        {row.ytd}
+                      </span>
+                    </span>
+                  )}
+
                   <span className="mt-1 flex items-center justify-end gap-1.5">
                     {row.change !== null && row.direction !== null ? (
                       <>

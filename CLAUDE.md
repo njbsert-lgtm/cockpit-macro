@@ -392,8 +392,9 @@ voir le bord du bouton suivant : sans ce débord, personne ne devine que ça dé
 
 ### La liste
 
-Chaque ligne : le libellé de l'instrument à gauche, la valeur à droite, et **sous la valeur la
-variation du jour dans une pastille colorée** — fond vert pâle en hausse, rouge pâle en
+Chaque ligne : le libellé de l'instrument à gauche, la valeur à droite, **la performance
+depuis le 1er janvier en lecture directe** sous la valeur, puis **la variation du jour dans une
+pastille colorée** — fond vert pâle en hausse, rouge pâle en
 baisse, neutre à plat. La couleur ne porte jamais l'information seule : le signe reste écrit.
 Un clic ouvre la fiche instrument.
 

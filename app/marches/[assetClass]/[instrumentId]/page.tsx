@@ -6,6 +6,7 @@ import {
   ASSET_CLASS_ORDER,
   ASSET_CLASS_PARAM,
   formatInstrumentValue,
+  formatYtd,
   instrumentPerformances,
 } from "@/lib/marches";
 import { getInstrument } from "@/lib/data";
@@ -80,7 +81,9 @@ export default async function InstrumentPage({
         <div>
           <dt className="text-10-5 uppercase tracking-cap text-tenu">YTD</dt>
           <dd className="mt-1">
-            <PerfValue pct={perf.ytd} />
+            {/* Un taux se lit en points de base : « +12,5 % » sur une base à 4,00 % serait
+                exact et illisible. */}
+            <PerfValue pct={perf.ytd} formatted={formatYtd(instrument, obs)} />
           </dd>
         </div>
         <div>
