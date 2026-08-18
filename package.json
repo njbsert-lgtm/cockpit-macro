@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "eslint",
     "test": "vitest run",
-    "fred:check": "tsx --env-file-if-exists=.env.local scripts/fred-check.mts"
+    "fred:check": "tsx --env-file-if-exists=.env.local scripts/fred-check.mts",
+    "eurostat:check": "tsx --env-file-if-exists=.env.local scripts/eurostat-check.mts"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.112.3",

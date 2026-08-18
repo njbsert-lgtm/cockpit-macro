@@ -1,6 +1,7 @@
 import type { Observation } from "./types";
 import { getObservations as seedObservations, getMacroObservations as seedMacroObservations } from "./data";
 import { mappingForInstrument, mappingForMacro } from "@/config/fred-series";
+import { eurostatMappingFor } from "@/config/eurostat-series";
 import { getReadClient } from "./supabase";
 
 /**
@@ -105,11 +106,21 @@ export function loadObservations(instrumentIds: string[]): Promise<ObservationsB
   );
 }
 
+/**
+ * Un indicateur est couvert dès qu'une source active le collecte — FRED ou Eurostat. Les deux
+ * ne se recoupent pas : chaque identifiant appartient à une source et une seule, ce que
+ * `lib/integrity.ts` vérifie au chargement. La règle « jamais de fusion pour un même
+ * identifiant » tient donc au-delà de la première source.
+ */
+export function isMacroCovered(id: string): boolean {
+  return mappingForMacro(id) !== null || eurostatMappingFor(id) !== null;
+}
+
 /** Les observations macro pour un ensemble d'indicateurs, en une requête. */
 export function loadMacroObservations(indicatorIds: string[]): Promise<ObservationsBySeries> {
   return load(
     indicatorIds,
-    (id) => mappingForMacro(id) !== null,
+    isMacroCovered,
     seedMacroObservations,
     "macro_observations",
     "indicator_id",

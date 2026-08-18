@@ -660,7 +660,7 @@ Gratuites, en accès programmatique. Clés en variables d'environnement, jamais 
 | Donnée | Source | Note |
 |---|---|---|
 | Macro US, taux, inflation | **FRED API** | Gratuit, très fiable, couvre aussi de l'international |
-| Macro zone euro et pays | **ECB Data Portal**, **Eurostat** | APIs publiques sans clé |
+| Macro zone euro et pays | **ECB Data Portal**, **Eurostat** | APIs publiques sans clé. Eurostat branché : IPCH total et sous-jacent, PIB, chômage, pour `ez` `fr` `de` `es` `it` |
 | Macro France | **INSEE** (API BDM) | Gratuit, inscription requise |
 | Macro UK | **ONS API** | Gratuit, sans clé |
 | Énergie | **EIA API** | Gratuit, données officielles |
@@ -671,13 +671,14 @@ Gratuites, en accès programmatique. Clés en variables d'environnement, jamais 
 Contraintes dans le code :
 - **Un appel par instrument par jour.** Cron à 6 h UTC, jamais à la demande. Le plan Hobby
   n'autorise qu'un seul déclenchement quotidien : la route du cron est un **orchestrateur** qui
-  exécute FRED puis la veille, en deux modules indépendants — jamais un second cron. FRED
-  s'exécute et écrit en premier, sans exception ; la veille est enveloppée dans son propre
-  `try`/`catch` pour qu'une panne ou une exception là-bas n'efface rien de ce que FRED a déjà
-  produit. Chaque module journalise son résultat dans sa propre table de santé
-  (`series_health` pour FRED, `veille_health` pour la veille), et seul `series_health` alimente
-  l'indicateur de fraîcheur de la barre persistante — un incident de veille ne peut donc jamais
-  s'y lire comme un incident FRED.
+  exécute FRED, puis Eurostat, puis la veille, en trois modules indépendants — jamais un second
+  cron. FRED s'exécute et écrit en premier, sans exception ; les deux suivants sont chacun
+  enveloppés dans leur propre `try`/`catch` pour qu'une panne ou une exception là-bas n'efface
+  rien de ce que FRED a déjà produit. Chaque module journalise son résultat dans sa propre
+  table de santé (`series_health` pour FRED et Eurostat, sous une colonne `source` distincte ;
+  `veille_health` pour la veille), et seul `series_health` alimente l'indicateur de fraîcheur de
+  la barre persistante — un incident de veille ne peut donc jamais s'y lire comme un incident de
+  données, et un incident Eurostat jamais comme un incident FRED.
 - Toute réponse passe par un schéma Zod. Une réponse malformée est journalisée et ignorée,
   elle n'écrase jamais la dernière valeur valide.
 - Si une source tombe : dernière valeur connue **avec sa date**, pas un tiret, jamais zéro.
@@ -876,10 +877,30 @@ et le solde budgétaire. `us-current-account` et `us-pmi` restent au seed, avec 
 écrite dans `config/fred-series.ts` — la première parce qu'elle est publiée en dollars et non
 en part du PIB, la seconde parce que l'ISM a fait retirer ses indices de FRED.
 
+Périmètre Eurostat, deuxième source branchée : l'inflation totale et sous-jacente (IPCH,
+glissement annuel), la croissance du PIB et le taux de chômage, pour la zone euro, la France,
+l'Allemagne, l'Espagne et l'Italie — vingt séries. L'INSEE n'est pas branchée : on vérifie
+d'abord si les séries harmonisées Eurostat suffisent pour la France.
+
+Le **PMI composite reste au seed** : c'est un indice propriétaire de S&P Global (marque HCOB
+pour la zone euro), diffusé sous licence et absent de l'API Eurostat. Le plus proche
+qu'Eurostat publie — l'Economic Sentiment Indicator de DG ECFIN — est un autre indicateur, sur
+une autre échelle. Le substituer donnerait un chiffre plausible et faux. Raison écrite dans
+`config/eurostat-series.ts`, comme `us-pmi` l'est dans `config/fred-series.ts`.
+
+Eurostat sert des séries **multidimensionnelles** : un même dataset porte des dizaines de
+séries qui ne diffèrent que par une unité, un ajustement saisonnier ou une nomenclature. Deux
+règles en découlent. Toutes les dimensions sont fixées dans `config/eurostat-series.ts`, jamais
+dans le code — `lib/eurostat.ts` les sérialise sans en interpréter aucune. Et si la réponse
+porte plus d'une valeur par période, donc si une dimension est restée ouverte, **toute la
+réponse est rejetée en nommant la dimension fautive** : une dimension oubliée ne peut pas
+passer inaperçue.
+
 Mise en service, dans l'ordre : exécuter `supabase/schema.sql`, renseigner les variables de
-`.env.example`, lancer `npm run fred:check` et n'activer que les séries sorties vertes, puis
-laisser le cron tourner. Le site fonctionne à chaque étape de cette séquence, y compris
-avant la première — c'est ce que garantit le repli sur le seed.
+`.env.example`, lancer `npm run fred:check` et n'activer que les séries sorties vertes, faire
+de même avec `npm run eurostat:check` avant de basculer `EUROSTAT_VERIFIED`, puis laisser le
+cron tourner. Le site fonctionne à chaque étape de cette séquence, y compris avant la
+première — c'est ce que garantit le repli sur le seed.
 
 **Étape 4 — Confort.**
 Mode comparaison de l'onglet Macro, graphiques de séries, recherche dans les notes,

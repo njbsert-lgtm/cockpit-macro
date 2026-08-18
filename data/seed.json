@@ -5757,6 +5757,15 @@
       "nextRelease": "2026-09-12"
     },
     {
+      "id": "es-cpi-core",
+      "label": "Inflation sous-jacente",
+      "zone": "es",
+      "unit": "percent",
+      "frequency": "monthly",
+      "seriesKey": "ESTAT.prc_hicp_manr.TOT_X_NRG_FOOD.ES",
+      "nextRelease": null
+    },
+    {
       "id": "es-gdp",
       "label": "Croissance du PIB",
       "zone": "es",
@@ -5782,6 +5791,24 @@
       "frequency": "monthly",
       "seriesKey": "ISTAT.IT.CPI",
       "nextRelease": "2026-09-12"
+    },
+    {
+      "id": "it-cpi-core",
+      "label": "Inflation sous-jacente",
+      "zone": "it",
+      "unit": "percent",
+      "frequency": "monthly",
+      "seriesKey": "ESTAT.prc_hicp_manr.TOT_X_NRG_FOOD.IT",
+      "nextRelease": null
+    },
+    {
+      "id": "it-unemployment",
+      "label": "Taux de chômage",
+      "zone": "it",
+      "unit": "percent",
+      "frequency": "monthly",
+      "seriesKey": "ESTAT.une_rt_m.IT",
+      "nextRelease": null
     },
     {
       "id": "it-gdp",

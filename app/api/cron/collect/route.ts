@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
 import { getWriteClient } from "@/lib/supabase";
-import { runIngest } from "@/lib/ingest";
+import { runEurostatIngest, runIngest, type IngestReport } from "@/lib/ingest";
 import { runVeilleCollect, type VeilleCollector, type VeilleReport } from "@/lib/veille/collect";
 import { collectInstitutional } from "@/lib/veille/sources/institutional";
 import { collectEdgar } from "@/lib/veille/sources/edgar";
@@ -10,12 +10,17 @@ import { collectGdelt } from "@/lib/veille/sources/gdelt";
 /**
  * L'orchestrateur de la collecte quotidienne. Déclenché par le cron Vercel à 6 h UTC, jamais à
  * la demande. Le plan Hobby n'autorise qu'un déclenchement quotidien : cette route exécute donc
- * deux modules indépendants l'un après l'autre plutôt que d'ajouter un second cron.
+ * trois modules indépendants l'un après l'autre plutôt que d'ajouter un second cron.
  *
- * L'ordre n'est pas négociable : FRED d'abord, et durablement écrit, avant que la veille ne
- * démarre. Si la veille échoue — y compris une exception non rattrapée — FRED est déjà en base ;
- * c'est pour ça que son résultat ne dépend de rien de ce qui suit. Le statut HTTP de la réponse
- * ne reflète que FRED, jamais la veille : ce sont les données de marché qui priment.
+ * L'ordre n'est pas négociable : FRED d'abord, et durablement écrit, avant qu'Eurostat puis la
+ * veille ne démarrent. Si l'un des deux suivants échoue — y compris une exception non rattrapée
+ * — FRED est déjà en base ; c'est pour ça que son résultat ne dépend de rien de ce qui suit.
+ * Le statut HTTP de la réponse ne reflète que FRED : ce sont ses données qui priment.
+ *
+ * Chaque module journalise pour son compte. FRED et Eurostat écrivent tous deux dans
+ * `series_health`, mais sous une colonne `source` distincte, si bien que l'indicateur de
+ * fraîcheur les présente séparément : un échec Eurostat ne peut jamais se lire comme un échec
+ * FRED. La veille garde sa propre table, `veille_health`, qui n'alimente pas cet indicateur.
  */
 export const dynamic = "force-dynamic";
 export const maxDuration = 60;
@@ -66,10 +71,23 @@ export async function GET(request: Request) {
   // collecte réussie.
   for (const path of ["/", "/marches", "/macro"]) revalidatePath(path);
 
-  // Module 2 — la veille. Enveloppée dans son propre try/catch : même une exception qui
+  // Module 2 — Eurostat. Après FRED, dans son propre try/catch : ses séries sont mensuelles ou
+  // trimestrielles, donc un passage manqué se rattrape le lendemain sans rien perdre, alors
+  // qu'une exception ici ne doit surtout pas empêcher la route de rendre le rapport FRED.
+  let eurostat: IngestReport | { error: string };
+  try {
+    eurostat = await runEurostatIngest(client);
+  } catch (err) {
+    eurostat = { error: err instanceof Error ? err.message : String(err) };
+  }
+  revalidatePath("/macro");
+
+  // Module 3 — la veille. Enveloppée dans son propre try/catch : même une exception qui
   // échapperait à `runVeilleCollect` ne doit jamais faire échouer la route après que FRED a
-  // déjà écrit.
-  const remainingMs = TOTAL_BUDGET_MS - (Date.now() - routeStartedAt);
+  // déjà écrit. Elle passe en dernier parce qu'elle est la seule à savoir reprendre où elle
+  // s'est arrêtée : si les deux modules de données ont mangé le budget, son curseur reprendra
+  // demain là où il en était.
+  const remainingMs = Math.max(0, TOTAL_BUDGET_MS - (Date.now() - routeStartedAt));
   let veille: VeilleReport | { error: string };
   try {
     veille = await runVeilleCollect(client, { budgetMs: remainingMs, collectors: VEILLE_COLLECTORS });
@@ -78,8 +96,8 @@ export async function GET(request: Request) {
   }
 
   // 200 même en cas d'échec partiel : le passage a bien eu lieu, et le détail est dans le
-  // rapport. Un 500 ferait croire à un cron qui n'a pas tourné. Le veille ne pèse jamais sur ce
-  // statut — il porte le sien, séparément, dans `veille_health`.
+  // rapport. Un 500 ferait croire à un cron qui n'a pas tourné. Ni Eurostat ni la veille ne
+  // pèsent sur ce statut — chacun porte le sien, séparément, dans sa table de santé.
   const status = fred.failed > 0 && fred.ok === 0 ? 502 : 200;
-  return NextResponse.json({ fred, veille }, { status });
+  return NextResponse.json({ fred, eurostat, veille }, { status });
 }
