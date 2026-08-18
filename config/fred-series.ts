@@ -11,7 +11,11 @@
  * ce qui est déclaré ici.
  */
 
-export type FredCadence = "business-daily" | "monthly" | "quarterly" | "annual";
+import { STALENESS_TOLERANCE, type Cadence } from "./cadence";
+
+/** La cadence vit dans `config/cadence.ts` : elle ne dépend pas de la source. */
+export type FredCadence = Cadence;
+export { STALENESS_TOLERANCE };
 
 /**
  * `lin` : la série telle que FRED la publie.
@@ -47,24 +51,6 @@ export const LOOKBACK_DAYS: Record<FredCadence, number> = {
   monthly: 1200,
   quarterly: 3650,
   annual: 7300,
-};
-
-/**
- * Tolérance avant de signaler un **retard de publication** — un signal distinct de la
- * fraîcheur, calculé sur la date de l'observation et non sur celle du relevé. Il s'affiche
- * sur l'indicateur concerné et ne fait jamais rougir le point de la barre persistante.
- *
- * Pour le quotidien, le compte est en **jours ouvrés** : trois jours ouvrés absorbent un
- * férié isolé comme un pont, sans qu'aucun calendrier de fériés ait à être maintenu.
- */
-export const STALENESS_TOLERANCE: Record<
-  FredCadence,
-  { unit: "business-days" | "calendar-days"; max: number }
-> = {
-  "business-daily": { unit: "business-days", max: 3 },
-  monthly: { unit: "calendar-days", max: 45 },
-  quarterly: { unit: "calendar-days", max: 120 },
-  annual: { unit: "calendar-days", max: 450 },
 };
 
 const YIELD_BOUNDS = { min: -5, max: 25 };

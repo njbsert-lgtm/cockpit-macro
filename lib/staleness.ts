@@ -1,4 +1,6 @@
-import { STALENESS_TOLERANCE, type FredCadence } from "@/config/fred-series";
+// Le vocabulaire de cadence vit dans `config/cadence.ts`, hors de toute source : le retard de
+// publication se mesure de la même façon qu'il s'agisse de FRED ou d'Eurostat.
+import { STALENESS_TOLERANCE, type Cadence } from "@/config/cadence";
 
 /**
  * Le **retard de publication** — un signal distinct de la fraîcheur, et à ne pas confondre
@@ -63,7 +65,7 @@ export type PublicationDelay = {
  */
 export function publicationDelay(
   latestObservationDate: string | null,
-  cadence: FredCadence,
+  cadence: Cadence,
   now: Date = new Date(),
 ): PublicationDelay | null {
   if (!latestObservationDate) return null;
