@@ -25,6 +25,8 @@ export type IngestReport = {
   failed: number;
   /** Séries non tentées faute de temps. Ni réussies ni en échec : le lendemain les reprendra. */
   skipped: number;
+  /** La base a refusé la toute première écriture : rien n'a pu être tenté, et voici pourquoi. */
+  databaseError?: string;
   outcomes: SeriesOutcome[];
 };
 
@@ -76,7 +78,12 @@ export async function runIngest(
   const startedAt = now.toISOString();
   const outcomes: SeriesOutcome[] = [];
 
-  await syncMacroIndicators(client);
+  // Si la toute première écriture est refusée, les séries échoueront toutes de la même façon
+  // et pour la même raison. Autant le dire une fois, clairement, plutôt que quatorze fois.
+  const databaseError = await syncMacroIndicators(client);
+  if (databaseError) {
+    return { ...report(FRED_SOURCE, startedAt, [], ENABLED_SERIES.length), databaseError };
+  }
 
   for (const mapping of ENABLED_SERIES) {
     // Chaque série écrit avant qu'on passe à la suivante : s'arrêter ici ne perd rien de ce
@@ -347,11 +354,13 @@ async function recordHealthFailure(
 }
 
 /**
- * Réécrit la projection des métadonnées macro. La configuration reste la source de vérité :
+ * Réécrit la projection des métadonnées macro. **Première écriture du passage**, donc premier
+ * endroit où une base injoignable ou une clé sans droits se manifeste : son résultat est
+ * remonté au rapport plutôt qu'ignoré, sinon la panne la plus courante reste invisible. La configuration reste la source de vérité :
  * il n'y a jamais rien à maintenir à la main en base, et une divergence se corrige d'elle-même
  * au passage suivant.
  */
-async function syncMacroIndicators(client: SupabaseClient): Promise<void> {
+async function syncMacroIndicators(client: SupabaseClient): Promise<string | null> {
   const bySeries = new Map(
     FRED_SERIES.filter((m) => m.target.kind === "macro").map((m) => [m.target.id, m]),
   );
@@ -369,5 +378,6 @@ async function syncMacroIndicators(client: SupabaseClient): Promise<void> {
     synced_at: new Date().toISOString(),
   }));
 
-  await client.from("macro_indicators").upsert(rows, { onConflict: "id" });
+  const { error } = await client.from("macro_indicators").upsert(rows, { onConflict: "id" });
+  return error ? error.message : null;
 }

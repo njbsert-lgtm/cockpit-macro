@@ -238,3 +238,29 @@ describe("runIngest — budget de temps", () => {
     expect(report.ok).toBe(ENABLED_SERIES.length);
   });
 });
+
+describe("runIngest — une base qui refuse l'écriture le dit une fois, clairement", () => {
+  it("s'arrête à la première écriture refusée et nomme la cause", async () => {
+    const client = {
+      from() {
+        return {
+          upsert: () => Promise.resolve({ error: { message: "permission denied for table" } }),
+          select: () => ({ eq: () => ({ maybeSingle: () => Promise.resolve({ data: null }) }) }),
+        };
+      },
+    } as unknown as SupabaseClient;
+
+    let appels = 0;
+    const fetcher = async (): Promise<FredFetchResult> => {
+      appels += 1;
+      return { ok: true, points: [] };
+    };
+
+    const report = await runIngest(client, "clef", { now: NOW, fetcher });
+
+    // Aucune série tentée : elles auraient toutes échoué pour la même raison.
+    expect(appels).toBe(0);
+    expect(report.databaseError).toBe("permission denied for table");
+    expect(report.skipped).toBe(ENABLED_SERIES.length);
+  });
+});

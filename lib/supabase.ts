@@ -1,4 +1,26 @@
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
+import { fetchWithTimeout } from "./http";
+
+/**
+ * Les appels à Supabase sont bornés au même titre que ceux vers les APIs publiques.
+ *
+ * `supabase-js` s'appuie sur `fetch`, qui n'a pas de délai maximal : une base injoignable — URL
+ * erronée, projet en pause, réseau coupé — ne renvoie pas d'erreur, elle **ne répond jamais**.
+ * Dans la route de cron, la toute première écriture suspendait alors le passage entier jusqu'à
+ * ce que la plateforme le coupe : un 504, aucune ligne écrite, et aucune trace de la cause.
+ *
+ * Avec ce délai, une base injoignable devient une erreur nommée, journalisée, et le rapport
+ * part quand même.
+ */
+const SUPABASE_TIMEOUT_MS = 10_000;
+
+const options = {
+  auth: { persistSession: false },
+  global: {
+    fetch: (url: RequestInfo | URL, init?: RequestInit) =>
+      fetchWithTimeout(String(url), { ...init, timeoutMs: SUPABASE_TIMEOUT_MS }),
+  },
+} as const;
 
 /**
  * Deux clients, deux droits.
@@ -47,7 +69,7 @@ export function getReadClient(): SupabaseClient | null {
   );
   readClient =
     url && key
-      ? createClient(url, key, { auth: { persistSession: false } })
+      ? createClient(url, key, options)
       : null;
   return readClient;
 }
@@ -59,7 +81,7 @@ export function getWriteClient(): SupabaseClient | null {
   const key = firstDefined("SUPABASE_SERVICE_ROLE_KEY", "SUPABASE_SECRET_KEY");
   writeClient =
     url && key
-      ? createClient(url, key, { auth: { persistSession: false } })
+      ? createClient(url, key, options)
       : null;
   return writeClient;
 }
