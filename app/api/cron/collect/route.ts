@@ -25,9 +25,25 @@ import { collectGdelt } from "@/lib/veille/sources/gdelt";
 export const dynamic = "force-dynamic";
 export const maxDuration = 60;
 
-// Marge sous les 60 s de `maxDuration` : le temps qu'il faut pour que la réponse HTTP parte
-// encore proprement même si un collecteur a consommé son budget jusqu'au bout.
-const TOTAL_BUDGET_MS = 55_000;
+/**
+ * Le temps total qu'on s'autorise, nettement sous les 60 s de `maxDuration`.
+ *
+ * Un dépassement côté plateforme renvoie un 504 et **perd le rapport entier** : on ne sait
+ * alors ni ce qui a été écrit, ni pourquoi ça a calé. La marge existe pour que la réponse
+ * parte toujours, même quand chaque module a consommé son budget jusqu'au bout.
+ */
+const TOTAL_BUDGET_MS = 45_000;
+
+/**
+ * Le partage du temps entre modules, dans l'ordre de priorité du cahier.
+ *
+ * FRED d'abord et servi le plus largement : ce sont les données de marché, elles priment.
+ * Eurostat ensuite, mensuel et trimestriel, donc sans urgence à la journée. La veille en
+ * dernier avec ce qui reste, parce qu'elle est la seule à savoir reprendre où elle s'est
+ * arrêtée grâce à son curseur.
+ */
+const FRED_BUDGET_MS = 25_000;
+const EUROSTAT_BUDGET_MS = 12_000;
 
 // Les flux institutionnels et EDGAR d'abord : peu de requêtes, rapides, de haute autorité.
 // GDELT en dernier — c'est le seul dont la collecte se découpe sur plusieurs passages via un
@@ -71,7 +87,9 @@ export async function GET(request: Request) {
   const routeStartedAt = Date.now();
 
   // Module 1 — FRED. Toujours en premier, jamais parallélisé avec la veille.
-  const fred = await runIngest(client, apiKey);
+  const fred = await runIngest(client, apiKey, {
+    deadline: routeStartedAt + FRED_BUDGET_MS,
+  });
 
   // Les écrans de données sont en revalidation horaire ; on ne les fait pas attendre après une
   // collecte réussie.
@@ -82,7 +100,12 @@ export async function GET(request: Request) {
   // qu'une exception ici ne doit surtout pas empêcher la route de rendre le rapport FRED.
   let eurostat: IngestReport | { error: string };
   try {
-    eurostat = await runEurostatIngest(client);
+    eurostat = await runEurostatIngest(client, {
+      deadline: Math.min(
+        Date.now() + EUROSTAT_BUDGET_MS,
+        routeStartedAt + FRED_BUDGET_MS + EUROSTAT_BUDGET_MS,
+      ),
+    });
   } catch (err) {
     eurostat = { error: err instanceof Error ? err.message : String(err) };
   }

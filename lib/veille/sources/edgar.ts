@@ -2,6 +2,7 @@ import { z } from "zod";
 import type { RawVeilleCandidate } from "../filter";
 import type { VeilleCollectorContext } from "../collect";
 import { EDGAR_TRACKED_ISSUERS, type EdgarIssuer } from "@/config/veille-taxonomy";
+import { fetchWithTimeout } from "@/lib/http";
 
 // Dépôt réglementaire officiel — même autorité que les flux institutionnels.
 const SOURCE_AUTHORITY = 3;
@@ -76,7 +77,7 @@ export async function collectEdgar(ctx: VeilleCollectorContext): Promise<{ candi
 
     try {
       const cikPadded = issuer.cik.padStart(10, "0");
-      const response = await fetch(`https://data.sec.gov/submissions/CIK${cikPadded}.json`, {
+      const response = await fetchWithTimeout(`https://data.sec.gov/submissions/CIK${cikPadded}.json`, {
         headers: { Accept: "application/json", "User-Agent": USER_AGENT },
         cache: "no-store",
       });

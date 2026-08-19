@@ -2,6 +2,7 @@ import type { RawVeilleCandidate } from "../filter";
 import type { VeilleCollectorContext } from "../collect";
 import { INSTITUTIONAL_FEEDS } from "@/config/veille-taxonomy";
 import { parseFeed } from "./rss";
+import { fetchWithTimeout } from "@/lib/http";
 
 // Communiqué officiel — la source la plus autorisée du dispositif, avant GDELT et EDGAR.
 const SOURCE_AUTHORITY = 3;
@@ -21,7 +22,7 @@ export async function collectInstitutional(
     if (Date.now() > deadline) break;
 
     try {
-      const response = await fetch(feed.url, {
+      const response = await fetchWithTimeout(feed.url, {
         headers: { Accept: "application/rss+xml, application/atom+xml, text/xml" },
         cache: "no-store",
       });

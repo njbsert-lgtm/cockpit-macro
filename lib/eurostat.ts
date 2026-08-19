@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { LOOKBACK_PERIODS, type EurostatMapping } from "@/config/eurostat-series";
+import { describeFetchError, fetchWithTimeout } from "./http";
 
 export const EUROSTAT_SOURCE = "Eurostat";
 
@@ -200,12 +201,12 @@ export async function fetchEurostatSeries(
 ): Promise<EurostatFetchResult> {
   let response: Response;
   try {
-    response = await fetch(buildEurostatUrl(mapping), {
+    response = await fetchWithTimeout(buildEurostatUrl(mapping), {
       headers: { Accept: "application/json" },
       cache: "no-store",
     });
   } catch (error) {
-    return { ok: false, error: `appel impossible — ${(error as Error).message}` };
+    return { ok: false, error: `appel impossible — ${describeFetchError(error)}` };
   }
 
   if (!response.ok) {

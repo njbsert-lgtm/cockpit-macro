@@ -199,3 +199,42 @@ describe("runIngest — projection des métadonnées macro", () => {
     expect(policyRate?.series_key).toBe("DFEDTARU");
   });
 });
+
+describe("runIngest — budget de temps", () => {
+  it("s'arrête au budget épuisé et compte les séries non tentées, sans les dire en échec", async () => {
+    const { client } = fakeClient();
+    let appels = 0;
+    const fetcher = async (): Promise<FredFetchResult> => {
+      appels += 1;
+      return { ok: true, points: [] };
+    };
+
+    // Budget déjà dépassé : aucune série n'est tentée.
+    const report = await runIngest(client, "clef", {
+      now: NOW,
+      fetcher,
+      deadline: Date.now() - 1,
+    });
+
+    expect(appels).toBe(0);
+    expect(report.skipped).toBe(ENABLED_SERIES.length);
+    // Non tenté n'est pas en échec : une série sautée ne doit pas faire rougir la source,
+    // elle sera reprise au passage suivant.
+    expect(report.failed).toBe(0);
+    expect(report.ok).toBe(0);
+  });
+
+  it("ne saute rien quand le budget est large", async () => {
+    const { client } = fakeClient();
+    const fetcher = async (): Promise<FredFetchResult> => ({ ok: true, points: [] });
+
+    const report = await runIngest(client, "clef", {
+      now: NOW,
+      fetcher,
+      deadline: Date.now() + 60_000,
+    });
+
+    expect(report.skipped).toBe(0);
+    expect(report.ok).toBe(ENABLED_SERIES.length);
+  });
+});

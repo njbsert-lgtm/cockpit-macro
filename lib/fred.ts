@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { LOOKBACK_DAYS, type FredMapping } from "@/config/fred-series";
+import { describeFetchError, fetchWithTimeout } from "./http";
 
 export const FRED_SOURCE = "FRED";
 
@@ -136,12 +137,12 @@ export async function fetchFredSeries(
 ): Promise<FredFetchResult> {
   let response: Response;
   try {
-    response = await fetch(buildObservationsUrl(mapping, apiKey, now), {
+    response = await fetchWithTimeout(buildObservationsUrl(mapping, apiKey, now), {
       headers: { Accept: "application/json" },
       cache: "no-store",
     });
   } catch (error) {
-    return { ok: false, error: `appel impossible — ${(error as Error).message}` };
+    return { ok: false, error: `appel impossible — ${describeFetchError(error)}` };
   }
 
   if (!response.ok) {
@@ -191,7 +192,7 @@ export async function checkSeriesMetadata(
 
   let payload: unknown;
   try {
-    const response = await fetch(`${FRED_SERIES_URL}?${params.toString()}`);
+    const response = await fetchWithTimeout(`${FRED_SERIES_URL}?${params.toString()}`);
     if (!response.ok) {
       const body = await response.text().catch(() => "");
       return {

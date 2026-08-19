@@ -23,8 +23,39 @@ export type IngestReport = {
   finishedAt: string;
   ok: number;
   failed: number;
+  /** Séries non tentées faute de temps. Ni réussies ni en échec : le lendemain les reprendra. */
+  skipped: number;
   outcomes: SeriesOutcome[];
 };
+
+/**
+ * Arrête une boucle de collecte avant que la plateforme ne coupe la route.
+ *
+ * Un dépassement de délai côté Vercel renvoie un 504 et **perd le rapport entier** : on ne sait
+ * alors ni ce qui a été écrit, ni pourquoi ça a calé. Mieux vaut s'arrêter de nous-mêmes,
+ * rendre un rapport partiel honnête, et laisser le passage du lendemain reprendre — la collecte
+ * étant idempotente, rien ne se perd.
+ */
+function outOfTime(deadline: number | undefined): boolean {
+  return deadline !== undefined && Date.now() > deadline;
+}
+
+function report(
+  source: string,
+  startedAt: string,
+  outcomes: SeriesOutcome[],
+  total: number,
+): IngestReport {
+  return {
+    source,
+    startedAt,
+    finishedAt: new Date().toISOString(),
+    ok: outcomes.filter((o) => o.ok).length,
+    failed: outcomes.filter((o) => !o.ok).length,
+    skipped: total - outcomes.length,
+    outcomes,
+  };
+}
 
 type Fetcher = (mapping: FredMapping, apiKey: string, now: Date) => Promise<FredFetchResult>;
 
@@ -38,7 +69,7 @@ type Fetcher = (mapping: FredMapping, apiKey: string, now: Date) => Promise<Fred
 export async function runIngest(
   client: SupabaseClient,
   apiKey: string,
-  options: { now?: Date; fetcher?: Fetcher } = {},
+  options: { now?: Date; fetcher?: Fetcher; deadline?: number } = {},
 ): Promise<IngestReport> {
   const now = options.now ?? new Date();
   const fetcher = options.fetcher ?? fetchFredSeries;
@@ -48,17 +79,13 @@ export async function runIngest(
   await syncMacroIndicators(client);
 
   for (const mapping of ENABLED_SERIES) {
+    // Chaque série écrit avant qu'on passe à la suivante : s'arrêter ici ne perd rien de ce
+    // qui précède, et le passage du lendemain reprendra les séries non tentées.
+    if (outOfTime(options.deadline)) break;
     outcomes.push(await ingestOne(client, mapping, apiKey, now, fetcher));
   }
 
-  return {
-    source: FRED_SOURCE,
-    startedAt,
-    finishedAt: new Date().toISOString(),
-    ok: outcomes.filter((o) => o.ok).length,
-    failed: outcomes.filter((o) => !o.ok).length,
-    outcomes,
-  };
+  return report(FRED_SOURCE, startedAt, outcomes, ENABLED_SERIES.length);
 }
 
 // ---------------------------------------------------------------------------
@@ -81,25 +108,25 @@ type EurostatFetcher = (mapping: EurostatMapping) => Promise<
  */
 export async function runEurostatIngest(
   client: SupabaseClient,
-  options: { now?: Date; fetcher?: EurostatFetcher; series?: EurostatMapping[] } = {},
+  options: {
+    now?: Date;
+    fetcher?: EurostatFetcher;
+    series?: EurostatMapping[];
+    deadline?: number;
+  } = {},
 ): Promise<IngestReport> {
   const now = options.now ?? new Date();
   const fetcher = options.fetcher ?? fetchEurostatSeries;
   const startedAt = now.toISOString();
   const outcomes: SeriesOutcome[] = [];
+  const series = options.series ?? ENABLED_EUROSTAT_SERIES;
 
-  for (const mapping of options.series ?? ENABLED_EUROSTAT_SERIES) {
+  for (const mapping of series) {
+    if (outOfTime(options.deadline)) break;
     outcomes.push(await ingestEurostatOne(client, mapping, now, fetcher));
   }
 
-  return {
-    source: EUROSTAT_SOURCE,
-    startedAt,
-    finishedAt: new Date().toISOString(),
-    ok: outcomes.filter((o) => o.ok).length,
-    failed: outcomes.filter((o) => !o.ok).length,
-    outcomes,
-  };
+  return report(EUROSTAT_SOURCE, startedAt, outcomes, series.length);
 }
 
 /** L'identifiant lisible d'une série Eurostat : le dataset et ses dimensions fixées. */

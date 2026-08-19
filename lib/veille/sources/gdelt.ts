@@ -3,6 +3,7 @@ import type { RawVeilleCandidate } from "../filter";
 import type { VeilleCollectorContext } from "../collect";
 import { buildGdeltQueries, GDELT_THEME_QUERIES, type GdeltQuery } from "@/config/veille-taxonomy";
 import { readCursor, writeCursor } from "../cursor";
+import { fetchWithTimeout } from "@/lib/http";
 
 // Détection large, non éditorialisée — la source la moins autorisée du dispositif.
 const SOURCE_AUTHORITY = 1;
@@ -74,7 +75,7 @@ export async function collectGdelt(ctx: VeilleCollectorContext): Promise<{ candi
   while (processed < queries.length && Date.now() < deadline) {
     const query = queries[position];
     try {
-      const response = await fetch(buildGdeltUrl(query), {
+      const response = await fetchWithTimeout(buildGdeltUrl(query), {
         headers: { Accept: "application/json" },
         cache: "no-store",
       });
