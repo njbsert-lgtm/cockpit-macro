@@ -1,5 +1,5 @@
 import { freshnessTier, type FreshnessTier, worstTier } from "./freshness";
-import { getReadClient } from "./supabase";
+import { getReadClient, missingSupabaseConfig } from "./supabase";
 import { ENABLED_SERIES } from "@/config/fred-series";
 import { ENABLED_EUROSTAT_SERIES, EUROSTAT_SOURCE } from "@/config/eurostat-series";
 import { FRED_SOURCE } from "./fred";
@@ -38,14 +38,19 @@ export async function getFreshnessSummary(now: Date = new Date()): Promise<Sourc
     if (!current || entry.fetchedAt! < current.fetchedAt!) bySource.set(entry.source, entry);
   };
 
-  for (const entry of await readSeriesHealth(now)) record(entry);
+  const health = await readSeriesHealth(now);
+  for (const entry of health.entries) record(entry);
 
-  // Une source configurée dont rien n'est encore remonté : elle doit se voir, et se lire comme
+  // Une source configurée dont rien n'est remonté : elle doit se voir, et se lire comme
   // « jamais collectée » plutôt que de disparaître du panneau. Un tuyau qu'on a branché mais
   // qui n'a jamais coulé est une information ; une ligne absente n'en est pas une.
+  //
+  // Encore faut-il ne pas confondre deux pannes que rien ne distingue à l'écran sans ça : une
+  // collecte qui n'a jamais tourné, et une base qu'on ne sait pas interroger. C'est l'état 5
+  // du cahier — nommer la cause, pas seulement constater le vide.
   for (const source of configuredSources()) {
     if (!bySource.has(source)) {
-      bySource.set(source, { source, fetchedAt: null, tier: "absente" });
+      bySource.set(source, { source, fetchedAt: null, tier: "absente", error: health.failure });
     }
   }
 
@@ -63,35 +68,53 @@ function configuredSources(): string[] {
   return [...sources];
 }
 
-async function readSeriesHealth(now: Date): Promise<SourceFreshness[]> {
+type HealthRead = {
+  entries: SourceFreshness[];
+  /** Renseigné quand c'est la lecture qui a échoué, pas la collecte. */
+  failure?: string;
+};
+
+async function readSeriesHealth(now: Date): Promise<HealthRead> {
   const client = getReadClient();
-  if (!client) return [];
+  if (!client) {
+    const manquantes = missingSupabaseConfig().join(", ");
+    return {
+      entries: [],
+      failure: `Base non configurée en lecture — ${manquantes} absente(s) des variables d'environnement.`,
+    };
+  }
 
   try {
     const { data, error } = await client
       .from("series_health")
       .select("source, last_success_at, last_error, consecutive_failures");
-    if (error || !data) return [];
+    // Une requête refusée — table absente, politique RLS, droits — n'est pas une collecte qui
+    // n'a rien produit. Les confondre envoie chercher la panne du mauvais côté.
+    if (error) return { entries: [], failure: `series_health illisible — ${error.message}` };
+    if (!data) return { entries: [], failure: "series_health n'a rien renvoyé du tout." };
 
-    return (
-      data as Array<{
-        source: string;
-        last_success_at: string | null;
-        last_error: string | null;
-        consecutive_failures: number;
-      }>
-    )
-      .filter((row) => row.last_success_at !== null)
-      .map((row) => ({
-        source: row.source,
-        fetchedAt: row.last_success_at!,
-        tier: freshnessTier(row.last_success_at, now),
-        error: row.consecutive_failures > 0 ? (row.last_error ?? undefined) : undefined,
-      }));
-  } catch {
-    // Base injoignable : les sources configurées ressortiront « jamais collectée », ce qui est
-    // exact — nous n'avons aucune preuve qu'elles aient collecté quoi que ce soit.
-    return [];
+    return {
+      entries: (
+        data as Array<{
+          source: string;
+          last_success_at: string | null;
+          last_error: string | null;
+          consecutive_failures: number;
+        }>
+      )
+        .filter((row) => row.last_success_at !== null)
+        .map((row) => ({
+          source: row.source,
+          fetchedAt: row.last_success_at!,
+          tier: freshnessTier(row.last_success_at, now),
+          error: row.consecutive_failures > 0 ? (row.last_error ?? undefined) : undefined,
+        })),
+    };
+  } catch (err) {
+    return {
+      entries: [],
+      failure: `Base injoignable — ${err instanceof Error ? err.message : String(err)}`,
+    };
   }
 }
 

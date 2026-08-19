@@ -60,3 +60,16 @@ describe("getFreshnessSummary — aucune donnée en dur ne s'y affiche", () => {
     expect(sources.length).toBeLessThanOrEqual(2);
   });
 });
+
+describe("getFreshnessSummary — ne pas confondre deux pannes", () => {
+  it("nomme la configuration absente au lieu de laisser croire que la collecte n'a rien produit", async () => {
+    // Sans clé de lecture, l'application ne sait pas interroger la base. Le vide affiché ne
+    // dit alors rien de la collecte, et le panneau doit le préciser — l'état 5 du cahier
+    // nomme la cause, il ne se contente pas de constater.
+    const summary = await getFreshnessSummary(NOW);
+    const fred = summary.find((s) => s.source === FRED_SOURCE)!;
+    expect(fred.tier).toBe("absente");
+    expect(fred.error).toMatch(/Base non configurée en lecture/);
+    expect(fred.error).toMatch(/SUPABASE_ANON_KEY/);
+  });
+});
