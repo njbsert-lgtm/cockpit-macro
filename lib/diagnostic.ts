@@ -55,6 +55,59 @@ function checkEnvironment(): Check {
   };
 }
 
+/**
+ * La forme de l'URL, sans sa valeur complète.
+ *
+ * L'erreur la plus courante d'une mise en service Supabase est de coller l'adresse du tableau
+ * de bord — `supabase.com/dashboard/project/…` — ou la chaîne de connexion Postgres, à la
+ * place de l'adresse de l'API. Les trois se ressemblent assez pour être confondues, et seule
+ * la dernière répond aux appels de l'application.
+ *
+ * L'hôte est affiché parce qu'il n'est pas un secret : c'est le point d'entrée public d'un
+ * projet Supabase, protégé par les politiques RLS et non par son obscurité. Le voir suffit
+ * généralement à reconnaître l'erreur au premier coup d'œil.
+ */
+function checkUrlShape(): Check {
+  const raw = process.env.SUPABASE_URL ?? process.env.NEXT_PUBLIC_SUPABASE_URL;
+  if (!raw) {
+    return { label: "Forme de l'URL", ok: false, detail: "SUPABASE_URL n'est pas renseignée." };
+  }
+
+  let url: URL;
+  try {
+    url = new URL(raw.trim());
+  } catch {
+    return {
+      label: "Forme de l'URL",
+      ok: false,
+      detail:
+        "Valeur illisible comme adresse. Attendu : https://identifiant.supabase.co — rien d'autre, ni chemin ni barre oblique finale.",
+    };
+  }
+
+  const problemes: string[] = [];
+  if (url.protocol !== "https:") problemes.push(`protocole « ${url.protocol} » au lieu de https`);
+  if (url.hostname.endsWith("supabase.com")) {
+    problemes.push(
+      "c'est l'adresse du tableau de bord, pas celle de l'API — attendu un hôte en .supabase.co",
+    );
+  } else if (!url.hostname.endsWith(".supabase.co")) {
+    problemes.push(`hôte « ${url.hostname} » inattendu — attendu un hôte en .supabase.co`);
+  }
+  if (url.pathname !== "/" && url.pathname !== "") {
+    problemes.push(`chemin « ${url.pathname} » en trop — l'adresse s'arrête à l'hôte`);
+  }
+
+  return {
+    label: "Forme de l'URL",
+    ok: problemes.length === 0,
+    detail:
+      problemes.length === 0
+        ? `Hôte ${url.hostname}, forme attendue.`
+        : `${problemes.join(" ; ")}.`,
+  };
+}
+
 async function checkRead(): Promise<Check> {
   const client = getReadClient();
   if (!client) {
@@ -143,10 +196,13 @@ async function checkWrite(): Promise<Check> {
  * échecs désignent l'URL ou le projet lui-même. C'est ce raisonnement-là qu'on veut éviter de
  * refaire à la main à chaque incident.
  */
-function conclude(env: Check, read: Check, write: Check): string {
+function conclude(env: Check, url: Check, read: Check, write: Check): string {
   if (!env.ok) return "Complétez d'abord les variables manquantes, puis redéployez.";
+  // La forme de l'URL prime sur le reste : tant qu'elle est fausse, les deux sondes échouent
+  // pour cette seule raison et tout autre diagnostic serait du bruit.
+  if (!url.ok) return `Corrigez SUPABASE_URL — ${url.detail} Puis redéployez.`;
   if (!read.ok && !write.ok) {
-    return "Ni lecture ni écriture : l'URL du projet est erronée, ou le projet Supabase est en pause. Vérifiez SUPABASE_URL et l'état du projet dans son tableau de bord.";
+    return "L'adresse a la bonne forme mais la base ne répond pas : le projet Supabase est probablement en pause, ou l'identifiant du projet n'est pas le bon. Vérifiez son état dans le tableau de bord Supabase.";
   }
   if (read.ok && !write.ok) {
     return "La base répond mais refuse l'écriture : SUPABASE_SERVICE_ROLE_KEY ne contient probablement pas la clé de service. Une clé anonyme est bloquée par les politiques RLS, qui n'autorisent que la lecture.";
@@ -159,8 +215,9 @@ function conclude(env: Check, read: Check, write: Check): string {
 
 export async function runDiagnostic(): Promise<Diagnostic> {
   const env = checkEnvironment();
+  const url = checkUrlShape();
   // Les deux sondes sont lancées ensemble : elles sont indépendantes, et le diagnostic doit
   // rester rapide même quand la base met du temps à refuser.
   const [read, write] = await Promise.all([checkRead(), checkWrite()]);
-  return { checks: [env, read, write], verdict: conclude(env, read, write) };
+  return { checks: [env, url, read, write], verdict: conclude(env, url, read, write) };
 }
