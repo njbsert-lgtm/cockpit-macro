@@ -23,6 +23,21 @@ export const metadata: Metadata = {
     "Tableau de bord macroéconomique et géopolitique personnel — support d'analyse, pas un conseil en investissement.",
 };
 
+/**
+ * La barre persistante porte l'indicateur de fraîcheur, donc une donnée qui bouge tous les
+ * jours, sur **tous** les écrans — y compris ceux que Next rend une fois pour toutes à la
+ * compilation, comme l'accueil ou le fil des notes.
+ *
+ * Sans cette péremption, l'indicateur restait figé sur l'état du dernier déploiement : il
+ * annonçait « jamais collectée » indéfiniment alors que le cron écrivait chaque matin. Le cron
+ * appelle bien `revalidatePath`, mais s'y fier seul revient à faire dépendre l'honnêteté de
+ * l'indicateur du bon fonctionnement de ce qu'il est précisément chargé de surveiller.
+ *
+ * Une heure, comme les fiches d'indicateur et de driver : la collecte est quotidienne, rien
+ * ici ne justifie plus court.
+ */
+export const revalidate = 3600;
+
 export default function RootLayout({
   children,
 }: Readonly<{
