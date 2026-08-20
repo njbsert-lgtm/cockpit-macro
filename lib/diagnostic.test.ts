@@ -75,3 +75,19 @@ describe("checkUrlShape — via runDiagnostic", () => {
     }
   });
 });
+
+describe("checkEnvironment — les valeurs salies", () => {
+  it("signale une espace parasite plutôt que de la corriger en silence", async () => {
+    const avant = process.env.SUPABASE_ANON_KEY;
+    process.env.SUPABASE_ANON_KEY = "une-cle-quelconque\n";
+    try {
+      const { checks } = await runDiagnostic();
+      const env = checks.find((c) => c.label === "Variables d'environnement")!;
+      expect(env.detail).toMatch(/Espace ou retour à la ligne/);
+      expect(env.detail).toMatch(/SUPABASE_ANON_KEY/);
+    } finally {
+      if (avant === undefined) delete process.env.SUPABASE_ANON_KEY;
+      else process.env.SUPABASE_ANON_KEY = avant;
+    }
+  });
+});

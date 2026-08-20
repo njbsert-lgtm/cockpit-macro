@@ -43,10 +43,17 @@ const options = {
 let readClient: SupabaseClient | null | undefined;
 let writeClient: SupabaseClient | null | undefined;
 
-/** Le premier nom renseigné l'emporte : la forme courte d'abord, la préfixée en repli. */
+/**
+ * Le premier nom renseigné l'emporte : la forme courte d'abord, la préfixée en repli.
+ *
+ * La valeur est **rognée**. Un copier-coller depuis un tableau de bord embarque volontiers une
+ * espace ou un retour à la ligne, invisibles dans un champ de formulaire, et une clé ainsi
+ * altérée produit un 401 impossible à distinguer d'une mauvaise clé. Ce n'est jamais
+ * intentionnel : personne ne met délibérément une espace au bout d'un jeton.
+ */
 function firstDefined(...names: string[]): string | undefined {
   for (const name of names) {
-    const value = process.env[name];
+    const value = process.env[name]?.trim();
     if (value) return value;
   }
   return undefined;

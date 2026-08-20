@@ -18,6 +18,12 @@ export type Check = {
   label: string;
   ok: boolean;
   detail: string;
+  /**
+   * La **nature** de l'échec, pas seulement son existence. « Refusée » et « injoignable » se
+   * ressemblent à l'écran et désignent des pièces opposées : la première accuse les clés, la
+   * seconde l'adresse ou le projet. Les confondre a déjà envoyé chercher au mauvais endroit.
+   */
+  kind?: "refus" | "injoignable";
 };
 
 export type Diagnostic = {
@@ -45,13 +51,31 @@ function checkEnvironment(): Check {
     );
 
   const absentes = attendues.filter((nom) => !present(nom));
+
+  // Une espace ou un retour à la ligne au bout d'une valeur est invisible dans un champ de
+  // formulaire et survit au copier-coller depuis un tableau de bord. Sur une clé, il produit
+  // un rejet impossible à distinguer d'une mauvaise clé ; Vercel a déjà refusé `CRON_SECRET`
+  // pour cette raison. L'application rogne désormais ces valeurs, mais mieux vaut le signaler
+  // que de corriger en silence quelque chose que personne n'a voulu écrire.
+  const salies = Object.entries(process.env)
+    .filter(([nom]) => attendues.some((a) => nom === a || nom.endsWith(a)))
+    .filter(([, valeur]) => valeur !== undefined && valeur !== valeur.trim())
+    .map(([nom]) => nom);
+
+  const problemes = [
+    absentes.length > 0 ? `Absente(s) : ${absentes.join(", ")}.` : null,
+    salies.length > 0
+      ? `Espace ou retour à la ligne en début ou fin de : ${salies.join(", ")} — rogné à la lecture, mais à corriger dans Vercel.`
+      : null,
+  ].filter(Boolean);
+
   return {
     label: "Variables d'environnement",
     ok: absentes.length === 0,
     detail:
-      absentes.length === 0
+      problemes.length === 0
         ? `Les ${attendues.length} variables attendues sont renseignées.`
-        : `Absente(s) : ${absentes.join(", ")}.`,
+        : problemes.join(" "),
   };
 }
 
@@ -123,7 +147,12 @@ async function checkRead(): Promise<Check> {
       .from("series_health")
       .select("series_key", { count: "exact", head: true });
     if (error) {
-      return { label: "Lecture de la base", ok: false, detail: `Refusée — ${error.message}` };
+      return {
+        label: "Lecture de la base",
+        ok: false,
+        kind: "refus",
+        detail: `Refusée — ${error.message}`,
+      };
     }
     return {
       label: "Lecture de la base",
@@ -134,6 +163,7 @@ async function checkRead(): Promise<Check> {
     return {
       label: "Lecture de la base",
       ok: false,
+      kind: "injoignable",
       detail: `Injoignable — ${err instanceof Error ? err.message : String(err)}`,
     };
   }
@@ -174,7 +204,12 @@ async function checkWrite(): Promise<Check> {
       { onConflict: "id" },
     );
     if (error) {
-      return { label: "Écriture en base", ok: false, detail: `Refusée — ${error.message}` };
+      return {
+        label: "Écriture en base",
+        ok: false,
+        kind: "refus",
+        detail: `Refusée — ${error.message}`,
+      };
     }
     return {
       label: "Écriture en base",
@@ -185,6 +220,7 @@ async function checkWrite(): Promise<Check> {
     return {
       label: "Écriture en base",
       ok: false,
+      kind: "injoignable",
       detail: `Injoignable — ${err instanceof Error ? err.message : String(err)}`,
     };
   }
@@ -202,6 +238,11 @@ function conclude(env: Check, url: Check, read: Check, write: Check): string {
   // pour cette seule raison et tout autre diagnostic serait du bruit.
   if (!url.ok) return `Corrigez SUPABASE_URL — ${url.detail} Puis redéployez.`;
   if (!read.ok && !write.ok) {
+    // Deux refus : l'hôte répond, ce sont les clés qu'il rejette. Deux silences : c'est l'hôte
+    // ou le projet. La distinction change entièrement ce qu'il y a à corriger.
+    if (read.kind === "refus" && write.kind === "refus") {
+      return "La base répond mais rejette les deux clés : SUPABASE_ANON_KEY et SUPABASE_SERVICE_ROLE_KEY n'appartiennent probablement pas à ce projet, ou ont été tronquées au copier-coller. Reprenez-les dans Project Settings → API Keys du projet correspondant à l'hôte ci-dessus.";
+    }
     return "L'adresse a la bonne forme mais la base ne répond pas : le projet Supabase est probablement en pause, ou l'identifiant du projet n'est pas le bon. Vérifiez son état dans le tableau de bord Supabase.";
   }
   if (read.ok && !write.ok) {
