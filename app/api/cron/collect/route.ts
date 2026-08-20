@@ -32,7 +32,7 @@ export const maxDuration = 60;
  * alors ni ce qui a été écrit, ni pourquoi ça a calé. La marge existe pour que la réponse
  * parte toujours, même quand chaque module a consommé son budget jusqu'au bout.
  */
-const TOTAL_BUDGET_MS = 45_000;
+const TOTAL_BUDGET_MS = 48_000;
 
 /**
  * Le partage du temps entre modules, dans l'ordre de priorité du cahier.
@@ -42,8 +42,10 @@ const TOTAL_BUDGET_MS = 45_000;
  * dernier avec ce qui reste, parce qu'elle est la seule à savoir reprendre où elle s'est
  * arrêtée grâce à son curseur.
  */
-const FRED_BUDGET_MS = 25_000;
-const EUROSTAT_BUDGET_MS = 12_000;
+const FRED_BUDGET_MS = 24_000;
+// Vingt séries, mesurées à une dizaine de secondes lors des contrôles à blanc : douze ne
+// laissaient aucune marge, et les dernières zones auraient été sautées un jour sur deux.
+const EUROSTAT_BUDGET_MS = 14_000;
 
 // Les flux institutionnels et EDGAR d'abord : peu de requêtes, rapides, de haute autorité.
 // GDELT en dernier — c'est le seul dont la collecte se découpe sur plusieurs passages via un

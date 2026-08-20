@@ -752,8 +752,8 @@ configuration, pas de la donnée, et le contrôle d'intégrité du contenu en d�
 synchrone au chargement du module.
 
 **La transition est progressive, source par source.** Au moment où cette règle est posée, 6
-instruments sur 83 et 8 indicateurs sur 69 sont réellement collectés : l'appliquer d'un coup
-viderait l'application. Chaque source branchée fait donc basculer son périmètre — les séries
+instruments sur 83 et 8 indicateurs sur 69 sont réellement collectés ; Eurostat en a depuis
+porté le second chiffre à 28. L'appliquer d'un coup viderait l'application. Chaque source branchée fait donc basculer son périmètre — les séries
 qu'elle couvre passent en collecté, leurs valeurs en dur sont retirées du seed. Les séries
 qu'aucune source ne couvre encore affichent l'état vide plutôt qu'un chiffre inventé.
 

@@ -5,8 +5,8 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 const getReadClient = vi.fn();
 vi.mock("./supabase", () => ({ getReadClient: () => getReadClient() }));
 
-const { loadObservations, loadMacroObservations } = await import("./observations");
-const { getObservations, getMacroObservations } = await import("./data");
+const { loadObservations, loadMacroObservations, isMacroCovered } = await import("./observations");
+const { getObservations, getMacroObservations, getMacroIndicators } = await import("./data");
 
 /** Un client dont la requête se termine comme demandé. */
 function clientReturning(rows: unknown[] | null, error: { message: string } | null = null) {
@@ -141,9 +141,16 @@ describe("observations macro", () => {
 
   it("laissent au seed les indicateurs qu'aucune série active ne couvre", async () => {
     getReadClient.mockReturnValue(clientReturning([]));
-    // 'ez-cpi' viendra de la BCE, pas de FRED : il n'est pas dans la table de correspondance.
-    const result = await loadMacroObservations(["ez-cpi"]);
-    expect(result.get("ez-cpi")).toEqual(getMacroObservations("ez-cpi"));
+    // L'indicateur est choisi à l'exécution plutôt que nommé en dur : la première version de ce
+    // test citait `ez-cpi`, qu'Eurostat a depuis pris en charge, et il échouait pour la seule
+    // raison qu'une source de plus avait été branchée. Ce qui doit être vérifié, c'est la règle,
+    // pas l'exemple.
+    const nonCouvert = getMacroIndicators().find((i) => !isMacroCovered(i.id));
+    expect(nonCouvert, "plus aucun indicateur au seed — la règle n'a plus de cas à couvrir")
+      .toBeDefined();
+
+    const result = await loadMacroObservations([nonCouvert!.id]);
+    expect(result.get(nonCouvert!.id)).toEqual(getMacroObservations(nonCouvert!.id));
     expect(getReadClient).not.toHaveBeenCalled();
   });
 });

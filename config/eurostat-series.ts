@@ -17,11 +17,10 @@ import type { Zone } from "@/lib/types";
  * période — donc si une dimension a été oubliée et reste ouverte —, toute la réponse est
  * rejetée. Une dimension non fixée ne peut pas passer inaperçue.
  *
- * ⚠︎ Les codes de dataset et de dimension ci-dessous sont écrits d'après la structure connue
- * du dispositif Eurostat, **sans avoir pu être confrontés à un appel réseau réel** depuis
- * l'environnement de développement — même situation que `config/fred-series.ts` à sa création.
- * D'où `EUROSTAT_VERIFIED`, plus bas : rien n'est collecté avant un `npm run eurostat:check`
- * vert.
+ * Tous les codes ci-dessous ont été confrontés à la nomenclature réelle de leur dataset avec
+ * `npm run eurostat:explore`, puis les vingt séries sont sorties vertes de
+ * `npm run eurostat:check`. Toute correction ultérieure passe par la même porte : on lit ce que
+ * la source publie, on ne devine pas un code.
  */
 
 export type EurostatMapping = {
@@ -201,18 +200,18 @@ export const PMI_NOT_ON_EUROSTAT =
   "Indice propriétaire S&P Global / HCOB, sous licence, absent de l'API Eurostat.";
 
 /**
- * L'interrupteur général, à basculer **après** un `npm run eurostat:check` vert.
+ * L'interrupteur général, basculé après un `npm run eurostat:check` vert.
  *
- * Les codes de dataset et de dimension de ce fichier n'ont pas pu être confrontés à l'API
- * réelle depuis l'environnement de développement. Tant que ce drapeau est faux, l'orchestrateur
- * n'appelle aucune série : `/macro` continue de lire le seed, exactement comme avant. Le
- * contrôle à blanc, lui, interroge `EUROSTAT_SERIES` en entier sans passer par ce drapeau —
- * c'est ce qui permet de vérifier avant d'activer.
+ * Les vingt séries sont sorties conformes le 18 août 2026 : dimensions confrontées à la
+ * nomenclature réelle de chaque dataset, unités identiques à celles attendues, dernières
+ * valeurs relevées et lues à la main. Quatre défauts ont été corrigés à cette occasion —
+ * bornes du PIB trop serrées, `geo=EA` absent de `une_rt_m`, `prc_hicp_manr` gelé fin 2025, et
+ * `coicop` renommé `coicop18` dans son successeur.
  *
- * Une fois vert, basculer ici ; le champ `enabled` de chaque série sert ensuite à écarter
- * individuellement celles qui n'auraient pas passé le contrôle.
+ * Le champ `enabled` de chaque série sert à écarter individuellement celles qu'un contrôle
+ * ultérieur ferait tomber, sans tout désactiver.
  */
-export const EUROSTAT_VERIFIED = false;
+export const EUROSTAT_VERIFIED = true;
 
 export const ENABLED_EUROSTAT_SERIES = EUROSTAT_VERIFIED
   ? EUROSTAT_SERIES.filter((m) => m.enabled)
