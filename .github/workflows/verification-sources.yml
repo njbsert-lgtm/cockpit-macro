@@ -21,8 +21,9 @@ on:
           - fred
           - les-deux
           - explorer-eurostat
+          - sonder-hote
       series:
-        description: "Séries à vérifier (vide = toutes). En mode explorer : « catalogue <terme> » ou « <dataset> <dimension> »"
+        description: "Séries à vérifier (vide = toutes). Explorer : « catalogue <terme> » ou « <dataset> <dimension> ». Sonder : l'hôte à joindre"
         type: string
         required: false
         default: ""
@@ -76,6 +77,29 @@ jobs:
           code=$?
           echo '```' >> "$GITHUB_STEP_SUMMARY"
           exit $code
+
+      - name: Sonder un hôte
+        # Répond à « ce service est-il joignable depuis l'internet public, maintenant ? ».
+        # Un 401 est un succès : il prouve que l'hôte répond. Ce qu'on cherche à écarter, c'est
+        # l'absence de réponse — projet en pause, nom qui ne résout pas.
+        if: ${{ inputs.source == 'sonder-hote' }}
+        env:
+          HOTE: ${{ inputs.series }}
+        run: |
+          set +e -o pipefail
+          {
+            echo '## Sonde'
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+          {
+            echo "hôte : $HOTE"
+            echo "--- résolution DNS ---"
+            getent hosts "$HOTE" || echo "le nom ne résout pas"
+            echo "--- réponse HTTP (10 s max) ---"
+            curl -sS -o /dev/null -m 10 -w 'code=%{http_code}  temps=%{time_total}s\n' \
+              "https://$HOTE/rest/v1/" || echo "aucune réponse"
+          } 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
 
       - name: FRED
         # `always()` pour que FRED soit quand même vérifié après un Eurostat rouge.
