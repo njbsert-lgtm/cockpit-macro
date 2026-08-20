@@ -173,3 +173,26 @@ create policy veille_items_read       on veille_items       for select using (tr
 -- d'implémentation de la collecte, jamais affichés, seule la clé de service y touche. C'est ce
 -- qui empêche `veille_health` de fuiter dans l'indicateur de fraîcheur de la barre persistante,
 -- qui lit `series_health` par la clé anonyme.
+
+-- ---------------------------------------------------------------------------
+-- Privilèges
+-- ---------------------------------------------------------------------------
+
+-- Deux couches de sécurité se superposent dans Postgres, et il faut les deux : le **privilège**
+-- dit si un rôle a le droit de toucher à la table, la **politique RLS** dit quelles lignes il
+-- voit. Sans privilège, la politique n'est jamais consultée — l'erreur est alors
+-- « permission denied for table », et non « violates row-level security policy ».
+--
+-- Ces droits sont déclarés ici plutôt que laissés aux réglages par défaut du projet : un schéma
+-- qui dépend d'un contexte implicite ne se rejoue pas à l'identique ailleurs.
+
+grant usage on schema public to anon, authenticated, service_role;
+
+-- La clé anonyme lit, et rien d'autre. Ce qu'elle voit reste borné par les politiques
+-- ci-dessus : `veille_cursor` et `veille_health` n'en ont pas, donc restent invisibles.
+grant select on observations, macro_observations, macro_indicators, series_health, veille_items
+  to anon, authenticated;
+
+-- La clé de service écrit : c'est elle, et elle seule, que le cron utilise.
+grant all privileges on all tables in schema public to service_role;
+grant all privileges on all sequences in schema public to service_role;
