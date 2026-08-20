@@ -118,8 +118,22 @@ function checkUrlShape(): Check {
   } else if (!url.hostname.endsWith(".supabase.co")) {
     problemes.push(`hôte « ${url.hostname} » inattendu — attendu un hôte en .supabase.co`);
   }
-  if (url.pathname !== "/" && url.pathname !== "") {
+  // `/rest/v1` est le chemin que le tableau de bord Supabase affiche comme « RESTful
+  // endpoint » ; l'application le retire d'elle-même puisque `supabase-js` l'ajoute. On le
+  // signale sans le compter comme une panne — sinon la page crierait à l'erreur alors que tout
+  // fonctionne.
+  const chemin = url.pathname.replace(/\/+$/, "");
+  const restEndpoint = chemin === "/rest/v1";
+  if (chemin !== "" && !restEndpoint) {
     problemes.push(`chemin « ${url.pathname} » en trop — l'adresse s'arrête à l'hôte`);
+  }
+
+  if (problemes.length === 0 && restEndpoint) {
+    return {
+      label: "Forme de l'URL",
+      ok: true,
+      detail: `Hôte ${url.hostname}. Le chemin « /rest/v1 » est retiré à la lecture — inutile, mais sans effet. À nettoyer dans Vercel à l'occasion.`,
+    };
   }
 
   return {

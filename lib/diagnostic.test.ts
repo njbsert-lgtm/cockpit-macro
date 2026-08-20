@@ -43,7 +43,7 @@ describe("checkUrlShape — via runDiagnostic", () => {
   const cas: Array<[string, RegExp]> = [
     ["https://supabase.com/dashboard/project/abcdef", /tableau de bord/],
     ["postgresql://postgres:x@db.abcdef.supabase.co:5432/postgres", /protocole/],
-    ["https://abcdef.supabase.co/rest/v1", /chemin/],
+    ["https://abcdef.supabase.co/dashboard", /chemin/],
     ["pas une adresse", /illisible/],
   ];
 
@@ -88,6 +88,24 @@ describe("checkEnvironment — les valeurs salies", () => {
     } finally {
       if (avant === undefined) delete process.env.SUPABASE_ANON_KEY;
       else process.env.SUPABASE_ANON_KEY = avant;
+    }
+  });
+});
+
+describe("checkUrlShape — le « RESTful endpoint » du tableau de bord", () => {
+  it("accepte /rest/v1 en le signalant, puisque l'application le retire elle-même", async () => {
+    const avant = process.env.SUPABASE_URL;
+    process.env.SUPABASE_URL = "https://abcdefghij.supabase.co/rest/v1";
+    try {
+      const { checks } = await runDiagnostic();
+      const url = checks.find((c) => c.label === "Forme de l'URL")!;
+      // Ni panne ni silence : ça marche, et on dit pourquoi ça n'aurait pas dû être là.
+      expect(url.ok).toBe(true);
+      expect(url.detail).toMatch(/\/rest\/v1/);
+      expect(url.detail).toMatch(/retiré à la lecture/);
+    } finally {
+      if (avant === undefined) delete process.env.SUPABASE_URL;
+      else process.env.SUPABASE_URL = avant;
     }
   });
 });

@@ -59,14 +59,28 @@ function firstDefined(...names: string[]): string | undefined {
   return undefined;
 }
 
-function supabaseUrl(): string | undefined {
-  return firstDefined("SUPABASE_URL", "NEXT_PUBLIC_SUPABASE_URL");
+/**
+ * L'adresse du projet, ramenée à son origine.
+ *
+ * Le tableau de bord Supabase présente le « RESTful endpoint » sous la forme
+ * `https://xxx.supabase.co/rest/v1`, alors que `supabase-js` ajoute ce chemin lui-même : coller
+ * l'adresse telle qu'affichée produit `/rest/v1/rest/v1` et un refus poli du serveur. La
+ * confusion vient de la source, pas de l'utilisateur, et rien ne se perd à la corriger — le
+ * client n'a jamais besoin que de l'origine.
+ *
+ * On ne retire que ce chemin-là, et les barres obliques finales. Un chemin inattendu est laissé
+ * tel quel : le rogner reviendrait à deviner, et `/diagnostic` le signale.
+ */
+export function normalizedSupabaseUrl(): string | undefined {
+  const raw = firstDefined("SUPABASE_URL", "NEXT_PUBLIC_SUPABASE_URL");
+  if (!raw) return undefined;
+  return raw.replace(/\/+$/, "").replace(/\/rest\/v1$/, "");
 }
 
 export function getReadClient(): SupabaseClient | null {
   if (readClient !== undefined) return readClient;
 
-  const url = supabaseUrl();
+  const url = normalizedSupabaseUrl();
   // `SUPABASE_PUBLISHABLE_KEY` : le nom que Supabase donne désormais à la clé anonyme sur les
   // projets récents. Les deux désignent la même chose, une clé de lecture bornée par RLS.
   const key = firstDefined(
@@ -84,7 +98,7 @@ export function getReadClient(): SupabaseClient | null {
 export function getWriteClient(): SupabaseClient | null {
   if (writeClient !== undefined) return writeClient;
 
-  const url = supabaseUrl();
+  const url = normalizedSupabaseUrl();
   const key = firstDefined("SUPABASE_SERVICE_ROLE_KEY", "SUPABASE_SECRET_KEY");
   writeClient =
     url && key
@@ -99,7 +113,7 @@ export function getWriteClient(): SupabaseClient | null {
  */
 export function missingSupabaseConfig(): string[] {
   const missing: string[] = [];
-  if (!supabaseUrl()) missing.push("SUPABASE_URL");
+  if (!normalizedSupabaseUrl()) missing.push("SUPABASE_URL");
   if (!getReadClient()) missing.push("SUPABASE_ANON_KEY");
   if (!getWriteClient()) missing.push("SUPABASE_SERVICE_ROLE_KEY");
   return missing;
