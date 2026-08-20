@@ -203,6 +203,118 @@ export const FRED_SERIES: FredMapping[] = [
   },
 
   // --- Désactivées --------------------------------------------------------
+
+  // --- Marchés : ce que FRED publie déjà --------------------------------
+  //
+  // Avant de souscrire à un fournisseur de données de marché, on prend ce que la source déjà
+  // branchée donne gratuitement. FRED redistribue plusieurs indices, taux de change et cours
+  // du pétrole — même clé, même pipeline, même quota d'un appel par jour.
+  //
+  // Ce qu'il ne couvre pas reste non collecté et le dit : Euro Stoxx 50, FTSE 100, CAC 40,
+  // Hang Seng, CSI 300, Nifty 50, MSCI ACWI, or, argent, cuivre. Ces indices sont
+  // propriétaires et leur redistribution est sous licence — c'est la même raison que le PMI.
+  //
+  // ⚠︎ Aucune de ces séries n'est active avant `npm run fred:check` : les identifiants sont
+  // écrits d'après la nomenclature FRED, sans avoir pu être confrontés à l'API depuis
+  // l'environnement de développement.
+
+  // Indices actions
+  {
+    target: { kind: "instrument", id: "spx" },
+    seriesId: "SP500",
+    units: "lin",
+    cadence: "business-daily",
+    plausible: { min: 100, max: 20_000 },
+    expect: { frequency: "Daily" },
+    enabled: false,
+    disabledReason: "À vérifier par `npm run fred:check` avant activation.",
+  },
+  {
+    target: { kind: "instrument", id: "ndx" },
+    seriesId: "NASDAQ100",
+    units: "lin",
+    cadence: "business-daily",
+    plausible: { min: 500, max: 60_000 },
+    expect: { frequency: "Daily" },
+    enabled: false,
+    disabledReason: "À vérifier par `npm run fred:check` avant activation.",
+  },
+  {
+    target: { kind: "instrument", id: "nky" },
+    seriesId: "NIKKEI225",
+    units: "lin",
+    cadence: "business-daily",
+    plausible: { min: 5_000, max: 120_000 },
+    expect: { frequency: "Daily" },
+    enabled: false,
+    disabledReason: "À vérifier par `npm run fred:check` avant activation.",
+  },
+
+  // Taux de change. FRED cote DEXUSEU et DEXUSUK en dollars par unité étrangère — donc déjà
+  // dans le sens EUR/USD et GBP/USD. DEXJPUS cote en yens par dollar, soit USD/JPY : le sens
+  // attendu ici aussi. Aucune inversion à faire, et c'est bien ce qu'il faut vérifier.
+  {
+    target: { kind: "instrument", id: "eurusd" },
+    seriesId: "DEXUSEU",
+    units: "lin",
+    cadence: "business-daily",
+    plausible: { min: 0.5, max: 2 },
+    expect: { frequency: "Daily" },
+    enabled: false,
+    disabledReason: "À vérifier par `npm run fred:check` avant activation.",
+  },
+  {
+    target: { kind: "instrument", id: "gbpusd" },
+    seriesId: "DEXUSUK",
+    units: "lin",
+    cadence: "business-daily",
+    plausible: { min: 0.8, max: 3 },
+    expect: { frequency: "Daily" },
+    enabled: false,
+    disabledReason: "À vérifier par `npm run fred:check` avant activation.",
+  },
+  {
+    target: { kind: "instrument", id: "usdjpy" },
+    seriesId: "DEXJPUS",
+    units: "lin",
+    cadence: "business-daily",
+    plausible: { min: 50, max: 300 },
+    expect: { frequency: "Daily" },
+    enabled: false,
+    disabledReason: "À vérifier par `npm run fred:check` avant activation.",
+  },
+
+  // Pétrole. Cours au comptant en dollars par baril, publiés par l'EIA et redistribués par
+  // FRED — donc la source primaire du cahier, atteinte sans second fournisseur.
+  {
+    target: { kind: "instrument", id: "brent" },
+    seriesId: "DCOILBRENTEU",
+    units: "lin",
+    cadence: "business-daily",
+    plausible: { min: 5, max: 300 },
+    expect: { frequency: "Daily" },
+    enabled: false,
+    disabledReason: "À vérifier par `npm run fred:check` avant activation.",
+  },
+  {
+    target: { kind: "instrument", id: "wti" },
+    seriesId: "DCOILWTICO",
+    units: "lin",
+    cadence: "business-daily",
+    plausible: { min: -50, max: 300 },
+    expect: { frequency: "Daily" },
+    enabled: false,
+    // La borne basse est négative à dessein : le WTI a coté −37 $ le 20 avril 2020. Une borne
+    // à zéro rejetterait une valeur réelle, comme les bornes du PIB espagnol l'ont fait.
+    disabledReason: "À vérifier par `npm run fred:check` avant activation.",
+  },
+
+  // `dxy` reste non collecté. FRED publie bien un indice du dollar (DTWEXBGS), mais c'est
+  // l'indice large de la Fed, pondéré par les échanges commerciaux sur une vingtaine de
+  // devises — pas le DXY d'ICE, qui en compte six. Les deux ne cotent ni sur la même base ni
+  // au même niveau. Le substituer donnerait un chiffre plausible et faux ; même raison que le
+  // PMI et l'Economic Sentiment Indicator côté Eurostat.
+
   {
     target: { kind: "macro", id: "us-current-account" },
     seriesId: "IEABC",
