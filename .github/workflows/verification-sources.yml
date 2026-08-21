@@ -22,8 +22,9 @@ on:
           - les-deux
           - explorer-eurostat
           - sonder-hote
+          - sonder-marche
       series:
-        description: "Séries à vérifier (vide = toutes). Explorer : « catalogue <terme> » ou « <dataset> <dimension> ». Sonder : l'hôte à joindre"
+        description: "Séries à vérifier (vide = toutes). Explorer : « catalogue <terme> » ou « <dataset> <dimension> ». Sonder-hôte : l'hôte. Sonder-marché : rien, sonde FMP et Twelve Data"
         type: string
         required: false
         default: ""
@@ -99,6 +100,53 @@ jobs:
             curl -sS -o /dev/null -m 10 -w 'code=%{http_code}  temps=%{time_total}s\n' \
               "https://$HOTE/rest/v1/" || echo "aucune réponse"
           } 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Sonder les fournisseurs de marché
+        # Lit la documentation et les pages de tarification réelles de Financial Modeling Prep
+        # et Twelve Data — pas la connaissance générale du modèle, qui peut dater — et fait un
+        # appel réel à chacune avec une clé de démonstration publique pour voir la réponse.
+        if: ${{ inputs.source == 'sonder-marche' }}
+        run: |
+          set +e -o pipefail
+          {
+            echo '## Financial Modeling Prep'
+            echo '### Page de tarification (texte extrait)'
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+          curl -sL -m 15 "https://site.financialmodelingprep.com/pricing-plans" \
+            | sed -e 's/<[^>]*>/ /g' -e 's/&amp;/\&/g' -e 's/&nbsp;/ /g' \
+            | tr -s ' \t\n' ' \t\n' \
+            | grep -iE 'free|/day|per day|requests|api call|rate limit|\$0|\$[0-9]' \
+            | head -60 >> "$GITHUB_STEP_SUMMARY"
+          {
+            echo '```'
+            echo '### Appel réel avec la clé de démonstration publique'
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+          curl -sS -m 15 -w '\nHTTP %{http_code}\n' \
+            "https://financialmodelingprep.com/api/v3/quote/AAPL?apikey=demo" \
+            >> "$GITHUB_STEP_SUMMARY" 2>&1
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+
+          {
+            echo '## Twelve Data'
+            echo '### Page de tarification (texte extrait)'
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+          curl -sL -m 15 "https://twelvedata.com/pricing" \
+            | sed -e 's/<[^>]*>/ /g' -e 's/&amp;/\&/g' -e 's/&nbsp;/ /g' \
+            | tr -s ' \t\n' ' \t\n' \
+            | grep -iE 'free|/day|per day|per minute|requests|api call|rate limit|\$0|\$[0-9]' \
+            | head -60 >> "$GITHUB_STEP_SUMMARY"
+          {
+            echo '```'
+            echo '### Appel réel avec la clé de démonstration publique'
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+          curl -sS -m 15 -w '\nHTTP %{http_code}\n' \
+            "https://api.twelvedata.com/price?symbol=AAPL/USD&apikey=demo" \
+            >> "$GITHUB_STEP_SUMMARY" 2>&1
           echo '```' >> "$GITHUB_STEP_SUMMARY"
 
       - name: FRED
