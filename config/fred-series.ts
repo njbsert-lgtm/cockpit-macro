@@ -226,8 +226,7 @@ export const FRED_SERIES: FredMapping[] = [
     cadence: "business-daily",
     plausible: { min: 100, max: 20_000 },
     expect: { frequency: "Daily" },
-    enabled: false,
-    disabledReason: "À vérifier par `npm run fred:check` avant activation.",
+    enabled: true,
   },
   {
     target: { kind: "instrument", id: "ndx" },
@@ -236,8 +235,7 @@ export const FRED_SERIES: FredMapping[] = [
     cadence: "business-daily",
     plausible: { min: 500, max: 60_000 },
     expect: { frequency: "Daily" },
-    enabled: false,
-    disabledReason: "À vérifier par `npm run fred:check` avant activation.",
+    enabled: true,
   },
   {
     target: { kind: "instrument", id: "nky" },
@@ -246,8 +244,7 @@ export const FRED_SERIES: FredMapping[] = [
     cadence: "business-daily",
     plausible: { min: 5_000, max: 120_000 },
     expect: { frequency: "Daily" },
-    enabled: false,
-    disabledReason: "À vérifier par `npm run fred:check` avant activation.",
+    enabled: true,
   },
 
   // Taux de change. FRED cote DEXUSEU et DEXUSUK en dollars par unité étrangère — donc déjà
@@ -260,8 +257,7 @@ export const FRED_SERIES: FredMapping[] = [
     cadence: "business-daily",
     plausible: { min: 0.5, max: 2 },
     expect: { frequency: "Daily" },
-    enabled: false,
-    disabledReason: "À vérifier par `npm run fred:check` avant activation.",
+    enabled: true,
   },
   {
     target: { kind: "instrument", id: "gbpusd" },
@@ -270,8 +266,7 @@ export const FRED_SERIES: FredMapping[] = [
     cadence: "business-daily",
     plausible: { min: 0.8, max: 3 },
     expect: { frequency: "Daily" },
-    enabled: false,
-    disabledReason: "À vérifier par `npm run fred:check` avant activation.",
+    enabled: true,
   },
   {
     target: { kind: "instrument", id: "usdjpy" },
@@ -280,8 +275,7 @@ export const FRED_SERIES: FredMapping[] = [
     cadence: "business-daily",
     plausible: { min: 50, max: 300 },
     expect: { frequency: "Daily" },
-    enabled: false,
-    disabledReason: "À vérifier par `npm run fred:check` avant activation.",
+    enabled: true,
   },
 
   // Pétrole. Cours au comptant en dollars par baril, publiés par l'EIA et redistribués par
@@ -293,8 +287,7 @@ export const FRED_SERIES: FredMapping[] = [
     cadence: "business-daily",
     plausible: { min: 5, max: 300 },
     expect: { frequency: "Daily" },
-    enabled: false,
-    disabledReason: "À vérifier par `npm run fred:check` avant activation.",
+    enabled: true,
   },
   {
     target: { kind: "instrument", id: "wti" },
@@ -303,10 +296,9 @@ export const FRED_SERIES: FredMapping[] = [
     cadence: "business-daily",
     plausible: { min: -50, max: 300 },
     expect: { frequency: "Daily" },
-    enabled: false,
+    enabled: true,
     // La borne basse est négative à dessein : le WTI a coté −37 $ le 20 avril 2020. Une borne
     // à zéro rejetterait une valeur réelle, comme les bornes du PIB espagnol l'ont fait.
-    disabledReason: "À vérifier par `npm run fred:check` avant activation.",
   },
 
   // `dxy` reste non collecté. FRED publie bien un indice du dollar (DTWEXBGS), mais c'est

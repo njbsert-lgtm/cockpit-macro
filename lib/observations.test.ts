@@ -34,17 +34,19 @@ beforeEach(() => {
 describe("instruments non couverts par FRED", () => {
   it("lisent le seed sans jamais toucher la base", async () => {
     getReadClient.mockReturnValue(clientReturning([]));
-    // 'brent' n'est dans aucun mapping : c'est une matière première, FRED ne la sert pas ici.
-    const result = await loadObservations(["brent"]);
-    expect(result.get("brent")).toEqual(getObservations("brent"));
+    // 'dxy' n'est dans aucun mapping, structurellement : FRED publie un indice du dollar, mais
+    // ce n'est pas celui d'ICE. Choisi plutôt qu'une matière première ou une devise au hasard,
+    // qui pourraient rejoindre FRED demain et faire échouer ce test pour la mauvaise raison.
+    const result = await loadObservations(["dxy"]);
+    expect(result.get("dxy")).toEqual(getObservations("dxy"));
     expect(getReadClient).not.toHaveBeenCalled();
   });
 
   it("continuent de fonctionner quand la base n'est pas configurée du tout", async () => {
     getReadClient.mockReturnValue(null);
-    const result = await loadObservations(["us10y", "brent"]);
+    const result = await loadObservations(["us10y", "dxy"]);
     expect(result.get("us10y")).toEqual(getObservations("us10y"));
-    expect(result.get("brent")).toEqual(getObservations("brent"));
+    expect(result.get("dxy")).toEqual(getObservations("dxy"));
   });
 });
 

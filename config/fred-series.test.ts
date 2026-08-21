@@ -48,8 +48,20 @@ describe("la table de correspondance FRED", () => {
   });
 
   it("laisse les instruments hors FRED au seed : la courbe allemande n'est pas couverte", () => {
-    for (const id of ["de10y", "fr10y", "ndx", "brent", "eurusd"]) {
+    // Courbe allemande : jamais couverte, FRED ne redistribue pas les Bund. Les indices
+    // propriétaires sous licence (Euro Stoxx, or, DXY…) non plus, structurellement — voir
+    // le test suivant, qui dérive la liste plutôt que de la nommer en dur.
+    for (const id of ["de10y", "fr10y"]) {
       expect(ENABLED_SERIES.some((m) => m.target.id === id)).toBe(false);
     }
+  });
+
+  it("ne collecte que les indices propriétaires sous licence, jamais les mots-clés qui les désignent en commentaire", () => {
+    // `ndx`, `brent`, `eurusd` ont rejoint les séries actives après contrôle : ce test citait
+    // leurs identifiants comme exemples de « jamais couvert », et échouait pour la seule raison
+    // qu'une source de plus avait été branchée. Ce qui doit être vérifié, c'est la borne
+    // structurelle — DXY reste hors FRED, l'indice de la Fed n'étant pas celui d'ICE —, pas un
+    // échantillon qui se périme à chaque activation.
+    expect(ENABLED_SERIES.some((m) => m.target.id === "dxy")).toBe(false);
   });
 });

@@ -895,6 +895,11 @@ et le solde budgétaire. `us-current-account` et `us-pmi` restent au seed, avec 
 écrite dans `config/fred-series.ts` — la première parce qu'elle est publiée en dollars et non
 en part du PIB, la seconde parce que l'ISM a fait retirer ses indices de FRED.
 
+FRED redistribue aussi des séries de marché : S&P 500, Nasdaq 100, Nikkei 225, EUR/USD,
+GBP/USD, USD/JPY, Brent, WTI — huit instruments sur les dix-neuf non couverts, sans nouveau
+fournisseur. Le reste (indices européens et asiatiques, MSCI ACWI, métaux, DXY) est
+propriétaire ou sous licence et reste au seed jusqu'à un fournisseur dédié.
+
 Périmètre Eurostat, deuxième source branchée : l'inflation totale et sous-jacente (IPCH,
 glissement annuel), la croissance du PIB et le taux de chômage, pour la zone euro, la France,
 l'Allemagne, l'Espagne et l'Italie — vingt séries. L'INSEE n'est pas branchée : on vérifie
