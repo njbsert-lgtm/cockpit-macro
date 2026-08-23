@@ -105,14 +105,14 @@
     },
     {
       "id": "acwi",
-      "label": "MSCI ACWI",
+      "label": "ETF MSCI ACWI",
       "assetClass": "equity",
       "zones": [
         "global"
       ],
       "unit": "usd",
       "ytdBasis": 141.49,
-      "note": "Indice actions mondial, marchés développés et émergents — le repère global de la classe, pas la moyenne des indices suivis. Collecté via Twelve Data sous le symbole ACWI, qui est l'ETF iShares MSCI ACWI répliquant l'indice, pas l'indice MSCI lui-même — d'où l'unité en dollars par part plutôt qu'en points."
+      "note": "Indice actions mondial, marchés développés et émergents — le repère global de la classe, pas la moyenne des indices suivis. Collecté via Twelve Data sous le symbole ACWI, qui est l'ETF iShares MSCI ACWI répliquant l'indice, pas l'indice MSCI lui-même — d'où le libellé « ETF » et l'unité en dollars par part plutôt qu'en points."
     },
     {
       "id": "us10y",
