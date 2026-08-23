@@ -3,6 +3,7 @@ import { ZONE_LABELS } from "@/lib/zones";
 import { ModeToggle } from "./ModeToggle";
 import { ZoneModeView } from "./ZoneModeView";
 import { ComparisonView } from "./ComparisonView";
+import { RecentMacroChanges } from "./RecentMacroChanges";
 
 async function simulateLoad() {
   await new Promise((resolve) => setTimeout(resolve, 300));
@@ -29,6 +30,10 @@ export async function MacroContent({
           </h1>
         </div>
         <ModeToggle mode={mode} />
+      </div>
+
+      <div className="mt-4">
+        <RecentMacroChanges />
       </div>
 
       <div className="mt-6">
