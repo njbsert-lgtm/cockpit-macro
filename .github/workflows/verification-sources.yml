@@ -23,8 +23,9 @@ on:
           - explorer-eurostat
           - sonder-hote
           - sonder-marche
+          - sonder-page
       series:
-        description: "Séries à vérifier (vide = toutes). Explorer : « catalogue <terme> » ou « <dataset> <dimension> ». Sonder-hôte : l'hôte. Sonder-marché : rien, sonde FMP et Twelve Data"
+        description: "Séries à vérifier (vide = toutes). Explorer : « catalogue <terme> » ou « <dataset> <dimension> ». Sonder-hôte : l'hôte. Sonder-marché : rien. Sonder-page : une URL"
         type: string
         required: false
         default: ""
@@ -150,6 +151,25 @@ jobs:
           curl -sS -m 15 -w '\nHTTP %{http_code}\n' \
             "https://api.twelvedata.com/price?symbol=AAPL/USD&apikey=demo" 2>&1 \
             | tee -a "$GITHUB_STEP_SUMMARY"
+          echo '```' | tee -a "$GITHUB_STEP_SUMMARY"
+
+      - name: Sonder une page
+        # Générique, réutilisable pour n'importe quelle page de tarification ou de doc future —
+        # même mécanique que la sonde des fournisseurs de marché, mais sur une URL donnée.
+        if: ${{ inputs.source == 'sonder-page' }}
+        env:
+          URL: ${{ inputs.series }}
+        run: |
+          set +e -o pipefail
+          {
+            echo "## $URL"
+            echo '```'
+          } | tee -a "$GITHUB_STEP_SUMMARY"
+          curl -sL -m 15 -A "Mozilla/5.0" "$URL" \
+            | sed -e 's/<[^>]*>/ /g' -e 's/&amp;/\&/g' -e 's/&nbsp;/ /g' \
+            | tr -s ' \t\n' ' \t\n' \
+            | grep -iE 'free|hobby|pro|enterprise|/mo|per month|\$0|\$[0-9]|cron' \
+            | head -100 | tee -a "$GITHUB_STEP_SUMMARY"
           echo '```' | tee -a "$GITHUB_STEP_SUMMARY"
 
       - name: FRED
