@@ -5,8 +5,13 @@ import {
   EUROSTAT_SOURCE,
   type EurostatMapping,
 } from "@/config/eurostat-series";
+import {
+  ENABLED_TWELVE_DATA_SERIES,
+  type TwelveDataMapping,
+} from "@/config/twelve-data-series";
 import { fetchFredSeries, FRED_SOURCE, type FredFetchResult } from "./fred";
 import { fetchEurostatSeries } from "./eurostat";
+import { fetchTwelveDataSeries, TWELVE_DATA_SOURCE } from "./twelve-data";
 import { getMacroIndicators } from "./data";
 
 export type SeriesOutcome = {
@@ -134,6 +139,109 @@ export async function runEurostatIngest(
   }
 
   return report(EUROSTAT_SOURCE, startedAt, outcomes, series.length);
+}
+
+// ---------------------------------------------------------------------------
+// Twelve Data
+// ---------------------------------------------------------------------------
+
+type TwelveDataFetcher = (
+  mapping: TwelveDataMapping,
+  apiKey: string,
+  now: Date,
+) => Promise<
+  { ok: true; points: Array<{ date: string; value: number }> } | { ok: false; error: string }
+>;
+
+/**
+ * Un passage de collecte Twelve Data. Même mécanique que FRED et Eurostat : séquentiel,
+ * tolérant à l'échec d'un symbole, idempotent par upsert sur (instrument, date). Ne sert que des
+ * instruments — Twelve Data n'a jamais de cible `macro`, donc toujours la table `observations`.
+ *
+ * La santé s'écrit dans `series_health` avec `source: 'Twelve Data'` : un échec ici ne peut
+ * jamais se lire comme un échec FRED ou Eurostat, même règle qui isole déjà les deux autres.
+ */
+export async function runTwelveDataIngest(
+  client: SupabaseClient,
+  apiKey: string,
+  options: {
+    now?: Date;
+    fetcher?: TwelveDataFetcher;
+    series?: TwelveDataMapping[];
+    deadline?: number;
+  } = {},
+): Promise<IngestReport> {
+  const now = options.now ?? new Date();
+  const fetcher = options.fetcher ?? fetchTwelveDataSeries;
+  const startedAt = now.toISOString();
+  const outcomes: SeriesOutcome[] = [];
+  const series = options.series ?? ENABLED_TWELVE_DATA_SERIES;
+
+  for (const mapping of series) {
+    if (outOfTime(options.deadline)) break;
+    outcomes.push(await ingestTwelveDataOne(client, mapping, apiKey, now, fetcher));
+  }
+
+  return report(TWELVE_DATA_SOURCE, startedAt, outcomes, series.length);
+}
+
+async function ingestTwelveDataOne(
+  client: SupabaseClient,
+  mapping: TwelveDataMapping,
+  apiKey: string,
+  now: Date,
+  fetcher: TwelveDataFetcher,
+): Promise<SeriesOutcome> {
+  const targetId = mapping.target.id;
+  const result = await fetcher(mapping, apiKey, now);
+
+  if (!result.ok) {
+    await recordHealthFailure(client, {
+      seriesKey: mapping.symbol,
+      source: TWELVE_DATA_SOURCE,
+      targetKind: "instrument",
+      targetId,
+      error: result.error,
+      now,
+    });
+    return { seriesId: mapping.symbol, targetId, ok: false, written: 0, error: result.error };
+  }
+
+  const fetchedAt = now.toISOString();
+  const rows = result.points.map((p) => ({
+    instrument_id: targetId,
+    date: p.date,
+    value: p.value,
+    source: TWELVE_DATA_SOURCE,
+    fetched_at: fetchedAt,
+  }));
+
+  if (rows.length > 0) {
+    const { error } = await client
+      .from("observations")
+      .upsert(rows, { onConflict: "instrument_id,date" });
+    if (error) {
+      await recordHealthFailure(client, {
+        seriesKey: mapping.symbol,
+        source: TWELVE_DATA_SOURCE,
+        targetKind: "instrument",
+        targetId,
+        error: `écriture refusée — ${error.message}`,
+        now,
+      });
+      return { seriesId: mapping.symbol, targetId, ok: false, written: 0, error: error.message };
+    }
+  }
+
+  await recordHealthSuccess(client, {
+    seriesKey: mapping.symbol,
+    source: TWELVE_DATA_SOURCE,
+    targetKind: "instrument",
+    targetId,
+    latestObservation: result.points.at(-1)?.date ?? null,
+    now,
+  });
+  return { seriesId: mapping.symbol, targetId, ok: true, written: rows.length };
 }
 
 /** L'identifiant lisible d'une série Eurostat : le dataset et ses dimensions fixées. */

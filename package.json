@@ -10,7 +10,8 @@
     "test": "vitest run",
     "fred:check": "tsx --env-file-if-exists=.env.local scripts/fred-check.mts",
     "eurostat:check": "tsx --env-file-if-exists=.env.local scripts/eurostat-check.mts",
-    "eurostat:explore": "tsx scripts/eurostat-explore.mts"
+    "eurostat:explore": "tsx scripts/eurostat-explore.mts",
+    "twelve-data:check": "tsx --env-file-if-exists=.env.local scripts/twelve-data-check.mts"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.112.3",

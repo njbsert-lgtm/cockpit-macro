@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
 import { getWriteClient, missingSupabaseConfig } from "@/lib/supabase";
-import { runEurostatIngest, runIngest, type IngestReport } from "@/lib/ingest";
+import { runEurostatIngest, runIngest, runTwelveDataIngest, type IngestReport } from "@/lib/ingest";
 import { runVeilleCollect, type VeilleCollector, type VeilleReport } from "@/lib/veille/collect";
 import { collectInstitutional } from "@/lib/veille/sources/institutional";
 import { collectEdgar } from "@/lib/veille/sources/edgar";
@@ -10,17 +10,19 @@ import { collectGdelt } from "@/lib/veille/sources/gdelt";
 /**
  * L'orchestrateur de la collecte quotidienne. Déclenché par le cron Vercel à 6 h UTC, jamais à
  * la demande. Le plan Hobby n'autorise qu'un déclenchement quotidien : cette route exécute donc
- * trois modules indépendants l'un après l'autre plutôt que d'ajouter un second cron.
+ * quatre modules indépendants l'un après l'autre plutôt que d'ajouter un second cron.
  *
- * L'ordre n'est pas négociable : FRED d'abord, et durablement écrit, avant qu'Eurostat puis la
- * veille ne démarrent. Si l'un des deux suivants échoue — y compris une exception non rattrapée
- * — FRED est déjà en base ; c'est pour ça que son résultat ne dépend de rien de ce qui suit.
- * Le statut HTTP de la réponse ne reflète que FRED : ce sont ses données qui priment.
+ * L'ordre n'est pas négociable : FRED d'abord, et durablement écrit, avant que Twelve Data, puis
+ * Eurostat, puis la veille ne démarrent. Si l'un des trois suivants échoue — y compris une
+ * exception non rattrapée — FRED est déjà en base ; c'est pour ça que son résultat ne dépend de
+ * rien de ce qui suit. Le statut HTTP de la réponse ne reflète que FRED : ce sont ses données qui
+ * priment. Twelve Data passe juste après : ce sont aussi des données de marché quotidiennes,
+ * avant l'Eurostat mensuel et trimestriel.
  *
- * Chaque module journalise pour son compte. FRED et Eurostat écrivent tous deux dans
+ * Chaque module journalise pour son compte. FRED, Twelve Data et Eurostat écrivent tous dans
  * `series_health`, mais sous une colonne `source` distincte, si bien que l'indicateur de
- * fraîcheur les présente séparément : un échec Eurostat ne peut jamais se lire comme un échec
- * FRED. La veille garde sa propre table, `veille_health`, qui n'alimente pas cet indicateur.
+ * fraîcheur les présente séparément : un échec de l'un ne peut jamais se lire comme un échec
+ * d'un autre. La veille garde sa propre table, `veille_health`, qui n'alimente pas cet indicateur.
  */
 export const dynamic = "force-dynamic";
 export const maxDuration = 60;
@@ -38,11 +40,15 @@ const TOTAL_BUDGET_MS = 48_000;
  * Le partage du temps entre modules, dans l'ordre de priorité du cahier.
  *
  * FRED d'abord et servi le plus largement : ce sont les données de marché, elles priment.
+ * Twelve Data ensuite — seulement deux symboles actifs pour l'instant, un budget court suffit.
  * Eurostat ensuite, mensuel et trimestriel, donc sans urgence à la journée. La veille en
  * dernier avec ce qui reste, parce qu'elle est la seule à savoir reprendre où elle s'est
  * arrêtée grâce à son curseur.
  */
-const FRED_BUDGET_MS = 24_000;
+const FRED_BUDGET_MS = 20_000;
+// Deux symboles seulement : largement le temps de les servir même en cas de latence, sans
+// grever le budget des deux sources suivantes.
+const TWELVE_DATA_BUDGET_MS = 8_000;
 // Vingt séries, mesurées à une dizaine de secondes lors des contrôles à blanc : douze ne
 // laissaient aucune marge, et les dernières zones auraient été sautées un jour sur deux.
 const EUROSTAT_BUDGET_MS = 14_000;
@@ -97,7 +103,29 @@ export async function GET(request: Request) {
   // collecte réussie.
   for (const path of ["/", "/marches", "/macro"]) revalidatePath(path);
 
-  // Module 2 — Eurostat. Après FRED, dans son propre try/catch : ses séries sont mensuelles ou
+  // Module 2 — Twelve Data. Dans son propre try/catch, comme Eurostat et la veille : une clé
+  // absente ou une panne ici ne doit jamais empêcher la route de rendre le rapport FRED déjà
+  // écrit. La clé est optionnelle au sens de la route — seuls deux symboles en dépendent
+  // aujourd'hui — donc son absence est un module en erreur, pas un 500 global.
+  const twelveDataApiKey = process.env.TWELVE_DATA_API_KEY;
+  let twelveData: IngestReport | { error: string };
+  if (!twelveDataApiKey) {
+    twelveData = { error: "TWELVE_DATA_API_KEY n'est pas configurée" };
+  } else {
+    try {
+      twelveData = await runTwelveDataIngest(client, twelveDataApiKey, {
+        deadline: Math.min(
+          Date.now() + TWELVE_DATA_BUDGET_MS,
+          routeStartedAt + FRED_BUDGET_MS + TWELVE_DATA_BUDGET_MS,
+        ),
+      });
+    } catch (err) {
+      twelveData = { error: err instanceof Error ? err.message : String(err) };
+    }
+  }
+  revalidatePath("/marches");
+
+  // Module 3 — Eurostat. Dans son propre try/catch : ses séries sont mensuelles ou
   // trimestrielles, donc un passage manqué se rattrape le lendemain sans rien perdre, alors
   // qu'une exception ici ne doit surtout pas empêcher la route de rendre le rapport FRED.
   let eurostat: IngestReport | { error: string };
@@ -105,7 +133,7 @@ export async function GET(request: Request) {
     eurostat = await runEurostatIngest(client, {
       deadline: Math.min(
         Date.now() + EUROSTAT_BUDGET_MS,
-        routeStartedAt + FRED_BUDGET_MS + EUROSTAT_BUDGET_MS,
+        routeStartedAt + FRED_BUDGET_MS + TWELVE_DATA_BUDGET_MS + EUROSTAT_BUDGET_MS,
       ),
     });
   } catch (err) {
@@ -113,10 +141,10 @@ export async function GET(request: Request) {
   }
   revalidatePath("/macro");
 
-  // Module 3 — la veille. Enveloppée dans son propre try/catch : même une exception qui
+  // Module 4 — la veille. Enveloppée dans son propre try/catch : même une exception qui
   // échapperait à `runVeilleCollect` ne doit jamais faire échouer la route après que FRED a
   // déjà écrit. Elle passe en dernier parce qu'elle est la seule à savoir reprendre où elle
-  // s'est arrêtée : si les deux modules de données ont mangé le budget, son curseur reprendra
+  // s'est arrêtée : si les trois modules de données ont mangé le budget, son curseur reprendra
   // demain là où il en était.
   const remainingMs = Math.max(0, TOTAL_BUDGET_MS - (Date.now() - routeStartedAt));
   let veille: VeilleReport | { error: string };
@@ -127,8 +155,8 @@ export async function GET(request: Request) {
   }
 
   // 200 même en cas d'échec partiel : le passage a bien eu lieu, et le détail est dans le
-  // rapport. Un 500 ferait croire à un cron qui n'a pas tourné. Ni Eurostat ni la veille ne
-  // pèsent sur ce statut — chacun porte le sien, séparément, dans sa table de santé.
+  // rapport. Un 500 ferait croire à un cron qui n'a pas tourné. Aucun des trois modules suivants
+  // ne pèse sur ce statut — chacun porte le sien, séparément, dans sa table de santé.
   const status = fred.failed > 0 && fred.ok === 0 ? 502 : 200;
-  return NextResponse.json({ fred, eurostat, veille }, { status });
+  return NextResponse.json({ fred, twelveData, eurostat, veille }, { status });
 }

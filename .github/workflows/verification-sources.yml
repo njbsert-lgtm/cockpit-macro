@@ -25,8 +25,9 @@ on:
           - sonder-marche
           - sonder-page
           - sonder-twelvedata
+          - twelve-data
       series:
-        description: "Séries à vérifier (vide = toutes). Explorer : « catalogue <terme> » ou « <dataset> <dimension> ». Sonder-hôte : l'hôte. Sonder-marché : rien. Sonder-page : une URL. Sonder-twelvedata : rien (tous les candidats)"
+        description: "Séries à vérifier (vide = toutes). Explorer : « catalogue <terme> » ou « <dataset> <dimension> ». Sonder-hôte : l'hôte. Sonder-marché : rien. Sonder-page : une URL. Sonder-twelvedata : rien (tous les candidats). Twelve-data : symbole(s), ex. XAU/USD"
         type: string
         required: false
         default: ""
@@ -223,6 +224,29 @@ jobs:
             done
           } | tee -a "$GITHUB_STEP_SUMMARY"
           echo '```' | tee -a "$GITHUB_STEP_SUMMARY"
+
+      - name: Twelve Data
+        # Exécute `npm run twelve-data:check`, le contrôle permanent — pas la sonde ad hoc
+        # ci-dessus, gardée pour découvrir de nouveaux symboles. Même garde que FRED : la clé est
+        # un secret du dépôt, son absence se dit au lieu d'échouer sur une erreur d'authentification.
+        if: ${{ inputs.source == 'twelve-data' }}
+        env:
+          SERIES: ${{ inputs.series }}
+          TWELVE_DATA_API_KEY: ${{ secrets.TWELVE_DATA_API_KEY }}
+        run: |
+          set +e -o pipefail
+          if [ -z "$TWELVE_DATA_API_KEY" ]; then
+            echo "TWELVE_DATA_API_KEY absente des secrets du dépôt — étape sautée." | tee -a "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          {
+            echo '## Twelve Data'
+            echo '```'
+          } | tee -a "$GITHUB_STEP_SUMMARY"
+          npm run twelve-data:check --silent -- $SERIES 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
+          code=$?
+          echo '```' | tee -a "$GITHUB_STEP_SUMMARY"
+          exit $code
 
       - name: FRED
         # `always()` pour que FRED soit quand même vérifié après un Eurostat rouge.
