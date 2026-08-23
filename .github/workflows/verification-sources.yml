@@ -182,6 +182,10 @@ jobs:
         if: ${{ inputs.source == 'sonder-twelvedata' }}
         env:
           APIKEY: ${{ secrets.TWELVE_DATA_API_KEY }}
+          # Le palier gratuit plafonne à 8 appels par minute — confirmé par le premier passage.
+          # `series` restreint la liste aux identifiants encore incertains, séparés par un
+          # espace, pour rester sous ce plafond en un seul passage.
+          ONLY: ${{ inputs.series }}
         run: |
           set +e -o pipefail
           if [ -z "$APIKEY" ]; then
@@ -205,13 +209,16 @@ jobs:
             [copper]="XCU/USD"
             [dxy]="DXY"
           )
+          IDS="sx5e ukx cac hsi csi300 nifty50 acwi gold silver copper dxy"
+          if [ -n "$ONLY" ]; then IDS="$ONLY"; fi
           {
-            for id in sx5e ukx cac hsi csi300 nifty50 acwi gold silver copper dxy; do
+            for id in $IDS; do
               for sym in ${CANDIDATES[$id]}; do
                 echo "--- $id -> $sym ---"
                 curl -sS -m 15 -G --data-urlencode "symbol=$sym" --data-urlencode "apikey=$APIKEY" \
                   "https://api.twelvedata.com/quote"
                 echo
+                sleep 8
               done
             done
           } | tee -a "$GITHUB_STEP_SUMMARY"
