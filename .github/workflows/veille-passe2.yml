@@ -1,0 +1,56 @@
+# Passe 2 de veille — classification quotidienne par l'API Claude.
+#
+# Raison d'être : reprend les items en attente collectés par la passe 1 (cron Vercel, déjà en
+# production) et leur applique la grille des cinq canaux de transmission + le test « flux ou
+# déclaration » du cahier des charges — en remplacement du jugement grossier par mots-clés.
+#
+# N'écrit jamais `status` : la file de `/triage` reste celle que l'humain peut consulter.
+# Aucun droit d'écriture sur le dépôt — contrairement au workflow de rédaction hebdomadaire,
+# celui-ci ne commit jamais rien.
+
+name: Veille — passe 2
+
+on:
+  schedule:
+    # Une heure après le cron Vercel de 6 h UTC (FRED, Twelve Data, Eurostat, veille passe 1),
+    # pour laisser le temps aux items du jour d'être écrits en base.
+    - cron: "0 7 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  classer:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Classer les items en attente
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: |
+          set +e -o pipefail
+          if [ -z "$ANTHROPIC_API_KEY" ]; then
+            echo "ANTHROPIC_API_KEY absente des secrets du dépôt — étape sautée." | tee -a "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          {
+            echo '## Veille — passe 2'
+            echo '```'
+          } | tee -a "$GITHUB_STEP_SUMMARY"
+          npm run veille:classer --silent 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
+          code=$?
+          echo '```' | tee -a "$GITHUB_STEP_SUMMARY"
+          exit $code

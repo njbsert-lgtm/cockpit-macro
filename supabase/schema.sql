@@ -111,6 +111,16 @@ create table if not exists veille_items (
 
 create index if not exists veille_items_status_idx on veille_items (status, published_at desc);
 
+-- Passe 2 — classification quotidienne par l'API Claude (lib/veille/classify.ts), qui affine
+-- `is_signal` posé par la passe 1 sans jamais toucher `status` : la file que l'humain peut
+-- encore consulter sur /triage reste celle-là. `add column if not exists` : cette migration se
+-- rejoue sans risque sur une base qui a déjà ces colonnes.
+alter table veille_items add column if not exists nature text
+  check (nature in ('flux', 'declaration'));
+alter table veille_items add column if not exists horizon text
+  check (horizon in ('immediat', 'semaine', 'trimestre', 'structurel'));
+alter table veille_items add column if not exists classified_at timestamptz;
+
 -- L'état d'avancement d'une collecte qui déborde le budget de temps d'un seul passage — GDELT
 -- interroge (thème × pays) une combinaison à la fois ; si le passage du jour s'arrête à mi-
 -- parcours, celui de demain reprend à la combinaison suivante plutôt que de tout refaire ou de
