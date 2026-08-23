@@ -27,7 +27,7 @@ on:
           - sonder-twelvedata
           - twelve-data
       series:
-        description: "Séries à vérifier (vide = toutes). Explorer : « catalogue <terme> » ou « <dataset> <dimension> ». Sonder-hôte : l'hôte. Sonder-marché : rien. Sonder-page : une URL. Sonder-twelvedata : rien (tous les candidats). Twelve-data : symbole(s), ex. XAU/USD"
+        description: "Séries à vérifier (vide = toutes). Explorer : « catalogue <terme> » ou « <dataset> <dimension> ». Sonder-hôte : l'hôte. Sonder-marché : rien. Sonder-page : une URL, ou « URL||motif-grep ». Sonder-twelvedata : rien (tous les candidats). Twelve-data : symbole(s), ex. XAU/USD"
         type: string
         required: false
         default: ""
@@ -158,11 +158,17 @@ jobs:
       - name: Sonder une page
         # Générique, réutilisable pour n'importe quelle page de tarification ou de doc future —
         # même mécanique que la sonde des fournisseurs de marché, mais sur une URL donnée.
+        # `series` accepte « URL » seule (mots-clés de tarification par défaut) ou
+        # « URL||motif-grep » pour chercher autre chose, ex. une couverture d'instruments.
         if: ${{ inputs.source == 'sonder-page' }}
         env:
-          URL: ${{ inputs.series }}
+          RAW: ${{ inputs.series }}
         run: |
           set +e -o pipefail
+          URL="${RAW%%||*}"
+          if [ "$RAW" != "$URL" ]; then PATTERN="${RAW#*||}"; else
+            PATTERN='free|hobby|pro|enterprise|/mo|per month|\$0|\$[0-9]|cron'
+          fi
           {
             echo "## $URL"
             echo '```'
@@ -170,7 +176,7 @@ jobs:
           curl -sL -m 15 -A "Mozilla/5.0" "$URL" \
             | sed -e 's/<[^>]*>/ /g' -e 's/&amp;/\&/g' -e 's/&nbsp;/ /g' \
             | tr -s ' \t\n' ' \t\n' \
-            | grep -iE 'free|hobby|pro|enterprise|/mo|per month|\$0|\$[0-9]|cron' \
+            | grep -iE "$PATTERN" \
             | head -100 | tee -a "$GITHUB_STEP_SUMMARY"
           echo '```' | tee -a "$GITHUB_STEP_SUMMARY"
 
