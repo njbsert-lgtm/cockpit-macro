@@ -64,11 +64,16 @@ export const TWELVE_DATA_SERIES: TwelveDataMapping[] = [
     enabled: true,
   },
   {
+    // La réponse `/quote` d'une paire de type change (`XAU/USD`) ne porte pas de champ
+    // `currency` — contrairement à un titre ou un ETF comme `acwi` ci-dessus. Confirmé par
+    // appel réel : `{"symbol":"XAU/USD","name":"Gold Spot / US Dollar","exchange":"Forex",...}`,
+    // sans clé `currency`. La devise est déjà dans le symbole ; rien à vérifier ici en plus des
+    // bornes de plausibilité.
     target: { kind: "instrument", id: "gold" },
     symbol: "XAU/USD",
     cadence: "business-daily",
     plausible: { min: 200, max: 20_000 },
-    expect: { currency: "USD" },
+    expect: {},
     enabled: true,
   },
 
