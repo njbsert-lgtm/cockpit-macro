@@ -110,9 +110,9 @@
       "zones": [
         "global"
       ],
-      "unit": "index",
-      "ytdBasis": 780,
-      "note": "Indice actions mondial, marchés développés et émergents — le repère global de la classe, pas la moyenne des indices suivis."
+      "unit": "usd",
+      "ytdBasis": 141.49,
+      "note": "Indice actions mondial, marchés développés et émergents — le repère global de la classe, pas la moyenne des indices suivis. Collecté via Twelve Data sous le symbole ACWI, qui est l'ETF iShares MSCI ACWI répliquant l'indice, pas l'indice MSCI lui-même — d'où l'unité en dollars par part plutôt qu'en points."
     },
     {
       "id": "us10y",
@@ -203,8 +203,8 @@
         "global"
       ],
       "unit": "usd",
-      "ytdBasis": 4320,
-      "note": "Pic 5 405 $ le 29/01, puis −27 %, rebond en août."
+      "ytdBasis": 4311.27,
+      "note": "Pic 5 405 $ le 29/01, puis −27 %, rebond en août. Collecté via Twelve Data (XAU/USD)."
     },
     {
       "id": "silver",
