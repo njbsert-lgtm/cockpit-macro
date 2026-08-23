@@ -14,6 +14,7 @@
     "twelve-data:check": "tsx --env-file-if-exists=.env.local scripts/twelve-data-check.mts"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.120.0",
     "@supabase/supabase-js": "^2.112.3",
     "gray-matter": "^4.0.3",
     "next": "15.5.23",
