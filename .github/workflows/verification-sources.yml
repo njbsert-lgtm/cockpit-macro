@@ -199,15 +199,15 @@ jobs:
           declare -A CANDIDATES=(
             [sx5e]="STOXX50E SX5E"
             [ukx]="FTSE UKX"
-            [cac]="FCHI PX1"
-            [hsi]="HSI"
+            [cac]="FCHI PX1 CAC"
+            [hsi]="HSI HANGSENG"
             [csi300]="000300 CSI300"
-            [nifty50]="NSEI NIFTY50"
+            [nifty50]="NSEI NIFTY50 NIFTY"
             [acwi]="ACWI"
             [gold]="XAU/USD"
             [silver]="XAG/USD"
-            [copper]="XCU/USD"
-            [dxy]="DXY"
+            [copper]="XCU/USD HG1 COPPER"
+            [dxy]="DXY USDX"
           )
           IDS="sx5e ukx cac hsi csi300 nifty50 acwi gold silver copper dxy"
           if [ -n "$ONLY" ]; then IDS="$ONLY"; fi
