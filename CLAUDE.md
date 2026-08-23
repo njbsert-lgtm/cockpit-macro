@@ -664,21 +664,22 @@ Gratuites, en accès programmatique. Clés en variables d'environnement, jamais 
 | Macro France | **INSEE** (API BDM) | Gratuit, inscription requise |
 | Macro UK | **ONS API** | Gratuit, sans clé |
 | Énergie | **EIA API** | Gratuit, données officielles |
-| Indices actions, FX | **Financial Modeling Prep** ou **Twelve Data** | Palier gratuit limité |
+| Indices actions, FX | **FRED** (huit séries) et **Twelve Data** | FRED : S&P 500, Nasdaq 100, Nikkei 225, EUR/USD, GBP/USD, USD/JPY, Brent, WTI. Twelve Data branché pour l'or (`XAU/USD`) et MSCI ACWI (ETF iShares `ACWI`) ; le reste des indices propriétaires visés (Euro Stoxx 50, FTSE 100, CSI 300, Nifty 50, Hang Seng, CAC 40), l'argent, le cuivre et le DXY restent au seed — verrouillés au palier payant ou absents du catalogue sous les codes usuels, voir `config/twelve-data-series.ts`. Palier gratuit à 8 appels par minute. |
 | Bund et OAT 10 ans | **ECB Data Portal**, **Bundesbank**, **Banque de France** | Gratuit, sans clé |
-| Métaux | **metals.dev** ou via FMP | Vérifier argent et cuivre |
+| Métaux | **Twelve Data** | Or branché ; argent et cuivre verrouillés à un palier payant chez ce fournisseur |
 
 Contraintes dans le code :
 - **Un appel par instrument par jour.** Cron à 6 h UTC, jamais à la demande. Le plan Hobby
   n'autorise qu'un seul déclenchement quotidien : la route du cron est un **orchestrateur** qui
-  exécute FRED, puis Eurostat, puis la veille, en trois modules indépendants — jamais un second
-  cron. FRED s'exécute et écrit en premier, sans exception ; les deux suivants sont chacun
-  enveloppés dans leur propre `try`/`catch` pour qu'une panne ou une exception là-bas n'efface
-  rien de ce que FRED a déjà produit. Chaque module journalise son résultat dans sa propre
-  table de santé (`series_health` pour FRED et Eurostat, sous une colonne `source` distincte ;
-  `veille_health` pour la veille), et seul `series_health` alimente l'indicateur de fraîcheur de
-  la barre persistante — un incident de veille ne peut donc jamais s'y lire comme un incident de
-  données, et un incident Eurostat jamais comme un incident FRED.
+  exécute FRED, puis Twelve Data, puis Eurostat, puis la veille, en quatre modules indépendants
+  — jamais un second cron. FRED s'exécute et écrit en premier, sans exception ; les trois
+  suivants sont chacun enveloppés dans leur propre `try`/`catch` pour qu'une panne ou une
+  exception là-bas n'efface rien de ce que FRED a déjà produit. Chaque module journalise son
+  résultat dans sa propre table de santé (`series_health` pour FRED, Twelve Data et Eurostat,
+  sous une colonne `source` distincte ; `veille_health` pour la veille), et seul `series_health`
+  alimente l'indicateur de fraîcheur de la barre persistante — un incident de veille ne peut
+  donc jamais s'y lire comme un incident de données, et un incident d'une source jamais comme
+  un incident d'une autre.
 - Toute réponse passe par un schéma Zod. Une réponse malformée est journalisée et ignorée,
   elle n'écrase jamais la dernière valeur valide.
 - Si une source tombe : dernière valeur connue **avec sa date**, pas un tiret, jamais zéro.
@@ -752,8 +753,11 @@ configuration, pas de la donnée, et le contrôle d'intégrité du contenu en d�
 synchrone au chargement du module.
 
 **La transition est progressive, source par source.** Au moment où cette règle est posée, 6
-instruments sur 83 et 8 indicateurs sur 69 sont réellement collectés ; Eurostat en a depuis
-porté le second chiffre à 28. L'appliquer d'un coup viderait l'application. Chaque source branchée fait donc basculer son périmètre — les séries
+instruments sur 83 et 8 indicateurs sur 69 sont réellement collectés. Eurostat a depuis porté
+le second chiffre à 28 ; l'extension de FRED aux marchés puis l'activation de Twelve Data ont
+porté le premier à 16 (14 + 2 — sur les onze instruments visés par Twelve Data, neuf restent au
+seed, verrouillés au palier payant ou absents de son catalogue, chacun documenté dans
+`config/twelve-data-series.ts`). L'appliquer d'un coup viderait l'application. Chaque source branchée fait donc basculer son périmètre — les séries
 qu'elle couvre passent en collecté, leurs valeurs en dur sont retirées du seed. Les séries
 qu'aucune source ne couvre encore affichent l'état vide plutôt qu'un chiffre inventé.
 
@@ -897,10 +901,20 @@ en part du PIB, la seconde parce que l'ISM a fait retirer ses indices de FRED.
 
 FRED redistribue aussi des séries de marché : S&P 500, Nasdaq 100, Nikkei 225, EUR/USD,
 GBP/USD, USD/JPY, Brent, WTI — huit instruments sur les dix-neuf non couverts, sans nouveau
-fournisseur. Le reste (indices européens et asiatiques, MSCI ACWI, métaux, DXY) est
-propriétaire ou sous licence et reste au seed jusqu'à un fournisseur dédié.
+fournisseur.
 
-Périmètre Eurostat, deuxième source branchée : l'inflation totale et sous-jacente (IPCH,
+Périmètre Twelve Data, le fournisseur dédié pour le reste des onze instruments visés (indices
+européens et asiatiques, MSCI ACWI, métaux, DXY) : le palier gratuit ne sert en réalité que
+l'or (`XAU/USD`) et MSCI ACWI, sous la forme de son ETF iShares (`ACWI`, en dollars par part,
+pas en points d'indice — voir `data/seed.json`). Les neuf autres — Euro Stoxx 50, FTSE 100,
+CSI 300, argent, cuivre, CAC 40, Hang Seng, Nifty 50, DXY — sont soit verrouillés à un palier
+payant (le symbole existe, la réponse le dit explicitement), soit absents du catalogue sous
+les codes usuels testés, Yahoo-style comme Bloomberg-style. Chaque cas est confirmé par appel
+réel, jamais par la page de tarification, et documenté dans `config/twelve-data-series.ts`.
+Le palier gratuit plafonne à 8 appels par minute, ce qui borne aussi `npm run twelve-data:check`
+à un délai entre symboles plutôt qu'à des appels en rafale.
+
+Périmètre Eurostat, source suivante : l'inflation totale et sous-jacente (IPCH,
 glissement annuel), la croissance du PIB et le taux de chômage, pour la zone euro, la France,
 l'Allemagne, l'Espagne et l'Italie — vingt séries. L'INSEE n'est pas branchée : on vérifie
 d'abord si les séries harmonisées Eurostat suffisent pour la France.
@@ -921,9 +935,9 @@ passer inaperçue.
 
 Mise en service, dans l'ordre : exécuter `supabase/schema.sql`, renseigner les variables de
 `.env.example`, lancer `npm run fred:check` et n'activer que les séries sorties vertes, faire
-de même avec `npm run eurostat:check` avant de basculer `EUROSTAT_VERIFIED`, puis laisser le
-cron tourner. Le site fonctionne à chaque étape de cette séquence, y compris avant la
-première — c'est ce que garantit le repli sur le seed.
+de même avec `npm run twelve-data:check` et `npm run eurostat:check` (ce dernier avant de
+basculer `EUROSTAT_VERIFIED`), puis laisser le cron tourner. Le site fonctionne à chaque étape
+de cette séquence, y compris avant la première — c'est ce que garantit le repli sur le seed.
 
 **Étape 4 — Confort.**
 Mode comparaison de l'onglet Macro, graphiques de séries, recherche dans les notes,
