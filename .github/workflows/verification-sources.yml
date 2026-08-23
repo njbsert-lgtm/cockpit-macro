@@ -24,8 +24,9 @@ on:
           - sonder-hote
           - sonder-marche
           - sonder-page
+          - sonder-twelvedata
       series:
-        description: "Séries à vérifier (vide = toutes). Explorer : « catalogue <terme> » ou « <dataset> <dimension> ». Sonder-hôte : l'hôte. Sonder-marché : rien. Sonder-page : une URL"
+        description: "Séries à vérifier (vide = toutes). Explorer : « catalogue <terme> » ou « <dataset> <dimension> ». Sonder-hôte : l'hôte. Sonder-marché : rien. Sonder-page : une URL. Sonder-twelvedata : rien (tous les candidats)"
         type: string
         required: false
         default: ""
@@ -170,6 +171,50 @@ jobs:
             | tr -s ' \t\n' ' \t\n' \
             | grep -iE 'free|hobby|pro|enterprise|/mo|per month|\$0|\$[0-9]|cron' \
             | head -100 | tee -a "$GITHUB_STEP_SUMMARY"
+          echo '```' | tee -a "$GITHUB_STEP_SUMMARY"
+
+      - name: Sonder Twelve Data
+        # Avant d'écrire `config/twelve-data-series.ts`, on découvre quels symboles la source
+        # reconnaît réellement pour nos onze instruments manquants — indices propriétaires et
+        # métaux compris — et si le palier gratuit les sert ou renvoie un refus de plan. Plusieurs
+        # candidats par instrument : la nomenclature des indices n'est pas standardisée, mieux
+        # vaut le lire que le deviner.
+        if: ${{ inputs.source == 'sonder-twelvedata' }}
+        env:
+          APIKEY: ${{ secrets.TWELVE_DATA_API_KEY }}
+        run: |
+          set +e -o pipefail
+          if [ -z "$APIKEY" ]; then
+            echo "TWELVE_DATA_API_KEY absente des secrets du dépôt — étape sautée." | tee -a "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          {
+            echo '## Twelve Data — symboles candidats'
+            echo '```'
+          } | tee -a "$GITHUB_STEP_SUMMARY"
+          declare -A CANDIDATES=(
+            [sx5e]="STOXX50E SX5E"
+            [ukx]="FTSE UKX"
+            [cac]="FCHI PX1"
+            [hsi]="HSI"
+            [csi300]="000300 CSI300"
+            [nifty50]="NSEI NIFTY50"
+            [acwi]="ACWI"
+            [gold]="XAU/USD"
+            [silver]="XAG/USD"
+            [copper]="XCU/USD"
+            [dxy]="DXY"
+          )
+          {
+            for id in sx5e ukx cac hsi csi300 nifty50 acwi gold silver copper dxy; do
+              for sym in ${CANDIDATES[$id]}; do
+                echo "--- $id -> $sym ---"
+                curl -sS -m 15 -G --data-urlencode "symbol=$sym" --data-urlencode "apikey=$APIKEY" \
+                  "https://api.twelvedata.com/quote"
+                echo
+              done
+            done
+          } | tee -a "$GITHUB_STEP_SUMMARY"
           echo '```' | tee -a "$GITHUB_STEP_SUMMARY"
 
       - name: FRED
