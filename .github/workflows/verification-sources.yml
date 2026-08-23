@@ -26,8 +26,9 @@ on:
           - sonder-page
           - sonder-twelvedata
           - twelve-data
+          - fred-observation
       series:
-        description: "Séries à vérifier (vide = toutes). Explorer : « catalogue <terme> » ou « <dataset> <dimension> ». Sonder-hôte : l'hôte. Sonder-marché : rien. Sonder-page : une URL, ou « URL||motif-grep ». Sonder-twelvedata : rien (tous les candidats). Twelve-data : symbole(s), ex. XAU/USD"
+        description: "Séries à vérifier (vide = toutes). Explorer : « catalogue <terme> » ou « <dataset> <dimension> ». Sonder-hôte : l'hôte. Sonder-marché : rien. Sonder-page : une URL, ou « URL||motif-grep ». Sonder-twelvedata : rien (tous les candidats). Twelve-data : symbole(s), ex. XAU/USD. Fred-observation : « ID_SÉRIE||AAAA-MM-JJ||AAAA-MM-JJ » (début||fin)"
         type: string
         required: false
         default: ""
@@ -253,6 +254,40 @@ jobs:
           code=$?
           echo '```' | tee -a "$GITHUB_STEP_SUMMARY"
           exit $code
+
+      - name: Observation FRED sur une fenêtre donnée
+        # Pour lire une valeur historique précise (une base YTD par exemple) — `fred:check`
+        # regarde toujours en arrière depuis aujourd'hui, borné par `LOOKBACK_DAYS`, donc
+        # inadapté à une clôture d'il y a plusieurs mois. Appel direct, mêmes contraintes que
+        # les autres sondes : ne collecte rien, n'écrit rien.
+        if: ${{ inputs.source == 'fred-observation' }}
+        env:
+          RAW: ${{ inputs.series }}
+          FRED_API_KEY: ${{ secrets.FRED_API_KEY }}
+        run: |
+          set +e -o pipefail
+          if [ -z "$FRED_API_KEY" ]; then
+            echo "FRED_API_KEY absente des secrets du dépôt — étape sautée." | tee -a "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          SID="${RAW%%||*}"
+          REST="${RAW#*||}"
+          START="${REST%%||*}"
+          END="${REST#*||}"
+          {
+            echo "## FRED — $SID de $START à $END"
+            echo '```'
+          } | tee -a "$GITHUB_STEP_SUMMARY"
+          curl -sS -m 15 -G \
+            --data-urlencode "series_id=$SID" \
+            --data-urlencode "api_key=$FRED_API_KEY" \
+            --data-urlencode "file_type=json" \
+            --data-urlencode "observation_start=$START" \
+            --data-urlencode "observation_end=$END" \
+            --data-urlencode "sort_order=asc" \
+            "https://api.stlouisfed.org/fred/series/observations" \
+            | tee -a "$GITHUB_STEP_SUMMARY"
+          echo '```' | tee -a "$GITHUB_STEP_SUMMARY"
 
       - name: FRED
         # `always()` pour que FRED soit quand même vérifié après un Eurostat rouge.
