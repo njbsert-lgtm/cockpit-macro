@@ -78,6 +78,13 @@ export type Driver = DriverInput & {
 
 export type TrendStatus = "renforce" | "maintient" | "affaiblit" | "invalidee";
 
+export type StatusHistoryEntry = {
+  date: string;
+  status: TrendStatus;
+  noteSlug: string;
+  why: string;
+};
+
 export type Trend = {
   id: string;
   title: string;
@@ -85,14 +92,21 @@ export type Trend = {
   zones: Zone[];
   assetClasses: AssetClass[];
   status: TrendStatus;
-  statusHistory: Array<{
-    date: string;
-    status: TrendStatus;
-    noteSlug: string;
-    why: string;
-  }>;
+  statusHistory: StatusHistoryEntry[];
   driverRefs: string[]; // les drivers qui pourraient la faire tomber
   invalidatedBy: string; // ce qui la ferait tomber, en clair
+};
+
+/**
+ * Un changement de statut de tendance produit par la rédaction automatique de la note
+ * hebdomadaire (`lib/redaction/`) — la tendance existe déjà dans `content/tendances.ts`, seul
+ * son historique s'allonge. `status` est porté explicitement plutôt que dérivé de `entry`, pour
+ * qu'un `refine` puisse vérifier les deux avant fusion sans dépendre de l'ordre des champs.
+ */
+export type TrendDelta = {
+  trendId: string;
+  status: TrendStatus;
+  entry: StatusHistoryEntry;
 };
 
 export type NoteKind = "hebdo" | "speciale";

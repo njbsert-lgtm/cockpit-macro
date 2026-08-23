@@ -141,6 +141,18 @@ function checkTrends(
   for (const trend of trends) {
     const where = `content/tendances.ts (${trend.id})`;
 
+    // Le statut affiché doit être celui de la dernière entrée de l'historique : sinon la carte
+    // de tendance mentirait sur son propre récit. Vérifiée compatible avec les tendances
+    // existantes avant d'être posée — gratuite aujourd'hui, garde-fou permanent sur le chemin
+    // de la rédaction automatique demain.
+    const lastEntry = [...trend.statusHistory].sort((a, b) => a.date.localeCompare(b.date)).at(-1);
+    if (lastEntry && lastEntry.status !== trend.status) {
+      throw new IntegrityError(
+        where,
+        `statut affiché « ${trend.status} », mais la dernière entrée de statusHistory (${lastEntry.date}) déclare « ${lastEntry.status} »`,
+      );
+    }
+
     for (const entry of trend.statusHistory) {
       if (!refs.noteSlugs.has(entry.noteSlug)) {
         throw new IntegrityError(

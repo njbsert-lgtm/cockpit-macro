@@ -207,6 +207,44 @@ describe("références mortes — tendance", () => {
   });
 });
 
+describe("statut d'une tendance cohérent avec son historique", () => {
+  it("refuse un statut affiché qui diverge de la dernière entrée de statusHistory", () => {
+    const g = graph({
+      trends: [
+        trend({
+          status: "renforce",
+          statusHistory: [
+            { date: "2026-07-05", status: "affaiblit", noteSlug: "2026-S27", why: "Parce que." },
+          ],
+        }),
+      ],
+    });
+    expect(() => checkIntegrity(g)).toThrow(
+      /statut affiché « renforce ».*déclare « affaiblit »/,
+    );
+  });
+
+  it("accepte un statut qui égale la dernière entrée, même quand l'historique en compte plusieurs", () => {
+    const g = graph({
+      trends: [
+        trend({
+          status: "affaiblit",
+          statusHistory: [
+            { date: "2026-06-01", status: "renforce", noteSlug: "2026-S27", why: "D'abord." },
+            { date: "2026-07-05", status: "affaiblit", noteSlug: "2026-S27", why: "Ensuite." },
+          ],
+        }),
+      ],
+    });
+    expect(() => checkIntegrity(g)).not.toThrow();
+  });
+
+  it("tolère un historique vide — rien à comparer", () => {
+    const g = graph({ trends: [trend({ statusHistory: [] })] });
+    expect(() => checkIntegrity(g)).not.toThrow();
+  });
+});
+
 describe("lien driver ↔ tendance : inclusion, pas symétrie", () => {
   it("refuse une tendance qui désigne un driver ne la listant pas en retour", () => {
     const g = graph({

@@ -2,17 +2,13 @@ import { DRIVERS } from "@/content/drivers";
 import { TRENDS } from "@/content/tendances";
 import { SCENARIO_VERSIONS } from "@/content/scenarios";
 import { OUTLOOKS } from "@/content/outlooks";
+import { GENERATED_SCENARIO_VERSIONS } from "@/content/generated/scenarios.generated";
+import { GENERATED_TREND_DELTAS } from "@/content/generated/tendances.generated";
 import { getInstruments } from "./data";
-import { checkIntegrity, currentVersion } from "./integrity";
-import { activeDrivers, deriveDrivers } from "./drivers";
-import {
-  extractBlockText,
-  parseNote,
-  readNoteSources,
-  validateNoteChain,
-  type BlockName,
-  type ParsedNote,
-} from "./notes";
+import { currentVersion } from "./integrity";
+import { activeDrivers } from "./drivers";
+import { extractBlockText, readNoteSources, type BlockName } from "./notes";
+import { assembleContent } from "./content-assembly";
 import type { Driver, Note, Outlook, Trend, Zone } from "./types";
 import { zoneMatches } from "./zones";
 
@@ -21,30 +17,15 @@ import { zoneMatches } from "./zones";
 // ---------------------------------------------------------------------------
 
 function loadContent() {
-  const parsed: ParsedNote[] = readNoteSources().map(({ slug, source }) =>
-    parseNote(slug, source),
-  );
-
-  // Règles propres à la chaîne des notes (comparesTo, récapitulatif des spéciales).
-  const notes = validateNoteChain(parsed);
-
-  // Puis l'intégrité de tout le graphe, d'un seul tenant. Toute référence morte lève ici :
-  // rien ne peut produire un lien mort à l'écran, le build échoue avant.
-  checkIntegrity({
+  return assembleContent({
+    noteSources: readNoteSources(),
     drivers: DRIVERS,
     trends: TRENDS,
-    notes,
     scenarios: SCENARIO_VERSIONS,
     outlooks: OUTLOOKS,
+    generated: { scenarios: GENERATED_SCENARIO_VERSIONS, trendDeltas: GENERATED_TREND_DELTAS },
     instrumentIds: new Set(getInstruments().map((i) => i.id)),
   });
-
-  return {
-    notes,
-    bodies: new Map(parsed.map((p) => [p.meta.slug, p.body])),
-    blocks: new Map(parsed.map((p) => [p.meta.slug, p.blocks])),
-    drivers: deriveDrivers(DRIVERS, notes, SCENARIO_VERSIONS),
-  };
 }
 
 const CONTENT = loadContent();
@@ -138,7 +119,7 @@ export function getRevisingDriversByNote(): Map<string, Driver[]> {
   const byNote = new Map<string, Driver[]>();
   for (const driver of CONTENT.drivers) {
     for (const slug of new Set(
-      SCENARIO_VERSIONS.filter((s) => s.driverId === driver.id).map((s) => s.noteSlug),
+      CONTENT.scenarios.filter((s) => s.driverId === driver.id).map((s) => s.noteSlug),
     )) {
       const list = byNote.get(slug) ?? [];
       list.push(driver);
@@ -151,7 +132,7 @@ export function getRevisingDriversByNote(): Map<string, Driver[]> {
 /** Les notes qui ont révisé ce driver, du plus récent au plus ancien. */
 export function getNotesRevising(driverId: string): Note[] {
   const slugs = new Set(
-    SCENARIO_VERSIONS.filter((s) => s.driverId === driverId).map((s) => s.noteSlug),
+    CONTENT.scenarios.filter((s) => s.driverId === driverId).map((s) => s.noteSlug),
   );
   return CONTENT.notes
     .filter((e) => slugs.has(e.slug))
@@ -163,11 +144,11 @@ export function getNotesRevising(driverId: string): Note[] {
 // ---------------------------------------------------------------------------
 
 export function getTrends(): Trend[] {
-  return TRENDS;
+  return CONTENT.trends;
 }
 
 export function getTrend(id: string): Trend | null {
-  return TRENDS.find((t) => t.id === id) ?? null;
+  return CONTENT.trends.find((t) => t.id === id) ?? null;
 }
 
 // ---------------------------------------------------------------------------
@@ -175,11 +156,11 @@ export function getTrend(id: string): Trend | null {
 // ---------------------------------------------------------------------------
 
 export function getScenarioVersions() {
-  return SCENARIO_VERSIONS;
+  return CONTENT.scenarios;
 }
 
 export function getScenarioVersionsByDriver(driverId: string) {
-  return SCENARIO_VERSIONS.filter((s) => s.driverId === driverId);
+  return CONTENT.scenarios.filter((s) => s.driverId === driverId);
 }
 
 /** Dernière version de chaque branche d'un driver — l'état courant. */
@@ -188,7 +169,7 @@ export function getCurrentBranches(driverId: string) {
     ...new Set(getScenarioVersionsByDriver(driverId).map((s) => s.branchId)),
   ];
   return branches
-    .map((b) => currentVersion(SCENARIO_VERSIONS, driverId, b))
+    .map((b) => currentVersion(CONTENT.scenarios, driverId, b))
     .filter((v): v is NonNullable<typeof v> => v !== null);
 }
 
