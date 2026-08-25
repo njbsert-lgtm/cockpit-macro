@@ -27,8 +27,9 @@ on:
           - sonder-twelvedata
           - twelve-data
           - fred-observation
+          - twelve-data-observation
       series:
-        description: "Séries à vérifier (vide = toutes). Explorer : « catalogue <terme> » ou « <dataset> <dimension> ». Sonder-hôte : l'hôte. Sonder-marché : rien. Sonder-page : une URL, ou « URL||motif-grep ». Sonder-twelvedata : rien (tous les candidats). Twelve-data : symbole(s), ex. XAU/USD. Fred-observation : « ID_SÉRIE||AAAA-MM-JJ||AAAA-MM-JJ » (début||fin)"
+        description: "Séries à vérifier (vide = toutes). Explorer : « catalogue <terme> » ou « <dataset> <dimension> ». Sonder-hôte : l'hôte. Sonder-marché : rien. Sonder-page : une URL, ou « URL||motif-grep ». Sonder-twelvedata : rien (tous les candidats). Twelve-data : symbole(s), ex. XAU/USD. Fred-observation / twelve-data-observation : « ID(S)||AAAA-MM-JJ||AAAA-MM-JJ » (plusieurs séries séparées par une virgule, début||fin)"
         type: string
         required: false
         default: ""
@@ -259,7 +260,8 @@ jobs:
         # Pour lire une valeur historique précise (une base YTD par exemple) — `fred:check`
         # regarde toujours en arrière depuis aujourd'hui, borné par `LOOKBACK_DAYS`, donc
         # inadapté à une clôture d'il y a plusieurs mois. Appel direct, mêmes contraintes que
-        # les autres sondes : ne collecte rien, n'écrit rien.
+        # les autres sondes : ne collecte rien, n'écrit rien. Plusieurs séries séparées par une
+        # virgule pour vérifier plusieurs bases YTD en un seul run.
         if: ${{ inputs.source == 'fred-observation' }}
         env:
           RAW: ${{ inputs.series }}
@@ -270,24 +272,61 @@ jobs:
             echo "FRED_API_KEY absente des secrets du dépôt — étape sautée." | tee -a "$GITHUB_STEP_SUMMARY"
             exit 0
           fi
-          SID="${RAW%%||*}"
+          SIDS="${RAW%%||*}"
           REST="${RAW#*||}"
           START="${REST%%||*}"
           END="${REST#*||}"
           {
-            echo "## FRED — $SID de $START à $END"
-            echo '```'
+            for SID in ${SIDS//,/ }; do
+              echo "## FRED — $SID de $START à $END"
+              echo '```'
+              curl -sS -m 15 -G \
+                --data-urlencode "series_id=$SID" \
+                --data-urlencode "api_key=$FRED_API_KEY" \
+                --data-urlencode "file_type=json" \
+                --data-urlencode "observation_start=$START" \
+                --data-urlencode "observation_end=$END" \
+                --data-urlencode "sort_order=asc" \
+                "https://api.stlouisfed.org/fred/series/observations"
+              echo
+              echo '```'
+            done
           } | tee -a "$GITHUB_STEP_SUMMARY"
-          curl -sS -m 15 -G \
-            --data-urlencode "series_id=$SID" \
-            --data-urlencode "api_key=$FRED_API_KEY" \
-            --data-urlencode "file_type=json" \
-            --data-urlencode "observation_start=$START" \
-            --data-urlencode "observation_end=$END" \
-            --data-urlencode "sort_order=asc" \
-            "https://api.stlouisfed.org/fred/series/observations" \
-            | tee -a "$GITHUB_STEP_SUMMARY"
-          echo '```' | tee -a "$GITHUB_STEP_SUMMARY"
+
+      - name: Observation Twelve Data sur une fenêtre donnée
+        # Même besoin que la sonde FRED équivalente, pour or et MSCI ACWI (les deux seules
+        # séries Twelve Data actives) : lire une clôture historique précise plutôt que le
+        # dernier prix seul que `/quote` renvoie.
+        if: ${{ inputs.source == 'twelve-data-observation' }}
+        env:
+          RAW: ${{ inputs.series }}
+          APIKEY: ${{ secrets.TWELVE_DATA_API_KEY }}
+        run: |
+          set +e -o pipefail
+          if [ -z "$APIKEY" ]; then
+            echo "TWELVE_DATA_API_KEY absente des secrets du dépôt — étape sautée." | tee -a "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          SIDS="${RAW%%||*}"
+          REST="${RAW#*||}"
+          START="${REST%%||*}"
+          END="${REST#*||}"
+          {
+            for SID in ${SIDS//,/ }; do
+              echo "## Twelve Data — $SID de $START à $END"
+              echo '```'
+              curl -sS -m 15 -G \
+                --data-urlencode "symbol=$SID" \
+                --data-urlencode "interval=1day" \
+                --data-urlencode "start_date=$START" \
+                --data-urlencode "end_date=$END" \
+                --data-urlencode "apikey=$APIKEY" \
+                "https://api.twelvedata.com/time_series"
+              echo
+              echo '```'
+              sleep 8
+            done
+          } | tee -a "$GITHUB_STEP_SUMMARY"
 
       - name: FRED
         # `always()` pour que FRED soit quand même vérifié après un Eurostat rouge.
