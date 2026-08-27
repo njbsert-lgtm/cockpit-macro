@@ -190,10 +190,10 @@ rattachée à un bloc que la note ne porte pas — elle ne s'afficherait nulle p
 
 ### Cadence : hebdomadaire fixe + notes spéciales
 
-**La note hebdomadaire est le squelette.** Elle paraît le dimanche soir, qu'il se soit passé
-quelque chose ou non. Une semaine sans note est un trou dans le fil, et le fil n'a de valeur
-que s'il est continu. Une semaine où rien n'a bougé produit une note courte qui le dit :
-c'est une information, pas un échec.
+**La note hebdomadaire est le squelette.** Elle paraît le samedi, peu après la collecte
+matinale des clôtures de vendredi, qu'il se soit passé quelque chose ou non. Une semaine sans
+note est un trou dans le fil, et le fil n'a de valeur que s'il est continu. Une semaine où rien
+n'a bougé produit une note courte qui le dit : c'est une information, pas un échec.
 
 **La note spéciale est l'exception, et doit le rester.** Si on en publie une par semaine,
 la distinction meurt et le hebdo devient du remplissage. Le déclenchement est donc soumis à
@@ -212,7 +212,7 @@ des **seuils objectifs**, écrits dans la configuration, pas à une impression.
 | **Scénarios** | bascule de la branche dominante d'un driver | à la révision |
 | **Géopolitique** | modification d'un flux physique : fermeture, embargo appliqué, saisie | à l'événement |
 
-Au moins un seuil franchi, sinon ça attend le dimanche. Le seuil déclenché est enregistré dans
+Au moins un seuil franchi, sinon ça attend le samedi. Le seuil déclenché est enregistré dans
 le champ `trigger` et affiché sur la note : le lecteur doit savoir pourquoi elle existe.
 
 ### Le moteur d'alertes — règles d'implémentation
@@ -669,7 +669,8 @@ Gratuites, en accès programmatique. Clés en variables d'environnement, jamais 
 | Métaux | **Twelve Data** | Or branché ; argent et cuivre verrouillés à un palier payant chez ce fournisseur |
 
 Contraintes dans le code :
-- **Un appel par instrument par jour.** Cron à 6 h UTC, jamais à la demande. Le plan Hobby
+- **Un appel par instrument par jour.** Cron à 4 h UTC (6 h heure française, sous réserve du
+  changement d'heure), jamais à la demande. Le plan Hobby
   n'autorise qu'un seul déclenchement quotidien : la route du cron est un **orchestrateur** qui
   exécute FRED, puis Twelve Data, puis Eurostat, puis la veille, en quatre modules indépendants
   — jamais un second cron. FRED s'exécute et écrit en premier, sans exception ; les trois

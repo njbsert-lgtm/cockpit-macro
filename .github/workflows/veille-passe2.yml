@@ -12,7 +12,7 @@ name: Veille — passe 2
 
 on:
   schedule:
-    # Une heure après le cron Vercel de 6 h UTC (FRED, Twelve Data, Eurostat, veille passe 1),
+    # Après le cron Vercel de 4 h UTC (FRED, Twelve Data, Eurostat, veille passe 1),
     # pour laisser le temps aux items du jour d'être écrits en base.
     - cron: "0 7 * * *"
   workflow_dispatch:
