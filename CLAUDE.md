@@ -188,6 +188,211 @@ carte « nom de bloc → sources » : on doit pouvoir savoir de quelle source vi
 affirmation, ce qu'une liste unique en pied de note ne dit pas. La validation refuse une source
 rattachée à un bloc que la note ne porte pas — elle ne s'afficherait nulle part.
 
+### Rédaction assistée : ce que le modèle écrit, ce qui reste humain
+
+**Renversement assumé d'un principe antérieur.** Le cahier posait que l'automatisation ne
+rédige jamais. Elle rédige désormais. Ce qui ne change pas : **elle ne publie pas.**
+
+La distinction n'est pas cosmétique. Un brouillon rédigé fait gagner l'heure de recopie de
+chiffres, qui n'a aucune valeur analytique. Une publication automatique ferait disparaître le
+seul geste qui en a une : trancher. Toute la spécification qui suit tient à cette frontière.
+
+#### Le contexte, seul horizon du modèle
+
+Le modèle **n'a aucun accès au web au moment de rédiger**. Il reçoit un paquet de contexte
+construit par nous, et rien d'autre. Ce qui n'y figure pas ne peut pas entrer dans la note.
+
+```ts
+type ContextePaquet = {
+  noteType: 'hebdo' | 'speciale';
+  isoWeek: string;
+  comparesTo: string;              // slug de la note de référence
+  notePrecedente: {                // ce à quoi on se compare, texte intégral
+    regimeStatement: string;
+    blocs: Record<string, string>;
+    driverOrder: string[];
+  };
+  observations: Array<{            // valeurs de la semaine, depuis la base
+    instrumentId: string; label: string;
+    valeurs: Array<{ date: string; value: number }>;
+    variationSemaine: number; variationYTD: number;
+    fraicheur: 'ok' | 'retard' | 'absent';
+  }>;
+  alertes: AlertEvent[];           // seuils franchis dans la période
+  itemsVeille: VeilleItem[];       // items classés signal, non encore versés
+  scenariosCourants: ScenarioVersion[];
+  tendancesCourantes: Trend[];
+  guetsOuverts: Guet[];            // posés par la note précédente, non résolus
+  guetsExpires: Guet[];            // échéance passée sans résolution — remontent au bloc 5
+  echeancesSemaine: Echeance[];    // calendrier de la semaine à venir, par driver
+  trigger: string | null;          // pour une spéciale
+};
+```
+
+**Règle de suffisance.** Si le paquet est vide ou dégradé — collecte en échec, aucune alerte,
+aucun item de veille —, le modèle produit une note courte qui le dit explicitement. Il ne
+comble jamais un contexte pauvre par des généralités de marché. Une semaine sans matière
+produit trois paragraphes honnêtes, pas deux pages de meublage.
+
+#### Répartition par bloc
+
+Chaque bloc porte un champ `authorship`, affiché discrètement sur la note publiée.
+Le lecteur — c'est-à-dire vous dans six mois — doit savoir qui a écrit quoi.
+
+| Bloc | Rédaction | Statut requis pour publier |
+|---|---|---|
+| 1. Ce qui a changé | Modèle | `ia-relue` |
+| 2. Ce qui s'est confirmé | Modèle | `ia-relue` |
+| 3. Révision des scénarios | Modèle propose, humain tranche | `humaine` ou `ia-corrigee` |
+| 4. Ce que j'avais mal lu | **Humain seul** | `humaine` |
+| 5. Ce que je surveille | Modèle propose, guet par guet | `ia-relue` |
+| Consolidation des spéciales | Modèle | `ia-relue` |
+| Le fil de la semaine | Modèle | `ia-relue` |
+
+Valeurs possibles : `ia` (brouillon jamais touché), `ia-relue` (ouvert et validé sans
+modification), `ia-corrigee` (modifié), `humaine` (écrit de bout en bout).
+
+**Le bloc 4 n'est jamais pré-rempli.** Le modèle ne peut pas savoir ce que vous aviez mal lu :
+il connaît vos textes, pas votre intention. Un modèle qui remplit ce bloc produit une
+auto-critique plausible et creuse, et détruit exactement ce que le bloc existe pour capter.
+Le champ s'ouvre vide. Écrire « rien de notable cette semaine » est une réponse valide —
+c'est la saisie qui compte, pas la longueur.
+
+**Le bloc 3 est proposé, jamais appliqué.** Le modèle peut suggérer qu'une vraisemblance a
+bougé et écrire la justification. Mais **aucune `ScenarioVersion` n'est créée sans validation
+humaine explicite** : la trajectoire d'un scénario est un historique de vos jugements, pas de
+ceux d'un modèle. Une proposition non validée reste une proposition et n'entre pas dans la
+vue Trajectoire.
+
+Même règle pour les changements de statut de tendance et pour `driverOrder`.
+
+**Le bloc 5 se valide guet par guet, jamais en bloc.** Le modèle propose des guets — libellé,
+attendu, signal de confirmation, signal d'infirmation, échéance, source attendue. Chacun est
+accepté, corrigé ou refusé **individuellement**. Un guet accepté sans modification porte
+`authorship: ia-relue` ; corrigé, `ia-corrigee`. L'`authorship` du bloc s'en déduit : tous
+relus tels quels → `ia-relue`, au moins un corrigé → `ia-corrigee`, au moins un jamais ouvert
+→ `ia`, donc publication bloquée. Un bloc ne peut pas être réputé relu si l'un de ses guets ne
+l'a pas été.
+
+#### Le contrôle des chiffres — bloquant
+
+C'est le garde-fou le plus important du pipeline, parce que c'est la faute la plus
+indétectable à la lecture.
+
+Après génération, chaque nombre du texte est extrait et confronté au paquet de contexte.
+
+- Une valeur qui ne correspond à aucune donnée du paquet **bloque la publication**.
+  Elle ne signale pas, elle bloque.
+- La tolérance est celle de l'arrondi déclaré par instrument, pas une marge libre.
+- Une variation calculée par le modèle est recalculée par nous et comparée.
+- Un pourcentage de vraisemblance qui ne figure pas dans `scenariosCourants` et n'a pas été
+  validé au bloc 3 est un chiffre inventé : blocage.
+
+Le rapport de contrôle liste chaque nombre, sa source, et son verdict. Il est consultable
+depuis le portail de validation.
+
+**Pourquoi bloquant et non signalant.** Un chiffre légèrement de travers dans une phrase bien
+tournée est invisible à la relecture — c'est précisément ce qu'un modèle produit quand il
+reformule. Un avertissement qu'on peut ignorer sera ignoré au bout de trois semaines.
+
+#### Ce que le modèle n'a pas le droit de faire
+
+Vérifié mécaniquement, pas par le prompt :
+
+- **Réécrire la `regimeStatement` sans le signaler.** Il peut la proposer différente ; le
+  portail affiche alors une comparaison avec l'ancienne et demande une décision.
+- **Introduire un instrument, un driver ou une tendance absents du paquet.**
+  Toute référence à un identifiant inconnu bloque le rendu.
+- **Citer une source absente de `itemsVeille`.** `Note.sources` se construit à partir des
+  items effectivement versés, jamais depuis le texte généré.
+- **Écrire au conditionnel généralisé.** Une note qui multiplie « pourrait », « semblerait »
+  et « il conviendra de surveiller » n'a pas tranché. Un contrôle de style signale les
+  formules d'atténuation au-delà d'un seuil par bloc. Signalement, pas blocage.
+
+#### Le portail de validation
+
+Accessible à `/redaction`. C'est le seul chemin vers la publication.
+
+Il présente, dans cet ordre :
+
+1. **Le rapport de contrôle des chiffres**, en premier. Si un blocage subsiste, la
+   publication est indisponible et le bouton dit pourquoi.
+2. **Les blocs**, chacun éditable, avec son `authorship` courant. Un bloc ouvert et refermé
+   sans modification passe de `ia` à `ia-relue` ; modifié, il passe à `ia-corrigee`.
+3. **Les propositions de révision** — scénarios, tendances, ordre des drivers — chacune avec
+   deux boutons : accepter, refuser. Aucune n'est cochée par défaut.
+4. **Les guets proposés**, avec le rappel des échéances de la semaine à venir et les guets
+   remontés de la note précédente. Trois actions par guet : accepter, corriger, refuser.
+5. **Le bloc 4**, vide, en champ de saisie.
+
+**Conditions de publication**, toutes nécessaires :
+- Aucun blocage sur les chiffres
+- Le bloc 4 est renseigné
+- Aucun bloc n'est resté au statut `ia`
+- Toute proposition de révision a été acceptée ou refusée explicitement
+- Tout guet proposé ou remonté a été tranché
+
+**Le principe qui gouverne ce portail : la validation doit coûter quelque chose.**
+Un bouton « Tout publier » qui accepte tout en un geste serait actionné sans lecture au bout
+d'un mois, et la note deviendrait une synthèse d'actualité signée de votre nom. Il n'y a donc
+pas de validation globale, et le bloc 4 impose une frappe réelle à chaque note.
+
+#### Le cycle hebdomadaire
+
+`note-hebdo.yml`, GitHub Actions, samedi matin — après la collecte qui rapatrie la clôture de
+vendredi, jamais avant : un brouillon écrit sur des données incomplètes ne vaut rien. GitHub
+Actions plutôt qu'un cron Vercel : le plan Hobby n'autorise qu'un déclenchement quotidien,
+déjà pris par la collecte, et le commit se fait naturellement là où vivent les MDX.
+
+Le workflow :
+1. Construit le paquet de contexte depuis la base
+2. Appelle le modèle
+3. Passe le contrôle des chiffres
+4. **Commite un brouillon** — `status: brouillon` dans le frontmatter, sur la branche `main`
+
+**Un brouillon n'est jamais rendu dans le fil ni dans l'étagère.** Il n'existe que dans
+`/redaction`. La publication est un acte humain qui bascule `status` à `publiee` et fige
+`publishedAt`.
+
+Un brouillon vit dans `content/brouillons/`, hors du corpus validé. Ce n'est pas un détail
+d'organisation : le contrôle des chiffres peut échouer et le brouillon est commité quand même,
+donc un fichier écrit par la machine peut être fautif. Déposé dans `content/notes/`, il
+ferait lever la validation **au chargement du module** et le site entier répondrait 500 —
+un pipeline automatique pourrait le mettre à terre un samedi matin. À l'écart, « un brouillon
+n'est jamais rendu dans le fil » est vrai par construction plutôt que par un filtre qu'on peut
+oublier, et `git checkout content/brouillons/` jette la production machine sans toucher au
+corpus écrit à la main. C'est le principe directeur du cahier appliqué à la rédaction : si
+l'automatisation casse, l'analyse doit rester lisible.
+
+Si le contrôle des chiffres échoue, le brouillon est commité quand même, avec son rapport
+d'échec attaché : un brouillon bloqué est plus utile qu'un silence, il vous dit qu'il y a un
+problème de données à regarder.
+
+**Aucune notification.** Vous ouvrez `/redaction` le samedi parce que c'est votre rituel, pas
+parce qu'une alerte vous y pousse.
+
+#### Les notes spéciales
+
+Même pipeline, déclenché par le moteur d'alertes plutôt que par le calendrier. Le point 5 du
+moteur d'alertes se lit désormais : **l'alerte déclenche un brouillon rédigé, dont la
+publication reste humaine.** Le paquet de contexte porte alors `trigger` renseigné, et le
+modèle ne rédige que les trois blocs requis.
+
+Un brouillon de spéciale qui n'est pas publié dans les cinq jours est archivé
+automatiquement : l'alerte s'est révélée être du bruit, et c'est une information en soi.
+Le compte de brouillons abandonnés par famille de driver mérite d'être visible — un seuil qui
+génère beaucoup d'abandons est un seuil mal calibré.
+
+#### Développement local
+
+`npm run note:draft -- --dry-run` construit le paquet, appelle le modèle, passe le contrôle
+et affiche le MDX sans rien écrire. C'est ce qui permet d'itérer sur le prompt sans polluer
+le dépôt.
+
+`npm run note:draft -- --week=2026-S33 --dry-run` rejoue une semaine passée : le seul moyen
+honnête d'évaluer le pipeline est de lui faire rédiger une semaine dont vous connaissez déjà
+la bonne réponse, et de comparer.
+
 ### Cadence : hebdomadaire fixe + notes spéciales
 
 **La note hebdomadaire est le squelette.** Elle paraît le samedi, peu après la collecte
@@ -230,9 +435,10 @@ Ces cinq règles décident si l'outil est utilisable ou s'il devient une machine
    mouvement atteint le double du seuil. Sans ça, une tendance soutenue déclenche tous les jours.
 4. **Le sens est enregistré, pas seulement l'amplitude.** Un écartement de spread et un
    resserrement de spread disent des choses opposées. Stocker `direction` et l'afficher.
-5. **L'alerte notifie, elle ne rédige pas.** Elle ouvre un brouillon de note spéciale
-   pré-rempli avec le seuil franchi, les valeurs concernées et les instruments liés.
-   La décision de publier reste humaine — une alerte peut se révéler être du bruit.
+5. **L'alerte déclenche un brouillon rédigé, dont la publication reste humaine.** Elle ouvre
+   une note spéciale rédigée par le modèle à partir du seuil franchi, des valeurs concernées
+   et des instruments liés (voir « Rédaction assistée » plus haut). La décision de publier
+   reste humaine — une alerte peut se révéler être du bruit.
 
 **Lire les deux spreads correctement.** Ils mesurent des choses différentes et l'interface doit
 les nommer distinctement, sans quoi l'alerte sera mal interprétée :
@@ -917,7 +1123,8 @@ nature du choc, fonction de réaction, dollar, positionnement) plus le test « f
 déclaration ». Le modèle l'applique, il ne l'invente pas. Grille dans le prompt système.
 
 **Passe 3 — Validation humaine.** Les items retenus alimentent la note en cours de
-rédaction. Le modèle trie et met en forme ; les cinq blocs analytiques restent à vous.
+rédaction. Le modèle trie, met en forme et rédige le brouillon ; c'est la publication qui
+reste à vous, bloc par bloc, dans le portail de validation (voir « Rédaction assistée »).
 
 ### Droit d'auteur dans le code
 
@@ -1049,6 +1256,29 @@ Les règles sont dans un fichier de configuration éditable, pas en dur dans le 
 **Étape 5 — La veille.**
 Passe 1 seule d'abord : collecte RSS et GDELT, filtre par mots-clés, file brute.
 L'observer une semaine pour calibrer. Classification par l'API Claude ensuite.
+
+**Étape 6 — La rédaction assistée.**
+Dans cet ordre, chaque palier laissant le dépôt déployable :
+1. Les **guets** — type, bloc 5 structuré, cycle de vie avec expiration et remontée,
+   `config/calendrier-drivers.ts`. Sans dépendance au modèle : on pose des guets à la main
+   et on regarde comment ça se rédige avant d'automatiser quoi que ce soit.
+2. Le **pipeline hors ligne** — paquet de contexte, appel du modèle, contrôle des chiffres
+   bloquant, rendu MDX. Pilotable en local par `npm run note:draft -- --dry-run`, sans
+   workflow ni écriture.
+3. Le **portail `/redaction`** — le seul chemin vers la publication.
+4. Le **workflow `note-hebdo.yml`** — d'abord en déclenchement manuel, `schedule` seulement
+   après deux brouillons jugés corrects.
+5. La **remise à zéro du corpus** — les notes de développement sont de la fiction écrite
+   pour éprouver le maillage ; elles disparaissent au moment où la première vraie note paraît,
+   avec les trajectoires de scénario et les historiques de tendance qui s'y accrochent. Les
+   thèses des tendances et les questions des drivers restent : ce sont des convictions
+   permanentes, pas des événements datés.
+
+**Étape 7 — Les déclencheurs d'événement.**
+Le pont entre la veille et le moteur d'alertes : `resoutGuet` et `materialite` en sortie de
+passe 2, `AlertEvent` de type `evenement`, compteur d'angles morts par driver, et les notes
+spéciales automatisées. Après l'étape 6, jamais avant — on pose d'abord des guets et on
+observe ce qu'ils captent.
 
 Ne pas commencer par l'étape 3 ni par l'étape 5.
 
