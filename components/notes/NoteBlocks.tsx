@@ -15,7 +15,7 @@ export async function NoteBlocks({ note }: { note: Note }) {
   // interne, pas une note mal écrite.
   const { content } = await compileMDX({
     source: body ?? "",
-    components: createNoteMdxComponents(veilleItems, note.sources),
+    components: createNoteMdxComponents(veilleItems, note.sources, note.guets, note.slug),
     options: { parseFrontmatter: false },
   });
 

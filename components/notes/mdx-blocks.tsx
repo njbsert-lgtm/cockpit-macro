@@ -1,5 +1,6 @@
 import { BLOCK_TITLES, type BlockName } from "@/lib/notes";
-import type { Note, VeilleItem } from "@/lib/types";
+import type { Guet, Note, VeilleItem } from "@/lib/types";
+import { GuetLine } from "./GuetLine";
 
 type NoteSource = { label: string; url: string };
 import { formatDateShort } from "@/lib/format";
@@ -89,6 +90,57 @@ function Block({
 }
 
 /**
+ * Le bloc « ce que je surveille », dans sa forme structurée : une liste de guets plutôt que
+ * de la prose. Le texte rédigé, s'il y en a, reste au-dessus — un guet est une pré-inscription,
+ * pas un commentaire, et l'auteur peut vouloir dire un mot avant de les énumérer.
+ *
+ * Les notes antérieures à la bascille (`GUETS_REQUIS_A_PARTIR_DE`) n'ont pas de guets : elles
+ * retombent sur le rendu en prose, sans traitement particulier ni mention de l'absence. Leur
+ * bloc 5 n'a jamais été structuré, ce n'est pas une donnée manquante.
+ */
+function CeQueJeSurveilleBlock({
+  guets,
+  noteSlug,
+  evidence,
+  sources,
+  children,
+}: {
+  guets: Guet[];
+  noteSlug: string;
+  evidence: VeilleItem[];
+  sources: NoteSource[];
+  children?: React.ReactNode;
+}) {
+  if (guets.length === 0) {
+    return (
+      <Block name="CeQueJeSurveille" evidence={evidence} sources={sources}>
+        {children}
+      </Block>
+    );
+  }
+
+  return (
+    <section className="border-t border-trait py-4 first:border-t-0">
+      <h4 className="text-11 font-semibold uppercase tracking-cap text-tenu">
+        {BLOCK_TITLES.CeQueJeSurveille}
+      </h4>
+      {children && (
+        <div className="mt-2 max-w-[70ch] text-15-5 leading-relaxed text-doux [&>p]:mt-3 [&>p:first-child]:mt-0">
+          {children}
+        </div>
+      )}
+      <ul className="mt-3" aria-label="Guets posés par cette note">
+        {guets.map((guet) => (
+          <GuetLine key={guet.id} guet={guet} noteSlug={noteSlug} />
+        ))}
+      </ul>
+      <EvidencePills items={evidence} />
+      <BlockSources sources={sources} />
+    </section>
+  );
+}
+
+/**
  * Balise auto-porteuse : l'auteur écrit `<LeFilDeLaSemaine />`, sans contenu — la liste
  * chronologique est résolue au rendu depuis `Note.veilleItemRefs`, pas rédigée à la main.
  * Absent purement et simplement quand la note n'en cite aucun : pas de section vide.
@@ -130,6 +182,8 @@ function LeFilDeLaSemaineBlock({ items }: { items: VeilleItem[] }) {
 export function createNoteMdxComponents(
   veilleItems: VeilleItem[],
   sources: Note["sources"],
+  guets: Guet[] = [],
+  noteSlug = "",
 ) {
   const byBlock = groupEvidenceByBlock(veilleItems);
   const evidenceFor = (name: BlockName) => byBlock.get(name) ?? [];
@@ -148,7 +202,12 @@ export function createNoteMdxComponents(
       <Block name="CeQueJavaisMalLu" {...props("CeQueJavaisMalLu")} {...p} />
     ),
     CeQueJeSurveille: (p: BlockProps) => (
-      <Block name="CeQueJeSurveille" {...props("CeQueJeSurveille")} {...p} />
+      <CeQueJeSurveilleBlock
+        guets={guets}
+        noteSlug={noteSlug}
+        {...props("CeQueJeSurveille")}
+        {...p}
+      />
     ),
     RecapDesSpeciales: (p: BlockProps) => (
       <Block name="RecapDesSpeciales" {...props("RecapDesSpeciales")} {...p} />
