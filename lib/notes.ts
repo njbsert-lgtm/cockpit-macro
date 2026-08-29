@@ -101,6 +101,12 @@ const isoDate = z
  */
 const guetSchema = z.object({
   id: z.string().min(1),
+  /**
+   * La note qui a posé le guet. Absent pour un guet neuf — il appartient à la note qui le
+   * déclare, et le code le pose. Présent pour un guet **remonté** d'une note antérieure, dont
+   * l'ancienneté doit rester visible : « posé en 2026-S35 », trois semaines plus tôt.
+   */
+  noteSlug: z.string().min(1).optional(),
   driverId: z.string().min(1),
   libelle: z.string().min(1),
   attendu: z.string().min(1),
@@ -117,6 +123,14 @@ const guetSchema = z.object({
 
 const frontmatterSchema = z.object({
   kind: z.enum(["hebdo", "speciale"]),
+  /**
+   * Un brouillon n'est jamais rendu dans le fil ni dans l'étagère : il n'existe que dans
+   * `/redaction`. La valeur par défaut est `publiee` — les notes écrites avant l'arrivée du
+   * pipeline n'ont pas de statut à déclarer, et une absence ne doit pas les faire disparaître.
+   */
+  status: z.enum(["brouillon", "publiee"]).default("publiee"),
+  /** Figée au moment de la publication depuis le portail. */
+  publishedAt: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).nullable().default(null),
   date: isoDate,
   comparesTo: z.string().nullable().default(null),
   trigger: z.string().min(1).nullable().default(null),
@@ -376,9 +390,11 @@ export function parseNote(slug: string, source: string): ParsedNote {
       veilleItemRefs: fm.veilleItemRefs,
       channels: fm.channels,
       sources: fm.sources,
-      // `noteSlug` est posé ici plutôt que saisi : une valeur écrite deux fois finit par diverger,
-      // comme pour `isoWeek` et `parentWeek`.
-      guets: fm.guets.map((g) => ({ ...g, noteSlug: slug })),
+      status: fm.status,
+      publishedAt: fm.publishedAt,
+      // Un guet neuf appartient à la note qui le déclare ; un guet remonté garde la sienne,
+      // sans quoi son ancienneté disparaîtrait au premier report.
+      guets: fm.guets.map((g) => ({ ...g, noteSlug: g.noteSlug ?? slug })),
     },
     body: file.content,
     blocks,

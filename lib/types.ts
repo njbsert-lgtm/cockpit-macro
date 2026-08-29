@@ -188,6 +188,13 @@ export type Note = {
    * affirmation vient d'où. La clé est un nom de bloc (`CeQuiAChange`…) ; un bloc absent de
    * la note ne peut pas en porter, sa source ne s'afficherait nulle part.
    */
+  /**
+   * Un brouillon n'est jamais rendu dans le fil ni dans l'étagère : il n'existe que dans
+   * `/redaction`, et vit dans `content/brouillons/`, hors du corpus validé.
+   */
+  status: "brouillon" | "publiee";
+  /** Figée au moment de la publication depuis le portail. */
+  publishedAt: string | null;
   sources: Partial<Record<string, Array<{ label: string; url: string }>>>;
   /**
    * Le bloc « ce que je surveille », structuré. Vide pour les notes antérieures à

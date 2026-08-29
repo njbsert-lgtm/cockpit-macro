@@ -21,6 +21,8 @@ function note(over: Partial<Note> = {}): Note {
     channels: [],
     sources: {},
     guets: [],
+    status: "publiee",
+    publishedAt: null,
     ...over,
   };
 }
