@@ -19,7 +19,27 @@ type Fm = {
   trendRefs?: string[];
   instrumentRefs?: string[];
   sources?: string;
+  /** Bloc YAML brut, pour éprouver la validation des guets telle qu'elle est écrite. */
+  guets?: string;
 };
+
+/** Un guet valide en YAML, dont chaque test ne dévie que par le champ qu'il éprouve. */
+function guetYaml(over: Record<string, string> = {}): string {
+  const champs: Record<string, string> = {
+    id: "g1",
+    driverId: "rates",
+    libelle: "Réunion de la Fed du 16 septembre",
+    attendu: "Statu quo, biais inchangé",
+    confirmeSi: "Taux directeur inchangé et communiqué sans durcissement",
+    infirmeSi: "Hausse de 25 bps, ou changement de biais explicite",
+    echeance: "'2026-09-16'",
+    ...over,
+  };
+  const lignes = Object.entries(champs)
+    .filter(([, v]) => v !== "")
+    .map(([k, v], i) => `${i === 0 ? "  - " : "    "}${k}: ${v}`);
+  return lignes.join("\n");
+}
 
 function source(fm: Fm = {}, blocks: BlockName[] = HEBDO_BLOCKS): string {
   const lines = [
@@ -37,6 +57,7 @@ function source(fm: Fm = {}, blocks: BlockName[] = HEBDO_BLOCKS): string {
     `trendRefs: ${JSON.stringify(fm.trendRefs ?? [])}`,
     `instrumentRefs: ${JSON.stringify(fm.instrumentRefs ?? [])}`,
     fm.sources ?? "sources: {}",
+    ...(fm.guets ? ["guets:", fm.guets] : []),
   ];
   const body = blocks.map((b) => `<${b}>\n\nTexte du bloc.\n\n</${b}>`).join("\n\n");
   return `---\n${lines.join("\n")}\n---\n\n${body}\n`;
@@ -369,5 +390,116 @@ describe("le corpus réel", () => {
 
     const trends = new Set(retro.flatMap((p) => p.meta.trendRefs));
     expect(trends.size).toBeGreaterThanOrEqual(2);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Les guets — bloc 5 structuré
+// ---------------------------------------------------------------------------
+
+describe("guets — la bascule de régime", () => {
+  it("une note antérieure à la bascule reste valide sans guets : son bloc 5 est en prose", () => {
+    expect(() => parseNote("2026-S33", source())).not.toThrow();
+  });
+
+  it("une note à partir de la bascule sans guets est refusée", () => {
+    expect(() => parseNote("2026-S36", source())).toThrow(/doit être structuré à partir de 2026-S36/);
+  });
+
+  it("une note à partir de la bascule avec guets passe", () => {
+    expect(() => parseNote("2026-S36", source({ guets: guetYaml() }))).not.toThrow();
+  });
+
+  it("la bascule se lit sur la semaine ISO du slug, pas sur la date du frontmatter", () => {
+    // Même date, deux semaines de part et d'autre de la borne : seule la seconde est exigeante.
+    expect(() => parseNote("2026-S35", source())).not.toThrow();
+    expect(() => parseNote("2026-S37", source())).toThrow(/doit être structuré/);
+  });
+});
+
+describe("guets — le plafond de trois", () => {
+  it("trois guets passent", () => {
+    const guets = [guetYaml({ id: "g1" }), guetYaml({ id: "g2" }), guetYaml({ id: "g3" })].join("\n");
+    expect(() => parseNote("2026-S36", source({ guets }))).not.toThrow();
+  });
+
+  it("quatre guets sont refusés — un dispositif qui surveille quinze choses ne surveille rien", () => {
+    const guets = [
+      guetYaml({ id: "g1" }),
+      guetYaml({ id: "g2" }),
+      guetYaml({ id: "g3" }),
+      guetYaml({ id: "g4" }),
+    ].join("\n");
+    expect(() => parseNote("2026-S36", source({ guets }))).toThrow(/frontmatter invalide/);
+  });
+
+  it("deux guets de même identifiant sont refusés", () => {
+    const guets = [guetYaml({ id: "g1" }), guetYaml({ id: "g1" })].join("\n");
+    expect(() => parseNote("2026-S36", source({ guets }))).toThrow(/« g1 » présent deux fois/);
+  });
+});
+
+describe("guets — un guet sans échéance ne peut pas expirer", () => {
+  it("« si Ormuz rouvre » n'a pas de date : echeance nulle est acceptée", () => {
+    const guets = guetYaml({
+      libelle: "Réouverture du détroit d'Ormuz",
+      attendu: "Le détroit reste contraint",
+      echeance: "null",
+    });
+    const note = parseNote("2026-S36", source({ guets }));
+    expect(note.meta.guets[0].echeance).toBeNull();
+    expect(note.meta.guets[0].statut).toBe("ouvert");
+  });
+
+  it("le déclarer expiré est refusé, et le message dit quoi faire à la place", () => {
+    const guets = guetYaml({ echeance: "null", statut: "expire" });
+    expect(() => parseNote("2026-S36", source({ guets }))).toThrow(
+      /sans échéance, un guet ne peut pas expirer/,
+    );
+  });
+
+  it("avec une échéance, le statut expiré est admis", () => {
+    const guets = guetYaml({ statut: "expire" });
+    expect(() => parseNote("2026-S36", source({ guets }))).not.toThrow();
+  });
+});
+
+describe("guets — cohérence de la résolution", () => {
+  it("un guet confirmé sans date de résolution est refusé", () => {
+    const guets = guetYaml({ statut: "confirme" });
+    expect(() => parseNote("2026-S36", source({ guets }))).toThrow(/sans date de résolution/);
+  });
+
+  it("un guet ouvert qui porte une résolution est refusé", () => {
+    const guets = guetYaml({ resoluLe: "'2026-09-16'" });
+    expect(() => parseNote("2026-S36", source({ guets }))).toThrow(
+      /porte une résolution alors que son statut est « ouvert »/,
+    );
+  });
+
+  it("un guet confirmé et daté passe", () => {
+    const guets = guetYaml({ statut: "confirme", resoluPar: "item-42", resoluLe: "'2026-09-16'" });
+    expect(() => parseNote("2026-S36", source({ guets }))).not.toThrow();
+  });
+});
+
+describe("guets — ce que le code pose lui-même", () => {
+  it("noteSlug vient du nom de fichier, jamais du frontmatter", () => {
+    const note = parseNote("2026-S36", source({ guets: guetYaml() }));
+    expect(note.meta.guets[0].noteSlug).toBe("2026-S36");
+  });
+
+  it("un guet neuf est ouvert par défaut, sans résolution", () => {
+    const note = parseNote("2026-S36", source({ guets: guetYaml() }));
+    expect(note.meta.guets[0]).toMatchObject({
+      statut: "ouvert",
+      resoluPar: null,
+      resoluLe: null,
+      sourceAttendue: [],
+    });
+  });
+
+  it("une note sans guets en porte un tableau vide, jamais undefined", () => {
+    expect(parseNote("2026-S33", source()).meta.guets).toEqual([]);
   });
 });

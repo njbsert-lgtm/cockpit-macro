@@ -117,6 +117,36 @@ export type NoteKind = "hebdo" | "speciale";
  * forme de composants nommés, et leur présence est validée par `lib/notes.ts` selon le
  * type de note. `isoWeek` et `parentWeek` sont dérivés du slug, pas saisis à la main.
  */
+/**
+ * Le statut d'un guet. `expire` ne s'atteint que par le temps, jamais par un jugement ;
+ * `sans-objet` est au contraire une clôture délibérée — la question ne se pose plus.
+ */
+export type GuetStatut = "ouvert" | "confirme" | "infirme" | "expire" | "sans-objet";
+
+/**
+ * Un élément du bloc « ce que je surveille », pré-inscrit plutôt que rédigé en prose.
+ *
+ * C'est ce qui permet au second moteur d'alertes de confronter un événement à une attente
+ * écrite d'avance, au lieu d'attendre qu'un prix bouge assez pour franchir un seuil.
+ *
+ * `echeance` peut être nulle : « si Ormuz rouvre » n'a pas de date. Un guet sans échéance
+ * **n'expire jamais** — il reste ouvert jusqu'à résolution ou clôture explicite.
+ */
+export type Guet = {
+  id: string;
+  noteSlug: string; // la note qui l'a posé
+  driverId: string; // obligatoire — un guet sans driver n'a pas de sens
+  libelle: string;
+  attendu: string; // ce qu'on anticipe, en clair
+  confirmeSi: string; // signal qui valide la branche dominante
+  infirmeSi: string; // signal qui la fait basculer
+  echeance: string | null; // date connue, ou null si l'événement est imprévisible
+  sourceAttendue: string[]; // 'EDGAR:NVDA', 'FED:communique', 'EIA:STEO'
+  statut: GuetStatut;
+  resoluPar: string | null; // id de l'item de veille qui l'a résolu
+  resoluLe: string | null;
+};
+
 export type Note = {
   slug: string; // '2026-S33' ou '2026-S33-E1'
   kind: NoteKind;
@@ -147,6 +177,11 @@ export type Note = {
    * la note ne peut pas en porter, sa source ne s'afficherait nulle part.
    */
   sources: Partial<Record<string, Array<{ label: string; url: string }>>>;
+  /**
+   * Le bloc « ce que je surveille », structuré. Vide pour les notes antérieures à
+   * `GUETS_REQUIS_A_PARTIR_DE`, dont le bloc 5 est en prose — voir `lib/note-blocks.ts`.
+   */
+  guets: Guet[];
 };
 
 /**

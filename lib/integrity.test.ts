@@ -52,6 +52,7 @@ function note(over: Partial<Note> = {}): Note {
     veilleItemRefs: [],
     channels: [],
     sources: {},
+    guets: [],
     ...over,
   };
 }

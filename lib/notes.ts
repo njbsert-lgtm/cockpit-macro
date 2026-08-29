@@ -3,9 +3,15 @@ import path from "node:path";
 import matter from "gray-matter";
 import { z } from "zod";
 import type { Note, NoteKind, VeilleChannel, Zone } from "./types";
-import { BLOCK_NAMES, BLOCK_TITLES, REQUIRED_BLOCKS, type BlockName } from "./note-blocks";
+import {
+  BLOCK_NAMES,
+  BLOCK_TITLES,
+  GUETS_REQUIS_A_PARTIR_DE,
+  REQUIRED_BLOCKS,
+  type BlockName,
+} from "./note-blocks";
 
-export { BLOCK_NAMES, BLOCK_TITLES, REQUIRED_BLOCKS };
+export { BLOCK_NAMES, BLOCK_TITLES, GUETS_REQUIS_A_PARTIR_DE, REQUIRED_BLOCKS };
 export type { BlockName };
 
 export const NOTES_DIR = path.join(process.cwd(), "content", "notes");
@@ -86,6 +92,29 @@ const isoDate = z
   .string()
   .regex(/^\d{4}-\d{2}-\d{2}$/, "date attendue au format AAAA-MM-JJ");
 
+/**
+ * Un guet du bloc 5. `echeance` est nullable à dessein : « si Ormuz rouvre » n'a pas de date,
+ * et un guet sans échéance n'expire jamais (voir `lib/guets.ts`).
+ *
+ * `statut` a une valeur par défaut : à la saisie, un guet est ouvert. Les autres statuts sont
+ * atteints par le temps ou par une résolution, jamais déclarés à la création.
+ */
+const guetSchema = z.object({
+  id: z.string().min(1),
+  driverId: z.string().min(1),
+  libelle: z.string().min(1),
+  attendu: z.string().min(1),
+  confirmeSi: z.string().min(1),
+  infirmeSi: z.string().min(1),
+  echeance: isoDate.nullable().default(null),
+  sourceAttendue: z.array(z.string().min(1)).default([]),
+  statut: z
+    .enum(["ouvert", "confirme", "infirme", "expire", "sans-objet"])
+    .default("ouvert"),
+  resoluPar: z.string().min(1).nullable().default(null),
+  resoluLe: isoDate.nullable().default(null),
+});
+
 const frontmatterSchema = z.object({
   kind: z.enum(["hebdo", "speciale"]),
   date: isoDate,
@@ -109,6 +138,9 @@ const frontmatterSchema = z.object({
       z.array(z.object({ label: z.string().min(1), url: z.string().url() })).min(1),
     )
     .default({}),
+  // « Trois guets maximum par note. Un dispositif qui surveille quinze choses ne surveille
+  // rien. » Le plafond est ici une contrainte de données, pas une consigne de rédaction.
+  guets: z.array(guetSchema).max(3).default([]),
 });
 
 // ---------------------------------------------------------------------------
@@ -275,6 +307,49 @@ export function parseNote(slug: string, source: string): ParsedNote {
     }
   }
 
+  // Le régime des guets. Avant la bascule, le bloc 5 est de la prose et le reste ; après,
+  // la structure est exigée — sans cette borne le dispositif pourrait s'éteindre en silence.
+  if (fm.guets.length === 0 && isoWeek >= GUETS_REQUIS_A_PARTIR_DE) {
+    throw new NoteValidationError(
+      slug,
+      `le bloc « ce que je surveille » doit être structuré à partir de ${GUETS_REQUIS_A_PARTIR_DE} : ` +
+        "déclarer « guets » dans le frontmatter plutôt que de la prose",
+    );
+  }
+
+  const guetIds = new Set<string>();
+  for (const guet of fm.guets) {
+    if (guetIds.has(guet.id)) {
+      throw new NoteValidationError(slug, `guets : identifiant « ${guet.id} » présent deux fois`);
+    }
+    guetIds.add(guet.id);
+
+    // Un guet sans échéance ne peut pas être expiré : il n'y a pas de date à dépasser.
+    // L'incohérence est refusée ici plutôt que corrigée en silence au calcul.
+    if (guet.echeance === null && guet.statut === "expire") {
+      throw new NoteValidationError(
+        slug,
+        `guet « ${guet.id} » : sans échéance, un guet ne peut pas expirer — le clore en ` +
+          "« sans-objet » si la question ne se pose plus",
+      );
+    }
+
+    // Un guet résolu doit dire par quoi, et un guet non résolu ne doit pas prétendre l'être.
+    const resolu = guet.statut === "confirme" || guet.statut === "infirme";
+    if (resolu && !guet.resoluLe) {
+      throw new NoteValidationError(
+        slug,
+        `guet « ${guet.id} » : statut « ${guet.statut} » sans date de résolution`,
+      );
+    }
+    if (!resolu && (guet.resoluPar || guet.resoluLe)) {
+      throw new NoteValidationError(
+        slug,
+        `guet « ${guet.id} » : porte une résolution alors que son statut est « ${guet.statut} »`,
+      );
+    }
+  }
+
   const canonical = CANONICAL_ORDER[fm.kind].filter((b) => seen.has(b));
   if (blocks.join(",") !== canonical.join(",")) {
     throw new NoteValidationError(
@@ -301,6 +376,9 @@ export function parseNote(slug: string, source: string): ParsedNote {
       veilleItemRefs: fm.veilleItemRefs,
       channels: fm.channels,
       sources: fm.sources,
+      // `noteSlug` est posé ici plutôt que saisi : une valeur écrite deux fois finit par diverger,
+      // comme pour `isoWeek` et `parentWeek`.
+      guets: fm.guets.map((g) => ({ ...g, noteSlug: slug })),
     },
     body: file.content,
     blocks,
