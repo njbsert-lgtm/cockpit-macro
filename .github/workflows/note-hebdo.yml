@@ -1,0 +1,111 @@
+# Rédaction hebdomadaire — produit un brouillon, ne publie jamais.
+#
+# Le modèle rédige, il ne publie pas. Ce workflow commite un fichier portant
+# `status: brouillon` dans `content/brouillons/`, hors du corpus validé. Le passage à
+# `publiee` est un acte humain, depuis `/redaction`.
+#
+# ⚠︎ `schedule` est délibérément absent pour l'instant. Le cahier fixe le samedi matin
+# (`0 8 * * 6`, après la collecte de 4 h UTC qui rapatrie la clôture de vendredi), mais on ne
+# l'active qu'après deux dry-runs jugés corrects à l'œil — on ne laisse pas un pipeline
+# commiter tout seul avant d'avoir lu ce qu'il écrit.
+
+name: Note hebdomadaire
+
+on:
+  workflow_dispatch:
+    inputs:
+      dry-run:
+        description: "N'écrire aucun fichier — construire, appeler le modèle, contrôler, afficher"
+        type: boolean
+        required: true
+        default: true
+      semaine:
+        description: "Rejouer une semaine passée, ex. 2026-S33 (vide = la semaine en cours)"
+        type: string
+        required: false
+        default: ""
+
+# Un run en écriture ne doit jamais être interrompu par un autre : un commit à moitié fait
+# laisserait un brouillon sans son rapport de chiffres.
+concurrency:
+  group: note-hebdo
+  cancel-in-progress: false
+
+# Le seul endroit du dépôt à porter ce privilège. La passe 2 de veille, qui tourne tous les
+# jours, reste en lecture seule.
+permissions:
+  contents: write
+
+jobs:
+  rediger:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Rédiger le brouillon
+        id: rediger
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          DRY_RUN: ${{ inputs.dry-run }}
+          SEMAINE: ${{ inputs.semaine }}
+        # `set +e` parce que GitHub lance ce script avec `bash -e` : sans ça, un échec couperait
+        # avant d'avoir refermé le bloc du résumé. `pipefail` pour que le code de sortie survive
+        # au `tee` — un run rouge doit rester rouge.
+        run: |
+          set +e -o pipefail
+          if [ -z "$ANTHROPIC_API_KEY" ]; then
+            echo "ANTHROPIC_API_KEY absente des secrets du dépôt — étape sautée." | tee -a "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+
+          ARGS=""
+          if [ "$DRY_RUN" = "true" ]; then ARGS="$ARGS --dry-run"; fi
+          if [ -n "$SEMAINE" ]; then ARGS="$ARGS --week=$SEMAINE"; fi
+
+          {
+            echo '## Note hebdomadaire'
+            echo '```'
+          } | tee -a "$GITHUB_STEP_SUMMARY"
+          npm run note:draft --silent -- $ARGS 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
+          code=$?
+          echo '```' | tee -a "$GITHUB_STEP_SUMMARY"
+          exit $code
+
+      - name: Vérifier que le dépôt compile encore
+        # Ceinture ultime avant le commit : ce qui est sur le disque doit typer et builder.
+        # Un brouillon peut être refusé par le contrôle des chiffres sans être malformé — mais
+        # il ne doit jamais empêcher le site de se construire.
+        if: ${{ inputs.dry-run == false }}
+        run: |
+          npx tsc --noEmit
+          npm run build
+
+      - name: Publier le brouillon
+        if: ${{ inputs.dry-run == false }}
+        run: |
+          set -e
+          if [ -z "$(git status --porcelain content/brouillons/)" ]; then
+            echo "Aucun brouillon produit — rien à commiter." | tee -a "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          git config user.name "Marguerite"
+          git config user.email "noreply@users.noreply.github.com"
+          git add content/brouillons/
+          git commit -m "Brouillon de note hebdomadaire
+
+          Rédigé automatiquement. Porte status: brouillon — non publié, non rendu
+          dans le fil ni dans l'étagère. La publication est un acte humain,
+          depuis /redaction."
+          # Jamais --force : un brouillon ne vaut pas d'écraser un historique.
+          git push origin HEAD
