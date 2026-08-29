@@ -147,6 +147,18 @@ export type Guet = {
   resoluLe: string | null;
 };
 
+/**
+ * Un rendez-vous daté à l'avance, rattaché au driver qu'il informe. Sert deux fois : avant,
+ * pour ne pas poser un guet sur un événement qu'on a oublié ; après, pour distinguer une
+ * source qui s'est tue d'un monde calme.
+ */
+export type Echeance = {
+  date: string;
+  driverId: string;
+  libelle: string;
+  source: string; // 'FED:communique', 'EIA:STEO' — même vocabulaire que Guet.sourceAttendue
+};
+
 export type Note = {
   slug: string; // '2026-S33' ou '2026-S33-E1'
   kind: NoteKind;
