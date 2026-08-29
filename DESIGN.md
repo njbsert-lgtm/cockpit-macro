@@ -184,6 +184,85 @@ Compteur de validation à droite du titre : `5/5` sur fond vert à 11 %, sinon s
 Rayon `--rb`, padding 10px 16px, 13px poids 500.
 Secondaire : fond `--page`, bordure `--trait`. Primaire : fond et bordure `--encre`, texte blanc.
 
+### Ligne de guet
+
+Reprend exactement la **ligne de tendance** : grille `1fr auto`, padding 14px 16px.
+À gauche le `libelle` en 14.5px, puis l'`attendu` en 12px `--tenu`. À droite la **pastille
+de statut** — fond à 11 % d'opacité, texte à la couleur pleine — et sous elle l'échéance en
+11px `--tenu`, ou « sans échéance » quand `echeance` vaut `null`.
+
+`confirmeSi` et `infirmeSi` vivent dans un dépliant (`aria-expanded`, `aria-controls`) sur
+fond `--repos`, motif de la liste d'archive : ce sont les critères de résolution, on les
+consulte au moment de trancher, pas à chaque lecture.
+
+Couleurs de statut — même règle que le statut de tendance, **couleurs de canal uniquement**,
+le vert et le rouge restant réservés aux chiffres. Le libellé est toujours écrit : la couleur
+ne porte jamais l'information seule.
+
+| Statut | Classe | Lecture |
+|---|---|---|
+| ouvert | `bg-k-taux/11 text-k-taux` | en cours |
+| confirmé | `bg-k-pos/11 text-k-pos` | établi |
+| infirmé | `bg-k-reac/11 text-k-reac` | bascule — un événement analytique |
+| expiré | `bg-k-choc/11 text-k-choc` | discipline rompue, même ocre que la pastille non validée |
+| sans objet | `bg-tenu/11 text-tenu` | clos délibérément |
+
+Un guet remonté de la note précédente porte sa **date d'origine** en 11px `--tenu` devant le
+libellé. C'est ce qui rend visible qu'une question traîne depuis trois semaines.
+
+### Rappel de calendrier
+
+**En-tête de section** — titre 17px, compteur discret à droite (« 3 à venir ») — au-dessus
+d'une liste à la forme du fil de la semaine : date en 10.5px `--tenu`, libellé, puis le driver
+concerné en pastille. Panneau `--repos`.
+
+N'apparaît que dans le portail, au-dessus du bloc 5. Ce n'est pas un contenu de lecture :
+c'est un rappel au moment d'écrire, pour qu'on ne pose pas un guet sur un événement oublié.
+
+### Badge d'authorship
+
+L'**étiquette** de la carte de driver : fond `--repos`, rayon `--rp`, capitales 9.5px poids
+600, `letter-spacing:.09em`. Placé à droite du titre de bloc.
+
+| Valeur | Libellé | Couleur de texte |
+|---|---|---|
+| `ia` | IA | `--k-choc` |
+| `ia-relue` | IA relue | `--doux` |
+| `ia-corrigee` | IA corrigée | `--doux` |
+| `humaine` | Humaine | `--encre` |
+
+`ia` est le seul état qui appelle une action — un bloc jamais ouvert — et le seul qui sorte du
+gris. Sur la note publiée, tous passent en `--tenu` : le cahier demande un affichage discret,
+et le badge y est une mention de provenance, pas une consigne.
+
+### Portail de rédaction
+
+Reprend le **motif de validation de la liste d'archive**, que cette charte invite déjà à
+réutiliser pour les vrais blocs.
+
+- **Compteur de validation** en tête : `4/5` sur fond vert à 11 % quand complet, ocre sinon.
+  C'est l'exception chromatique que le motif d'archive porte déjà ; elle n'est pas étendue
+  ailleurs.
+- **Rapport des chiffres en premier**, panneau `--repos`, une ligne par nombre : la valeur, sa
+  source, son verdict. Pastille ronde de 17px, pleine si conforme, en pointillés `--k-choc`
+  sinon.
+- **Chaque bloc** est une entrée dépliante (`aria-expanded`, `aria-controls`) : pastille de
+  validation, titre, badge d'authorship.
+- **Propositions et guets** : boutons à 44px, secondaire « Refuser », primaire « Accepter »,
+  plus « Corriger » sur un guet, qui ouvre les champs en place. Aucun n'est coché par défaut,
+  et **il n'existe aucun bouton de validation globale** — la validation doit coûter quelque
+  chose.
+- **Bouton de publication** primaire, désactivé tant qu'une condition manque, avec la raison
+  écrite dessous. Jamais un bouton mort sans explication : c'est l'état 3 du cahier, dire quoi
+  faire plutôt que constater.
+
+Largeur : colonne de 520px sur mobile, plus large sur desktop — même dérogation que l'étagère
+de Notes et le mode comparaison de Macro. C'est un écran de travail, plus dense qu'un écran de
+lecture.
+
+Entrée : un bouton compteur discret sur l'accueil de Notes quand un brouillon existe, comme
+celui de `/triage`. Aucune notification.
+
 ### Barre d'onglets
 
 `position:fixed` en bas, fond blanc à 95 % avec `blur(16px)`, bordure haute `--trait`,
