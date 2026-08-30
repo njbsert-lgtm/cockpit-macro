@@ -27,6 +27,7 @@ function note(over: Partial<Note> = {}): Note {
     guets: [],
     status: "publiee",
     publishedAt: null,
+    authorship: {},
     ...over,
   };
 }

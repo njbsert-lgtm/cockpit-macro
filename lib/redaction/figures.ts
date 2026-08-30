@@ -82,28 +82,18 @@ function valeursAdmises(paquet: ContextePaquet): Array<{ valeur: number; source:
 }
 
 /**
- * Confronte chaque nombre des blocs rédigés au paquet de contexte.
- *
- * `keyIndicators` et `regimeStatement` sont contrôlés au même titre que les blocs : un chiffre
- * faux en en-tête de note est au moins aussi visible qu'un chiffre faux dans le corps.
+ * Le cœur du contrôle, indépendant de la forme de `Brouillon` : confronte chaque nombre d'une
+ * liste `[étiquette, texte]` au paquet. Réutilisé tel quel par `lib/redaction/publication.ts`
+ * pour re-contrôler après une édition humaine dans le portail — la même règle d'extraction et
+ * de tolérance doit s'appliquer aux deux moments, sans quoi un chiffre jugé correct à la
+ * rédaction pourrait être jugé faux à la publication pour une raison purement technique.
  */
-export function controlerChiffres(brouillon: Brouillon, paquet: ContextePaquet): RapportChiffres {
+export function extraireVerdicts(
+  aControler: Array<[string, string]>,
+  paquet: ContextePaquet,
+): VerdictChiffre[] {
   const admises = valeursAdmises(paquet);
   const verdicts: VerdictChiffre[] = [];
-
-  const aControler: Array<[string, string]> = [
-    ["regimeStatement", brouillon.regimeStatement],
-    ...brouillon.keyIndicators.map(
-      (k): [string, string] => [`keyIndicators/${k.label}`, k.value],
-    ),
-    ...Object.entries(brouillon.blocs),
-    ...brouillon.scenarioRevisions.flatMap((r) =>
-      r.branches.flatMap((b): Array<[string, string]> => [
-        [`scenarioRevisions/${r.driverId}/${b.branchId}/why`, b.why],
-        [`scenarioRevisions/${r.driverId}/${b.branchId}/thesis`, b.thesis],
-      ]),
-    ),
-  ];
 
   for (const [bloc, texte] of aControler) {
     for (const brut of texte.match(NOMBRE) ?? []) {
@@ -125,6 +115,31 @@ export function controlerChiffres(brouillon: Brouillon, paquet: ContextePaquet):
     }
   }
 
+  return verdicts;
+}
+
+/**
+ * Confronte chaque nombre des blocs rédigés au paquet de contexte.
+ *
+ * `keyIndicators` et `regimeStatement` sont contrôlés au même titre que les blocs : un chiffre
+ * faux en en-tête de note est au moins aussi visible qu'un chiffre faux dans le corps.
+ */
+export function controlerChiffres(brouillon: Brouillon, paquet: ContextePaquet): RapportChiffres {
+  const aControler: Array<[string, string]> = [
+    ["regimeStatement", brouillon.regimeStatement],
+    ...brouillon.keyIndicators.map(
+      (k): [string, string] => [`keyIndicators/${k.label}`, k.value],
+    ),
+    ...Object.entries(brouillon.blocs),
+    ...brouillon.scenarioRevisions.flatMap((r) =>
+      r.branches.flatMap((b): Array<[string, string]> => [
+        [`scenarioRevisions/${r.driverId}/${b.branchId}/why`, b.why],
+        [`scenarioRevisions/${r.driverId}/${b.branchId}/thesis`, b.thesis],
+      ]),
+    ),
+  ];
+
+  const verdicts = extraireVerdicts(aControler, paquet);
   return { verdicts, bloque: verdicts.some((v) => v.verdict === "introuvable") };
 }
 

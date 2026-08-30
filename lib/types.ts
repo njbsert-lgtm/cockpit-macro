@@ -159,6 +159,13 @@ export type Echeance = {
   source: string; // 'FED:communique', 'EIA:STEO' — même vocabulaire que Guet.sourceAttendue
 };
 
+/**
+ * Qui a écrit un bloc — affiché discrètement sur la note publiée, pour que le lecteur (soi-même
+ * dans six mois) sache qui a écrit quoi. `ia` : brouillon jamais touché. `ia-relue` : ouvert et
+ * validé sans modification. `ia-corrigee` : modifié. `humaine` : écrit de bout en bout.
+ */
+export type Authorship = "ia" | "ia-relue" | "ia-corrigee" | "humaine";
+
 export type Note = {
   slug: string; // '2026-S33' ou '2026-S33-E1'
   kind: NoteKind;
@@ -201,6 +208,12 @@ export type Note = {
    * `GUETS_REQUIS_A_PARTIR_DE`, dont le bloc 5 est en prose — voir `lib/note-blocks.ts`.
    */
   guets: Guet[];
+  /**
+   * Qui a écrit chaque bloc, par nom de bloc — même forme que `sources`. Absent (`{}`) pour
+   * une note écrite entièrement à la main, comme les 13 du corpus de développement : l'absence
+   * s'y lit comme `humaine`, pas comme une donnée manquante.
+   */
+  authorship: Partial<Record<string, Authorship>>;
 };
 
 /**

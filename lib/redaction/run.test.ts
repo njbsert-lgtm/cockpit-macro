@@ -290,23 +290,24 @@ describe("executerRun — persistance du paquet de contexte", () => {
       dryRun: true,
       sourcesExistantes: CORPUS,
       graphe: GRAPHE,
-      persisterContexte: persister,
+      persisterEtat: persister,
     });
     expect(persister).not.toHaveBeenCalled();
   });
 
-  it("persiste le paquet exact quand le brouillon est écrit", async () => {
+  it("persiste le paquet et le brouillon proposé exacts quand le brouillon est écrit", async () => {
     const dossier = mkdtempSync(path.join(tmpdir(), "brouillons-"));
     const p = paquet();
+    const b = brouillon();
     const persister = vi.fn(async () => ({ ok: true }));
-    const r = await executerRun(p, callerRendant(brouillon()), {
+    const r = await executerRun(p, callerRendant(b), {
       dryRun: false,
       sourcesExistantes: CORPUS,
       graphe: GRAPHE,
-      persisterContexte: persister,
+      persisterEtat: persister,
       dossierBrouillons: dossier,
     });
-    expect(persister).toHaveBeenCalledWith(r.slug, p);
+    expect(persister).toHaveBeenCalledWith(r.slug, p, b);
   });
 
   it("un échec de persistance n'empêche pas le run, et se lit dans les notes", async () => {
@@ -316,7 +317,7 @@ describe("executerRun — persistance du paquet de contexte", () => {
       dryRun: false,
       sourcesExistantes: CORPUS,
       graphe: GRAPHE,
-      persisterContexte: persister,
+      persisterEtat: persister,
       dossierBrouillons: dossier,
     });
     expect(r.ecrit).not.toBeNull();

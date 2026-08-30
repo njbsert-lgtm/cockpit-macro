@@ -166,6 +166,13 @@ create table if not exists brouillons_contexte (
   created_at timestamptz not null default now()
 );
 
+-- La sortie structurée complète du modèle (`Brouillon`), à côté du paquet qui l'a produite.
+-- `rendreMdx` n'écrit dans le fichier que les guets et les blocs rédigés — les révisions de
+-- scénario, les changements de statut de tendance et le driver candidat qu'il propose n'ont
+-- sinon aucune trace au-delà de la durée du run. Sans cette colonne, le portail n'aurait rien
+-- à présenter pour « accepter ou refuser explicitement » ces propositions.
+alter table brouillons_contexte add column if not exists brouillon jsonb;
+
 -- Une ligne par décision, pas un objet unique par brouillon : `kind` + `ref` identifient ce
 -- qui est tranché (un bloc, un guet, une révision de scénario, un changement de statut de
 -- tendance), `decision` porte sa forme propre — authorship et texte pour un bloc, action et

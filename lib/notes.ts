@@ -155,6 +155,13 @@ const frontmatterSchema = z.object({
   // « Trois guets maximum par note. Un dispositif qui surveille quinze choses ne surveille
   // rien. » Le plafond est ici une contrainte de données, pas une consigne de rédaction.
   guets: z.array(guetSchema).max(3).default([]),
+  // Qui a écrit chaque bloc, par nom — même forme et même validation de présence que `sources`.
+  // Aucune règle « pas de ia restant » ici : une telle règle ne vaudrait que pour une note
+  // publiée, et ce schéma valide toute note, brouillon compris. C'est
+  // `lib/redaction/publication.ts` qui la porte, au moment précis où elle s'applique.
+  authorship: z
+    .record(z.string(), z.enum(["ia", "ia-relue", "ia-corrigee", "humaine"]))
+    .default({}),
 });
 
 // ---------------------------------------------------------------------------
@@ -321,6 +328,23 @@ export function parseNote(slug: string, source: string): ParsedNote {
     }
   }
 
+  // Même garde pour l'authorship : indiquer qui a écrit un bloc que la note ne porte pas
+  // n'a pas de sens et ne s'afficherait nulle part non plus.
+  for (const block of Object.keys(fm.authorship)) {
+    if (!(BLOCK_NAMES as readonly string[]).includes(block)) {
+      throw new NoteValidationError(
+        slug,
+        `authorship : bloc inconnu « ${block} ». Blocs valides : ${BLOCK_NAMES.join(", ")}`,
+      );
+    }
+    if (!seen.has(block as BlockName)) {
+      throw new NoteValidationError(
+        slug,
+        `authorship : le bloc « ${block} » n'existe pas dans cette note`,
+      );
+    }
+  }
+
   // Le régime des guets. Avant la bascule, le bloc 5 est de la prose et le reste ; après,
   // la structure est exigée — sans cette borne le dispositif pourrait s'éteindre en silence.
   if (fm.guets.length === 0 && isoWeek >= GUETS_REQUIS_A_PARTIR_DE) {
@@ -392,6 +416,7 @@ export function parseNote(slug: string, source: string): ParsedNote {
       sources: fm.sources,
       status: fm.status,
       publishedAt: fm.publishedAt,
+      authorship: fm.authorship,
       // Un guet neuf appartient à la note qui le déclare ; un guet remonté garde la sienne,
       // sans quoi son ancienneté disparaîtrait au premier report.
       guets: fm.guets.map((g) => ({ ...g, noteSlug: g.noteSlug ?? slug })),

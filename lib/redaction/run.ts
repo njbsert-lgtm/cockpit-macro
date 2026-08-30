@@ -7,7 +7,7 @@ import { SYSTEM_PROMPT, construirePromptUtilisateur } from "./prompt";
 import { blocsARediger, rendreMdx, type BrouillonRendu } from "./mdx";
 import { controlerChiffres, rendreRapport, type RapportChiffres } from "./figures";
 import { validerBrouillon, type GrapheInjecte } from "./validate";
-import { sauvegarderContexte } from "./persistence";
+import { sauvegarderEtatBrouillon } from "./persistence";
 
 /** Les brouillons vivent hors du corpus validé — voir le cahier, § Le cycle hebdomadaire. */
 export const BROUILLONS_DIR = path.join(process.cwd(), "content", "brouillons");
@@ -40,11 +40,11 @@ export type OptionsRun = {
   /** Le reste du graphe de contenu, pour la même raison. */
   graphe?: GrapheInjecte;
   /**
-   * La persistance du paquet en base, injectable pour les tests — même rôle que le `Fetcher`
+   * La persistance de l'état en base, injectable pour les tests — même rôle que le `Fetcher`
    * de `lib/ingest.ts`. Best-effort dans l'implémentation par défaut : Supabase absent ne doit
    * jamais faire échouer un run.
    */
-  persisterContexte?: typeof sauvegarderContexte;
+  persisterEtat?: typeof sauvegarderEtatBrouillon;
   /** Le dossier où écrire le brouillon — injectable pour ne pas polluer le dépôt en test. */
   dossierBrouillons?: string;
 };
@@ -125,12 +125,12 @@ export async function executerRun(
       : ecrireBrouillon(rendu.slug, rendu.mdx, rapportChiffres, options.dossierBrouillons);
 
   if (ecrit) {
-    const persister = options.persisterContexte ?? sauvegarderContexte;
-    const persistance = await persister(rendu.slug, paquet);
+    const persister = options.persisterEtat ?? sauvegarderEtatBrouillon;
+    const persistance = await persister(rendu.slug, paquet, reponse.value);
     if (!persistance.ok) {
       notes.push(
-        `Paquet de contexte non persisté (${persistance.erreur}) — le re-contrôle des ` +
-          "chiffres après édition dans le portail sera indisponible pour cette note.",
+        `État du brouillon non persisté (${persistance.erreur}) — le re-contrôle des chiffres ` +
+          "et les propositions seront indisponibles dans le portail pour cette note.",
       );
     }
   }
