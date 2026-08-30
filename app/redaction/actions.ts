@@ -9,13 +9,16 @@ import { BROUILLONS_DIR } from "@/lib/redaction/run";
 import { sauvegarderDecision } from "@/lib/redaction/decisions-store";
 import type { DecisionGuet } from "@/lib/redaction/publication";
 import type { Guet } from "@/lib/types";
+import { chargerPortail } from "@/lib/redaction/portail";
+import { etatPublication } from "@/lib/redaction/etat-publication";
+import { declencherPublication } from "@/lib/redaction/github-dispatch";
 
 /**
- * Les quatre gestes du portail, en Server Actions — même forme que `app/triage/actions.ts` :
- * clé de service, revalidation après écriture, erreurs explicites plutôt que des échecs
- * silencieux. Aucune ne publie : elles ne font qu'enregistrer une décision unitaire dans
- * `redaction_decisions`. La publication elle-même est un geste séparé, délibérément plus
- * coûteux — voir le portail lui-même.
+ * Les gestes du portail, en Server Actions — même forme que `app/triage/actions.ts` : clé de
+ * service, revalidation après écriture, erreurs explicites plutôt que des échecs silencieux.
+ * Les quatre premières n'enregistrent qu'une décision unitaire dans `redaction_decisions` ;
+ * `publierBrouillon` est seule à déclencher la publication, et délibérément plus coûteuse —
+ * voir le portail lui-même.
  */
 
 function revalidateApresDecision(slug: string): void {
@@ -124,5 +127,34 @@ export async function trancherTendance(
   formData: FormData,
 ): Promise<void> {
   await sauvegarderDecision(slug, "tendance", trendId, { action: actionProposition(formData) });
+  revalidateApresDecision(slug);
+}
+
+/**
+ * Déclenche la publication — jamais ne l'exécute. Revérifie les conditions côté serveur avant
+ * d'appeler GitHub : le bouton du portail est désactivé tant qu'elles manquent, mais un geste
+ * qui commite ne doit jamais dépendre uniquement d'un état d'interface qui aurait pu dériver
+ * (deux onglets ouverts, une décision prise entre le rendu de la page et le clic).
+ *
+ * Le workflow déclenché recharge les décisions depuis Supabase et refait le même calcul —
+ * c'est lui l'autorité finale, cette revérification n'est qu'un premier filtre qui évite un
+ * aller-retour GitHub inutile pour un brouillon manifestement pas prêt.
+ */
+export async function publierBrouillon(slug: string): Promise<void> {
+  const etat = await chargerPortail(slug);
+  if (!etat) throw new Error(`aucun brouillon chargeable pour « ${slug} »`);
+
+  const publication = etatPublication(etat.note, etat.brouillonPropose, etat.decisions, etat.paquet);
+  if (!publication.pret) {
+    throw new Error(
+      publication.rapportChiffres.bloque
+        ? "un chiffre reste introuvable dans un bloc non relu"
+        : (publication.manquantes[0]?.message ?? "des conditions de publication manquent"),
+    );
+  }
+
+  const resultat = await declencherPublication(slug);
+  if (!resultat.ok) throw new Error(resultat.erreur ?? "échec du déclenchement de la publication");
+
   revalidateApresDecision(slug);
 }

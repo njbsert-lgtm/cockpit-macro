@@ -1,0 +1,71 @@
+# Publication d'une note — déclenchée par le portail /redaction, jamais par le calendrier.
+#
+# Le portail (Vercel) n'écrit jamais de commit lui-même : il déclenche ce workflow par
+# `workflow_dispatch` une fois les cinq conditions de publication réunies, et c'est ici, avec
+# les droits d'écriture du dépôt, que le MDX final est reconstruit, revalidé contre le corpus
+# réel, et commité. Le portail recharge les décisions depuis Supabase au moment de l'exécution
+# — jamais ce que le navigateur prétendait au moment du clic.
+
+name: Publier une note
+
+on:
+  workflow_dispatch:
+    inputs:
+      slug:
+        description: "Le brouillon à publier, ex. 2026-S36 ou 2026-S36-E1"
+        type: string
+        required: true
+
+concurrency:
+  group: publier-note
+  cancel-in-progress: false
+
+# Avec note-hebdo.yml, le seul autre endroit du dépôt à porter ce privilège.
+permissions:
+  contents: write
+
+jobs:
+  publier:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Assembler et valider la note finale
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          SLUG: ${{ inputs.slug }}
+        run: npx tsx scripts/publier-note.mts --slug="$SLUG"
+
+      - name: Vérifier que le dépôt compile encore
+        run: |
+          npx tsc --noEmit
+          npm run build
+
+      - name: Commiter et pousser
+        env:
+          SLUG: ${{ inputs.slug }}
+        run: |
+          set -e
+          if [ -z "$(git status --porcelain content/notes/ content/generated/ content/brouillons/)" ]; then
+            echo "Rien à commiter — la publication n'a produit aucun changement." | tee -a "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi
+          git config user.name "Marguerite"
+          git config user.email "noreply@users.noreply.github.com"
+          git add content/notes/ content/generated/ content/brouillons/
+          git commit -m "Publier la note $SLUG
+
+          Décidé depuis /redaction — bloc par bloc, guet par guet, révision par
+          révision. Aucune validation globale."
+          # Jamais --force : la publication ne vaut pas d'écraser un historique.
+          git push origin HEAD

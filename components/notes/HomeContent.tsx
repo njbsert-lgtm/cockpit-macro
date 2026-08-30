@@ -1,5 +1,6 @@
 import { getActiveDriversWithBranches, getLatestNote } from "@/lib/content";
 import { getPendingVeilleCount } from "@/lib/veille/queries";
+import { brouillonsDisponibles } from "@/lib/redaction/portail";
 import { RegimeHeader } from "./RegimeHeader";
 import { NotesShelf } from "./NotesShelf";
 import { EmptyState } from "@/components/states/EmptyState";
@@ -17,6 +18,8 @@ export async function HomeContent() {
   const latestNote = getLatestNote();
   const drivers = getActiveDriversWithBranches();
   const pendingVeilleCount = await getPendingVeilleCount();
+  // Synchrone, disque seulement — pas d'appel Supabase pour ce compteur.
+  const pendingRedactionCount = brouillonsDisponibles().length;
 
   if (!latestNote) {
     return (
@@ -33,7 +36,12 @@ export async function HomeContent() {
 
   return (
     <>
-      <RegimeHeader note={latestNote} drivers={drivers} pendingVeilleCount={pendingVeilleCount} />
+      <RegimeHeader
+        note={latestNote}
+        drivers={drivers}
+        pendingVeilleCount={pendingVeilleCount}
+        pendingRedactionCount={pendingRedactionCount}
+      />
       <div className="mx-auto max-w-colonne md:max-w-content px-4.5 py-7 md:px-6">
         <NotesShelf />
       </div>

@@ -5,6 +5,7 @@ import {
   assemblerNoteFinale,
   authorshipBloc5,
   conditionsManquantes,
+  construireArtefactsPublication,
   controlerChiffresPublication,
   decisionsVides,
   relireNoteFinale,
@@ -12,7 +13,7 @@ import {
 } from "./publication";
 import type { ContextePaquet } from "./context";
 import type { Brouillon } from "./schema";
-import type { Guet } from "@/lib/types";
+import type { Guet, ScenarioVersion } from "@/lib/types";
 
 function guet(over: Partial<Guet> = {}): Guet {
   return {
@@ -370,5 +371,108 @@ describe("assemblerNoteFinale — le MDX produit est une note publiée valide", 
     expect(finale.meta.driverOrder).toEqual(["rates"]);
     expect(finale.meta.trendRefs).toEqual(["desinflation-terminee"]);
     expect(finale.meta.comparesTo).toBe("2026-S35");
+  });
+});
+
+function impacts(dir: "up" | "down" | "flat" = "flat") {
+  return {
+    eq: { direction: dir, label: "—", text: "…" },
+    fi: { direction: dir, label: "—", text: "…" },
+    fx: { direction: dir, label: "—", text: "…" },
+    cm: { direction: dir, label: "—", text: "…" },
+  } satisfies ScenarioVersion["impacts"];
+}
+
+describe("construireArtefactsPublication — le calcul complet, sans disque", () => {
+  it("ne produit aucun delta quand aucune révision n'a été acceptée", () => {
+    const note = parseNote("2026-S36", BROUILLON_MDX);
+    const propose = brouillonPropose({
+      scenarioRevisions: [
+        {
+          driverId: "rates",
+          branches: [{ branchId: "hausse", likelihood: "central", why: "…", thesis: "…", impacts: impacts(), watchSignals: "…" }],
+        },
+      ],
+    });
+    const decisions = noteToutesDecisionsPrises();
+    decisions.revisions.rates = { action: "refuser" };
+    const artefacts = construireArtefactsPublication(note, propose, paquet(), decisions, "2026-09-06");
+    expect(artefacts.scenariosGeneres).toEqual([]);
+  });
+
+  it("verse un delta de scénario par branche changée, pour un driver accepté", () => {
+    const note = parseNote("2026-S36", BROUILLON_MDX);
+    const propose = brouillonPropose({
+      scenarioRevisions: [
+        {
+          driverId: "rates",
+          branches: [
+            { branchId: "hausse", likelihood: "moderee", why: "Le CPI surprend à la hausse.", thesis: "…", impacts: impacts("up"), watchSignals: "…" },
+          ],
+        },
+      ],
+    });
+    const decisions = noteToutesDecisionsPrises();
+    decisions.revisions.rates = { action: "accepter" };
+    const artefacts = construireArtefactsPublication(note, propose, paquet(), decisions, "2026-09-06");
+    expect(artefacts.scenariosGeneres).toHaveLength(1);
+    expect(artefacts.scenariosGeneres[0]).toMatchObject({
+      driverId: "rates",
+      branchId: "hausse",
+      noteSlug: "2026-S36",
+      date: "2026-09-06",
+      version: 1,
+    });
+  });
+
+  it("verse un delta de tendance seulement pour une tendance acceptée", () => {
+    const note = parseNote("2026-S36", BROUILLON_MDX);
+    const propose = brouillonPropose({
+      trendUpdates: [
+        { trendId: "desinflation-terminee", status: "renforce", why: "L'IPC sous-jacent décélère encore." },
+      ],
+    });
+    const decisions = noteToutesDecisionsPrises();
+    decisions.tendances["desinflation-terminee"] = { action: "refuser" };
+    const sansAcceptation = construireArtefactsPublication(note, propose, paquet(), decisions, "2026-09-06");
+    expect(sansAcceptation.tendancesGenerees).toEqual([]);
+
+    decisions.tendances["desinflation-terminee"] = { action: "accepter" };
+    const avecAcceptation = construireArtefactsPublication(note, propose, paquet(), decisions, "2026-09-06");
+    expect(avecAcceptation.tendancesGenerees).toEqual([
+      {
+        trendId: "desinflation-terminee",
+        status: "renforce",
+        entry: {
+          date: "2026-09-06",
+          status: "renforce",
+          noteSlug: "2026-S36",
+          why: "L'IPC sous-jacent décélère encore.",
+        },
+      },
+    ]);
+  });
+
+  it("lève si le MDX assemblé est structurellement invalide, avant tout calcul de delta", () => {
+    const note = parseNote("2026-S36", BROUILLON_MDX);
+    const decisions = noteToutesDecisionsPrises();
+    decisions.guets["2026-s36-g1"] = { action: "refuser" };
+    expect(() =>
+      construireArtefactsPublication(note, brouillonPropose(), paquet(), decisions, "2026-09-06"),
+    ).toThrow(/doit être structuré/);
+  });
+
+  it("porte la note finale assemblée, identique à assemblerNoteFinale", () => {
+    const note = parseNote("2026-S36", BROUILLON_MDX);
+    const decisions = noteToutesDecisionsPrises();
+    const artefacts = construireArtefactsPublication(
+      note,
+      brouillonPropose(),
+      paquet(),
+      decisions,
+      "2026-09-06",
+    );
+    const attendu = assemblerNoteFinale(note, decisions, "2026-09-06");
+    expect(artefacts.note).toEqual(attendu);
   });
 });

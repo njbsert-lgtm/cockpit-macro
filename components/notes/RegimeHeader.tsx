@@ -14,6 +14,7 @@ export function RegimeHeader({
   note,
   drivers = [],
   pendingVeilleCount,
+  pendingRedactionCount,
 }: {
   note: Note;
   drivers?: DriverWithBranches[];
@@ -22,6 +23,8 @@ export function RegimeHeader({
    * bouton secondaire : afficher un « 0 » par défaut mentirait sur l'état réel de la file.
    */
   pendingVeilleCount?: number;
+  /** Même principe : omis plutôt que 0 quand l'appelant n'a pas chargé la liste. */
+  pendingRedactionCount?: number;
 }) {
   return (
     <div className="mx-auto max-w-colonne px-4.5 pt-6 md:max-w-content md:px-6">
@@ -80,6 +83,26 @@ export function RegimeHeader({
             </span>
             <span className="sr-only">
               {pendingVeilleCount} item{pendingVeilleCount > 1 ? "s" : ""} en attente de tri
+            </span>
+          </Link>
+        )}
+        {/* N'apparaît que si un brouillon existe (DESIGN.md) — pas de notification, juste un
+            bouton qui ne mentirait pas en affichant « 0 ». */}
+        {pendingRedactionCount !== undefined && pendingRedactionCount > 0 && (
+          <Link
+            href="/redaction"
+            className="inline-flex min-h-11 items-center gap-2 rounded-rb border border-trait bg-page px-4 text-13 font-medium text-encre transition-colors hover:border-trait-f"
+          >
+            Rédaction
+            <span
+              aria-hidden="true"
+              className="rounded-rp bg-repos px-1.5 py-0.5 text-11 tabular-nums text-doux"
+            >
+              {pendingRedactionCount}
+            </span>
+            <span className="sr-only">
+              {pendingRedactionCount} brouillon{pendingRedactionCount > 1 ? "s" : ""} en attente
+              de relecture
             </span>
           </Link>
         )}

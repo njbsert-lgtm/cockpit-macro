@@ -8,7 +8,7 @@ import {
   authorshipBloc5,
   blocsAAuthorshipDirecte,
 } from "@/lib/redaction/publication";
-import { trancherRevision, trancherTendance } from "@/app/redaction/actions";
+import { publierBrouillon, trancherRevision, trancherTendance } from "@/app/redaction/actions";
 import { PortalCounter } from "@/components/redaction/PortalCounter";
 import { FigureReport } from "@/components/redaction/FigureReport";
 import { BlockPanel } from "@/components/redaction/BlockPanel";
@@ -146,6 +146,7 @@ export default async function RedactionSlugPage({
           pret={publication.pret}
           manquantes={publication.manquantes}
           chiffresBloquants={publication.rapportChiffres.bloque}
+          action={publication.pret ? publierBrouillon.bind(null, slug) : undefined}
         />
       </div>
     </div>

@@ -1,10 +1,11 @@
 import matter from "gray-matter";
 import { parseNote, type ParsedNote } from "@/lib/notes";
 import { BLOCK_TITLES, type BlockName } from "@/lib/note-blocks";
-import type { Authorship, Guet } from "@/lib/types";
+import type { Authorship, Guet, ScenarioVersion, TrendDelta } from "@/lib/types";
 import type { ContextePaquet } from "./context";
 import type { Brouillon } from "./schema";
 import { extraireVerdicts, type RapportChiffres } from "./figures";
+import { construireDeltasScenarios, construireDeltasTendances } from "./deltas";
 
 /**
  * Le portail : les cinq conditions de publication, la reconstruction du MDX final, et le
@@ -260,4 +261,55 @@ export function assemblerNoteFinale(
  */
 export function relireNoteFinale(slug: string, mdx: string): ParsedNote {
   return parseNote(slug, mdx);
+}
+
+export type ArtefactsPublication = {
+  note: NoteFinale;
+  /** Deltas neufs seulement — au script appelant de les fusionner avec l'existant sur disque. */
+  scenariosGeneres: ScenarioVersion[];
+  tendancesGenerees: TrendDelta[];
+};
+
+/**
+ * Assemble tout ce que la publication produit, sans aucune écriture disque : le MDX final, et
+ * les deltas de scénario/tendance des propositions **effectivement acceptées**. Extrait de
+ * `scripts/publier-note.mts` pour rester testable sans corpus réel ni système de fichiers —
+ * même logique que le reste de `lib/redaction/`.
+ */
+export function construireArtefactsPublication(
+  brouillonParse: ParsedNote,
+  brouillonPropose: Brouillon,
+  paquet: ContextePaquet,
+  decisions: Decisions,
+  aujourdhui: string,
+): ArtefactsPublication {
+  const note = assemblerNoteFinale(brouillonParse, decisions, aujourdhui);
+  relireNoteFinale(note.slug, note.mdx); // lève si structurellement invalide
+
+  const driversAcceptes = new Set(
+    Object.entries(decisions.revisions)
+      .filter(([, d]) => d.action === "accepter")
+      .map(([driverId]) => driverId),
+  );
+  const tendancesAcceptees = new Set(
+    Object.entries(decisions.tendances)
+      .filter(([, d]) => d.action === "accepter")
+      .map(([trendId]) => trendId),
+  );
+
+  const scenariosGeneres = construireDeltasScenarios(
+    brouillonPropose.scenarioRevisions,
+    driversAcceptes,
+    paquet.scenariosCourants,
+    note.slug,
+    aujourdhui,
+  );
+  const tendancesGenerees = construireDeltasTendances(
+    brouillonPropose.trendUpdates,
+    tendancesAcceptees,
+    note.slug,
+    aujourdhui,
+  );
+
+  return { note, scenariosGeneres, tendancesGenerees };
 }

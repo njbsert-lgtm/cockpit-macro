@@ -1,9 +1,11 @@
 # Contenu généré — ne rien éditer ici à la main
 
 Les fichiers `*.generated.ts` de ce dossier sont écrits par
-`scripts/rediger-hebdo.mts`, le pipeline de rédaction automatique de la note
-hebdomadaire (`lib/redaction/`). Ils sont réécrits **intégralement** à
-chaque passage — pas de mutation en place, pas de patch.
+`scripts/publier-note.mts`, au moment où une note est publiée depuis
+`/redaction` — jamais par la rédaction du brouillon
+(`scripts/rediger-note.mts`), qui ne fait que proposer des révisions sans
+les appliquer. Ils sont réécrits **intégralement** à chaque publication —
+pas de mutation en place, pas de patch.
 
 Ils sont volontairement séparés du contenu écrit à la main
 (`content/scenarios.ts`, `content/tendances.ts`) pour trois raisons :
