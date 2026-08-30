@@ -151,6 +151,34 @@ create table if not exists veille_health (
   updated_at            timestamptz not null default now()
 );
 
+-- Le portail /redaction — état de la relecture d'un brouillon, entre son écriture par
+-- `note-hebdo.yml` et sa publication (encore manuelle à ce stade, voir CLAUDE.md § Rédaction
+-- assistée). En base plutôt que dans le fichier : deux onglets ouverts sur le même brouillon ne
+-- doivent pas se perdre des écritures, ce qu'un JSONB unique par brouillon ne garantirait pas.
+
+-- Le paquet de contexte qui a servi à rédiger le brouillon, tel quel. Nécessaire pour
+-- re-contrôler les chiffres après une édition humaine : la pièce de comparaison doit rester
+-- celle du jour de la rédaction, pas une reconstruction qui aurait dérivé si les données ont
+-- été recollectées depuis.
+create table if not exists brouillons_contexte (
+  note_slug  text primary key,
+  paquet     jsonb not null,
+  created_at timestamptz not null default now()
+);
+
+-- Une ligne par décision, pas un objet unique par brouillon : `kind` + `ref` identifient ce
+-- qui est tranché (un bloc, un guet, une révision de scénario, un changement de statut de
+-- tendance), `decision` porte sa forme propre — authorship et texte pour un bloc, action et
+-- correction pour un guet, accepté/refusé pour une proposition. Voir `lib/redaction/portal.ts`.
+create table if not exists redaction_decisions (
+  note_slug  text not null,
+  kind       text not null check (kind in ('bloc', 'guet', 'revision', 'tendance', 'bloc4')),
+  ref        text not null,
+  decision   jsonb not null,
+  updated_at timestamptz not null default now(),
+  primary key (note_slug, kind, ref)
+);
+
 -- ---------------------------------------------------------------------------
 -- Sécurité
 -- ---------------------------------------------------------------------------
@@ -165,12 +193,16 @@ alter table series_health      enable row level security;
 alter table veille_items       enable row level security;
 alter table veille_cursor      enable row level security;
 alter table veille_health      enable row level security;
+alter table brouillons_contexte  enable row level security;
+alter table redaction_decisions  enable row level security;
 
 drop policy if exists observations_read       on observations;
 drop policy if exists macro_observations_read on macro_observations;
 drop policy if exists macro_indicators_read   on macro_indicators;
 drop policy if exists series_health_read      on series_health;
 drop policy if exists veille_items_read       on veille_items;
+drop policy if exists brouillons_contexte_read on brouillons_contexte;
+drop policy if exists redaction_decisions_read on redaction_decisions;
 
 create policy observations_read       on observations       for select using (true);
 create policy macro_observations_read on macro_observations for select using (true);
@@ -179,6 +211,10 @@ create policy series_health_read      on series_health      for select using (tr
 -- `/triage` lit les items par la clé anonyme ; les trois actions (verser, archiver, ignorer)
 -- écrivent par Server Action, avec la clé de service, jamais depuis le navigateur.
 create policy veille_items_read       on veille_items       for select using (true);
+-- Même patron pour `/redaction` : lecture par la clé anonyme, écriture par Server Action avec
+-- la clé de service.
+create policy brouillons_contexte_read on brouillons_contexte for select using (true);
+create policy redaction_decisions_read on redaction_decisions for select using (true);
 -- veille_cursor et veille_health n'ont pas de politique de lecture : ce sont des détails
 -- d'implémentation de la collecte, jamais affichés, seule la clé de service y touche. C'est ce
 -- qui empêche `veille_health` de fuiter dans l'indicateur de fraîcheur de la barre persistante,
@@ -200,7 +236,8 @@ grant usage on schema public to anon, authenticated, service_role;
 
 -- La clé anonyme lit, et rien d'autre. Ce qu'elle voit reste borné par les politiques
 -- ci-dessus : `veille_cursor` et `veille_health` n'en ont pas, donc restent invisibles.
-grant select on observations, macro_observations, macro_indicators, series_health, veille_items
+grant select on observations, macro_observations, macro_indicators, series_health, veille_items,
+  brouillons_contexte, redaction_decisions
   to anon, authenticated;
 
 -- La clé de service écrit : c'est elle, et elle seule, que le cron utilise.

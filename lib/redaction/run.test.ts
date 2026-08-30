@@ -282,3 +282,44 @@ describe("ecrireBrouillon", () => {
     expect(existsSync(path.join(dossier, "2026-S36.chiffres.txt"))).toBe(true);
   });
 });
+
+describe("executerRun — persistance du paquet de contexte", () => {
+  it("ne persiste rien en dry-run", async () => {
+    const persister = vi.fn(async () => ({ ok: true }));
+    await executerRun(paquet(), callerRendant(brouillon()), {
+      dryRun: true,
+      sourcesExistantes: CORPUS,
+      graphe: GRAPHE,
+      persisterContexte: persister,
+    });
+    expect(persister).not.toHaveBeenCalled();
+  });
+
+  it("persiste le paquet exact quand le brouillon est écrit", async () => {
+    const dossier = mkdtempSync(path.join(tmpdir(), "brouillons-"));
+    const p = paquet();
+    const persister = vi.fn(async () => ({ ok: true }));
+    const r = await executerRun(p, callerRendant(brouillon()), {
+      dryRun: false,
+      sourcesExistantes: CORPUS,
+      graphe: GRAPHE,
+      persisterContexte: persister,
+      dossierBrouillons: dossier,
+    });
+    expect(persister).toHaveBeenCalledWith(r.slug, p);
+  });
+
+  it("un échec de persistance n'empêche pas le run, et se lit dans les notes", async () => {
+    const dossier = mkdtempSync(path.join(tmpdir(), "brouillons-"));
+    const persister = vi.fn(async () => ({ ok: false, erreur: "injoignable" }));
+    const r = await executerRun(paquet(), callerRendant(brouillon()), {
+      dryRun: false,
+      sourcesExistantes: CORPUS,
+      graphe: GRAPHE,
+      persisterContexte: persister,
+      dossierBrouillons: dossier,
+    });
+    expect(r.ecrit).not.toBeNull();
+    expect(r.notes).toContain("non persisté");
+  });
+});
