@@ -53,11 +53,18 @@ export type Brouillon = {
       likelihood: (typeof LIKELIHOODS)[number];
       why: string;
       thesis: string;
-      impacts: Record<string, { direction: string; label: string; text: string }>;
+      impacts: Record<
+        (typeof CLASSES_ACTIFS)[number],
+        { direction: (typeof DIRECTIONS)[number]; label: string; text: string }
+      >;
       watchSignals: string;
     }>;
   }>;
-  trendUpdates: Array<{ trendId: string; status: string; why: string }>;
+  trendUpdates: Array<{
+    trendId: string;
+    status: (typeof TREND_STATUSES)[number];
+    why: string;
+  }>;
   guets: Array<{
     driverId: string;
     libelle: string;
