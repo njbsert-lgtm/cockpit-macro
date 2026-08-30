@@ -48,7 +48,7 @@ export function decisionsVides(): Decisions {
  * guet, elle ne se saisit jamais pour le bloc entier. `LeFilDeLaSemaine` est auto-porteur — une
  * résolution mécanique d'items déjà cités, pas une prose à faire relire.
  */
-function blocsAAuthorshipDirecte(blocsPresents: BlockName[]): BlockName[] {
+export function blocsAAuthorshipDirecte(blocsPresents: BlockName[]): BlockName[] {
   return blocsPresents.filter((b) => b !== "CeQueJeSurveille" && b !== "LeFilDeLaSemaine");
 }
 

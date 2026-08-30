@@ -97,13 +97,23 @@ export async function trancherGuet(slug: string, guetId: string, formData: FormD
   revalidateApresDecision(slug);
 }
 
+const ACTIONS_PROPOSITION = ["accepter", "refuser"] as const;
+
+function actionProposition(formData: FormData): "accepter" | "refuser" {
+  const action = stringField(formData, "action");
+  if (!(ACTIONS_PROPOSITION as readonly string[]).includes(action)) {
+    throw new Error(`action de proposition inconnue : « ${action} »`);
+  }
+  return action as "accepter" | "refuser";
+}
+
 /** Accepte ou refuse une proposition de révision de scénario pour un driver entier. */
 export async function trancherRevision(
   slug: string,
   driverId: string,
-  action: "accepter" | "refuser",
+  formData: FormData,
 ): Promise<void> {
-  await sauvegarderDecision(slug, "revision", driverId, { action });
+  await sauvegarderDecision(slug, "revision", driverId, { action: actionProposition(formData) });
   revalidateApresDecision(slug);
 }
 
@@ -111,8 +121,8 @@ export async function trancherRevision(
 export async function trancherTendance(
   slug: string,
   trendId: string,
-  action: "accepter" | "refuser",
+  formData: FormData,
 ): Promise<void> {
-  await sauvegarderDecision(slug, "tendance", trendId, { action });
+  await sauvegarderDecision(slug, "tendance", trendId, { action: actionProposition(formData) });
   revalidateApresDecision(slug);
 }
