@@ -65,4 +65,73 @@ export const OUTLOOKS: Outlook[] = [
     sourceUrl:
       "https://privatebank.jpmorgan.com/content/dam/jpm-pb-aem/global/en/documents/2026-mid-year-outlook/2026-mid-year-outlook.pdf",
   },
+  {
+    id: "hsbc-mid-2026",
+    bank: "HSBC Asset Management",
+    bankMonogram: "HSBC",
+    title: "2026 Mid-Year Global Investment Outlook: Different Worlds",
+    periodCovered: "Mid-year 2026",
+    // Aucune date de publication explicite dans le document ; « Source: HSBC AM, June 2026 »
+    // est répété en pied de chaque page. Le fichier porte "Content ID: D073083_v1.0".
+    publishedAt: "2026-06-01",
+    summary:
+      "HSBC Asset Management publie son outlook de mi-année sous le titre « Different Worlds » : " +
+      "les signaux macro et de marché ne racontent plus une histoire unique. Les indices actions " +
+      "atteignent de nouveaux records, les spreads de crédit restent serrés et la volatilité est " +
+      "contenue, alors même que les prix du pétrole ont grimpé, que l'offre de matières premières " +
+      "est moins sûre et que les banques centrales sont de nouveau tiraillées entre inflation et " +
+      "croissance.\n\n" +
+      "La lecture centrale tient en une formule : « deux chocs et un boom ». Le choc pétrolier " +
+      "pèse sur la croissance et alimente l'inflation, en particulier pour les économies " +
+      "importatrices d'énergie ; la compétitivité exportatrice chinoise dans les technologies " +
+      "avancées désinflate les prix des biens mondiaux tout en pressant les marges des " +
+      "concurrents ; le boom de l'investissement en IA fait contrepoids en soutenant la " +
+      "croissance, les profits et le leadership de marché. Il en résulte une dynamique « en K » : " +
+      "la force est concentrée — largement dans l'investissement lié à l'IA aux États-Unis — " +
+      "pendant que la demande des ménages et l'investissement hors technologie restent plus " +
+      "fragiles.\n\n" +
+      "Le scénario central, « Broadening out », suppose que le choc pétrolier reflue " +
+      "progressivement en ligne avec les prix à terme, que les banques centrales restent " +
+      "prudentes (le taux directeur américain s'approchant de 2,5 % avec un assouplissement " +
+      "modeste), et que le leadership boursier s'élargit — mais de façon ciblée, vers les " +
+      "semi-conducteurs, les infrastructures et certains émergents liés à la chaîne IA, plutôt " +
+      "que par une rotation généralisée hors des États-Unis. Le scénario pessimiste, " +
+      "« Shockwave », se matérialiserait si la perturbation de l'offre s'installait durablement ; " +
+      "l'optimiste, « Boom boom », verrait le capex IA se transformer en expansion tirée par " +
+      "l'investissement au sens large, portant la croissance américaine vers 3 %.\n\n" +
+      "Trois analyses thématiques complètent l'outlook. Sur l'Inde, la sensibilité pétrolière " +
+      "ravive les inquiétudes après une année de sorties de capitaux étrangers (32 milliards de " +
+      "dollars de pic à creux) ; mais l'intensité pétrolière de l'économie a structurellement " +
+      "baissé et les valorisations se sont normalisées — la vue est « constructive et neutre ». " +
+      "Sur les émergents, la performance n'est plus une simple fonction de la faiblesse du " +
+      "dollar : l'Asie du Nord est au cœur de la chaîne IA et des semi-conducteurs, les métaux " +
+      "profitent de la transition énergétique, et la discipline de politique monétaire post-Covid " +
+      "a réduit la vulnérabilité aux chocs externes. Sur l'or, HSBC nuance son rôle de " +
+      "couverture : sur 28 années d'inflation supérieure à 3 % depuis 1900, son rendement a été " +
+      "négatif 13 fois ; sa valeur tient davantage à l'assurance géopolitique et à la " +
+      "diversification des réserves face au dollar qu'à une protection anti-inflationniste " +
+      "systématique.\n\n" +
+      "Les analyses approfondies détaillent la transmission du choc. En crédit, la fermeture du " +
+      "détroit d'Ormuz a retiré environ 10 millions de barils/jour du marché — cinq fois la " +
+      "perte d'approvisionnement russe — et le Qatar, qui fournit environ 20 % du GNL mondial et " +
+      "un tiers de l'hélium mondial (critique pour les semi-conducteurs), rend la normalisation " +
+      "du gaz plus lente que celle du pétrole (trois ans contre quelques mois). En actions, le " +
+      "S&P 500 a vu 82 % des entreprises battre le consensus avec une croissance des bénéfices " +
+      "d'environ 23 % sur un an, portée par dix valeurs qui concentrent plus de la moitié des " +
+      "révisions de bénéfices récentes ; le capex des hyperscalers américains est désormais " +
+      "attendu à 1 116 milliards de dollars pour 2027, et 2026 s'annonce comme l'une des plus " +
+      "grosses années d'introductions en bourse jamais enregistrées, portée par l'IA.",
+    highlights: [
+      "« Deux chocs et un boom » : le choc pétrolier et la concurrence chinoise pèsent sur la croissance et l'inflation, le boom de l'IA fait contrepoids — une dynamique de marché « en K ».",
+      "Scénario central « Broadening out » : le choc pétrolier reflue progressivement, la Fed s'approche de 2,5 %, le leadership boursier s'élargit mais reste ciblé sur la chaîne IA.",
+      "La fermeture du détroit d'Ormuz a retiré environ 10 Mb/j du marché pétrolier — cinq fois la perte de l'offre russe ; le Qatar fournit un tiers de l'hélium mondial, critique pour les semi-conducteurs.",
+      "Sur l'Inde : 32 milliards de dollars de sorties de capitaux étrangers de pic à creux, mais intensité pétrolière structurellement plus basse et valorisations normalisées — vue constructive et neutre.",
+      "Les hyperscalers américains portent leur capex attendu pour 2027 à 1 116 milliards de dollars, et 2026 s'annonce comme l'une des plus grosses années d'IPO jamais enregistrées, portée par l'IA.",
+      "L'or reste une couverture davantage géopolitique et de réserve qu'anti-inflationniste : sur 28 années d'inflation élevée depuis 1900, son rendement a été négatif 13 fois.",
+    ],
+    driverRefs: ["iran", "rates", "ai"],
+    trendRefs: ["prime-risque-permanente", "desinflation-terminee", "capex-ia-benefices", "recomposition-flux-hors-chine"],
+    sourceUrl:
+      "https://www.assetmanagement.hsbc.co.uk/en/institutional-investor/-/media/files/attachments/common/2026-mid-year-investment-outlook",
+  },
 ];
