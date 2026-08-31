@@ -294,4 +294,76 @@ export const OUTLOOKS: Outlook[] = [
     trendRefs: ["prime-risque-permanente", "desinflation-terminee", "capex-ia-benefices"],
     sourceUrl: "https://www.docs.citi.com/WealthOCIO/2026Q3Report.pdf",
   },
+  {
+    id: "morganstanley-mid-2026",
+    bank: "Morgan Stanley",
+    bankMonogram: "MS",
+    title: "Investment Outlook: Midyear 2026",
+    periodCovered: "Mid-year 2026",
+    // Aucune date de publication explicite ; le 12 mai 2026 est la date la plus précise citée
+    // dans le texte (niveau du S&P 500 servant de base à l'objectif à 12 mois).
+    publishedAt: "2026-05-12",
+    summary:
+      "Morgan Stanley publie son Investment Outlook mi-année 2026 sous la plume de sa Chief " +
+      "Cross-Asset Strategist Serena Tang : à l'approche de la moitié de l'année, l'incertitude " +
+      "reste élevée, portée par les tensions géopolitiques — les prix du pétrole et la durée des " +
+      "perturbations d'approvisionnement liées au conflit iranien demeurent le facteur clé de " +
+      "l'évolution de l'économie et des marchés financiers. En contrepoids, la hausse des " +
+      "investissements en infrastructure d'intelligence artificielle continue de soutenir la " +
+      "plupart des classes d'actifs. La maison recommande une surpondération des actions, une " +
+      "sous-pondération de l'obligataire cœur et une pondération neutre sur le reste de " +
+      "l'obligataire, les matières premières et le cash. Message central : « être constructif, " +
+      "pas complaisant » — l'IA soutient les bénéfices, mais peut aussi peser sur le crédit.\n\n" +
+      "Sur les actions, Morgan Stanley Research relève son objectif de fin d'année pour le " +
+      "S&P 500 à 8 000 points (contre 7 800 précédemment), avec une cible mi-2027 à 8 300 " +
+      "points — soit une progression de 12 % par rapport au niveau de 7 400 points du 12 mai " +
+      "2026. Les résultats du premier trimestre ont dépassé les attentes de 6 %, le meilleur " +
+      "taux de surprise en quatre ans, porté par un effet de levier opérationnel positif, un " +
+      "pouvoir de fixation des prix amélioré et les premiers bénéfices tirés de l'adoption de " +
+      "l'IA. Secteurs américains privilégiés : industrie, hyperscalers, financières et " +
+      "consommation discrétionnaire. Les actions européennes et japonaises devraient aussi " +
+      "profiter de l'amélioration des bénéfices, avec un MSCI Europe attendu en hausse de 11 % " +
+      "et un TOPIX japonais de 12 % d'ici mi-2027. Le principal risque à cette vue constructive " +
+      "serait une accélération de l'inflation à un niveau que la Fed ne pourrait ignorer, " +
+      "entraînant un resserrement des conditions de liquidité.\n\n" +
+      "Sur le crédit, le marché devrait sous-performer les autres classes d'actifs à mesure que " +
+      "les entreprises émettent davantage de dette pour financer leurs investissements liés à " +
+      "l'IA, en particulier parmi les émetteurs américains de qualité. Il y a un an, Morgan " +
+      "Stanley Research anticipait un capex combiné de 450 milliards de dollars pour les cinq " +
+      "plus grandes technologiques américaines, à la fois pour 2026 et pour 2027 ; après les " +
+      "résultats et conférences du premier trimestre, ces estimations ont bondi à environ 800 " +
+      "milliards de dollars pour 2026 et 1 160 milliards pour 2027.\n\n" +
+      "Sur les obligations souveraines, une économie américaine stable — ralentissement sans " +
+      "récession — devrait soutenir la demande de Treasuries, mais l'incertitude sur les prix " +
+      "du pétrole et une offre plus abondante interrogent sur la durée de leur performance " +
+      "positive. Les obligations souveraines européennes devraient surperformer les Treasuries " +
+      "américaines, les économistes de la banque anticipant un passage à vide de la croissance " +
+      "et une désinflation en zone euro.\n\n" +
+      "Sur le dollar, la faiblesse devrait persister au second semestre à mesure que l'inflation " +
+      "cœur américaine ralentit, que les anticipations de hausses de taux reculent et que " +
+      "l'appétit pour le risque reste soutenu ; un point bas et un début de reprise sont " +
+      "attendus pour 2027, une croissance américaine plus forte devant attirer davantage de " +
+      "capitaux, tandis que l'élection présidentielle française du printemps prochain pourrait " +
+      "raviver le risque politique en Europe et peser sur l'euro.\n\n" +
+      "Sur le pétrole, le conflit iranien et ses implications pour la politique des banques " +
+      "centrales, les prix de l'énergie et les devises restent centraux pour les matières " +
+      "premières. Dans le scénario central de Morgan Stanley, les exportations via le détroit " +
+      "d'Ormuz commencent à se rétablir début juin, mais des difficultés logistiques et " +
+      "opérationnelles devraient maintenir le marché pétrolier tendu jusqu'au quatrième " +
+      "trimestre, avec des prix du pétrole et du gaz naturel plus élevés. L'or, qui a " +
+      "sous-performé les autres classes d'actifs depuis le début du conflit, pourrait se " +
+      "redresser à mesure que les banques centrales et les ETF reprennent leurs achats " +
+      "physiques et que le marché intègre des taux de la Fed plus bas.",
+    highlights: [
+      "S&P 500 : objectif de fin d'année relevé à 8 000 points, cible mi-2027 à 8 300 — soit +12 % par rapport au niveau du 12 mai 2026, porté par des résultats du T1 en hausse de 6 % au-dessus des attentes.",
+      "Le capex combiné des cinq plus grandes technologiques américaines, anticipé à 450 milliards de dollars il y a un an pour 2026 et 2027, a bondi à environ 800 milliards pour 2026 et 1 160 milliards pour 2027.",
+      "Le crédit devrait sous-performer à mesure que les entreprises émettent davantage de dette pour financer leurs investissements IA — l'IA soutient les bénéfices mais pèse sur le crédit.",
+      "Le dollar devrait rester faible au second semestre avant un point bas et une reprise en 2027 ; l'élection présidentielle française du printemps prochain pourrait peser sur l'euro.",
+      "Scénario central : les exportations via le détroit d'Ormuz commencent à se rétablir début juin, mais le marché pétrolier reste tendu jusqu'au T4 2026, avec des prix du pétrole et du gaz plus élevés.",
+      "Allocation recommandée : surpondération des actions, sous-pondération de l'obligataire cœur, pondération neutre sur le reste de l'obligataire, les matières premières et le cash.",
+    ],
+    driverRefs: ["iran", "rates", "ai"],
+    trendRefs: ["prime-risque-permanente", "capex-ia-benefices"],
+    sourceUrl: "https://www.morganstanley.com/insights/articles/investment-outlook-midyear-2026",
+  },
 ];
