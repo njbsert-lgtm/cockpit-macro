@@ -206,4 +206,92 @@ export const OUTLOOKS: Outlook[] = [
     sourceUrl:
       "https://wealthmanagement.bnpparibas/content/dam/wmpublicsite/global/pdfs/en/june-2026/BNPP_INVEST_THEMES_2026_brochureEN_version%20courte.pdf",
   },
+  {
+    id: "citi-q3-2026",
+    bank: "Citi Wealth",
+    bankMonogram: "Citi",
+    title: "The Short and Long: 2026 Q3 Macro Investment View",
+    // Un rendez-vous trimestriel, pas mi-annuel : le libellé suit le document plutôt que de
+    // forcer le format des autres outlooks.
+    periodCovered: "Q3 2026",
+    // Aucune date de publication explicite ; « as of July 7, 2026 » revient sur plusieurs
+    // graphiques, la donnée la plus récente citée dans le document.
+    publishedAt: "2026-07-07",
+    summary:
+      "Citi Wealth publie « The Short and Long », sa lecture macro du troisième trimestre 2026, " +
+      "sous la plume de sa Chief Investment Officer Kate Moore. Le message d'ouverture pose le " +
+      "cadre : un horizon à dix ans n'est en pratique qu'une succession de régimes de marché de " +
+      "court terme, et de nombreux cadres d'allocation stratégique restent calibrés pour un monde " +
+      "d'inflation contenue et de corrélations stables qui n'existe plus. D'où la philosophie des " +
+      "« 3 D » — Discipline, Diversification, Dynamisme — qui gouverne l'allocation tactique de " +
+      "la banque.\n\n" +
+      "Trois constats structurent la vue pour le second semestre. D'abord, la croissance mondiale " +
+      "reste résiliente : malgré la fermeture temporaire du détroit d'Ormuz et le conflit au " +
+      "Moyen-Orient, l'industrie manufacturière mondiale a progressé plus vite en juin qu'en " +
+      "février, avant le début du conflit. Ensuite, le cycle d'investissement continue de se " +
+      "renforcer, porté par la technologie liée à l'IA, les chaînes d'approvisionnement associées " +
+      "et les infrastructures critiques — ce qui conduit Citi à ajouter la cybersécurité comme " +
+      "nouveau thème d'investissement ce trimestre. Enfin, malgré un repricing marqué de la " +
+      "politique monétaire, la hausse des taux n'a pas déstabilisé les actifs risqués : les " +
+      "marchés ont choisi à plusieurs reprises de regarder au-delà des inquiétudes liées aux " +
+      "taux, à la géopolitique et à la croissance.\n\n" +
+      "Sur le front macro, l'inflation cœur des économies avancées est restée globalement " +
+      "contenue malgré la flambée des prix du pétrole, sans signe de propagation au-delà de " +
+      "l'énergie. La Fed, sous la présidence de son nouveau président Kevin Warsh, a réaffirmé " +
+      "sans ambiguïté son engagement envers la stabilité des prix ; Citi juge sa prochaine " +
+      "décision plus probablement une hausse qu'une baisse, sans l'anticiper à court terme, et " +
+      "maintient une vue de taux « plus élevés plus longtemps ». Aux États-Unis, les marges " +
+      "bénéficiaires des entreprises non financières sont à leur plus haut niveau en 60 ans, " +
+      "l'emploi salarié a progressé de 92 000 postes par mois au premier semestre et les " +
+      "commandes de biens d'équipement de base ont bondi de 15 %. Les entreprises américaines " +
+      "financent l'essentiel de leur capex sur leurs flux de trésorerie internes — un surplus " +
+      "annualisé de 635 milliards de dollars au premier trimestre, contre un déficit de " +
+      "financement représentant 6,4 % de la production du secteur lors de la bulle internet de " +
+      "2000. En zone euro, le resserrement des conditions de crédit bancaire pèse davantage, " +
+      "faute d'un accès aux marchés de capitaux aussi développé. En Asie émergente, la croissance " +
+      "sud-coréenne et taïwanaise a nettement accéléré, portée par les exportations liées à " +
+      "l'IA, avec des révisions de croissance 2026 nettement positives pour Taïwan, Hong Kong et " +
+      "la Corée du Sud, à l'inverse des révisions négatives pour les économies avancées.\n\n" +
+      "Le thème mis en avant ce trimestre est la cybersécurité, prolongement de la thèse de " +
+      "résilience de la banque vers la défense numérique. L'IA augmente simultanément la valeur " +
+      "de ce qui doit être protégé et abaisse le coût des attaques : selon CrowdStrike, les " +
+      "attaques assistées par IA ont bondi de 89 % en 2025, le temps de propagation d'une machine " +
+      "compromise à d'autres systèmes est tombé à 29 minutes, et 82 % des intrusions détectées " +
+      "n'impliquaient aucun logiciel malveillant. La part de la cybersécurité dans les budgets " +
+      "logiciels d'entreprise est passée de 4,8 % en 2011 à 10,6 % en 2025. Citi juge la prime de " +
+      "valorisation du secteur justifiée par la durabilité de cette dépense, avec trois risques : " +
+      "ralentissement de la consommation cloud, ralentissement des revenus récurrents des plus " +
+      "grandes plateformes dont les valorisations laissent peu de marge à la déception, et " +
+      "concurrence des hyperscalers qui intègrent la sécurité directement dans leurs offres " +
+      "cloud.\n\n" +
+      "Second thème réaffirmé, les matières premières comme diversificateur de moyen terme : Citi " +
+      "voit dans leur récent repli une opportunité d'entrée plutôt qu'une raison d'abandonner la " +
+      "thèse, les indices diversifiés affichant historiquement une corrélation positive aux " +
+      "actions en période de croissance forte et négative en période de ralentissement — un " +
+      "profil inverse de celui des obligations en régime de forte inflation. La banque a réduit " +
+      "tactiquement son exposition aux mines de cuivre avant le conflit au Moyen-Orient, sorti sa " +
+      "position sur les valeurs énergétiques après le rallye géopolitique, et réduit son " +
+      "exposition aux actions brésiliennes avant les élections, tout en maintenant l'or comme " +
+      "socle du portefeuille.\n\n" +
+      "Sur le positionnement, Citi maintient une surpondération des grandes capitalisations " +
+      "américaines en actions, une sous-pondération de la duration longue en obligations, une " +
+      "orientation vers le crédit de meilleure qualité, et recommande l'or face à une corrélation " +
+      "actions-obligations devenue moins fiable depuis la pandémie. Risques identifiés : une " +
+      "saison de résultats où des dépenses IA plus timides pèseraient sur les bénéficiaires du " +
+      "capex, une résurgence de pressions inflationnistes plus larges qui produirait un " +
+      "environnement de stagflation difficile pour les actions comme pour les obligations, et " +
+      "l'incertitude politique — élections de mi-mandat américaines, changement de premier " +
+      "ministre au Royaume-Uni, élection générale serrée au Brésil.",
+    highlights: [
+      "Malgré la fermeture du détroit d'Ormuz et le conflit au Moyen-Orient, l'industrie manufacturière mondiale a progressé plus vite en juin qu'en février, avant le début du conflit.",
+      "Nouveau thème d'investissement : la cybersécurité — l'IA augmente la valeur de ce qui doit être protégé tout en abaissant le coût des attaques, qui ont bondi de 89 % en 2025 selon CrowdStrike.",
+      "La Fed, sous son nouveau président Kevin Warsh, juge sa prochaine décision plus probablement une hausse qu'une baisse ; Citi maintient une vue de taux « plus élevés plus longtemps ».",
+      "Les entreprises américaines financent leur capex sur leurs flux internes avec un surplus de 635 milliards de dollars au T1 2026, contre un déficit de financement de 6,4 % de la production en 2000.",
+      "La croissance sud-coréenne et taïwanaise accélère nettement, portée par les exportations liées à l'IA — les révisions de croissance 2026 sont positives pour l'Asie du Nord, négatives pour les économies avancées.",
+      "Portefeuille : surpondération des grandes capitalisations américaines, sous-pondération de la duration longue, montée en qualité sur le crédit, et l'or comme socle face à une corrélation actions-obligations moins fiable.",
+    ],
+    driverRefs: ["iran", "rates", "ai"],
+    trendRefs: ["prime-risque-permanente", "desinflation-terminee", "capex-ia-benefices"],
+    sourceUrl: "https://www.docs.citi.com/WealthOCIO/2026Q3Report.pdf",
+  },
 ];
