@@ -134,4 +134,76 @@ export const OUTLOOKS: Outlook[] = [
     sourceUrl:
       "https://www.assetmanagement.hsbc.co.uk/en/institutional-investor/-/media/files/attachments/common/2026-mid-year-investment-outlook",
   },
+  {
+    id: "bnpparibas-mid-2026",
+    bank: "BNP Paribas Wealth Management",
+    bankMonogram: "BNPP",
+    title: "Our Investment Themes: 2026 Mid-Year Update",
+    periodCovered: "Mid-year 2026",
+    // Aucune date de publication explicite dans le document ; l'URL source porte le chemin
+    // "june-2026" et le copyright interne indique "© BNP Paribas (2026)".
+    publishedAt: "2026-06-01",
+    summary:
+      "BNP Paribas Wealth Management publie une mise à jour de mi-année de ses quatre thèmes " +
+      "d'investissement 2026, sous un message central : aucun répit sur le plan géopolitique. " +
+      "La guerre en Ukraine avait déjà rappelé l'urgence de la sécurité énergétique ; le conflit " +
+      "iranien et la fermeture du détroit d'Ormuz l'ont depuis aggravée. Certains pays étaient " +
+      "mieux préparés — la Chine a massivement investi dans le nucléaire, les renouvelables et " +
+      "le stockage par batteries depuis 2022 et porté ses réserves stratégiques de pétrole à " +
+      "200 jours de consommation domestique ; l'Europe a diversifié ses sources via le solaire, " +
+      "l'éolien et de nouveaux terminaux GNL. Mais aucune région n'est à l'abri de la volatilité " +
+      "des prix de l'énergie, pas même les États-Unis, dont le déséquilibre entre production de " +
+      "brut léger et besoin d'importer des bruts plus lourds expose le pays malgré son statut " +
+      "d'exportateur net.\n\n" +
+      "Premier thème, « Ride the bull, but guard the gains » : le marché haussier actions entame " +
+      "sa quatrième année et atteint de nouveaux records malgré le conflit iranien et les " +
+      "perturbations record de l'offre énergétique — une résilience que la banque juge fragile. " +
+      "Risques identifiés : des bénéfices qui pourraient décevoir par rapport à ce que les " +
+      "marchés anticipent, et une récession américaine plus profonde que prévu qui mettrait fin " +
+      "au cycle haussier. Recommandations : solutions structurées à protection du capital, fonds " +
+      "actions américaines couverts en devises, rééquilibrage hors des méga-capitalisations " +
+      "américaines vers d'autres régions et le style value/mid-small caps, positionnement sur " +
+      "les régions et secteurs délaissés, fonds défensifs à faible volatilité, hedge funds " +
+      "actions et fonds alternatifs UCITS, matières premières et autres actifs réels.\n\n" +
+      "Deuxième thème, « Beyond algorithms, the new AI frontiers » : la dispersion entre " +
+      "gagnants et perdants de la disruption par l'IA s'est fortement creusée depuis janvier — " +
+      "fabricants de puces mémoire, robots humanoïdes et infrastructure électrique ont progressé " +
+      "de 26 % à 184 %, tandis que les éditeurs de logiciels SaaS, menacés par les nouveaux " +
+      "outils de codage IA (Claude Code, d'Anthropic, est cité nommément), ont perdu 24 % depuis " +
+      "novembre 2025. Conclusion : un indice technologique large comme le Nasdaq 100 devient un " +
+      "véhicule de plus en plus inefficace pour capter le thème IA, qui exige une exposition " +
+      "ciblée. Risques : adoption et monétisation plus lentes que prévu, retours décevants sur " +
+      "l'investissement massif des hyperscalers, réduction des budgets IA en cas de récession, " +
+      "sécurité devenant un enjeu croissant de tout l'écosystème. Recommandations : production, " +
+      "transport et stockage d'électricité, nucléaire, puces haut de gamme, métaux et matériaux " +
+      "spéciaux (cuivre, lithium, aluminium, titane, terres rares), refroidissement et " +
+      "technologies liées à l'eau, cybersécurité, robotique et IA agentique en santé et finance.\n\n" +
+      "Troisième thème, « Welcome to the new age of scarcity » : les restrictions du trafic " +
+      "maritime dans le détroit d'Ormuz ont provoqué pénuries et hausses de prix sur l'énergie, " +
+      "les engrais, le soufre, l'hélium et les métaux industriels stratégiques — et même une " +
+      "réouverture rapide laisserait des tensions d'approvisionnement pendant plusieurs mois. " +
+      "Malgré la forte performance des matières premières depuis 2022 (l'indice pondéré à parts " +
+      "égales Bloomberg a gagné 74 % en dollars, contre des obligations mondiales globalement " +
+      "négatives même coupons compris), la banque juge la plupart des investisseurs encore " +
+      "sous-exposés à cette classe d'actifs sensible à la géopolitique.\n\n" +
+      "Quatrième thème, « Infrastructure is the backbone of the modern economy » : quatre " +
+      "mégatendances soutiennent l'investissement en infrastructure — sécurité énergétique en " +
+      "Europe et en Asie, électrification progressive de l'économie mondiale, besoins croissants " +
+      "de la digitalisation, croissance structurelle du transport aérien et ferroviaire —, " +
+      "auxquelles s'ajoute le besoin urgent de reconstruction en Ukraine et au Moyen-Orient. " +
+      "Risques : le niveau d'endettement des États pourrait limiter les dépenses, et la classe " +
+      "d'actifs reste sensible à l'inflation et aux hausses de taux.",
+    highlights: [
+      "Le marché haussier actions entre dans sa quatrième année malgré le conflit iranien et les perturbations record de l'offre énergétique — résilient, mais jugé fragile.",
+      "Dispersion IA : puces mémoire, robots humanoïdes et infrastructure électrique ont gagné 26 % à 184 % depuis janvier, contre -24 % pour les éditeurs SaaS menacés par les outils de codage IA.",
+      "La fermeture du détroit d'Ormuz a provoqué pénuries et hausses de prix sur l'énergie, les engrais, le soufre, l'hélium et les métaux stratégiques — des tensions qui persisteront plusieurs mois même après une réouverture rapide.",
+      "L'indice de matières premières pondéré à parts égales de Bloomberg a gagné 74 % en dollars depuis les points bas post-Covid, contre des obligations mondiales globalement négatives même coupons compris.",
+      "Quatre mégatendances soutiennent l'infrastructure : sécurité énergétique, électrification, digitalisation, croissance du transport aérien et ferroviaire — plus la reconstruction de l'Ukraine et du Moyen-Orient.",
+      "Un indice technologique large comme le Nasdaq 100 devient un véhicule de plus en plus inefficace pour capter le thème IA, qui exige une exposition ciblée sur les sous-thèmes gagnants.",
+    ],
+    driverRefs: ["iran", "ai"],
+    trendRefs: ["prime-risque-permanente", "capex-ia-benefices"],
+    sourceUrl:
+      "https://wealthmanagement.bnpparibas/content/dam/wmpublicsite/global/pdfs/en/june-2026/BNPP_INVEST_THEMES_2026_brochureEN_version%20courte.pdf",
+  },
 ];
