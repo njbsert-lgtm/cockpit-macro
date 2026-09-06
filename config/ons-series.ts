@@ -18,10 +18,23 @@ import type { Zone } from "@/lib/types";
  * d'Angleterre qui le publie, sur une base de données distincte (IADB). Il reste hors de ce
  * fichier ; le brancher est un chantier séparé. Le PMI composite (`uk-pmi`) reste au seed pour
  * la même raison qu'ailleurs : indice propriétaire S&P Global, absent de l'API ONS.
+ *
+ * **Mise à jour — l'ancienne API a été retirée le 25/11/2024.** `api.ons.gov.uk/timeseries/
+ * {id}/dataset/{ds}/data` répond « This API has been decommissioned ». Confirmé par appel
+ * réel (`workflow_dispatch` de `verification-sources.yml`, sonde générique). L'API de contenu
+ * du site (`api.ons.gov.uk/v1/data?uri=<chemin de la page timeseries>`) sert toujours
+ * exactement le même schéma JSON (`months`/`quarters`/`years`, `description.unit`) — seule
+ * l'URL change, `lib/ons.ts` n'a rien à reparser. `topic` porte ce chemin, vérifié série par
+ * série par le même mécanisme.
  */
 
 export type OnsMapping = {
   target: { kind: "macro"; id: string };
+  /**
+   * Le chemin thématique de la page ONS qui porte la série, ex. `economy/
+   * inflationandpriceindices` — le préfixe de `uri` dans `api.ons.gov.uk/v1/data?uri=`.
+   */
+  topic: string;
   /** L'identifiant de la série elle-même, ex. `D7G7` (CDID, stable dans le temps chez ONS). */
   timeseriesId: string;
   /** Le jeu de données qui la porte, ex. `MM23` — nécessaire pour former l'URL. */
@@ -53,6 +66,7 @@ export const ONS_SERIES: OnsMapping[] = [
   // --- Inflation ------------------------------------------------------------
   {
     target: { kind: "macro", id: "uk-cpi" },
+    topic: "economy/inflationandpriceindices",
     timeseriesId: "D7G7",
     datasetId: "MM23",
     cadence: "monthly",
@@ -63,6 +77,7 @@ export const ONS_SERIES: OnsMapping[] = [
   },
   {
     target: { kind: "macro", id: "uk-cpi-core" },
+    topic: "economy/inflationandpriceindices",
     timeseriesId: "D7G8",
     datasetId: "MM23",
     cadence: "monthly",
@@ -77,6 +92,7 @@ export const ONS_SERIES: OnsMapping[] = [
   // directement comparable aux séries `namq_10_gdp` déjà branchées.
   {
     target: { kind: "macro", id: "uk-gdp" },
+    topic: "economy/grossdomesticproductgdp",
     timeseriesId: "ABMI",
     datasetId: "QNA",
     cadence: "quarterly",
@@ -89,6 +105,7 @@ export const ONS_SERIES: OnsMapping[] = [
   // --- Taux de chômage ---------------------------------------------------------
   {
     target: { kind: "macro", id: "uk-unemployment" },
+    topic: "employmentandlabourmarket/peoplenotinwork/unemployment",
     timeseriesId: "MGSX",
     datasetId: "LMS",
     cadence: "monthly",
@@ -103,6 +120,7 @@ export const ONS_SERIES: OnsMapping[] = [
   // cahier suit ailleurs sous le libellé « Salaires ».
   {
     target: { kind: "macro", id: "uk-wages" },
+    topic: "employmentandlabourmarket/peopleinwork/earningsandworkinghours",
     timeseriesId: "KAC3",
     datasetId: "LMS",
     cadence: "monthly",
@@ -113,15 +131,28 @@ export const ONS_SERIES: OnsMapping[] = [
   },
 
   // --- Solde budgétaire --------------------------------------------------------
+  // Désactivée : `PSAB/PSA` répondait sur l'ancienne API, mais son équivalent sur la nouvelle
+  // (api.ons.gov.uk/v1/data?uri=...) n'a pas été localisé — ni sous
+  // governmentpublicsectorandtaxes/publicsectorfinance, ni sous .../publicspending, avec le
+  // dataset PSA ou son remplaçant présumé PUSF. Plutôt que de deviner un chemin de plus,
+  // désactivée jusqu'à confirmation par appel réel (même discipline que `us-pmi` : on documente
+  // l'incertitude plutôt que d'activer une série non vérifiée).
   {
     target: { kind: "macro", id: "uk-budget-balance" },
+    topic: "economy/governmentpublicsectorandtaxes/publicsectorfinance",
     timeseriesId: "PSAB",
     datasetId: "PSA",
     cadence: "quarterly",
     zone: "uk",
     plausible: BUDGET_BOUNDS,
     expect: {},
-    enabled: true,
+    enabled: false,
+    disabledReason:
+      "chemin de la nouvelle API non confirmé — l'ancien point de terminaison " +
+      "(api.ons.gov.uk/timeseries/psab/dataset/psa/data) a été retiré le 25/11/2024, et ni " +
+      "governmentpublicsectorandtaxes/publicsectorfinance ni .../publicspending, avec PSA ou " +
+      "PUSF comme dataset, ne répondent sur api.ons.gov.uk/v1/data?uri=. À relocaliser avant " +
+      "d'activer.",
   },
 ];
 

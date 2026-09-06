@@ -4,7 +4,12 @@ import { describeFetchError, fetchWithTimeout } from "./http";
 
 export const ONS_SOURCE = "ONS";
 
-const BASE_URL = "https://api.ons.gov.uk/timeseries";
+// L'ancien point de terminaison (`api.ons.gov.uk/timeseries/{id}/dataset/{ds}/data`) a été
+// retiré le 25/11/2024 — confirmé par appel réel, réponse « This API has been decommissioned ».
+// Celui-ci est l'API de contenu du site ONS : `uri` est le chemin de la page timeseries
+// publique (ex. `/economy/inflationandpriceindices/timeseries/d7g7/mm23`), et elle sert le même
+// schéma JSON que l'ancienne API — seule cette URL a changé, pas le format de réponse.
+const BASE_URL = "https://api.ons.gov.uk/v1/data";
 
 // ---------------------------------------------------------------------------
 // Schéma — l'API ONS sert une série à la fois (contrairement à Eurostat), avec un tableau par
@@ -75,7 +80,8 @@ export function periodToDate(period: string): string | null {
 
 /** Un appel, une série, une fois par jour — même contrainte que FRED et Eurostat. Sans clé. */
 export function buildOnsUrl(mapping: OnsMapping): string {
-  return `${BASE_URL}/${mapping.timeseriesId}/dataset/${mapping.datasetId}/data`;
+  const uri = `/${mapping.topic}/timeseries/${mapping.timeseriesId.toLowerCase()}/${mapping.datasetId.toLowerCase()}`;
+  return `${BASE_URL}?uri=${uri}`;
 }
 
 function arrayFor(payload: z.infer<typeof onsResponseSchema>, cadence: OnsMapping["cadence"]) {

@@ -4,6 +4,7 @@ import type { OnsMapping } from "@/config/ons-series";
 
 const cpi: OnsMapping = {
   target: { kind: "macro", id: "uk-cpi" },
+  topic: "economy/inflationandpriceindices",
   timeseriesId: "D7G7",
   datasetId: "MM23",
   cadence: "monthly",
@@ -15,6 +16,7 @@ const cpi: OnsMapping = {
 
 const gdp: OnsMapping = {
   target: { kind: "macro", id: "uk-gdp" },
+  topic: "economy/grossdomesticproductgdp",
   timeseriesId: "ABMI",
   datasetId: "QNA",
   cadence: "quarterly",
@@ -47,8 +49,18 @@ describe("periodToDate", () => {
 });
 
 describe("buildOnsUrl", () => {
-  it("compose l'URL série + dataset, sans clé", () => {
-    expect(buildOnsUrl(cpi)).toBe("https://api.ons.gov.uk/timeseries/D7G7/dataset/MM23/data");
+  it("compose l'URL de contenu du site ONS, chemin thématique + série + dataset, sans clé", () => {
+    // L'ancien point de terminaison (api.ons.gov.uk/timeseries/{id}/dataset/{ds}/data) a été
+    // retiré le 25/11/2024 — voir le commentaire en tête de config/ons-series.ts.
+    expect(buildOnsUrl(cpi)).toBe(
+      "https://api.ons.gov.uk/v1/data?uri=/economy/inflationandpriceindices/timeseries/d7g7/mm23",
+    );
+  });
+
+  it("met l'identifiant de série et le dataset en minuscules, comme la source les attend", () => {
+    expect(buildOnsUrl(gdp)).toBe(
+      "https://api.ons.gov.uk/v1/data?uri=/economy/grossdomesticproductgdp/timeseries/abmi/qna",
+    );
   });
 });
 
