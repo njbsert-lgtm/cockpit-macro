@@ -36,6 +36,7 @@ export const DRIVER_KEYWORDS: Record<string, string[]> = {
     "rate cut",
     "hausse de taux",
     "baisse de taux",
+    "inflation",
   ],
   iran: [
     "Iran",
@@ -44,6 +45,8 @@ export const DRIVER_KEYWORDS: Record<string, string[]> = {
     "détroit d'Hormuz",
     "Strait of Hormuz",
     "pétrolier",
+    "pétrole",
+    "oil",
     "tanker",
     "oil tanker",
     "sanctions iraniennes",
@@ -55,6 +58,8 @@ export const DRIVER_KEYWORDS: Record<string, string[]> = {
     "Gardiens de la révolution",
     "Ormuz blockade",
     "blocus d'Ormuz",
+    "strikes",
+    "guerre",
   ],
   ai: [
     "intelligence artificielle",
@@ -75,6 +80,9 @@ export const DRIVER_KEYWORDS: Record<string, string[]> = {
     "Anthropic",
     "AI chip",
     "puce IA",
+    "IPO Anthropic",
+    "IPO OpenAI",
+    "LLM",
   ],
 };
 
