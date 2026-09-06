@@ -11,6 +11,7 @@
     "fred:check": "tsx --env-file-if-exists=.env.local scripts/fred-check.mts",
     "eurostat:check": "tsx --env-file-if-exists=.env.local scripts/eurostat-check.mts",
     "eurostat:explore": "tsx scripts/eurostat-explore.mts",
+    "ons:check": "tsx --env-file-if-exists=.env.local scripts/ons-check.mts",
     "twelve-data:check": "tsx --env-file-if-exists=.env.local scripts/twelve-data-check.mts",
     "veille:classer": "tsx --env-file-if-exists=.env.local scripts/classer-veille.mts",
     "veille:ajouter": "tsx --env-file-if-exists=.env.local scripts/ajouter-veille-item.mts",

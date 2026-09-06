@@ -2,7 +2,10 @@ import { freshnessTier, type FreshnessTier, worstTier } from "./freshness";
 import { getReadClient, missingSupabaseConfig } from "./supabase";
 import { ENABLED_SERIES } from "@/config/fred-series";
 import { ENABLED_EUROSTAT_SERIES, EUROSTAT_SOURCE } from "@/config/eurostat-series";
+import { ENABLED_TWELVE_DATA_SERIES } from "@/config/twelve-data-series";
+import { ENABLED_ONS_SERIES, ONS_SOURCE } from "@/config/ons-series";
 import { FRED_SOURCE } from "./fred";
+import { TWELVE_DATA_SOURCE } from "./twelve-data";
 
 export type SourceFreshness = {
   source: string;
@@ -65,6 +68,8 @@ function configuredSources(): string[] {
   const sources = new Set<string>();
   if (ENABLED_SERIES.length > 0) sources.add(FRED_SOURCE);
   if (ENABLED_EUROSTAT_SERIES.length > 0) sources.add(EUROSTAT_SOURCE);
+  if (ENABLED_TWELVE_DATA_SERIES.length > 0) sources.add(TWELVE_DATA_SOURCE);
+  if (ENABLED_ONS_SERIES.length > 0) sources.add(ONS_SOURCE);
   return [...sources];
 }
 

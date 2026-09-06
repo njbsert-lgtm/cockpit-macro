@@ -9,9 +9,11 @@ import {
   ENABLED_TWELVE_DATA_SERIES,
   type TwelveDataMapping,
 } from "@/config/twelve-data-series";
+import { ENABLED_ONS_SERIES, ONS_SOURCE, type OnsMapping } from "@/config/ons-series";
 import { fetchFredSeries, FRED_SOURCE, type FredFetchResult } from "./fred";
 import { fetchEurostatSeries } from "./eurostat";
 import { fetchTwelveDataSeries, TWELVE_DATA_SOURCE } from "./twelve-data";
+import { fetchOnsSeries } from "./ons";
 import { getMacroIndicators } from "./data";
 
 export type SeriesOutcome = {
@@ -139,6 +141,44 @@ export async function runEurostatIngest(
   }
 
   return report(EUROSTAT_SOURCE, startedAt, outcomes, series.length);
+}
+
+// ---------------------------------------------------------------------------
+// ONS
+// ---------------------------------------------------------------------------
+
+type OnsFetcher = (mapping: OnsMapping) => Promise<
+  { ok: true; points: Array<{ date: string; value: number }> } | { ok: false; error: string }
+>;
+
+/**
+ * Un passage de collecte ONS. Même mécanique que FRED et Eurostat : séquentiel, tolérant à
+ * l'échec d'une série, idempotent par upsert sur (identifiant, date).
+ *
+ * La santé s'écrit dans `series_health` avec `source: 'ONS'` : un échec ONS ne peut pas se lire
+ * comme un échec d'une autre source.
+ */
+export async function runOnsIngest(
+  client: SupabaseClient,
+  options: {
+    now?: Date;
+    fetcher?: OnsFetcher;
+    series?: OnsMapping[];
+    deadline?: number;
+  } = {},
+): Promise<IngestReport> {
+  const now = options.now ?? new Date();
+  const fetcher = options.fetcher ?? fetchOnsSeries;
+  const startedAt = now.toISOString();
+  const outcomes: SeriesOutcome[] = [];
+  const series = options.series ?? ENABLED_ONS_SERIES;
+
+  for (const mapping of series) {
+    if (outOfTime(options.deadline)) break;
+    outcomes.push(await ingestOnsOne(client, mapping, now, fetcher));
+  }
+
+  return report(ONS_SOURCE, startedAt, outcomes, series.length);
 }
 
 // ---------------------------------------------------------------------------
@@ -305,6 +345,70 @@ async function ingestEurostatOne(
   await recordHealthSuccess(client, {
     seriesKey,
     source: EUROSTAT_SOURCE,
+    targetKind: "macro",
+    targetId,
+    latestObservation: result.points.at(-1)?.date ?? null,
+    now,
+  });
+  return { seriesId: seriesKey, targetId, ok: true, written: rows.length };
+}
+
+/** L'identifiant lisible d'une série ONS : la série et le dataset qui la porte. */
+export function onsSeriesKey(mapping: OnsMapping): string {
+  return `${mapping.timeseriesId}/${mapping.datasetId}`;
+}
+
+async function ingestOnsOne(
+  client: SupabaseClient,
+  mapping: OnsMapping,
+  now: Date,
+  fetcher: OnsFetcher,
+): Promise<SeriesOutcome> {
+  const targetId = mapping.target.id;
+  const seriesKey = onsSeriesKey(mapping);
+  const result = await fetcher(mapping);
+
+  if (!result.ok) {
+    await recordHealthFailure(client, {
+      seriesKey,
+      source: ONS_SOURCE,
+      targetKind: "macro",
+      targetId,
+      error: result.error,
+      now,
+    });
+    return { seriesId: seriesKey, targetId, ok: false, written: 0, error: result.error };
+  }
+
+  const fetchedAt = now.toISOString();
+  const rows = result.points.map((p) => ({
+    indicator_id: targetId,
+    date: p.date,
+    value: p.value,
+    source: ONS_SOURCE,
+    fetched_at: fetchedAt,
+  }));
+
+  if (rows.length > 0) {
+    const { error } = await client
+      .from("macro_observations")
+      .upsert(rows, { onConflict: "indicator_id,date" });
+    if (error) {
+      await recordHealthFailure(client, {
+        seriesKey,
+        source: ONS_SOURCE,
+        targetKind: "macro",
+        targetId,
+        error: `écriture refusée — ${error.message}`,
+        now,
+      });
+      return { seriesId: seriesKey, targetId, ok: false, written: 0, error: error.message };
+    }
+  }
+
+  await recordHealthSuccess(client, {
+    seriesKey,
+    source: ONS_SOURCE,
     targetKind: "macro",
     targetId,
     latestObservation: result.points.at(-1)?.date ?? null,

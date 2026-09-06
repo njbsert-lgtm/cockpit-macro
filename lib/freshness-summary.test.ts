@@ -52,12 +52,21 @@ describe("getFreshnessSummary — aucune donnée en dur ne s'y affiche", () => {
 
     // Le seed étiquette une trentaine de sources — BLS, BCE, Destatis, S&P Global… Aucune
     // n'est collectée, aucune n'a donc à parler de la santé de la collecte.
-    for (const seedOnly of ["BLS", "BCE", "Destatis", "S&P Global", "Twelve Data"]) {
+    for (const seedOnly of ["BLS", "BCE", "Destatis", "S&P Global"]) {
       expect(sources).not.toContain(seedOnly);
     }
     // Il ne reste que ce qui est réellement branché.
     expect(sources).toContain(FRED_SOURCE);
-    expect(sources.length).toBeLessThanOrEqual(2);
+    // ONS reste hors de la liste tant qu'ONS_VERIFIED n'est pas basculé — aucune série activée.
+    expect(sources).not.toContain("ONS");
+    expect(sources.length).toBeLessThanOrEqual(3);
+  });
+
+  it("liste Twelve Data — deux séries y sont réellement actives (or, MSCI ACWI)", async () => {
+    // Oubliée lors du branchement initial : Twelve Data collecte bel et bien, mais n'apparaissait
+    // jamais dans ce panneau, contrairement à ce que le module promet lui-même.
+    const summary = await getFreshnessSummary(NOW);
+    expect(summary.map((s) => s.source)).toContain("Twelve Data");
   });
 });
 

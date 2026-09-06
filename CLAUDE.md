@@ -967,7 +967,7 @@ Gratuites, en accès programmatique. Clés en variables d'environnement, jamais 
 | Macro US, taux, inflation | **FRED API** | Gratuit, très fiable, couvre aussi de l'international |
 | Macro zone euro et pays | **ECB Data Portal**, **Eurostat** | APIs publiques sans clé. Eurostat branché : IPCH total et sous-jacent, PIB, chômage, pour `ez` `fr` `de` `es` `it` |
 | Macro France | **INSEE** (API BDM) | Gratuit, inscription requise |
-| Macro UK | **ONS API** | Gratuit, sans clé |
+| Macro UK | **ONS API** | Gratuit, sans clé. Code écrit (`config/ons-series.ts`, `lib/ons.ts`) pour IPCH total et sous-jacent, PIB, chômage, salaires et solde budgétaire — mais `ONS_VERIFIED` reste à `false` : identifiants jamais confrontés à un appel réseau réel, `npm run ons:check` doit sortir vert avant d'activer. Le taux directeur n'est pas une série ONS — c'est la Banque d'Angleterre qui le publie, chantier séparé ; le PMI composite reste au seed, propriétaire S&P Global comme ailleurs |
 | Énergie | **EIA API** | Gratuit, données officielles |
 | Indices actions, FX | **FRED** (huit séries) et **Twelve Data** | FRED : S&P 500, Nasdaq 100, Nikkei 225, EUR/USD, GBP/USD, USD/JPY, Brent, WTI. Twelve Data branché pour l'or (`XAU/USD`) et MSCI ACWI (ETF iShares `ACWI`) ; le reste des indices propriétaires visés (Euro Stoxx 50, FTSE 100, CSI 300, Nifty 50, Hang Seng, CAC 40), l'argent, le cuivre et le DXY restent au seed — verrouillés au palier payant ou absents du catalogue sous les codes usuels, voir `config/twelve-data-series.ts`. Palier gratuit à 8 appels par minute. |
 | Bund et OAT 10 ans | **ECB Data Portal**, **Bundesbank**, **Banque de France** | Gratuit, sans clé |
@@ -1240,11 +1240,23 @@ porte plus d'une valeur par période, donc si une dimension est restée ouverte,
 réponse est rejetée en nommant la dimension fautive** : une dimension oubliée ne peut pas
 passer inaperçue.
 
+**ONS (Royaume-Uni), source suivante — code écrit, non encore vérifié.** Contrairement à
+Eurostat, une série ONS n'a qu'une seule dimension à fixer : `timeseriesId` et `datasetId`
+suffisent à former l'URL (`config/ons-series.ts`, `lib/ons.ts`). Le périmètre visé : IPCH total
+et sous-jacent, PIB, chômage, salaires et solde budgétaire — six séries, toutes zone `uk`. Le
+taux directeur (Banque d'Angleterre) reste hors de ce fichier : ce n'est pas une série ONS, elle
+vient d'une base de données distincte, et le brancher est un chantier séparé. Comme pour
+`config/veille-taxonomy.ts` en son temps, les identifiants ONS repris ici (`D7G7`, `MGSX`,
+`KAC3`…) n'ont pas pu être confrontés à un appel réseau réel depuis l'environnement où ce
+module a été écrit — `ONS_VERIFIED` reste à `false` jusqu'à ce que `npm run ons:check` sorte
+vert série par série, même discipline que FRED et Eurostat avant lui.
+
 Mise en service, dans l'ordre : exécuter `supabase/schema.sql`, renseigner les variables de
 `.env.example`, lancer `npm run fred:check` et n'activer que les séries sorties vertes, faire
-de même avec `npm run twelve-data:check` et `npm run eurostat:check` (ce dernier avant de
-basculer `EUROSTAT_VERIFIED`), puis laisser le cron tourner. Le site fonctionne à chaque étape
-de cette séquence, y compris avant la première — c'est ce que garantit le repli sur le seed.
+de même avec `npm run twelve-data:check`, `npm run eurostat:check` (ce dernier avant de
+basculer `EUROSTAT_VERIFIED`) et `npm run ons:check` (avant de basculer `ONS_VERIFIED`), puis
+laisser le cron tourner. Le site fonctionne à chaque étape de cette séquence, y compris avant
+la première — c'est ce que garantit le repli sur le seed.
 
 **Étape 4 — Confort.**
 Mode comparaison de l'onglet Macro, graphiques de séries, recherche dans les notes,

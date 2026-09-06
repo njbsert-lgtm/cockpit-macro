@@ -1,0 +1,139 @@
+import type { Cadence } from "./cadence";
+import type { Zone } from "@/lib/types";
+
+/**
+ * Table de correspondance entre nos identifiants et les séries ONS (Office for National
+ * Statistics, Royaume-Uni). Même rôle que `config/fred-series.ts` et
+ * `config/eurostat-series.ts` : rien ne passe en collecte sans être sorti vert de
+ * `npm run ons:check`.
+ *
+ * **Aucun de ces identifiants n'a été confronté à un appel réseau réel depuis cet
+ * environnement** — même prudence que pour `config/veille-taxonomy.ts` en son temps. Les
+ * `timeseriesId` et `datasetId` ci-dessous reprennent les valeurs déjà portées par
+ * `data/seed.json` (`ONS.D7G7`, `ONS.MGSX`, etc.), qui sont des identifiants ONS réels et
+ * stables depuis des années — mais le regroupement dataset/série exact doit être vérifié avant
+ * d'activer quoi que ce soit. `ONS_VERIFIED` reste à `false` tant que ce n'est pas fait.
+ *
+ * Le taux directeur (`uk-policy-rate`) n'est **pas** une série ONS — c'est la Banque
+ * d'Angleterre qui le publie, sur une base de données distincte (IADB). Il reste hors de ce
+ * fichier ; le brancher est un chantier séparé. Le PMI composite (`uk-pmi`) reste au seed pour
+ * la même raison qu'ailleurs : indice propriétaire S&P Global, absent de l'API ONS.
+ */
+
+export type OnsMapping = {
+  target: { kind: "macro"; id: string };
+  /** L'identifiant de la série elle-même, ex. `D7G7` (CDID, stable dans le temps chez ONS). */
+  timeseriesId: string;
+  /** Le jeu de données qui la porte, ex. `MM23` — nécessaire pour former l'URL. */
+  datasetId: string;
+  cadence: Cadence;
+  zone: Zone;
+  /**
+   * Bornes de plausibilité, en unité finale. Une valeur en dehors fait rejeter **toute la
+   * réponse**, même principe que FRED et Eurostat : si l'identifiant est le mauvais, ce n'est
+   * pas un point qui est faux, c'est la série entière.
+   */
+  plausible: { min: number; max: number };
+  /** Ce que `npm run ons:check` doit retrouver, pour confirmer qu'on lit la bonne série. */
+  expect: { unitLabel?: string };
+  enabled: boolean;
+  /** Pourquoi cette série est désactivée. Obligatoire quand `enabled` est faux. */
+  disabledReason?: string;
+};
+
+export const ONS_SOURCE = "ONS";
+
+const INFLATION_BOUNDS = { min: -5, max: 25 };
+const GDP_BOUNDS = { min: -35, max: 35 };
+const UNEMPLOYMENT_BOUNDS = { min: 0, max: 30 };
+const WAGE_BOUNDS = { min: -10, max: 25 };
+const BUDGET_BOUNDS = { min: -25, max: 15 };
+
+export const ONS_SERIES: OnsMapping[] = [
+  // --- Inflation ------------------------------------------------------------
+  {
+    target: { kind: "macro", id: "uk-cpi" },
+    timeseriesId: "D7G7",
+    datasetId: "MM23",
+    cadence: "monthly",
+    zone: "uk",
+    plausible: INFLATION_BOUNDS,
+    expect: { unitLabel: "%" },
+    enabled: true,
+  },
+  {
+    target: { kind: "macro", id: "uk-cpi-core" },
+    timeseriesId: "D7G8",
+    datasetId: "MM23",
+    cadence: "monthly",
+    zone: "uk",
+    plausible: INFLATION_BOUNDS,
+    expect: { unitLabel: "%" },
+    enabled: true,
+  },
+
+  // --- Croissance du PIB ------------------------------------------------------
+  // Variation sur le même trimestre de l'année précédente, comme pour Eurostat — donc
+  // directement comparable aux séries `namq_10_gdp` déjà branchées.
+  {
+    target: { kind: "macro", id: "uk-gdp" },
+    timeseriesId: "ABMI",
+    datasetId: "QNA",
+    cadence: "quarterly",
+    zone: "uk",
+    plausible: GDP_BOUNDS,
+    expect: { unitLabel: "%" },
+    enabled: true,
+  },
+
+  // --- Taux de chômage ---------------------------------------------------------
+  {
+    target: { kind: "macro", id: "uk-unemployment" },
+    timeseriesId: "MGSX",
+    datasetId: "LMS",
+    cadence: "monthly",
+    zone: "uk",
+    plausible: UNEMPLOYMENT_BOUNDS,
+    expect: { unitLabel: "%" },
+    enabled: true,
+  },
+
+  // --- Salaires -----------------------------------------------------------------
+  // Rémunération totale (avec primes), variation annuelle — série la plus proche de ce que le
+  // cahier suit ailleurs sous le libellé « Salaires ».
+  {
+    target: { kind: "macro", id: "uk-wages" },
+    timeseriesId: "KAC3",
+    datasetId: "LMS",
+    cadence: "monthly",
+    zone: "uk",
+    plausible: WAGE_BOUNDS,
+    expect: { unitLabel: "%" },
+    enabled: true,
+  },
+
+  // --- Solde budgétaire --------------------------------------------------------
+  {
+    target: { kind: "macro", id: "uk-budget-balance" },
+    timeseriesId: "PSAB",
+    datasetId: "PSA",
+    cadence: "quarterly",
+    zone: "uk",
+    plausible: BUDGET_BOUNDS,
+    expect: {},
+    enabled: true,
+  },
+];
+
+/**
+ * L'interrupteur général, sur le modèle d'`EUROSTAT_VERIFIED`. Reste à `false` tant qu'un
+ * `npm run ons:check` n'est pas sorti vert série par série — voir la note en tête de fichier
+ * sur l'absence de vérification réseau depuis cet environnement.
+ */
+export const ONS_VERIFIED = false;
+
+export const ENABLED_ONS_SERIES = ONS_VERIFIED ? ONS_SERIES.filter((m) => m.enabled) : [];
+
+export function onsMappingFor(indicatorId: string): OnsMapping | null {
+  return ENABLED_ONS_SERIES.find((m) => m.target.id === indicatorId) ?? null;
+}
