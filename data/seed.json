@@ -5591,7 +5591,7 @@
       "zone": "uk",
       "unit": "percent",
       "frequency": "quarterly",
-      "seriesKey": "ONS.ABMI",
+      "seriesKey": "ONS.IHYQ",
       "nextRelease": "2026-09-11"
     },
     {

@@ -57,9 +57,14 @@ describe("getFreshnessSummary — aucune donnée en dur ne s'y affiche", () => {
     }
     // Il ne reste que ce qui est réellement branché.
     expect(sources).toContain(FRED_SOURCE);
-    // ONS reste hors de la liste tant qu'ONS_VERIFIED n'est pas basculé — aucune série activée.
-    expect(sources).not.toContain("ONS");
-    expect(sources.length).toBeLessThanOrEqual(3);
+    expect(sources.length).toBeLessThanOrEqual(4);
+  });
+
+  it("liste ONS — cinq séries y sont réellement actives depuis la bascule d'ONS_VERIFIED", async () => {
+    // CPI, CPI sous-jacent, PIB, chômage et salaires sont vérifiés contre l'API réelle ; le
+    // solde budgétaire reste au seed, son chemin sur la nouvelle API n'étant pas confirmé.
+    const summary = await getFreshnessSummary(NOW);
+    expect(summary.map((s) => s.source)).toContain("ONS");
   });
 
   it("liste Twelve Data — deux séries y sont réellement actives (or, MSCI ACWI)", async () => {

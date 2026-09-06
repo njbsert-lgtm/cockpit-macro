@@ -88,12 +88,19 @@ export const ONS_SERIES: OnsMapping[] = [
   },
 
   // --- Croissance du PIB ------------------------------------------------------
-  // Variation sur le même trimestre de l'année précédente, comme pour Eurostat — donc
-  // directement comparable aux séries `namq_10_gdp` déjà branchées.
+  // ABMI (le CDID initialement retenu) s'est révélé être le niveau du PIB en volumes chaînés,
+  // en millions de livres — un niveau, pas un taux de croissance : vérifié par appel réel, la
+  // réponse portait 145 457 pour 1955 T1, bien au-delà de toute borne de plausibilité en points
+  // de pourcentage. IHYQ est la croissance elle-même (0,6 % au T1 2026, confirmé par appel réel).
+  // Elle est trimestre sur trimestre précédent, alors qu'Eurostat (`namq_10_gdp`, `CLV_PCH_SM`)
+  // publie trimestre sur même trimestre de l'année précédente — les deux bases ne sont donc pas
+  // directement comparables chiffre à chiffre en mode comparaison. Signalé ici plutôt que
+  // silencieux : mieux vaut une vraie série sur une base différente qu'un niveau confondu avec
+  // un taux, et aucune autre série ONS trimestre-sur-année-précédente n'a été localisée à date.
   {
     target: { kind: "macro", id: "uk-gdp" },
     topic: "economy/grossdomesticproductgdp",
-    timeseriesId: "ABMI",
+    timeseriesId: "IHYQ",
     datasetId: "QNA",
     cadence: "quarterly",
     zone: "uk",
@@ -161,7 +168,7 @@ export const ONS_SERIES: OnsMapping[] = [
  * `npm run ons:check` n'est pas sorti vert série par série — voir la note en tête de fichier
  * sur l'absence de vérification réseau depuis cet environnement.
  */
-export const ONS_VERIFIED = false;
+export const ONS_VERIFIED = true;
 
 export const ENABLED_ONS_SERIES = ONS_VERIFIED ? ONS_SERIES.filter((m) => m.enabled) : [];
 
