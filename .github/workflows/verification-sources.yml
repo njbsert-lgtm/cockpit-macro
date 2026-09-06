@@ -18,6 +18,7 @@ on:
         default: eurostat
         options:
           - eurostat
+          - ons
           - fred
           - les-deux
           - explorer-eurostat
@@ -63,6 +64,21 @@ jobs:
             echo '```'
           } >> "$GITHUB_STEP_SUMMARY"
           npm run eurostat:check --silent -- $SERIES 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
+          code=$?
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          exit $code
+
+      - name: ONS
+        if: ${{ inputs.source == 'ons' }}
+        env:
+          SERIES: ${{ inputs.series }}
+        run: |
+          set +e -o pipefail
+          {
+            echo '## ONS'
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+          npm run ons:check --silent -- $SERIES 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
           code=$?
           echo '```' >> "$GITHUB_STEP_SUMMARY"
           exit $code
