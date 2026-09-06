@@ -1,4 +1,4 @@
-import type { MacroIndicator, Observation } from "./types";
+import type { MacroIndicator, Observation, Zone } from "./types";
 import { getMacroIndicators } from "./data";
 import { observationsOf, type ObservationsBySeries } from "./observations";
 
@@ -19,6 +19,23 @@ export const METRIC_LABELS: Record<string, string> = {
 };
 
 export const METRIC_ORDER = Object.keys(METRIC_LABELS);
+
+/**
+ * Les zones qui n'ont structurellement pas de valeur pour une métrique — pas « non suivi »,
+ * mais « n'existe pas ». Un pays de la zone euro n'a pas de taux directeur propre : seule la
+ * BCE en fixe un, pour la zone entière (`ez`). Les lister ici les retire du mode comparaison
+ * plutôt que de les afficher comme une collecte manquante, ce qu'elles ne sont pas.
+ */
+export const METRIC_NOT_APPLICABLE: Partial<Record<string, Zone[]>> = {
+  "policy-rate": ["fr", "de", "es", "it"],
+};
+
+/** Les lignes du mode comparaison pour une métrique : toutes les zones sauf `global` et
+ * celles qui n'ont structurellement pas de valeur pour cette métrique. */
+export function comparisonRows(zones: Zone[], metric: string): Zone[] {
+  const notApplicable = METRIC_NOT_APPLICABLE[metric] ?? [];
+  return zones.filter((z) => z !== "global" && !notApplicable.includes(z));
+}
 
 export function metricOf(indicator: MacroIndicator): string {
   return indicator.id.slice(indicator.zone.length + 1);

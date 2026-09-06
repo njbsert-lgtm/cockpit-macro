@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { recentMacroChanges } from "./macro";
+import { comparisonRows, recentMacroChanges } from "./macro";
 import type { MacroIndicator, Observation } from "./types";
 
 function indicator(over: Partial<MacroIndicator> = {}): MacroIndicator {
@@ -82,5 +82,29 @@ describe("recentMacroChanges", () => {
 
     expect(recentMacroChanges([ind], bySeries, NOW, 30)).toHaveLength(1);
     expect(recentMacroChanges([ind], bySeries, NOW, 7)).toHaveLength(0);
+  });
+});
+
+describe("comparisonRows", () => {
+  const zones = ["us", "ez", "fr", "de", "es", "it", "uk", "jp", "cn", "in", "em", "global"] as const;
+
+  it("retire les pays de la zone euro pour le taux directeur — ils n'en ont pas en propre", () => {
+    const rows = comparisonRows([...zones], "policy-rate");
+    expect(rows).not.toContain("fr");
+    expect(rows).not.toContain("de");
+    expect(rows).not.toContain("es");
+    expect(rows).not.toContain("it");
+    expect(rows).toContain("ez");
+    expect(rows).toContain("us");
+  });
+
+  it("garde toutes les zones (sauf global) pour une métrique sans exclusion", () => {
+    const rows = comparisonRows([...zones], "cpi");
+    expect(rows).toContain("fr");
+    expect(rows).not.toContain("global");
+  });
+
+  it("exclut toujours global, quelle que soit la métrique", () => {
+    expect(comparisonRows([...zones], "policy-rate")).not.toContain("global");
   });
 });
