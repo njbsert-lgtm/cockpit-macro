@@ -148,6 +148,58 @@ describe("classifyVeilleItems — un lot en échec n'écrit rien", () => {
   });
 });
 
+describe("classifyVeilleItems — statistiques du run", () => {
+  it("porte isSignal, driverRefs et source sur chaque item classé avec succès", async () => {
+    const { client } = fakeClient();
+    const caller = vi.fn(async () => ({
+      value: { items: [classification({ isSignal: true, driverRefs: ["rates", "ai"] })] },
+      usage: { input: 100, output: 50 },
+    })) as unknown as StructuredCaller;
+
+    const report = await classifyVeilleItems(
+      client,
+      [item({ source: "Federal Reserve" })],
+      CONTEXT,
+      caller,
+    );
+
+    expect(report.outcomes[0]).toMatchObject({
+      ok: true,
+      isSignal: true,
+      driverRefs: ["rates", "ai"],
+      source: "Federal Reserve",
+    });
+  });
+
+  it("cumule les jetons sur tous les lots ayant réellement appelé l'API", async () => {
+    const items = Array.from({ length: 15 }, (_, i) => item({ id: `item-${i}` }));
+    const { client } = fakeClient();
+    const caller = vi.fn(async ({ user }: { user: string }) => {
+      const ids = [...user.matchAll(/id=(\S+)/g)].map((m) => m[1]);
+      return {
+        value: { items: ids.map((id) => classification({ id })) },
+        usage: { input: 40, output: 20 },
+      };
+    }) as unknown as StructuredCaller;
+
+    const report = await classifyVeilleItems(client, items, CONTEXT, caller, { batchSize: 10 });
+
+    // Deux lots (10 + 5), chacun facturé 40/20 par le faux caller.
+    expect(report.usage).toEqual({ input: 80, output: 40 });
+  });
+
+  it("n'ajoute rien au cumul de jetons pour un lot qui échoue avant toute réponse", async () => {
+    const { client } = fakeClient();
+    const caller = vi.fn(async () => {
+      throw new Error("panne réseau");
+    }) as unknown as StructuredCaller;
+
+    const report = await classifyVeilleItems(client, [item()], CONTEXT, caller);
+
+    expect(report.usage).toEqual({ input: 0, output: 0 });
+  });
+});
+
 describe("classifyVeilleItems — découpage en lots", () => {
   it("appelle le caller une fois par lot, jamais un appel par item", async () => {
     const items = Array.from({ length: 25 }, (_, i) => item({ id: `item-${i}` }));

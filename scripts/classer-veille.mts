@@ -16,6 +16,7 @@ import { getWriteClient, missingSupabaseConfig } from "../lib/supabase";
 import { getPendingVeilleItems } from "../lib/veille/queries";
 import { classifyVeilleItems } from "../lib/veille/classify";
 import { getActiveDrivers } from "../lib/content";
+import { CLASSIFICATION_MODEL } from "../config/ai-models";
 
 const caller = getAnthropicCaller();
 if (!caller) {
@@ -47,5 +48,36 @@ console.log(`\n${report.ok}/${items.length} classé(s), ${report.failed} en éch
 for (const outcome of report.outcomes.filter((o) => !o.ok)) {
   console.log(`✗ ${outcome.id} — ${outcome.error}`);
 }
+
+const classes = report.outcomes.filter((o) => o.ok);
+const signal = classes.filter((o) => o.isSignal === true);
+
+console.log(`\n${signal.length}/${classes.length} retenu(s) comme signal.`);
+
+function repartition(label: string, valeurs: string[]): void {
+  if (valeurs.length === 0) {
+    console.log(`\nPar ${label} : aucun item classé.`);
+    return;
+  }
+  const compte = new Map<string, number>();
+  for (const v of valeurs) compte.set(v, (compte.get(v) ?? 0) + 1);
+  console.log(`\nPar ${label} :`);
+  for (const [cle, n] of [...compte.entries()].sort((a, b) => b[1] - a[1])) {
+    console.log(`  ${cle.padEnd(24)} ${n}`);
+  }
+}
+
+// Un item peut porter plusieurs drivers, ou aucun — « aucun driver » reste visible plutôt que
+// de disparaître silencieusement du décompte, même principe que le reste du cahier.
+repartition(
+  "driver",
+  classes.flatMap((o) => (o.driverRefs && o.driverRefs.length > 0 ? o.driverRefs : ["(aucun driver)"])),
+);
+repartition("source", classes.map((o) => o.source ?? "(source inconnue)"));
+
+console.log(
+  `\nJetons consommés (${CLASSIFICATION_MODEL}) : ${report.usage.input} en entrée, ` +
+    `${report.usage.output} en sortie (${report.usage.input + report.usage.output} au total).`,
+);
 
 process.exit(report.failed > 0 && report.ok === 0 ? 1 : 0);

@@ -55,6 +55,13 @@ export type ClassifyOutcome = {
   id: string;
   ok: boolean;
   error?: string;
+  /**
+   * Renseignés uniquement quand `ok` est vrai — c'est ce qui permet au script appelant de
+   * calculer la répartition par signal, par driver et par source sans relire la base.
+   */
+  isSignal?: boolean;
+  driverRefs?: string[];
+  source?: string;
 };
 
 export type ClassifyReport = {
@@ -65,6 +72,11 @@ export type ClassifyReport = {
   /** Items reçus mais absents de la réponse du modèle — ni réussis ni en échec, repris demain. */
   skipped: number;
   outcomes: ClassifyOutcome[];
+  /**
+   * Cumulé sur tous les lots ayant réellement appelé l'API — un lot en échec (exception avant
+   * toute réponse) n'y contribue pas, faute de `usage` à lire.
+   */
+  usage: { input: number; output: number };
 };
 
 export type ClassifyContext = {
@@ -79,6 +91,7 @@ function chunk<T>(items: T[], size: number): T[][] {
 
 async function writeClassification(
   client: SupabaseClient,
+  item: VeilleItem,
   classified: ClassifiedItem,
 ): Promise<ClassifyOutcome> {
   const { error } = await client
@@ -94,9 +107,14 @@ async function writeClassification(
     })
     .eq("id", classified.id);
 
-  return error
-    ? { id: classified.id, ok: false, error: error.message }
-    : { id: classified.id, ok: true };
+  if (error) return { id: classified.id, ok: false, error: error.message };
+  return {
+    id: classified.id,
+    ok: true,
+    isSignal: classified.isSignal,
+    driverRefs: classified.driverRefs,
+    source: item.source,
+  };
 }
 
 /**
@@ -114,6 +132,8 @@ export async function classifyVeilleItems(
   const outcomes: ClassifyOutcome[] = [];
   const driverIds = context.drivers.map((d) => d.id);
   const batches = chunk(items, options.batchSize ?? BATCH_SIZE);
+  let usageInput = 0;
+  let usageOutput = 0;
 
   for (const batch of batches) {
     if (batch.length === 0) continue;
@@ -139,11 +159,14 @@ export async function classifyVeilleItems(
       continue;
     }
 
+    usageInput += response.usage.input;
+    usageOutput += response.usage.output;
+
     const classifiedById = new Map(response.value.items.map((c) => [c.id, c]));
     for (const item of batch) {
       const classified = classifiedById.get(item.id);
       if (!classified) continue; // omis par le modèle — repris au passage suivant, pas une erreur
-      outcomes.push(await writeClassification(client, classified));
+      outcomes.push(await writeClassification(client, item, classified));
     }
   }
 
@@ -154,5 +177,6 @@ export async function classifyVeilleItems(
     failed: outcomes.filter((o) => !o.ok).length,
     skipped: items.length - outcomes.length,
     outcomes,
+    usage: { input: usageInput, output: usageOutput },
   };
 }
