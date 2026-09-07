@@ -1,6 +1,7 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { StructuredCaller } from "@/lib/anthropic";
 import type { VeilleItem } from "@/lib/types";
+import { CLASSIFICATION_MODEL } from "@/config/ai-models";
 import { buildClassificationSchema, type ClassifiedItem } from "./classify.schema";
 
 /**
@@ -123,7 +124,13 @@ export async function classifyVeilleItems(
 
     let response;
     try {
-      response = await caller({ system: SYSTEM_PROMPT, user, schema, effort: "low" });
+      response = await caller({
+        system: SYSTEM_PROMPT,
+        user,
+        schema,
+        model: CLASSIFICATION_MODEL,
+        effort: "low",
+      });
     } catch (err) {
       // Un lot entier en échec : rien n'est écrit pour ce lot, journalisé une fois par item
       // plutôt que silencieusement — « rejet d'une réponse malformée sans écriture ».

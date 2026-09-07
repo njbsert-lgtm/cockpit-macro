@@ -5,6 +5,7 @@ import { describe, expect, it, vi } from "vitest";
 import { ecrireBrouillon, executerRun } from "./run";
 import { controlerChiffres } from "./figures";
 import type { StructuredCaller } from "@/lib/anthropic";
+import { REDACTION_MODEL } from "@/config/ai-models";
 import type { ContextePaquet, ObservationContexte } from "./context";
 import type { Brouillon } from "./schema";
 
@@ -189,6 +190,19 @@ describe("executerRun — le dry-run n'écrit rien", () => {
   it("cumule l'usage de tokens", async () => {
     const r = await executerRun(paquet(), callerRendant(brouillon()), { dryRun: true, sourcesExistantes: CORPUS, graphe: GRAPHE });
     expect(r.usage).toEqual({ input: 100, output: 200 });
+  });
+
+  it("appelle Claude sur le modèle configuré pour la rédaction, jamais un autre", async () => {
+    // Garde-fou explicite : `config/ai-models.ts` est le seul endroit où ce choix doit se lire.
+    // Si ce test casse, c'est que quelque chose a réintroduit un modèle en dur ici.
+    const caller = vi.fn(async () => ({
+      value: brouillon(),
+      usage: { input: 100, output: 200 },
+    })) as unknown as StructuredCaller;
+
+    await executerRun(paquet(), caller, { dryRun: true, sourcesExistantes: CORPUS, graphe: GRAPHE });
+
+    expect(caller).toHaveBeenCalledWith(expect.objectContaining({ model: REDACTION_MODEL }));
   });
 });
 

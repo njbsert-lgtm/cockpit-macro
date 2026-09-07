@@ -8,12 +8,11 @@ import type { z } from "zod";
  * manque plutôt qu'une exception, pour que l'absence de configuration se journalise proprement
  * au lieu de faire planter le script qui l'appelle.
  *
- * `claude-opus-5` par défaut pour les deux usages : le coût total estimé (moins de 6 $/mois pour
- * la rédaction hebdomadaire et la classification quotidienne réunies) ne justifie pas de
- * descendre en gamme sur une tâche qui, une fois publiée, n'est plus relue par personne.
+ * Aucun modèle par défaut ici : `model` est obligatoire dans `StructuredRequest`, précisément
+ * pour qu'un appel ne puisse jamais glisser silencieusement sur un modèle non voulu. Les
+ * identifiants réels vivent dans `config/ai-models.ts` (`CLASSIFICATION_MODEL`,
+ * `REDACTION_MODEL`), à côté des autres constantes de configuration du dépôt.
  */
-
-export const DEFAULT_MODEL = "claude-opus-5";
 
 /**
  * Assez pour laisser le modèle rédiger une note complète (cinq blocs, révisions de scénario) en
@@ -29,7 +28,8 @@ export type StructuredRequest<T> = {
   user: string;
   /** Schéma Zod de la sortie attendue ; sert à la fois de JSON Schema et de validateur final. */
   schema: z.ZodType<T>;
-  model?: string;
+  /** Toujours explicite — voir `config/ai-models.ts`. Jamais de valeur par défaut ici. */
+  model: string;
   maxTokens?: number;
   effort?: "low" | "medium" | "high" | "xhigh" | "max";
 };
@@ -51,7 +51,7 @@ export function anthropicCaller(apiKey: string): StructuredCaller {
 
   return async <T>(req: StructuredRequest<T>): Promise<StructuredResult<T>> => {
     const stream = client.messages.stream({
-      model: req.model ?? DEFAULT_MODEL,
+      model: req.model,
       max_tokens: req.maxTokens ?? DEFAULT_MAX_TOKENS,
       thinking: { type: "adaptive" },
       system: req.system,
@@ -63,6 +63,14 @@ export function anthropicCaller(apiKey: string): StructuredCaller {
     });
 
     const message = await stream.finalMessage();
+
+    // Une ligne par appel, quel que soit le dénouement — c'est ce qui permet de vérifier le
+    // modèle réellement utilisé et le coût en tokens depuis les journaux (GitHub Actions, Vercel),
+    // sans relire le code appelant.
+    console.log(
+      `[anthropic] model=${req.model} stop_reason=${message.stop_reason} ` +
+        `input_tokens=${message.usage.input_tokens} output_tokens=${message.usage.output_tokens}`,
+    );
 
     if (message.stop_reason === "refusal") {
       throw new Error(

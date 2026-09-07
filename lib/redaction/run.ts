@@ -1,6 +1,7 @@
 import { mkdirSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import type { StructuredCaller } from "@/lib/anthropic";
+import { REDACTION_MODEL } from "@/config/ai-models";
 import type { ContextePaquet } from "./context";
 import { construireSchema, construireVivier, type Brouillon } from "./schema";
 import { SYSTEM_PROMPT, construirePromptUtilisateur } from "./prompt";
@@ -71,6 +72,7 @@ export async function executerRun(
     system: SYSTEM_PROMPT,
     user,
     schema: schema as never,
+    model: REDACTION_MODEL,
     effort: "high",
   });
 
@@ -96,6 +98,7 @@ export async function executerRun(
       system: SYSTEM_PROMPT,
       user: `${user}\n\n---\n\n# Correction demandée\n\nLa version précédente a été rejetée par la validation :\n\n> ${validation.raison}\n\nCorrige **ce point seul** et réémets la note entière.`,
       schema: schema as never,
+      model: REDACTION_MODEL,
       effort: "high",
     });
     reponse = {

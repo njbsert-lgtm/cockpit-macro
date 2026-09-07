@@ -3,6 +3,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import { classifyVeilleItems } from "./classify";
 import type { VeilleItem } from "@/lib/types";
 import type { StructuredCaller } from "@/lib/anthropic";
+import { CLASSIFICATION_MODEL } from "@/config/ai-models";
 
 type Write = { table: string; id: string; patch: Record<string, unknown> };
 
@@ -84,6 +85,22 @@ describe("classifyVeilleItems — écriture", () => {
       zones: ["us"],
     });
     expect(writes[0].patch.classified_at).toBeTypeOf("string");
+  });
+
+  it("appelle Claude sur le modèle configuré pour la classification, jamais un autre", async () => {
+    // Garde-fou explicite : `config/ai-models.ts` est le seul endroit où ce choix doit se lire.
+    // Si ce test casse, c'est que quelque chose a réintroduit un modèle en dur ici.
+    const { client } = fakeClient();
+    const caller = vi.fn(async () => ({
+      value: { items: [classification()] },
+      usage: { input: 100, output: 50 },
+    })) as unknown as StructuredCaller;
+
+    await classifyVeilleItems(client, [item()], CONTEXT, caller);
+
+    expect(caller).toHaveBeenCalledWith(
+      expect.objectContaining({ model: CLASSIFICATION_MODEL }),
+    );
   });
 
   it("ne touche jamais status — la file de /triage reste celle de la passe 1", async () => {
