@@ -31,6 +31,11 @@ export type StructuredRequest<T> = {
   /** Toujours explicite — voir `config/ai-models.ts`. Jamais de valeur par défaut ici. */
   model: string;
   maxTokens?: number;
+  /**
+   * Omis de la requête quand non fourni — pas de défaut implicite. Haiku 4.5 refuse ce champ
+   * quelle que soit sa valeur (400 « This model does not support the effort parameter »),
+   * confirmé en conditions réelles : `lib/veille/classify.ts` ne le passe donc jamais.
+   */
   effort?: "low" | "medium" | "high" | "xhigh" | "max";
   /**
    * `true` par défaut (pensée adaptative). Tous les modèles ne la supportent pas — Haiku 4.5
@@ -64,7 +69,10 @@ export function anthropicCaller(apiKey: string): StructuredCaller {
       system: req.system,
       messages: [{ role: "user", content: req.user }],
       output_config: {
-        effort: req.effort ?? "high",
+        // Omis quand non fourni plutôt que par défaut à « high » : Haiku 4.5 refuse le champ
+        // avec un 400 (« This model does not support the effort parameter »), confirmé en
+        // conditions réelles — même prudence que pour `thinking`.
+        ...(req.effort ? { effort: req.effort } : {}),
         format: zodOutputFormat(req.schema),
       },
     });

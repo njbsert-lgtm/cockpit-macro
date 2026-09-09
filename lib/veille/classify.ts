@@ -149,10 +149,11 @@ export async function classifyVeilleItems(
         user,
         schema,
         model: CLASSIFICATION_MODEL,
-        effort: "low",
-        // Haiku 4.5 refuse la pensée adaptative (400 « adaptive thinking is not supported on
-        // this model ») — confirmé en conditions réelles. Une classification contre une grille
-        // fermée n'en a de toute façon pas besoin.
+        // Ni la pensée adaptative ni `effort` ne sont envoyés : Haiku 4.5 rejette les deux avec
+        // un 400 (« adaptive thinking is not supported on this model »,
+        // « This model does not support the effort parameter »), confirmé en conditions
+        // réelles. Une classification contre une grille fermée n'a de toute façon besoin ni de
+        // l'un ni de l'autre.
         thinking: false,
       });
     } catch (err) {

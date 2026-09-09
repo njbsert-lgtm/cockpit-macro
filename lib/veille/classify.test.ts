@@ -117,6 +117,21 @@ describe("classifyVeilleItems — écriture", () => {
     expect(caller).toHaveBeenCalledWith(expect.objectContaining({ thinking: false }));
   });
 
+  it("ne passe jamais `effort` — Haiku 4.5 refuse aussi ce champ avec un 400", async () => {
+    // Confirmé en conditions réelles : « This model does not support the effort parameter ».
+    // Voir lib/anthropic.ts.
+    const { client } = fakeClient();
+    const caller = vi.fn(async () => ({
+      value: { items: [classification()] },
+      usage: { input: 100, output: 50 },
+    })) as unknown as StructuredCaller;
+
+    await classifyVeilleItems(client, [item()], CONTEXT, caller);
+
+    const [[req]] = vi.mocked(caller).mock.calls;
+    expect(req).not.toHaveProperty("effort");
+  });
+
   it("ne touche jamais status — la file de /triage reste celle de la passe 1", async () => {
     const { client, writes } = fakeClient();
     const caller = vi.fn(async () => ({
