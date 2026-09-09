@@ -150,6 +150,10 @@ export async function classifyVeilleItems(
         schema,
         model: CLASSIFICATION_MODEL,
         effort: "low",
+        // Haiku 4.5 refuse la pensée adaptative (400 « adaptive thinking is not supported on
+        // this model ») — confirmé en conditions réelles. Une classification contre une grille
+        // fermée n'en a de toute façon pas besoin.
+        thinking: false,
       });
     } catch (err) {
       // Un lot entier en échec : rien n'est écrit pour ce lot, journalisé une fois par item

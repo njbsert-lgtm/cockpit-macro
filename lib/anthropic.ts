@@ -32,6 +32,13 @@ export type StructuredRequest<T> = {
   model: string;
   maxTokens?: number;
   effort?: "low" | "medium" | "high" | "xhigh" | "max";
+  /**
+   * `true` par défaut (pensée adaptative). Tous les modèles ne la supportent pas — Haiku 4.5
+   * la refuse avec un 400 (« adaptive thinking is not supported on this model »), confirmé en
+   * conditions réelles sur la passe 2. La passer à `false` omet le champ `thinking` de la
+   * requête plutôt que d'envoyer une valeur que le modèle rejette.
+   */
+  thinking?: boolean;
 };
 
 export type StructuredResult<T> = {
@@ -53,7 +60,7 @@ export function anthropicCaller(apiKey: string): StructuredCaller {
     const stream = client.messages.stream({
       model: req.model,
       max_tokens: req.maxTokens ?? DEFAULT_MAX_TOKENS,
-      thinking: { type: "adaptive" },
+      ...(req.thinking === false ? {} : { thinking: { type: "adaptive" } }),
       system: req.system,
       messages: [{ role: "user", content: req.user }],
       output_config: {

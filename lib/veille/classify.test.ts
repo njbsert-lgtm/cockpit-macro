@@ -103,6 +103,20 @@ describe("classifyVeilleItems — écriture", () => {
     );
   });
 
+  it("désactive la pensée adaptative — Haiku 4.5 la refuse avec un 400", async () => {
+    // Confirmé en conditions réelles : sans ce garde-fou, tous les lots échouent avec
+    // « adaptive thinking is not supported on this model ». Voir lib/anthropic.ts.
+    const { client } = fakeClient();
+    const caller = vi.fn(async () => ({
+      value: { items: [classification()] },
+      usage: { input: 100, output: 50 },
+    })) as unknown as StructuredCaller;
+
+    await classifyVeilleItems(client, [item()], CONTEXT, caller);
+
+    expect(caller).toHaveBeenCalledWith(expect.objectContaining({ thinking: false }));
+  });
+
   it("ne touche jamais status — la file de /triage reste celle de la passe 1", async () => {
     const { client, writes } = fakeClient();
     const caller = vi.fn(async () => ({
