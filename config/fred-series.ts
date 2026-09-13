@@ -202,6 +202,46 @@ export const FRED_SERIES: FredMapping[] = [
     enabled: true,
   },
 
+  // --- Bund et OAT — repli mensuel, en attendant une source quotidienne ---
+  //
+  // Le cahier veut du quotidien pour ces deux instruments, avec les deux spreads qui en
+  // dépendent. Recherché en détail : la BCE catalogue bien `DE10YT_RR` et `FR10YT_RR` dans
+  // son dataflow FM (fournisseur Bloomberg), et la Banque de France republie le même
+  // catalogue sur son portail Webstat — mais les deux renvoient zéro observation, pour
+  // n'importe quelle combinaison de dimensions. Vérifié en confrontant à un indicateur
+  // voisin qui, lui, répond : la courbe AAA agrégée de la zone euro (dataflow YC) a de
+  // vraies valeurs. La différence : cette courbe est un produit statistique calculé par la
+  // BCE elle-même, donc libre de droits ; une cotation Bund ou OAT brute est une donnée
+  // Bloomberg sous licence, que ni la BCE ni la Banque de France n'ont le droit de
+  // republier telle quelle sur une API publique — d'où un catalogue qui existe et une
+  // donnée qui n'existe pas, au même endroit pour la même raison chez les deux.
+  //
+  // FRED redistribue en attendant les taux longs mensuels de l'OCDE (« Main Economic
+  // Indicators »), qui couvrent l'Allemagne et la France sans souci de licence. Mensuel et
+  // non quotidien : les deux spreads US10Y/Bund et OAT/Bund resteront calculés sur cette
+  // cadence tant qu'aucune source quotidienne gratuite n'est trouvée — voir le repli plus
+  // bas si une source quotidienne apparaît.
+  {
+    target: { kind: "instrument", id: "de10y" },
+    seriesId: "IRLTLT01DEM156N",
+    units: "lin",
+    cadence: "monthly",
+    plausible: YIELD_BOUNDS,
+    expect: { units: "Percent", frequency: "Monthly" },
+    enabled: false,
+    disabledReason: "En attente de confirmation par npm run fred:check avant activation.",
+  },
+  {
+    target: { kind: "instrument", id: "fr10y" },
+    seriesId: "IRLTLT01FRM156N",
+    units: "lin",
+    cadence: "monthly",
+    plausible: YIELD_BOUNDS,
+    expect: { units: "Percent", frequency: "Monthly" },
+    enabled: false,
+    disabledReason: "En attente de confirmation par npm run fred:check avant activation.",
+  },
+
   // --- Désactivées --------------------------------------------------------
 
   // --- Marchés : ce que FRED publie déjà --------------------------------
