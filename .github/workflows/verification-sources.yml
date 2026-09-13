@@ -218,7 +218,7 @@ jobs:
             echo "## $URL"
             echo '```'
           } | tee -a "$GITHUB_STEP_SUMMARY"
-          BODY=$(curl -sL -m 15 -A "Mozilla/5.0" -H "Accept: application/json" "$URL")
+          BODY=$(curl -sL -m 15 -A "Mozilla/5.0" "$URL")
           PRETTY=$(printf '%s' "$BODY" | jq . 2>/dev/null)
           if [ -n "$PRETTY" ]; then BODY="$PRETTY"; fi
           if [ -n "$PATTERN" ]; then
