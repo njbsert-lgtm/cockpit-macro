@@ -47,13 +47,14 @@ describe("la table de correspondance FRED", () => {
     expect(getInstrument("us15y")).toBeNull();
   });
 
-  it("laisse les instruments hors FRED au seed : la courbe allemande n'est pas couverte", () => {
-    // Courbe allemande : jamais couverte, FRED ne redistribue pas les Bund. Les indices
-    // propriétaires sous licence (Euro Stoxx, or, DXY…) non plus, structurellement — voir
-    // le test suivant, qui dérive la liste plutôt que de la nommer en dur.
-    for (const id of ["de10y", "fr10y"]) {
-      expect(ENABLED_SERIES.some((m) => m.target.id === id)).toBe(false);
-    }
+  it("laisse les instruments hors FRED au seed : les indices propriétaires ne sont pas couverts", () => {
+    // Bund et OAT ont rejoint les séries actives via le repli mensuel OCDE (FRED
+    // redistribue IRLTLT01DEM156N / IRLTLT01FRM156N) : ce test citait `de10y`/`fr10y` comme
+    // exemples de « jamais couvert », et échouait pour la seule raison qu'une source de plus
+    // avait été branchée — même défaut que celui corrigé plus bas pour `ndx`/`brent`/`eurusd`.
+    // Ce qui doit être vérifié, c'est la borne structurelle : un indice propriétaire sous
+    // licence (Euro Stoxx 50, ici) reste hors FRED, qui ne redistribue pas ces séries.
+    expect(ENABLED_SERIES.some((m) => m.target.id === "sx5e")).toBe(false);
   });
 
   it("ne collecte que les indices propriétaires sous licence, jamais les mots-clés qui les désignent en commentaire", () => {

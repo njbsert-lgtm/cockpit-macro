@@ -218,9 +218,12 @@ export const FRED_SERIES: FredMapping[] = [
   //
   // FRED redistribue en attendant les taux longs mensuels de l'OCDE (« Main Economic
   // Indicators »), qui couvrent l'Allemagne et la France sans souci de licence. Mensuel et
-  // non quotidien : les deux spreads US10Y/Bund et OAT/Bund resteront calculés sur cette
-  // cadence tant qu'aucune source quotidienne gratuite n'est trouvée — voir le repli plus
-  // bas si une source quotidienne apparaît.
+  // non quotidien : les deux spreads US10Y/Bund et OAT/Bund restent calculés sur cette
+  // cadence tant qu'aucune source quotidienne gratuite n'est trouvée.
+  //
+  // Confirmé par `npm run fred:check` : les deux séries sortent en « Percent · Monthly »
+  // comme déclaré, avec des niveaux plausibles (Bund ≈ 3,0 %, OAT ≈ 3,7 % — un écart d'une
+  // soixantaine de points de base, cohérent avec la prime de risque souveraine française).
   {
     target: { kind: "instrument", id: "de10y" },
     seriesId: "IRLTLT01DEM156N",
@@ -228,8 +231,7 @@ export const FRED_SERIES: FredMapping[] = [
     cadence: "monthly",
     plausible: YIELD_BOUNDS,
     expect: { units: "Percent", frequency: "Monthly" },
-    enabled: false,
-    disabledReason: "En attente de confirmation par npm run fred:check avant activation.",
+    enabled: true,
   },
   {
     target: { kind: "instrument", id: "fr10y" },
@@ -238,8 +240,7 @@ export const FRED_SERIES: FredMapping[] = [
     cadence: "monthly",
     plausible: YIELD_BOUNDS,
     expect: { units: "Percent", frequency: "Monthly" },
-    enabled: false,
-    disabledReason: "En attente de confirmation par npm run fred:check avant activation.",
+    enabled: true,
   },
 
   // --- Désactivées --------------------------------------------------------

@@ -1063,7 +1063,8 @@ instruments sur 83 et 8 indicateurs sur 69 sont réellement collectés. Eurostat
 le second chiffre à 28 ; l'extension de FRED aux marchés puis l'activation de Twelve Data ont
 porté le premier à 16 (14 + 2 — sur les onze instruments visés par Twelve Data, neuf restent au
 seed, verrouillés au palier payant ou absents de son catalogue, chacun documenté dans
-`config/twelve-data-series.ts`). L'appliquer d'un coup viderait l'application. Chaque source branchée fait donc basculer son périmètre — les séries
+`config/twelve-data-series.ts`), puis le repli mensuel OCDE sur FRED pour le Bund et l'OAT
+(voir plus bas) l'a porté à 18. L'appliquer d'un coup viderait l'application. Chaque source branchée fait donc basculer son périmètre — les séries
 qu'elle couvre passent en collecté, leurs valeurs en dur sont retirées du seed. Les séries
 qu'aucune source ne couvre encore affichent l'état vide plutôt qu'un chiffre inventé.
 
@@ -1198,7 +1199,10 @@ fonctionnent — driver ↔ tendance ↔ instrument ↔ note. C'est ce maillage 
 Une source d'abord : FRED, pour les taux et l'inflation. Cron, Zod, stockage, fraîcheur.
 Observer trois jours avant d'ajouter Eurostat et l'INSEE, puis l'EIA, puis actions et FX.
 Les deux spreads sont calculés et stockés dès que le Bund, l'OAT et le 10 ans US sont en place :
-ils ont besoin de trois clôtures d'historique avant que leurs alertes puissent s'évaluer.
+ils ont besoin de trois clôtures d'historique avant que leurs alertes puissent s'évaluer. Bund
+et OAT n'étant collectés que mensuellement (voir plus bas pourquoi), les deux spreads héritent
+de cette cadence — leurs règles d'alerte doivent s'évaluer sur trois points mensuels, pas trois
+séances.
 
 Périmètre FRED : la courbe souveraine US (6 mois à 20 ans, sans le 15 ans), l'inflation
 totale et sous-jacente, le chômage, les salaires, le taux directeur, la croissance, la dette
@@ -1209,6 +1213,27 @@ en part du PIB, la seconde parce que l'ISM a fait retirer ses indices de FRED.
 FRED redistribue aussi des séries de marché : S&P 500, Nasdaq 100, Nikkei 225, EUR/USD,
 GBP/USD, USD/JPY, Brent, WTI — huit instruments sur les dix-neuf non couverts, sans nouveau
 fournisseur.
+
+**Bund et OAT — quotidien introuvable, repli mensuel activé.** Le cahier veut du quotidien
+pour `de10y` et `fr10y`, avec les deux spreads qui en dépendent. Recherche approfondie côté
+BCE : le dataflow `FM` catalogue bien `DE10YT_RR` et `FR10YT_RR` (fournisseur Bloomberg,
+instrument « Benchmark bond »), et la Banque de France republie le même catalogue sur son
+portail Webstat (`fm-m-{pays}-eur-fr2-bb-{pays}10yt_rr-yld`) — mais les deux renvoient zéro
+observation, pour n'importe quelle combinaison de dimensions, vérifié aussi bien sur la France
+que l'Allemagne et l'Italie. La cause n'est pas une clé mal devinée : un indicateur voisin, la
+courbe AAA agrégée de la zone euro (dataflow `YC`), répond normalement avec de vraies valeurs.
+La différence tient au droit de diffusion — cette courbe est un produit statistique calculé par
+la BCE elle-même, donc libre de droits, alors qu'une cotation Bund ou OAT brute est une donnée
+Bloomberg sous licence, que ni la BCE ni la Banque de France n'ont le droit de republier sur une
+API publique. Le catalogue existe, la donnée n'existe pas, au même endroit et pour la même
+raison chez les deux. Twelve Data n'aide pas non plus : les obligations souveraines y sont un
+produit séparé à partir de 29 $/mois, pas une extension du palier actions/forex déjà utilisé.
+
+En attendant une source quotidienne gratuite, FRED redistribue les taux longs mensuels de
+l'OCDE (« Main Economic Indicators ») : `IRLTLT01DEM156N` pour l'Allemagne, `IRLTLT01FRM156N`
+pour la France, tous deux vérifiés par `npm run fred:check` (Percent · Monthly, Bund ≈ 3,0 %,
+OAT ≈ 3,7 %). Les deux spreads (US10Y/Bund, OAT/Bund) restent donc calculés sur une cadence
+mensuelle tant qu'aucune source quotidienne libre de droits n'est trouvée.
 
 Périmètre Twelve Data, le fournisseur dédié pour le reste des onze instruments visés (indices
 européens et asiatiques, MSCI ACWI, métaux, DXY) : le palier gratuit ne sert en réalité que
