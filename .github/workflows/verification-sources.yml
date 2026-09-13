@@ -233,6 +233,11 @@ jobs:
           BODY=$(curl -sL -m 15 -A "Mozilla/5.0" "$URL")
           PRETTY=$(printf '%s' "$BODY" | jq . 2>/dev/null)
           if [ -n "$PRETTY" ]; then BODY="$PRETTY"; fi
+          # Un codelist SDMX tient sur une seule ligne XML : sans ce découpage, un motif de grep
+          # ne filtre rien, il ne fait que décider si la ligne entière (donc tout le document)
+          # s'affiche. Un saut de ligne avant chaque <str:Code redonne un code par ligne — sans
+          # effet sur du JSON, où cette sous-chaîne n'apparaît jamais.
+          BODY=$(printf '%s' "$BODY" | sed 's/<str:Code /\n<str:Code /g')
           if [ -n "$PATTERN" ]; then
             printf '%s\n' "$BODY" | grep -iE "$PATTERN" | tail -c "+$((SKIP + 1))" | head -c 6000
           else
