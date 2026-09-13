@@ -2,6 +2,7 @@ import type { Observation } from "./types";
 import { getObservations as seedObservations, getMacroObservations as seedMacroObservations } from "./data";
 import { mappingForInstrument, mappingForMacro } from "@/config/fred-series";
 import { eurostatMappingFor } from "@/config/eurostat-series";
+import { twelveDataMappingForInstrument } from "@/config/twelve-data-series";
 import { getReadClient } from "./supabase";
 
 /**
@@ -12,7 +13,8 @@ import { getReadClient } from "./supabase";
  * soit par le seed, jamais par les deux à la fois.
  *
  * Trois cas :
- * 1. L'instrument n'est pas couvert par une série FRED active → le seed, comme avant.
+ * 1. L'instrument n'est pas couvert par une source active (FRED, Twelve Data) → le seed, comme
+ *    avant.
  * 2. Il est couvert et la base répond → la base.
  * 3. Il est couvert mais la base ne répond pas, ou n'a encore rien → le seed. Le site reste
  *    utilisable, avec des chiffres datés et une source honnêtement nommée. Jamais un tiret,
@@ -95,15 +97,22 @@ async function load(
   return result;
 }
 
+/**
+ * Un instrument de marché est couvert dès qu'une source active le collecte — FRED ou Twelve
+ * Data. Les deux ne se recoupent pas : chaque identifiant appartient à une source et une seule.
+ * Oublier Twelve Data ici faisait retomber l'or et MSCI ACWI sur le seed pour toujours, même
+ * une fois réellement collectés — bug réel trouvé le 13/09 : les observations de seed d'ACWI
+ * datent d'avant le passage à l'ETF iShares (échelle en points d'indice, ~800), tandis
+ * qu'`ytdBasis` avait déjà été mis à jour à l'échelle du prix par part (~141) ; la performance
+ * YTD mélangeait donc deux échelles et affichait une valeur absurde.
+ */
+export function isInstrumentCovered(id: string): boolean {
+  return mappingForInstrument(id) !== null || twelveDataMappingForInstrument(id) !== null;
+}
+
 /** Les observations de marché pour un ensemble d'instruments, en une requête. */
 export function loadObservations(instrumentIds: string[]): Promise<ObservationsBySeries> {
-  return load(
-    instrumentIds,
-    (id) => mappingForInstrument(id) !== null,
-    seedObservations,
-    "observations",
-    "instrument_id",
-  );
+  return load(instrumentIds, isInstrumentCovered, seedObservations, "observations", "instrument_id");
 }
 
 /**

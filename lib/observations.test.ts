@@ -5,7 +5,8 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 const getReadClient = vi.fn();
 vi.mock("./supabase", () => ({ getReadClient: () => getReadClient() }));
 
-const { loadObservations, loadMacroObservations, isMacroCovered } = await import("./observations");
+const { loadObservations, loadMacroObservations, isMacroCovered, isInstrumentCovered } =
+  await import("./observations");
 const { getObservations, getMacroObservations, getMacroIndicators } = await import("./data");
 
 /** Un client dont la requête se termine comme demandé. */
@@ -110,6 +111,48 @@ describe("instruments couverts par FRED", () => {
     // Une seule ligne : rien du seed ne vient s'ajouter derrière.
     expect(result.get("us10y")).toHaveLength(1);
     expect(result.get("us10y")!.every((o) => o.source === "FRED")).toBe(true);
+  });
+});
+
+describe("instruments couverts par Twelve Data — pas seulement FRED", () => {
+  it("l'or et MSCI ACWI sont bien tenus pour couverts", () => {
+    // Bug réel du 13/09 : loadObservations ne vérifiait que FRED, donc ces deux instruments
+    // retombaient sur le seed pour toujours — même une fois réellement collectés par Twelve
+    // Data. Pour ACWI en particulier, le seed est resté à l'échelle d'avant le passage à l'ETF
+    // (points d'indice, ~800) alors qu'`ytdBasis` avait déjà été mis à jour à l'échelle du prix
+    // par part (~141), ce qui rendait le calcul YTD absurde.
+    expect(isInstrumentCovered("acwi")).toBe(true);
+    expect(isInstrumentCovered("gold")).toBe(true);
+  });
+
+  it("lisent la base quand elle répond", async () => {
+    getReadClient.mockReturnValue(
+      clientReturning([
+        {
+          instrument_id: "acwi",
+          date: "2026-09-12",
+          value: 145.2,
+          source: "Twelve Data",
+          fetched_at: "2026-09-13T04:10:00Z",
+        },
+      ]),
+    );
+    const result = await loadObservations(["acwi"]);
+    expect(result.get("acwi")).toEqual([
+      {
+        instrumentId: "acwi",
+        date: "2026-09-12",
+        value: 145.2,
+        source: "Twelve Data",
+        fetchedAt: "2026-09-13T04:10:00Z",
+      },
+    ]);
+  });
+
+  it("retombent sur le seed quand la base est vide, comme pour FRED", async () => {
+    getReadClient.mockReturnValue(clientReturning([]));
+    const result = await loadObservations(["acwi"]);
+    expect(result.get("acwi")).toEqual(getObservations("acwi"));
   });
 });
 
