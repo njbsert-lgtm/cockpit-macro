@@ -205,26 +205,38 @@ jobs:
       - name: Sonder brut
         # Sans tag-stripping : nécessaire pour une réponse SDMX (JSON de structure ou XML), dont
         # les identifiants vivent dans les attributs — que « sonder une page » viderait de tout
-        # contenu utile en aplatissant les balises. Tronqué à 6000 caractères, `jq` si la réponse
-        # est du JSON valide (préinstallé sur ubuntu-latest) pour rester lisible dans le résumé.
+        # contenu utile en aplatissant les balises. `jq` si la réponse est du JSON valide
+        # (préinstallé sur ubuntu-latest). Fenêtre de 6000 caractères, décalable : « URL »,
+        # « URL||motif-grep » ou « URL||motif-grep||décalage » pour paginer une longue réponse
+        # structurelle sans la re-télécharger avec un décalage différent à chaque fois — le motif
+        # peut rester vide (« URL||||6000 ») pour juste avancer dans le brut.
         if: ${{ inputs.source == 'sonder-brut' }}
         env:
           RAW: ${{ inputs.series }}
         run: |
           set +e -o pipefail
           URL="${RAW%%||*}"
-          if [ "$RAW" != "$URL" ]; then PATTERN="${RAW#*||}"; else PATTERN=""; fi
+          REST="${RAW#*||}"
+          if [ "$RAW" != "$URL" ]; then
+            PATTERN="${REST%%||*}"
+            SKIP="${REST#*||}"
+            if [ "$SKIP" = "$REST" ]; then SKIP=0; fi
+          else
+            PATTERN=""
+            SKIP=0
+          fi
+          [ -n "$SKIP" ] || SKIP=0
           {
-            echo "## $URL"
+            echo "## $URL (décalage $SKIP)"
             echo '```'
           } | tee -a "$GITHUB_STEP_SUMMARY"
           BODY=$(curl -sL -m 15 -A "Mozilla/5.0" "$URL")
           PRETTY=$(printf '%s' "$BODY" | jq . 2>/dev/null)
           if [ -n "$PRETTY" ]; then BODY="$PRETTY"; fi
           if [ -n "$PATTERN" ]; then
-            printf '%s\n' "$BODY" | grep -iE "$PATTERN" | head -c 6000
+            printf '%s\n' "$BODY" | grep -iE "$PATTERN" | tail -c "+$((SKIP + 1))" | head -c 6000
           else
-            printf '%s\n' "$BODY" | head -c 6000
+            printf '%s\n' "$BODY" | tail -c "+$((SKIP + 1))" | head -c 6000
           fi | tee -a "$GITHUB_STEP_SUMMARY"
           echo '```' | tee -a "$GITHUB_STEP_SUMMARY"
 
