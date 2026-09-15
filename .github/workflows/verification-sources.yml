@@ -376,7 +376,10 @@ jobs:
         # regarde toujours en arrière depuis aujourd'hui, borné par `LOOKBACK_DAYS`, donc
         # inadapté à une clôture d'il y a plusieurs mois. Appel direct, mêmes contraintes que
         # les autres sondes : ne collecte rien, n'écrit rien. Plusieurs séries séparées par une
-        # virgule pour vérifier plusieurs bases YTD en un seul run.
+        # virgule pour vérifier plusieurs bases YTD en un seul run. Quatrième segment optionnel
+        # (« SID||début||fin||unités ») pour reproduire la transformation réellement demandée
+        # par `config/fred-series.ts` (`pc1` par exemple) — sans lui, FRED répond en niveau
+        # brut, ce qui ne se compare pas à une valeur stockée en glissement annuel.
         if: ${{ inputs.source == 'fred-observation' }}
         env:
           RAW: ${{ inputs.series }}
@@ -390,15 +393,19 @@ jobs:
           SIDS="${RAW%%||*}"
           REST="${RAW#*||}"
           START="${REST%%||*}"
-          END="${REST#*||}"
+          REST2="${REST#*||}"
+          END="${REST2%%||*}"
+          UNITS="${REST2#*||}"
+          if [ "$UNITS" = "$END" ]; then UNITS="lin"; fi
           {
             for SID in ${SIDS//,/ }; do
-              echo "## FRED — $SID de $START à $END"
+              echo "## FRED — $SID de $START à $END (units=$UNITS)"
               echo '```'
               curl -sS -m 15 -G \
                 --data-urlencode "series_id=$SID" \
                 --data-urlencode "api_key=$FRED_API_KEY" \
                 --data-urlencode "file_type=json" \
+                --data-urlencode "units=$UNITS" \
                 --data-urlencode "observation_start=$START" \
                 --data-urlencode "observation_end=$END" \
                 --data-urlencode "sort_order=asc" \
