@@ -26,6 +26,7 @@ on:
           - sonder-marche
           - sonder-page
           - sonder-brut
+          - sonder-supabase
           - sonder-twelvedata
           - twelve-data
           - fred-observation
@@ -38,6 +39,10 @@ on:
         # Sonder-brut : « URL » seule, ou « URL||motif-grep » — pas de tag-stripping HTML, pour
         # une réponse JSON ou XML de structure (SDMX) dont l'information vit dans les attributs,
         # que « sonder-page » aplatirait en la vidant de son contenu utile.
+        # Sonder-supabase : « table?filtre-PostgREST », ex.
+        # « series_health?target_id=eq.us-wages&select=*» ou
+        # « macro_observations?indicator_id=eq.us-wages&select=*&order=date.desc&limit=5 ».
+        # Lecture seule, clé anonyme — les mêmes tables que la barre de fraîcheur et /triage.
 
 jobs:
   verifier:
@@ -243,6 +248,35 @@ jobs:
           else
             printf '%s\n' "$BODY" | tail -c "+$((SKIP + 1))" | head -c 6000
           fi | tee -a "$GITHUB_STEP_SUMMARY"
+          echo '```' | tee -a "$GITHUB_STEP_SUMMARY"
+
+      - name: Sonder Supabase
+        # Lecture seule sur ce que la clé anonyme peut déjà voir — les mêmes tables et la même
+        # clé que la barre de fraîcheur et /triage, RLS de `supabase/schema.sql` à l'appui.
+        # Sert à répondre à « la collecte a-t-elle vraiment écrit cette valeur ? » sans
+        # attendre un accès au tableau de bord Supabase ou à Vercel.
+        if: ${{ inputs.source == 'sonder-supabase' }}
+        env:
+          RAW: ${{ inputs.series }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+        run: |
+          set +e -o pipefail
+          if [ -z "$SUPABASE_URL" ] || [ -z "$SUPABASE_ANON_KEY" ]; then
+            echo "SUPABASE_URL ou SUPABASE_ANON_KEY absente des secrets du dépôt — étape sautée." | tee -a "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          {
+            echo "## Supabase — $RAW"
+            echo '```'
+          } | tee -a "$GITHUB_STEP_SUMMARY"
+          BODY=$(curl -sS -m 15 \
+            -H "apikey: $SUPABASE_ANON_KEY" \
+            -H "Authorization: Bearer $SUPABASE_ANON_KEY" \
+            "${SUPABASE_URL%/}/rest/v1/$RAW")
+          PRETTY=$(printf '%s' "$BODY" | jq . 2>/dev/null)
+          if [ -n "$PRETTY" ]; then BODY="$PRETTY"; fi
+          printf '%s\n' "$BODY" | head -c 6000 | tee -a "$GITHUB_STEP_SUMMARY"
           echo '```' | tee -a "$GITHUB_STEP_SUMMARY"
 
       - name: Sonder Twelve Data
