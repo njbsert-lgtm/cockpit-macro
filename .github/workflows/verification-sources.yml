@@ -270,10 +270,28 @@ jobs:
             echo "## Supabase — $RAW"
             echo '```'
           } | tee -a "$GITHUB_STEP_SUMMARY"
+          BASE="${SUPABASE_URL%/}"
+          # `SUPABASE_URL` peut être le « Project URL » nu (…supabase.co) ou déjà terminé par
+          # `/rest/v1` selon l'écran du tableau de bord d'où il a été copié. On tente les deux
+          # plutôt que de deviner, et on dit laquelle a fonctionné.
+          if [[ "$BASE" == */rest/v1 ]]; then
+            URL1="$BASE/$RAW"
+            URL2="${BASE%/rest/v1}/rest/v1/$RAW"
+          else
+            URL1="$BASE/rest/v1/$RAW"
+            URL2="$BASE/$RAW"
+          fi
           BODY=$(curl -sS -m 15 \
             -H "apikey: $SUPABASE_ANON_KEY" \
             -H "Authorization: Bearer $SUPABASE_ANON_KEY" \
-            "${SUPABASE_URL%/}/rest/v1/$RAW")
+            "$URL1")
+          if printf '%s' "$BODY" | grep -q '"code":"PGRST125"'; then
+            echo "(URL1 invalide, tentative avec le préfixe /rest/v1 inversé)"
+            BODY=$(curl -sS -m 15 \
+              -H "apikey: $SUPABASE_ANON_KEY" \
+              -H "Authorization: Bearer $SUPABASE_ANON_KEY" \
+              "$URL2")
+          fi
           PRETTY=$(printf '%s' "$BODY" | jq . 2>/dev/null)
           if [ -n "$PRETTY" ]; then BODY="$PRETTY"; fi
           printf '%s\n' "$BODY" | head -c 6000 | tee -a "$GITHUB_STEP_SUMMARY"
