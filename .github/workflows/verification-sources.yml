@@ -31,6 +31,8 @@ on:
           - twelve-data
           - fred-observation
           - twelve-data-observation
+          - explorer-estat
+          - estat-getdata
       series:
         description: "Séries à vérifier (vide = toutes). Explorer : « catalogue <terme> » ou « <dataset> <dimension> ». Sonder-hôte : l'hôte. Sonder-marché : rien. Sonder-page : une URL, ou « URL||motif-grep ». Sonder-twelvedata : rien (tous les candidats). Twelve-data : symbole(s), ex. XAU/USD. Fred-observation / twelve-data-observation : « ID(S)||AAAA-MM-JJ||AAAA-MM-JJ » (plusieurs séries séparées par une virgule, début||fin)"
         type: string
@@ -43,6 +45,9 @@ on:
         # « series_health?target_id=eq.us-wages&select=*» ou
         # « macro_observations?indicator_id=eq.us-wages&select=*&order=date.desc&limit=5 ».
         # Lecture seule, clé anonyme — les mêmes tables que la barre de fraîcheur et /triage.
+        # Explorer-estat : « terme-de-recherche » ou « terme||limite » (japonais recommandé,
+        # e-Stat indexe peu en anglais). Estat-getdata : « statsDataId » ou
+        # « statsDataId||cdArea=...&cdCat01=...&cdTime=... » pour filtrer avant lecture.
 
 jobs:
   verifier:
@@ -449,6 +454,72 @@ jobs:
               sleep 8
             done
           } | tee -a "$GITHUB_STEP_SUMMARY"
+
+      - name: Explorer e-Stat
+        # Recherche de tables statistiques par mot-clé, avant d'écrire config/estat-series.ts —
+        # même prudence que pour Eurostat : on lit le catalogue réel plutôt que de deviner un
+        # identifiant de table (statsDataId). e-Stat indexe surtout en japonais, un mot-clé
+        # anglais renvoie souvent zéro résultat.
+        if: ${{ inputs.source == 'explorer-estat' }}
+        env:
+          RAW: ${{ inputs.series }}
+          ESTAT_APP_ID: ${{ secrets.ESTAT_APP_ID }}
+        run: |
+          set +e -o pipefail
+          if [ -z "$ESTAT_APP_ID" ]; then
+            echo "ESTAT_APP_ID absente des secrets du dépôt — étape sautée." | tee -a "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          WORD="${RAW%%||*}"
+          REST="${RAW#*||}"
+          LIMIT=10
+          if [ "$RAW" != "$WORD" ]; then LIMIT="$REST"; fi
+          {
+            echo "## e-Stat — recherche « $WORD » (limite $LIMIT)"
+            echo '```'
+          } | tee -a "$GITHUB_STEP_SUMMARY"
+          BODY=$(curl -sS -m 20 -G \
+            --data-urlencode "appId=$ESTAT_APP_ID" \
+            --data-urlencode "searchWord=$WORD" \
+            --data-urlencode "limit=$LIMIT" \
+            "https://api.e-stat.go.jp/rest/3.0/app/json/getStatsList")
+          PRETTY=$(printf '%s' "$BODY" | jq '.GET_STATS_LIST.DATALIST_INF.TABLE_INF // .GET_STATS_LIST.RESULT' 2>/dev/null)
+          if [ -z "$PRETTY" ] || [ "$PRETTY" = "null" ]; then PRETTY="$BODY"; fi
+          printf '%s\n' "$PRETTY" | head -c 6000 | tee -a "$GITHUB_STEP_SUMMARY"
+          echo '```' | tee -a "$GITHUB_STEP_SUMMARY"
+
+      - name: Données e-Stat pour une table
+        # Une fois un `statsDataId` candidat trouvé par la recherche ci-dessus, cette étape lit
+        # ses vraies données et sa nomenclature (`metaGetFlg=Y`) — nécessaire parce que les codes
+        # de zone, de catégorie et de temps d'e-Stat sont propres à chaque table, à l'inverse des
+        # dimensions Eurostat qui suivent une convention commune.
+        if: ${{ inputs.source == 'estat-getdata' }}
+        env:
+          RAW: ${{ inputs.series }}
+          ESTAT_APP_ID: ${{ secrets.ESTAT_APP_ID }}
+        run: |
+          set +e -o pipefail
+          if [ -z "$ESTAT_APP_ID" ]; then
+            echo "ESTAT_APP_ID absente des secrets du dépôt — étape sautée." | tee -a "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          STATSID="${RAW%%||*}"
+          EXTRA="${RAW#*||}"
+          if [ "$RAW" = "$STATSID" ]; then EXTRA=""; fi
+          {
+            echo "## e-Stat — getStatsData $STATSID ($EXTRA)"
+            echo '```'
+          } | tee -a "$GITHUB_STEP_SUMMARY"
+          ARGS=(--data-urlencode "appId=$ESTAT_APP_ID" --data-urlencode "statsDataId=$STATSID" --data-urlencode "metaGetFlg=Y" --data-urlencode "limit=30")
+          IFS='&' read -ra PAIRS <<< "$EXTRA"
+          for p in "${PAIRS[@]}"; do
+            [ -z "$p" ] && continue
+            k="${p%%=*}"; v="${p#*=}"
+            ARGS+=(--data-urlencode "$k=$v")
+          done
+          curl -sS -m 20 -G "${ARGS[@]}" "https://api.e-stat.go.jp/rest/3.0/app/json/getStatsData" \
+            | jq . 2>/dev/null | head -c 6000 | tee -a "$GITHUB_STEP_SUMMARY"
+          echo '```' | tee -a "$GITHUB_STEP_SUMMARY"
 
       - name: FRED
         # `always()` pour que FRED soit quand même vérifié après un Eurostat rouge.
