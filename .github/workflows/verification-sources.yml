@@ -478,10 +478,17 @@ jobs:
           # « code:00450071 » à la place d'un mot-clé : liste toutes les tables d'un statsCode de
           # relevé (STAT_NAME.@code trouvé par une recherche précédente), sans filtre de titre —
           # utile quand le mot-clé fait remonter du bruit thématique voisin plutôt que la table
-          # maîtresse cherchée.
+          # maîtresse cherchée. « code:00450071:mot-clé » combine les deux : ne liste que les
+          # tables de ce relevé dont le titre correspond, pour filtrer un relevé qui porte des
+          # milliers de tables historiques sans se noyer dedans.
           ARGS=(--data-urlencode "appId=$ESTAT_APP_ID" --data-urlencode "limit=$LIMIT")
           if [[ "$WORD" == code:* ]]; then
-            ARGS+=(--data-urlencode "statsCode=${WORD#code:}")
+            CODEPART="${WORD#code:}"
+            STATSCODE="${CODEPART%%:*}"
+            ARGS+=(--data-urlencode "statsCode=$STATSCODE")
+            if [ "$CODEPART" != "$STATSCODE" ]; then
+              ARGS+=(--data-urlencode "searchWord=${CODEPART#*:}")
+            fi
           else
             ARGS+=(--data-urlencode "searchWord=$WORD")
           fi
