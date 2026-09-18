@@ -46,7 +46,8 @@ on:
         # « macro_observations?indicator_id=eq.us-wages&select=*&order=date.desc&limit=5 ».
         # Lecture seule, clé anonyme — les mêmes tables que la barre de fraîcheur et /triage.
         # Explorer-estat : « terme-de-recherche » ou « terme||limite » (japonais recommandé,
-        # e-Stat indexe peu en anglais). Estat-getdata : « statsDataId » ou
+        # e-Stat indexe peu en anglais) ; « code:00450071||limite » liste toutes les tables d'un
+        # statsCode de relevé sans filtre de titre. Estat-getdata : « statsDataId » ou
         # « statsDataId||cdArea=...&cdCat01=...&cdTime=... » pour filtrer avant lecture.
 
 jobs:
@@ -474,15 +475,21 @@ jobs:
           REST="${RAW#*||}"
           LIMIT=10
           if [ "$RAW" != "$WORD" ]; then LIMIT="$REST"; fi
+          # « code:00450071 » à la place d'un mot-clé : liste toutes les tables d'un statsCode de
+          # relevé (STAT_NAME.@code trouvé par une recherche précédente), sans filtre de titre —
+          # utile quand le mot-clé fait remonter du bruit thématique voisin plutôt que la table
+          # maîtresse cherchée.
+          ARGS=(--data-urlencode "appId=$ESTAT_APP_ID" --data-urlencode "limit=$LIMIT")
+          if [[ "$WORD" == code:* ]]; then
+            ARGS+=(--data-urlencode "statsCode=${WORD#code:}")
+          else
+            ARGS+=(--data-urlencode "searchWord=$WORD")
+          fi
           {
             echo "## e-Stat — recherche « $WORD » (limite $LIMIT)"
             echo '```'
           } | tee -a "$GITHUB_STEP_SUMMARY"
-          BODY=$(curl -sS -m 45 -G \
-            --data-urlencode "appId=$ESTAT_APP_ID" \
-            --data-urlencode "searchWord=$WORD" \
-            --data-urlencode "limit=$LIMIT" \
-            "https://api.e-stat.go.jp/rest/3.0/app/json/getStatsList")
+          BODY=$(curl -sS -m 45 -G "${ARGS[@]}" "https://api.e-stat.go.jp/rest/3.0/app/json/getStatsList")
           PRETTY=$(printf '%s' "$BODY" | jq '.GET_STATS_LIST.DATALIST_INF.TABLE_INF // .GET_STATS_LIST.RESULT' 2>/dev/null)
           if [ -z "$PRETTY" ] || [ "$PRETTY" = "null" ]; then PRETTY="$BODY"; fi
           printf '%s\n' "$PRETTY" | head -c 6000 | tee -a "$GITHUB_STEP_SUMMARY"
