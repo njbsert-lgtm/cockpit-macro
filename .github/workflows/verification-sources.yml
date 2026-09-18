@@ -490,7 +490,23 @@ jobs:
             echo '```'
           } | tee -a "$GITHUB_STEP_SUMMARY"
           BODY=$(curl -sS -m 45 -G "${ARGS[@]}" "https://api.e-stat.go.jp/rest/3.0/app/json/getStatsList")
-          PRETTY=$(printf '%s' "$BODY" | jq '.GET_STATS_LIST.DATALIST_INF.TABLE_INF // .GET_STATS_LIST.RESULT' 2>/dev/null)
+          # Vue condensée (id, intitulé, cycle, mise à jour) : la réponse brute est tronquée à
+          # 6000 caractères plus bas, et un TABLE_INF complet ne laisse passer que deux ou trois
+          # entrées avant la coupe — largement insuffisant pour repérer la bonne table dans une
+          # liste par statsCode.
+          PRETTY=$(printf '%s' "$BODY" | jq '
+            (.GET_STATS_LIST.DATALIST_INF.TABLE_INF // .GET_STATS_LIST.RESULT) as $t
+            | if ($t | type) == "array" then
+                $t | map({
+                  id: .["@id"],
+                  stat: .STAT_NAME["$"],
+                  name: .STATISTICS_NAME,
+                  title: (if (.TITLE | type) == "object" then .TITLE["$"] else .TITLE end),
+                  cycle: .CYCLE,
+                  updated: .UPDATED_DATE
+                })
+              else $t end
+          ' 2>/dev/null)
           if [ -z "$PRETTY" ] || [ "$PRETTY" = "null" ]; then PRETTY="$BODY"; fi
           printf '%s\n' "$PRETTY" | head -c 6000 | tee -a "$GITHUB_STEP_SUMMARY"
           echo '```' | tee -a "$GITHUB_STEP_SUMMARY"
