@@ -86,23 +86,32 @@ function cdParamName(dimension: string): string {
   return `cd${dimension.charAt(0).toUpperCase()}${dimension.slice(1)}`;
 }
 
-/** Le plancher temporel envoyé à `cdTimeFrom`, dans le format attendu par le schéma de la table. */
-function timeFloor(scheme: EstatMapping["timeScheme"], now: Date, lookbackYears: number): string {
-  const floorYear = now.getFullYear() - lookbackYears;
-  return scheme === "time" ? `${floorYear}000101` : `${floorYear}000000`;
+/** Le plancher temporel envoyé à `cdTimeFrom`, au format `AAAA00MMMM` qu'attend ce schéma. */
+function timeFloor(now: Date, lookbackYears: number): string {
+  return `${now.getFullYear() - lookbackYears}000101`;
 }
 
 /**
  * Un appel, une série, une fois par jour. `metaGetFlg=N` : la nomenclature est déjà figée dans
  * `config/estat-series.ts`, la redemander à chaque appel ne ferait que gonfler la réponse.
+ *
+ * `cdTimeFrom` n'est envoyé **que pour le schéma `"time"`** : vérifié par appel réel, la table
+ * des salaires (`cat01Month`, axe « 調査年 » — année seule) renvoie `STATUS 1` (aucune donnée)
+ * dès que `cdTimeFrom` est présent, quel que soit son format (`AAAA000000` ou `AAAA`) — y
+ * compris sur une requête par ailleurs identique à une requête qui réussit sans lui. Cette
+ * table ne supporte donc pas le filtrage temporel par borne : pour `cat01Month`, l'appel
+ * rapatrie tout l'historique disponible plutôt que de risquer une réponse vide — un payload
+ * de quelques centaines de points mensuels ne pèse rien pour une collecte quotidienne.
  */
 export function buildEstatUrl(mapping: EstatMapping, appId: string, now: Date): string {
   const params = new URLSearchParams({
     appId,
     statsDataId: mapping.statsDataId,
     metaGetFlg: "N",
-    cdTimeFrom: timeFloor(mapping.timeScheme, now, LOOKBACK_YEARS[mapping.cadence]),
   });
+  if (mapping.timeScheme === "time") {
+    params.set("cdTimeFrom", timeFloor(now, LOOKBACK_YEARS[mapping.cadence]));
+  }
   for (const [dimension, code] of Object.entries(mapping.filters)) {
     params.set(cdParamName(dimension), code);
   }

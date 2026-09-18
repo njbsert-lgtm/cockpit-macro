@@ -48,12 +48,14 @@ describe("buildEstatUrl", () => {
     expect(url.searchParams.get("cdTab")).toBe("3062");
   });
 
-  it("calcule cdTimeFrom en arrière depuis aujourd'hui, dans le format du schéma temporel", () => {
+  it("calcule cdTimeFrom en arrière depuis aujourd'hui, pour le schéma « time » seulement", () => {
     const urlTime = new URL(buildEstatUrl(cpi, "APPID", new Date("2026-09-18T00:00:00Z")));
     expect(urlTime.searchParams.get("cdTimeFrom")).toBe("2020000101");
+  });
 
+  it("n'envoie jamais cdTimeFrom pour une série cat01Month : la table le rejette (STATUS 1), vérifié par appel réel", () => {
     const urlCat01 = new URL(buildEstatUrl(wages, "APPID", new Date("2026-09-18T00:00:00Z")));
-    expect(urlCat01.searchParams.get("cdTimeFrom")).toBe("2020000000");
+    expect(urlCat01.searchParams.has("cdTimeFrom")).toBe(false);
   });
 });
 
