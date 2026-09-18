@@ -522,7 +522,8 @@ jobs:
         # Une fois un `statsDataId` candidat trouvé par la recherche ci-dessus, cette étape lit
         # ses vraies données et sa nomenclature (`metaGetFlg=Y`) — nécessaire parce que les codes
         # de zone, de catégorie et de temps d'e-Stat sont propres à chaque table, à l'inverse des
-        # dimensions Eurostat qui suivent une convention commune.
+        # dimensions Eurostat qui suivent une convention commune. Segment « grep:motif » dans
+        # EXTRA pour chercher un poste précis dans un CLASS_INF trop long pour la troncature.
         if: ${{ inputs.source == 'estat-getdata' }}
         env:
           RAW: ${{ inputs.series }}
@@ -536,8 +537,23 @@ jobs:
           STATSID="${RAW%%||*}"
           EXTRA="${RAW#*||}"
           if [ "$RAW" = "$STATSID" ]; then EXTRA=""; fi
+          # Segment « grep:motif » optionnel dans EXTRA : filtre la réponse par motif avant la
+          # troncature à 6000 caractères — indispensable pour une table comme le CPI, dont
+          # CLASS_INF liste des centaines de postes et noierait le code cherché.
+          GREP=""
+          NEWEXTRA=""
+          IFS='&' read -ra PAIRS <<< "$EXTRA"
+          for p in "${PAIRS[@]}"; do
+            [ -z "$p" ] && continue
+            if [[ "$p" == grep:* ]]; then
+              GREP="${p#grep:}"
+            else
+              NEWEXTRA="$NEWEXTRA&$p"
+            fi
+          done
+          EXTRA="$NEWEXTRA"
           {
-            echo "## e-Stat — getStatsData $STATSID ($EXTRA)"
+            echo "## e-Stat — getStatsData $STATSID ($EXTRA) grep=$GREP"
             echo '```'
           } | tee -a "$GITHUB_STEP_SUMMARY"
           ARGS=(--data-urlencode "appId=$ESTAT_APP_ID" --data-urlencode "statsDataId=$STATSID" --data-urlencode "metaGetFlg=Y" --data-urlencode "limit=30")
@@ -547,8 +563,14 @@ jobs:
             k="${p%%=*}"; v="${p#*=}"
             ARGS+=(--data-urlencode "$k=$v")
           done
-          curl -sS -m 45 -G "${ARGS[@]}" "https://api.e-stat.go.jp/rest/3.0/app/json/getStatsData" \
-            | jq . 2>/dev/null | head -c 6000 | tee -a "$GITHUB_STEP_SUMMARY"
+          BODY=$(curl -sS -m 45 -G "${ARGS[@]}" "https://api.e-stat.go.jp/rest/3.0/app/json/getStatsData")
+          PRETTY=$(printf '%s' "$BODY" | jq . 2>/dev/null)
+          if [ -z "$PRETTY" ]; then PRETTY="$BODY"; fi
+          if [ -n "$GREP" ]; then
+            printf '%s\n' "$PRETTY" | grep -iE -B2 -A2 "$GREP" | head -c 6000 | tee -a "$GITHUB_STEP_SUMMARY"
+          else
+            printf '%s\n' "$PRETTY" | head -c 6000 | tee -a "$GITHUB_STEP_SUMMARY"
+          fi
           echo '```' | tee -a "$GITHUB_STEP_SUMMARY"
 
       - name: FRED
