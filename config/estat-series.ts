@@ -119,15 +119,16 @@ export const ESTAT_SERIES: EstatMapping[] = [
     enabled: true,
   },
 
-  // --- Salaires ----------------------------------------------------------------
+  // --- Salaires — désactivée, série interrompue ---------------------------------
   // 毎月勤労統計調査 (enquête mensuelle sur le travail), 現金給与総額 (rémunération totale en
   // espèces), 季節調整済指数及び増減率 (indice désaisonnalisé et variation) — table courante
   // « 長期時系列表 », distinguée par appel réel d'une table gelée au titre presque identique
   // suffixé « (旧産業分類　2009年12月まで) ». `tab=3062` : 前期比 (variation par rapport à la
   // période précédente, en %) — seule transformation en taux disponible dans cette table
   // stable ; ce n'est **pas** un glissement annuel, à la différence de `uk-wages` (ONS) ou
-  // `us-wages` (FRED). `cat02=TL` : 調査産業計 (tous secteurs). `cat03=T` : 5人以上 (5 salariés
-  // et plus). `cat04=00` : 就業形態計 (tous statuts d'emploi, seule option).
+  // `us-wages` (FRED). `cat02=TL` : 調査産業計 (tous secteurs — seul code portant ce libellé
+  // dans la nomenclature, confirmé par appel réel). `cat03=T` : 5人以上 (5 salariés et plus).
+  // `cat04=00` : 就業形態計 (tous statuts d'emploi, seule option).
   //
   // Particularité de cette table : `time` (調査年) ne porte que l'année (`AAAA000000`) ; le
   // mois vit dans `cat01` (調査月), codes `101`…`112` pour janvier à décembre. `cat01` est donc
@@ -143,7 +144,16 @@ export const ESTAT_SERIES: EstatMapping[] = [
     zone: "jp",
     plausible: WAGE_MOM_BOUNDS,
     expect: { unitLabel: "%" },
-    enabled: true,
+    enabled: false,
+    disabledReason:
+      "La requête est valide et la réponse conforme à ce qui est déclaré ici, mais " +
+      "RESULT_INF.TOTAL_NUMBER (414, vérifié par appel réel) montre que cette combinaison de " +
+      "dimensions ne porte tout simplement plus de données après 2015-11 : la dernière valeur " +
+      "disponible date de cette période, quelle que soit la fenêtre demandée. `cat02=TL` " +
+      "(調査産業計) est le seul code de la nomenclature portant ce libellé — il n'existe pas de " +
+      "code de repli « totaux, période récente » à essayer à sa place. Plutôt que de collecter " +
+      "quotidiennement une valeur qui n'avancera jamais, désactivée jusqu'à ce qu'une " +
+      "combinaison de dimensions couvrant la période récente soit identifiée par appel réel.",
   },
 ];
 
@@ -170,7 +180,8 @@ export const JP_GDP_NOT_ON_ESTAT =
  *
  * Les quatre séries ont été confrontées à de vraies réponses `getStatsData` le 18/09/2026 :
  * codes de dimension, format des deux schémas temporels, et valeurs plausibles vérifiés par
- * appel réel — jamais devinés.
+ * appel réel — jamais devinés. Trois sont actives ; `jp-wages` est désactivée, sa donnée
+ * s'étant révélée interrompue depuis 2015-11 (voir son `disabledReason` ci-dessus).
  */
 export const ESTAT_VERIFIED = true;
 

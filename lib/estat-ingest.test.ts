@@ -227,6 +227,12 @@ describe("cohérence de la configuration e-Stat avec le reste du dispositif", ()
       expect(m.filters).not.toHaveProperty("cat01");
     }
   });
+
+  it("exige une raison écrite pour toute série désactivée", () => {
+    for (const mapping of ESTAT_SERIES.filter((m) => !m.enabled)) {
+      expect(mapping.disabledReason, `${mapping.target.id} est désactivée sans raison`).toBeTruthy();
+    }
+  });
 });
 
 describe("estatSeriesKey", () => {

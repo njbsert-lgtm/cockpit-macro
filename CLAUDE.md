@@ -968,7 +968,7 @@ Gratuites, en accès programmatique. Clés en variables d'environnement, jamais 
 | Macro zone euro et pays | **ECB Data Portal**, **Eurostat** | APIs publiques sans clé. Eurostat branché : IPCH total et sous-jacent, PIB, chômage, pour `ez` `fr` `de` `es` `it` |
 | Macro France | **INSEE** (API BDM) | Gratuit, inscription requise |
 | Macro UK | **ONS API** (contenu du site, `api.ons.gov.uk/v1/data?uri=…`) | Gratuit, sans clé. Branchée : IPCH total et sous-jacent, PIB (croissance trimestre sur trimestre, `IHYQ`), chômage et salaires. Le solde budgétaire reste désactivé — chemin non localisé sur la nouvelle API, voir `config/ons-series.ts`. Le taux directeur n'est pas une série ONS — c'est la Banque d'Angleterre qui le publie, chantier séparé ; le PMI composite reste au seed, propriétaire S&P Global comme ailleurs |
-| Macro Japon | **e-Stat API** | Gratuit, clé d'application requise (`ESTAT_APP_ID`). Branchée : IPC total et sous-jacent, chômage, salaires (variation mensuelle, pas glissement annuel). La croissance du PIB reste au seed — pas de table longue série stable, voir `config/estat-series.ts` |
+| Macro Japon | **e-Stat API** | Gratuit, clé d'application requise (`ESTAT_APP_ID`). Branchée : IPC total et sous-jacent, chômage. Les salaires répondent mais sont désactivés — données interrompues depuis 2015 sur la seule combinaison de dimensions disponible. La croissance du PIB reste au seed — pas de table longue série stable, voir `config/estat-series.ts` |
 | Énergie | **EIA API** | Gratuit, données officielles |
 | Indices actions, FX | **FRED** (huit séries) et **Twelve Data** | FRED : S&P 500, Nasdaq 100, Nikkei 225, EUR/USD, GBP/USD, USD/JPY, Brent, WTI. Twelve Data branché pour l'or (`XAU/USD`) et MSCI ACWI (ETF iShares `ACWI`) ; le reste des indices propriétaires visés (Euro Stoxx 50, FTSE 100, CSI 300, Nifty 50, Hang Seng, CAC 40), l'argent, le cuivre et le DXY restent au seed — verrouillés au palier payant ou absents du catalogue sous les codes usuels, voir `config/twelve-data-series.ts`. Palier gratuit à 8 appels par minute. |
 | Bund et OAT 10 ans | **ECB Data Portal**, **Bundesbank**, **Banque de France** | Gratuit, sans clé |
@@ -1065,9 +1065,10 @@ le second chiffre à 28 ; l'extension de FRED aux marchés puis l'activation de 
 porté le premier à 16 (14 + 2 — sur les onze instruments visés par Twelve Data, neuf restent au
 seed, verrouillés au palier payant ou absents de son catalogue, chacun documenté dans
 `config/twelve-data-series.ts`), puis le repli mensuel OCDE sur FRED pour le Bund et l'OAT
-(voir plus bas) l'a porté à 18. L'activation d'e-Stat (IPC total et sous-jacent, chômage,
-salaires — ce dernier ajouté au catalogue à cette occasion, portant le second chiffre à 70) a
-porté le second chiffre collecté à 32. L'appliquer d'un coup viderait l'application. Chaque source branchée fait donc basculer son périmètre — les séries
+(voir plus bas) l'a porté à 18. L'activation d'e-Stat (IPC total et sous-jacent, chômage) a
+porté le second chiffre collecté à 31, sur un dénominateur passé à 70 : `jp-wages` a rejoint le
+catalogue à cette occasion mais reste désactivé, faute de données récentes (voir plus bas), donc
+compté au dénominateur sans l'être au numérateur. L'appliquer d'un coup viderait l'application. Chaque source branchée fait donc basculer son périmètre — les séries
 qu'elle couvre passent en collecté, leurs valeurs en dur sont retirées du seed. Les séries
 qu'aucune source ne couvre encore affichent l'état vide plutôt qu'un chiffre inventé.
 
@@ -1309,16 +1310,24 @@ par appel réel avant d'écrire une ligne de code :
 
 Inflation totale et sous-jacente (table du **nouvel indice base 2025**, publiée le jour même de
 sa mise en service — les bases 2005/2010/2015/2020 sont chacune sous leur propre `statsDataId`,
-gelées à leur dernier point) et taux de chômage sont vérifiés par appel réel. Les salaires
-(`jp-wages`, absent du catalogue avant cette mise en service) le sont aussi, mais sur `前期比`
-(variation mensuelle) et non le glissement annuel suivi ailleurs (`us-wages` chez FRED,
-`uk-wages` chez ONS) : c'est la seule transformation en taux que publie la table courante
-« 長期時系列表 », distinguée par appel réel d'une table gelée au titre presque identique
-(suffixée « 旧産業分類　2009年12月まで »). La croissance du PIB (`jp-gdp`) reste au seed : les
-publications trimestrielles des comptes nationaux (Cabinet Office) reçoivent chacune un nouveau
-`statsDataId`, sans table longue série stable — trois recherches réelles n'en ont trouvé aucune,
-raison consignée dans `config/estat-series.ts` plutôt qu'un identifiant deviné. `ESTAT_VERIFIED`
-est à `true` depuis que `npm run estat:check` est sorti vert sur les trois séries actives.
+gelées à leur dernier point) et taux de chômage sont vérifiés par appel réel et actifs.
+
+**Les salaires (`jp-wages`, ajouté au catalogue à cette occasion) restent désactivés** : la
+table sur `前期比` (variation mensuelle — la seule transformation en taux que publie la table
+courante « 長期時系列表 », non un glissement annuel comme `us-wages` chez FRED ou `uk-wages`
+chez ONS) répond normalement, mais `RESULT_INF.TOTAL_NUMBER` (414, vérifié par appel réel)
+confirme que la combinaison de dimensions (`調査産業計`, seul code « tous secteurs » de la
+nomenclature) ne porte plus aucune donnée après novembre 2015 — une valeur qui n'avancerait
+plus, plutôt qu'une lecture vivante. Raison consignée dans `config/estat-series.ts`, faute
+d'un code de repli à essayer à sa place.
+
+La croissance du PIB (`jp-gdp`) reste au seed : les publications trimestrielles des comptes
+nationaux (Cabinet Office) reçoivent chacune un nouveau `statsDataId`, sans table longue série
+stable — trois recherches réelles n'en ont trouvé aucune, raison consignée dans
+`config/estat-series.ts` plutôt qu'un identifiant deviné. `ESTAT_VERIFIED` est à `true` depuis
+que `npm run estat:check` est sorti vert sur les trois séries actives (IPC total, IPC
+sous-jacent, chômage) ; `jp-wages` y sort vert aussi (réponse conforme), mais reste `enabled:
+false` pour la raison ci-dessus.
 
 Mise en service, dans l'ordre : exécuter `supabase/schema.sql`, renseigner les variables de
 `.env.example`, lancer `npm run fred:check` et n'activer que les séries sorties vertes, faire
