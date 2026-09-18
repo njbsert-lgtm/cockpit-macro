@@ -968,6 +968,7 @@ Gratuites, en accès programmatique. Clés en variables d'environnement, jamais 
 | Macro zone euro et pays | **ECB Data Portal**, **Eurostat** | APIs publiques sans clé. Eurostat branché : IPCH total et sous-jacent, PIB, chômage, pour `ez` `fr` `de` `es` `it` |
 | Macro France | **INSEE** (API BDM) | Gratuit, inscription requise |
 | Macro UK | **ONS API** (contenu du site, `api.ons.gov.uk/v1/data?uri=…`) | Gratuit, sans clé. Branchée : IPCH total et sous-jacent, PIB (croissance trimestre sur trimestre, `IHYQ`), chômage et salaires. Le solde budgétaire reste désactivé — chemin non localisé sur la nouvelle API, voir `config/ons-series.ts`. Le taux directeur n'est pas une série ONS — c'est la Banque d'Angleterre qui le publie, chantier séparé ; le PMI composite reste au seed, propriétaire S&P Global comme ailleurs |
+| Macro Japon | **e-Stat API** | Gratuit, clé d'application requise (`ESTAT_APP_ID`). Branchée : IPC total et sous-jacent, chômage, salaires (variation mensuelle, pas glissement annuel). La croissance du PIB reste au seed — pas de table longue série stable, voir `config/estat-series.ts` |
 | Énergie | **EIA API** | Gratuit, données officielles |
 | Indices actions, FX | **FRED** (huit séries) et **Twelve Data** | FRED : S&P 500, Nasdaq 100, Nikkei 225, EUR/USD, GBP/USD, USD/JPY, Brent, WTI. Twelve Data branché pour l'or (`XAU/USD`) et MSCI ACWI (ETF iShares `ACWI`) ; le reste des indices propriétaires visés (Euro Stoxx 50, FTSE 100, CSI 300, Nifty 50, Hang Seng, CAC 40), l'argent, le cuivre et le DXY restent au seed — verrouillés au palier payant ou absents du catalogue sous les codes usuels, voir `config/twelve-data-series.ts`. Palier gratuit à 8 appels par minute. |
 | Bund et OAT 10 ans | **ECB Data Portal**, **Bundesbank**, **Banque de France** | Gratuit, sans clé |
@@ -1064,7 +1065,9 @@ le second chiffre à 28 ; l'extension de FRED aux marchés puis l'activation de 
 porté le premier à 16 (14 + 2 — sur les onze instruments visés par Twelve Data, neuf restent au
 seed, verrouillés au palier payant ou absents de son catalogue, chacun documenté dans
 `config/twelve-data-series.ts`), puis le repli mensuel OCDE sur FRED pour le Bund et l'OAT
-(voir plus bas) l'a porté à 18. L'appliquer d'un coup viderait l'application. Chaque source branchée fait donc basculer son périmètre — les séries
+(voir plus bas) l'a porté à 18. L'activation d'e-Stat (IPC total et sous-jacent, chômage,
+salaires — ce dernier ajouté au catalogue à cette occasion, portant le second chiffre à 70) a
+porté le second chiffre collecté à 32. L'appliquer d'un coup viderait l'application. Chaque source branchée fait donc basculer son périmètre — les séries
 qu'elle couvre passent en collecté, leurs valeurs en dur sont retirées du seed. Les séries
 qu'aucune source ne couvre encore affichent l'état vide plutôt qu'un chiffre inventé.
 
@@ -1286,12 +1289,44 @@ fichier : ce n'est pas une série ONS, elle vient d'une base de données distinc
 est un chantier séparé. `ONS_VERIFIED` est à `true` depuis que `npm run ons:check` est sorti
 vert sur les cinq séries actives.
 
+**e-Stat (Japon) — branchée, trois séries sur quatre.** Seule source, avec FRED, à exiger une
+clé (`appId`, gratuite sur inscription, dans `ESTAT_APP_ID`) : `lib/estat.ts` la porte en
+paramètre de requête, jamais dans le repo. Contrairement à Eurostat, où `geo`/`unit`/`freq`
+suivent une convention commune à tous les datasets, chaque table e-Stat a son propre découpage
+de dimensions (`tab`, `cat01`…`cat0N`, `area`, `time`) — toutes fixées dans
+`config/estat-series.ts`, jamais dans le code, même discipline que `config/eurostat-series.ts`.
+
+Particularité propre à e-Stat, sans équivalent chez les trois autres sources : **l'axe temporel
+n'est pas encodé de façon uniforme d'une table à l'autre**. Deux schémas coexistent, vérifiés
+par appel réel avant d'écrire une ligne de code :
+- `"time"` (IPC, chômage) — `@time` porte l'année et le mois ensemble, au format `AAAA00MMMM`
+  (le mois répété deux fois, ex. `2026000808` pour août 2026). Une année fiscale s'y glisse
+  sous la forme `AAAA100000`, ignorée sans bruit puisqu'elle ne correspond pas au motif.
+- `"cat01Month"` (salaires) — `@time` ne porte que l'année (`AAAA000000`), et le mois vit dans
+  la dimension `cat01` (調査月, codes `101`…`112`), qui porte aussi des agrégats trimestriels
+  (`94`…`97`) ignorés sans être confondus avec un mois. `cat01` est donc volontairement absent
+  des dimensions fixées de cette série : c'est elle qui porte le mois, pas une dimension oubliée.
+
+Inflation totale et sous-jacente (table du **nouvel indice base 2025**, publiée le jour même de
+sa mise en service — les bases 2005/2010/2015/2020 sont chacune sous leur propre `statsDataId`,
+gelées à leur dernier point) et taux de chômage sont vérifiés par appel réel. Les salaires
+(`jp-wages`, absent du catalogue avant cette mise en service) le sont aussi, mais sur `前期比`
+(variation mensuelle) et non le glissement annuel suivi ailleurs (`us-wages` chez FRED,
+`uk-wages` chez ONS) : c'est la seule transformation en taux que publie la table courante
+« 長期時系列表 », distinguée par appel réel d'une table gelée au titre presque identique
+(suffixée « 旧産業分類　2009年12月まで »). La croissance du PIB (`jp-gdp`) reste au seed : les
+publications trimestrielles des comptes nationaux (Cabinet Office) reçoivent chacune un nouveau
+`statsDataId`, sans table longue série stable — trois recherches réelles n'en ont trouvé aucune,
+raison consignée dans `config/estat-series.ts` plutôt qu'un identifiant deviné. `ESTAT_VERIFIED`
+est à `true` depuis que `npm run estat:check` est sorti vert sur les trois séries actives.
+
 Mise en service, dans l'ordre : exécuter `supabase/schema.sql`, renseigner les variables de
 `.env.example`, lancer `npm run fred:check` et n'activer que les séries sorties vertes, faire
 de même avec `npm run twelve-data:check`, `npm run eurostat:check` (ce dernier avant de
-basculer `EUROSTAT_VERIFIED`) et `npm run ons:check` (avant de basculer `ONS_VERIFIED`), puis
-laisser le cron tourner. Le site fonctionne à chaque étape de cette séquence, y compris avant
-la première — c'est ce que garantit le repli sur le seed.
+basculer `EUROSTAT_VERIFIED`), `npm run ons:check` (avant de basculer `ONS_VERIFIED`) et
+`npm run estat:check` (avant de basculer `ESTAT_VERIFIED`), puis laisser le cron tourner. Le
+site fonctionne à chaque étape de cette séquence, y compris avant la première — c'est ce que
+garantit le repli sur le seed.
 
 **Étape 4 — Confort.**
 Mode comparaison de l'onglet Macro, graphiques de séries, recherche dans les notes,

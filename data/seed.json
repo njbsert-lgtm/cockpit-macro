@@ -5667,6 +5667,15 @@
       "nextRelease": "2026-11-16"
     },
     {
+      "id": "jp-wages",
+      "label": "Salaires",
+      "zone": "jp",
+      "unit": "percent",
+      "frequency": "monthly",
+      "seriesKey": "JP.WAGES",
+      "nextRelease": "2026-11-10"
+    },
+    {
       "id": "jp-unemployment",
       "label": "Taux de chômage",
       "zone": "jp",
@@ -7584,90 +7593,6 @@
       "fetchedAt": "2026-04-22T13:30:00Z"
     },
     {
-      "instrumentId": "jp-cpi",
-      "date": "2025-08-13",
-      "value": 3,
-      "source": "Bureau of Statistics Japan",
-      "fetchedAt": "2025-08-13T13:30:00Z"
-    },
-    {
-      "instrumentId": "jp-cpi",
-      "date": "2025-11-13",
-      "value": 3.2,
-      "source": "Bureau of Statistics Japan",
-      "fetchedAt": "2025-11-13T13:30:00Z"
-    },
-    {
-      "instrumentId": "jp-cpi",
-      "date": "2026-02-12",
-      "value": 3.5,
-      "source": "Bureau of Statistics Japan",
-      "fetchedAt": "2026-02-12T13:30:00Z"
-    },
-    {
-      "instrumentId": "jp-cpi",
-      "date": "2026-04-10",
-      "value": 3.7,
-      "source": "Bureau of Statistics Japan",
-      "fetchedAt": "2026-04-10T13:30:00Z"
-    },
-    {
-      "instrumentId": "jp-cpi",
-      "date": "2026-06-11",
-      "value": 3.8,
-      "source": "Bureau of Statistics Japan",
-      "fetchedAt": "2026-06-11T13:30:00Z"
-    },
-    {
-      "instrumentId": "jp-cpi",
-      "date": "2026-08-08",
-      "value": 3.9,
-      "source": "Bureau of Statistics Japan",
-      "fetchedAt": "2026-08-08T23:30:00Z"
-    },
-    {
-      "instrumentId": "jp-cpi-core",
-      "date": "2025-08-13",
-      "value": 2.7,
-      "source": "Bureau of Statistics Japan",
-      "fetchedAt": "2025-08-13T13:30:00Z"
-    },
-    {
-      "instrumentId": "jp-cpi-core",
-      "date": "2025-11-13",
-      "value": 2.8,
-      "source": "Bureau of Statistics Japan",
-      "fetchedAt": "2025-11-13T13:30:00Z"
-    },
-    {
-      "instrumentId": "jp-cpi-core",
-      "date": "2026-02-12",
-      "value": 3,
-      "source": "Bureau of Statistics Japan",
-      "fetchedAt": "2026-02-12T13:30:00Z"
-    },
-    {
-      "instrumentId": "jp-cpi-core",
-      "date": "2026-04-10",
-      "value": 3.1,
-      "source": "Bureau of Statistics Japan",
-      "fetchedAt": "2026-04-10T13:30:00Z"
-    },
-    {
-      "instrumentId": "jp-cpi-core",
-      "date": "2026-06-11",
-      "value": 3.2,
-      "source": "Bureau of Statistics Japan",
-      "fetchedAt": "2026-06-11T13:30:00Z"
-    },
-    {
-      "instrumentId": "jp-cpi-core",
-      "date": "2026-08-08",
-      "value": 3.3,
-      "source": "Bureau of Statistics Japan",
-      "fetchedAt": "2026-08-08T23:30:00Z"
-    },
-    {
       "instrumentId": "jp-gdp",
       "date": "2025-02-17",
       "value": 0.6,
@@ -7701,48 +7626,6 @@
       "value": 0.6,
       "source": "Cabinet Office Japan",
       "fetchedAt": "2026-05-18T13:30:00Z"
-    },
-    {
-      "instrumentId": "jp-unemployment",
-      "date": "2025-08-13",
-      "value": 2.4,
-      "source": "Bureau of Statistics Japan",
-      "fetchedAt": "2025-08-13T13:30:00Z"
-    },
-    {
-      "instrumentId": "jp-unemployment",
-      "date": "2025-11-13",
-      "value": 2.4,
-      "source": "Bureau of Statistics Japan",
-      "fetchedAt": "2025-11-13T13:30:00Z"
-    },
-    {
-      "instrumentId": "jp-unemployment",
-      "date": "2026-02-12",
-      "value": 2.5,
-      "source": "Bureau of Statistics Japan",
-      "fetchedAt": "2026-02-12T13:30:00Z"
-    },
-    {
-      "instrumentId": "jp-unemployment",
-      "date": "2026-04-10",
-      "value": 2.5,
-      "source": "Bureau of Statistics Japan",
-      "fetchedAt": "2026-04-10T13:30:00Z"
-    },
-    {
-      "instrumentId": "jp-unemployment",
-      "date": "2026-06-11",
-      "value": 2.5,
-      "source": "Bureau of Statistics Japan",
-      "fetchedAt": "2026-06-11T13:30:00Z"
-    },
-    {
-      "instrumentId": "jp-unemployment",
-      "date": "2026-07-29",
-      "value": 2.5,
-      "source": "Bureau of Statistics Japan",
-      "fetchedAt": "2026-07-29T23:30:00Z"
     },
     {
       "instrumentId": "jp-policy-rate",

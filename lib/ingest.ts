@@ -10,10 +10,12 @@ import {
   type TwelveDataMapping,
 } from "@/config/twelve-data-series";
 import { ENABLED_ONS_SERIES, ONS_SOURCE, type OnsMapping } from "@/config/ons-series";
+import { ENABLED_ESTAT_SERIES, ESTAT_SOURCE, type EstatMapping } from "@/config/estat-series";
 import { fetchFredSeries, FRED_SOURCE, type FredFetchResult } from "./fred";
 import { fetchEurostatSeries } from "./eurostat";
 import { fetchTwelveDataSeries, TWELVE_DATA_SOURCE } from "./twelve-data";
 import { fetchOnsSeries } from "./ons";
+import { fetchEstatSeries } from "./estat";
 import { getMacroIndicators } from "./data";
 
 export type SeriesOutcome = {
@@ -179,6 +181,118 @@ export async function runOnsIngest(
   }
 
   return report(ONS_SOURCE, startedAt, outcomes, series.length);
+}
+
+// ---------------------------------------------------------------------------
+// e-Stat
+// ---------------------------------------------------------------------------
+
+type EstatFetcher = (
+  mapping: EstatMapping,
+  apiKey: string,
+  now: Date,
+) => Promise<
+  { ok: true; points: Array<{ date: string; value: number }> } | { ok: false; error: string }
+>;
+
+/**
+ * Un passage de collecte e-Stat. Même mécanique que FRED : séquentiel, tolérant à l'échec d'une
+ * série, idempotent par upsert sur (identifiant, date). Comme FRED — et à la différence
+ * d'Eurostat et d'ONS — e-Stat exige une clé (`appId`) en paramètre de requête.
+ *
+ * La santé s'écrit dans `series_health` avec `source: 'e-Stat'` : un échec e-Stat ne peut jamais
+ * se lire comme un échec d'une autre source.
+ */
+export async function runEstatIngest(
+  client: SupabaseClient,
+  apiKey: string,
+  options: {
+    now?: Date;
+    fetcher?: EstatFetcher;
+    series?: EstatMapping[];
+    deadline?: number;
+  } = {},
+): Promise<IngestReport> {
+  const now = options.now ?? new Date();
+  const fetcher = options.fetcher ?? fetchEstatSeries;
+  const startedAt = now.toISOString();
+  const outcomes: SeriesOutcome[] = [];
+  const series = options.series ?? ENABLED_ESTAT_SERIES;
+
+  for (const mapping of series) {
+    if (outOfTime(options.deadline)) break;
+    outcomes.push(await ingestEstatOne(client, mapping, apiKey, now, fetcher));
+  }
+
+  return report(ESTAT_SOURCE, startedAt, outcomes, series.length);
+}
+
+/** L'identifiant lisible d'une série e-Stat : la table et les dimensions fixées. */
+export function estatSeriesKey(mapping: EstatMapping): string {
+  const dims = Object.entries(mapping.filters)
+    .map(([k, v]) => `${k}=${v}`)
+    .join(",");
+  return `${mapping.statsDataId}?${dims}`;
+}
+
+async function ingestEstatOne(
+  client: SupabaseClient,
+  mapping: EstatMapping,
+  apiKey: string,
+  now: Date,
+  fetcher: EstatFetcher,
+): Promise<SeriesOutcome> {
+  const targetId = mapping.target.id;
+  const seriesKey = estatSeriesKey(mapping);
+  const result = await fetcher(mapping, apiKey, now);
+
+  if (!result.ok) {
+    await recordHealthFailure(client, {
+      seriesKey,
+      source: ESTAT_SOURCE,
+      targetKind: "macro",
+      targetId,
+      error: result.error,
+      now,
+    });
+    return { seriesId: seriesKey, targetId, ok: false, written: 0, error: result.error };
+  }
+
+  const fetchedAt = now.toISOString();
+  const rows = result.points.map((p) => ({
+    indicator_id: targetId,
+    date: p.date,
+    value: p.value,
+    source: ESTAT_SOURCE,
+    fetched_at: fetchedAt,
+  }));
+
+  if (rows.length > 0) {
+    const { error } = await client
+      .from("macro_observations")
+      .upsert(rows, { onConflict: "indicator_id,date" });
+    if (error) {
+      await recordHealthFailure(client, {
+        seriesKey,
+        source: ESTAT_SOURCE,
+        targetKind: "macro",
+        targetId,
+        error: `écriture refusée — ${error.message}`,
+        now,
+      });
+      return { seriesId: seriesKey, targetId, ok: false, written: 0, error: error.message };
+    }
+  }
+
+  await recordHealthSuccess(client, {
+    seriesKey,
+    source: ESTAT_SOURCE,
+    targetKind: "macro",
+    targetId,
+    latestObservation: result.points.at(-1)?.date ?? null,
+    now,
+  });
+  return { seriesId: seriesKey, targetId, ok: true, written: rows.length };
 }
 
 // ---------------------------------------------------------------------------

@@ -19,6 +19,7 @@ on:
         options:
           - eurostat
           - ons
+          - estat
           - fred
           - les-deux
           - explorer-eurostat
@@ -96,6 +97,30 @@ jobs:
           npm run ons:check --silent -- $SERIES 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
           code=$?
           echo '```' >> "$GITHUB_STEP_SUMMARY"
+          exit $code
+
+      - name: e-Stat
+        # Exécute `npm run estat:check`, le contrôle permanent — pas les sondes ad hoc
+        # `explorer-estat` / `estat-getdata` ci-dessous, gardées pour découvrir de nouvelles
+        # tables. Même garde que FRED : la clé (`appId`) est un secret du dépôt, son absence se
+        # dit au lieu d'échouer sur une erreur d'authentification.
+        if: ${{ inputs.source == 'estat' }}
+        env:
+          SERIES: ${{ inputs.series }}
+          ESTAT_APP_ID: ${{ secrets.ESTAT_APP_ID }}
+        run: |
+          set +e -o pipefail
+          if [ -z "$ESTAT_APP_ID" ]; then
+            echo "ESTAT_APP_ID absente des secrets du dépôt — étape sautée." | tee -a "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          {
+            echo '## e-Stat'
+            echo '```'
+          } | tee -a "$GITHUB_STEP_SUMMARY"
+          npm run estat:check --silent -- $SERIES 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
+          code=$?
+          echo '```' | tee -a "$GITHUB_STEP_SUMMARY"
           exit $code
 
       - name: Exploration Eurostat
