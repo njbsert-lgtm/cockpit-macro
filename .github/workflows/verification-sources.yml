@@ -478,7 +478,7 @@ jobs:
             echo "## e-Stat — recherche « $WORD » (limite $LIMIT)"
             echo '```'
           } | tee -a "$GITHUB_STEP_SUMMARY"
-          BODY=$(curl -sS -m 20 -G \
+          BODY=$(curl -sS -m 45 -G \
             --data-urlencode "appId=$ESTAT_APP_ID" \
             --data-urlencode "searchWord=$WORD" \
             --data-urlencode "limit=$LIMIT" \
@@ -517,7 +517,7 @@ jobs:
             k="${p%%=*}"; v="${p#*=}"
             ARGS+=(--data-urlencode "$k=$v")
           done
-          curl -sS -m 20 -G "${ARGS[@]}" "https://api.e-stat.go.jp/rest/3.0/app/json/getStatsData" \
+          curl -sS -m 45 -G "${ARGS[@]}" "https://api.e-stat.go.jp/rest/3.0/app/json/getStatsData" \
             | jq . 2>/dev/null | head -c 6000 | tee -a "$GITHUB_STEP_SUMMARY"
           echo '```' | tee -a "$GITHUB_STEP_SUMMARY"
 
