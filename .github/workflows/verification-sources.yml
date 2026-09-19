@@ -34,6 +34,7 @@ on:
           - twelve-data-observation
           - explorer-estat
           - estat-getdata
+          - fred-release-dates
       series:
         description: "Séries à vérifier (vide = toutes). Explorer : « catalogue <terme> » ou « <dataset> <dimension> ». Sonder-hôte : l'hôte. Sonder-marché : rien. Sonder-page : une URL, ou « URL||motif-grep ». Sonder-twelvedata : rien (tous les candidats). Twelve-data : symbole(s), ex. XAU/USD. Fred-observation / twelve-data-observation : « ID(S)||AAAA-MM-JJ||AAAA-MM-JJ » (plusieurs séries séparées par une virgule, début||fin)"
         type: string
@@ -50,6 +51,9 @@ on:
         # e-Stat indexe peu en anglais) ; « code:00450071||limite » liste toutes les tables d'un
         # statsCode de relevé sans filtre de titre. Estat-getdata : « statsDataId » ou
         # « statsDataId||cdArea=...&cdCat01=...&cdTime=... » pour filtrer avant lecture.
+        # Fred-release-dates : un ou plusieurs series_id séparés par une virgule — résout le
+        # « release » (le calendrier de publication) de chaque série puis liste ses prochaines
+        # dates programmées, pour corriger `nextRelease` sans deviner.
 
 jobs:
   verifier:
@@ -621,3 +625,46 @@ jobs:
           code=$?
           echo '```' >> "$GITHUB_STEP_SUMMARY"
           exit $code
+
+      - name: Dates de publication FRED
+        # Pour corriger `nextRelease` dans data/seed.json sans deviner : résout le release_id de
+        # chaque série (le calendrier de publication auquel elle appartient — plusieurs séries
+        # partagent le même, ex. CPIAUCSL et CPILFESL viennent toutes deux du même « Consumer
+        # Price Index »), puis liste les prochaines dates programmées de ce release.
+        if: ${{ inputs.source == 'fred-release-dates' }}
+        env:
+          RAW: ${{ inputs.series }}
+          FRED_API_KEY: ${{ secrets.FRED_API_KEY }}
+        run: |
+          set +e -o pipefail
+          if [ -z "$FRED_API_KEY" ]; then
+            echo "FRED_API_KEY absente des secrets du dépôt — étape sautée." | tee -a "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          TODAY=$(date -u +%Y-%m-%d)
+          {
+            for SID in ${RAW//,/ }; do
+              echo "## FRED — $SID"
+              echo '```'
+              REL=$(curl -sS -m 15 -G \
+                --data-urlencode "series_id=$SID" \
+                --data-urlencode "api_key=$FRED_API_KEY" \
+                --data-urlencode "file_type=json" \
+                "https://api.stlouisfed.org/fred/series/release")
+              echo "$REL" | jq -c '.releases[]? | {id: .id, name: .name}' 2>/dev/null || echo "$REL"
+              RELEASE_ID=$(echo "$REL" | jq -r '.releases[0].id // empty' 2>/dev/null)
+              if [ -n "$RELEASE_ID" ]; then
+                DATES=$(curl -sS -m 15 -G \
+                  --data-urlencode "release_id=$RELEASE_ID" \
+                  --data-urlencode "api_key=$FRED_API_KEY" \
+                  --data-urlencode "file_type=json" \
+                  --data-urlencode "include_release_dates_with_no_data=true" \
+                  --data-urlencode "realtime_start=$TODAY" \
+                  --data-urlencode "limit=5" \
+                  "https://api.stlouisfed.org/fred/release/dates")
+                echo "prochaines dates du release $RELEASE_ID :"
+                echo "$DATES" | jq -c '.release_dates[]?.date' 2>/dev/null || echo "$DATES"
+              fi
+              echo '```'
+            done
+          } | tee -a "$GITHUB_STEP_SUMMARY"
