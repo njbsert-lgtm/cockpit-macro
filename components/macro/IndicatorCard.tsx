@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { MacroIndicator, Observation } from "@/lib/types";
 import { formatIndicatorValue } from "@/lib/macro";
+import { resolveNextRelease } from "@/lib/next-release";
 import { formatDateLong, formatDateShort } from "@/lib/format";
 import { DataValue } from "@/components/states/DataValue";
 import { Sparkline } from "./Sparkline";
@@ -16,6 +17,7 @@ export function IndicatorCard({
   const latest = obs.at(-1) ?? null;
   const previous = obs.length > 1 ? obs[obs.length - 2] : null;
   const variation = latest && previous ? latest.value - previous.value : null;
+  const nextRelease = resolveNextRelease(indicator.nextRelease);
 
   return (
     <Link
@@ -57,8 +59,8 @@ export function IndicatorCard({
       )}
 
       <p className="mt-3 text-11 text-tenu">
-        {indicator.nextRelease
-          ? `Prochaine publication : ${formatDateLong(indicator.nextRelease)}`
+        {nextRelease
+          ? `Prochaine publication : ${formatDateLong(nextRelease)}`
           : "Prochaine date de publication non communiquée"}
       </p>
     </Link>

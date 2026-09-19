@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { Zone } from "@/lib/types";
 import { getIndicatorsForMetric, METRIC_LABELS, comparisonRows, formatIndicatorValue } from "@/lib/macro";
 import { loadMacroObservations, observationsOf } from "@/lib/observations";
+import { resolveNextRelease } from "@/lib/next-release";
 import { MACRO_ZONES, ZONE_LABELS, zoneAncestors } from "@/lib/zones";
 import { formatDateLong } from "@/lib/format";
 import { DataValue } from "@/components/states/DataValue";
@@ -70,7 +71,10 @@ export async function ComparisonView({ metric, zone }: { metric: string; zone: Z
       </div>
 
       {(() => {
-        const withRelease = indicators.find((i) => i.nextRelease && relevantZones.includes(i.zone));
+        const withRelease = indicators
+          .filter((i) => relevantZones.includes(i.zone))
+          .map((i) => ({ zone: i.zone, nextRelease: resolveNextRelease(i.nextRelease) }))
+          .find((i) => i.nextRelease);
         return withRelease ? (
           <p className="mt-3 text-11 text-tenu">
             Prochaine publication ({ZONE_LABELS[withRelease.zone]}) :{" "}

@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { getMacroIndicator } from "@/lib/data";
 import { loadMacroObservationsFor } from "@/lib/observations";
+import { resolveNextRelease } from "@/lib/next-release";
 import { formatIndicatorValue, METRIC_LABELS, metricOf } from "@/lib/macro";
 import { formatDateLong, formatDateShort } from "@/lib/format";
 import { ZONE_LABELS } from "@/lib/zones";
@@ -26,6 +27,7 @@ export default async function MacroIndicatorPage({
   );
   const latest = obs.at(-1) ?? null;
   const history = [...obs].reverse();
+  const nextRelease = resolveNextRelease(indicator.nextRelease);
 
   return (
     <div className="mx-auto max-w-colonne md:max-w-content px-4.5 py-7 md:px-6">
@@ -55,8 +57,8 @@ export default async function MacroIndicatorPage({
       </div>
 
       <p className="mt-3 text-11 text-tenu">
-        {indicator.nextRelease
-          ? `Prochaine publication : ${formatDateLong(indicator.nextRelease)}`
+        {nextRelease
+          ? `Prochaine publication : ${formatDateLong(nextRelease)}`
           : "Prochaine date de publication non communiquée"}
       </p>
 
