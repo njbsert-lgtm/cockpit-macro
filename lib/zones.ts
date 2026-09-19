@@ -32,6 +32,18 @@ export const ALL_ZONES: Zone[] = [
   "global",
 ];
 
+/**
+ * Les zones de l'onglet Macro — `ALL_ZONES` sans `em`. « Émergents » n'y a jamais porté
+ * d'indicateur réellement collecté (deux séries fictives, FMI.EM.GDP/CA, jamais sourcées) et
+ * agrégeait des pays (Chine, Inde) déjà suivis individuellement : un doublon sans donnée
+ * propre plutôt qu'une zone de plus.
+ *
+ * `em` reste dans `ALL_ZONES` : Marchés en a besoin comme repère de courbe obligataire (§
+ * Onglet 3), et la veille comme zone de classement — ce sont des usages différents, pas des
+ * oublis.
+ */
+export const MACRO_ZONES: Zone[] = ALL_ZONES.filter((z) => z !== "em");
+
 export const ZONE_LABELS: Record<Zone, string> = {
   us: "États-Unis",
   ez: "Zone euro",

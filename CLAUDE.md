@@ -635,7 +635,14 @@ PMI composite · Salaires · Solde budgétaire · Dette publique rapportée au P
 Balance courante.
 
 Zones : États-Unis · Zone euro · France · Allemagne · Espagne · Italie · Royaume-Uni ·
-Japon · Chine · Inde · Émergents (agrégat).
+Japon · Chine · Inde.
+
+**Pas d'agrégat « Émergents » côté Macro.** Chine et Inde y sont suivies individuellement ;
+l'agrégat n'a jamais porté d'indicateur réellement collecté (deux séries fictives, jamais
+sourcées) et doublait des pays déjà présents sans rien ajouter. `em` reste une zone du modèle
+de données — Marchés en a besoin comme repère de courbe obligataire (voir Onglet 3), la veille
+comme zone de classement — mais `MACRO_ZONES` (`lib/zones.ts`) l'exclut : le sélecteur de zone
+du bandeau et le mode comparaison n'affichent que les onze zones réellement suivies.
 
 ### Deux modes de lecture
 

@@ -2,7 +2,7 @@ import Link from "next/link";
 import type { Zone } from "@/lib/types";
 import { getIndicatorsForMetric, METRIC_LABELS, comparisonRows, formatIndicatorValue } from "@/lib/macro";
 import { loadMacroObservations, observationsOf } from "@/lib/observations";
-import { ALL_ZONES, ZONE_LABELS, zoneAncestors } from "@/lib/zones";
+import { MACRO_ZONES, ZONE_LABELS, zoneAncestors } from "@/lib/zones";
 import { formatDateLong } from "@/lib/format";
 import { DataValue } from "@/components/states/DataValue";
 import { MetricSelector } from "./MetricSelector";
@@ -11,7 +11,7 @@ export async function ComparisonView({ metric, zone }: { metric: string; zone: Z
   const indicators = getIndicatorsForMetric(metric);
   const byZone = new Map(indicators.map((i) => [i.zone, i]));
   const relevantZones = zoneAncestors(zone);
-  const rows = comparisonRows(ALL_ZONES, metric);
+  const rows = comparisonRows(MACRO_ZONES, metric);
   const bySeries = await loadMacroObservations(indicators.map((i) => i.id));
 
   return (

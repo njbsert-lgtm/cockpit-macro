@@ -5863,24 +5863,6 @@
       "frequency": "monthly",
       "seriesKey": "RBI.REPO",
       "nextRelease": "2026-10-07"
-    },
-    {
-      "id": "em-gdp",
-      "label": "Croissance du PIB",
-      "zone": "em",
-      "unit": "percent",
-      "frequency": "quarterly",
-      "seriesKey": "IMF.EM.GDP",
-      "nextRelease": "2026-10-15"
-    },
-    {
-      "id": "em-current-account",
-      "label": "Balance courante",
-      "zone": "em",
-      "unit": "percent",
-      "frequency": "quarterly",
-      "seriesKey": "IMF.EM.CA",
-      "nextRelease": "2026-10-15"
     }
   ],
   "macroObservations": [
@@ -8137,48 +8119,6 @@
       "value": 6.5,
       "source": "Reserve Bank of India",
       "fetchedAt": "2026-08-07T09:00:00Z"
-    },
-    {
-      "instrumentId": "em-gdp",
-      "date": "2025-04-15",
-      "value": 4.1,
-      "source": "FMI (WEO)",
-      "fetchedAt": "2025-04-15T13:30:00Z"
-    },
-    {
-      "instrumentId": "em-gdp",
-      "date": "2025-10-15",
-      "value": 3.9,
-      "source": "FMI (WEO)",
-      "fetchedAt": "2025-10-15T13:30:00Z"
-    },
-    {
-      "instrumentId": "em-gdp",
-      "date": "2026-04-15",
-      "value": 3.7,
-      "source": "FMI (WEO)",
-      "fetchedAt": "2026-04-15T13:30:00Z"
-    },
-    {
-      "instrumentId": "em-current-account",
-      "date": "2025-04-15",
-      "value": 0.6,
-      "source": "FMI (WEO)",
-      "fetchedAt": "2025-04-15T13:30:00Z"
-    },
-    {
-      "instrumentId": "em-current-account",
-      "date": "2025-10-15",
-      "value": 0.4,
-      "source": "FMI (WEO)",
-      "fetchedAt": "2025-10-15T13:30:00Z"
-    },
-    {
-      "instrumentId": "em-current-account",
-      "date": "2026-04-15",
-      "value": 0.2,
-      "source": "FMI (WEO)",
-      "fetchedAt": "2026-04-15T13:30:00Z"
     }
   ],
   "alertRules": [
