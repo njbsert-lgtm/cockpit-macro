@@ -177,6 +177,20 @@ describe("le repli ne fabrique jamais de valeur", () => {
   });
 });
 
+describe("indicateurs macro couverts par ONS et e-Stat — pas seulement FRED et Eurostat", () => {
+  it("les indicateurs UK (ONS) et Japon (e-Stat) sont bien tenus pour couverts", () => {
+    // Même bug que celui du 13/09 sur Twelve Data (voir plus haut), pour ONS et e-Stat cette
+    // fois : `isMacroCovered` ne testait que FRED et Eurostat. uk-cpi, uk-cpi-core,
+    // uk-unemployment, uk-wages, uk-gdp et jp-cpi, jp-cpi-core, jp-unemployment retombaient donc
+    // silencieusement sur le seed — vide depuis l'activation de chaque source — au lieu de la
+    // donnée réellement collectée chaque jour.
+    expect(isMacroCovered("uk-cpi")).toBe(true);
+    expect(isMacroCovered("uk-gdp")).toBe(true);
+    expect(isMacroCovered("jp-cpi")).toBe(true);
+    expect(isMacroCovered("jp-unemployment")).toBe(true);
+  });
+});
+
 describe("observations macro", () => {
   it("suivent la même règle de repli", async () => {
     getReadClient.mockReturnValue(clientThrowing("panne"));

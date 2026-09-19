@@ -2,6 +2,8 @@ import type { Observation } from "./types";
 import { getObservations as seedObservations, getMacroObservations as seedMacroObservations } from "./data";
 import { mappingForInstrument, mappingForMacro } from "@/config/fred-series";
 import { eurostatMappingFor } from "@/config/eurostat-series";
+import { onsMappingFor } from "@/config/ons-series";
+import { estatMappingFor } from "@/config/estat-series";
 import { twelveDataMappingForInstrument } from "@/config/twelve-data-series";
 import { getReadClient } from "./supabase";
 
@@ -116,13 +118,23 @@ export function loadObservations(instrumentIds: string[]): Promise<ObservationsB
 }
 
 /**
- * Un indicateur est couvert dès qu'une source active le collecte — FRED ou Eurostat. Les deux
- * ne se recoupent pas : chaque identifiant appartient à une source et une seule, ce que
- * `lib/integrity.ts` vérifie au chargement. La règle « jamais de fusion pour un même
+ * Un indicateur est couvert dès qu'une source active le collecte — FRED, Eurostat, ONS ou
+ * e-Stat. Aucune ne se recoupe : chaque identifiant appartient à une source et une seule, ce
+ * que `lib/integrity.ts` vérifie au chargement. La règle « jamais de fusion pour un même
  * identifiant » tient donc au-delà de la première source.
+ *
+ * Oublier une source ici ne casse rien bruyamment : l'indicateur retombe sur le seed, qui est
+ * vide dès que la source a été activée (la valeur en dur en est retirée) — l'écran affiche
+ * silencieusement l'état vide au lieu de la donnée réellement collectée. C'est exactement le
+ * bug qui a touché `uk-*` puis `jp-*` : ajouté ici seulement après coup.
  */
 export function isMacroCovered(id: string): boolean {
-  return mappingForMacro(id) !== null || eurostatMappingFor(id) !== null;
+  return (
+    mappingForMacro(id) !== null ||
+    eurostatMappingFor(id) !== null ||
+    onsMappingFor(id) !== null ||
+    estatMappingFor(id) !== null
+  );
 }
 
 /** Les observations macro pour un ensemble d'indicateurs, en une requête. */
