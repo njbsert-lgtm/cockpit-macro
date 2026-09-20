@@ -1,29 +1,103 @@
 ---
-slug: "2026-S38"
-kind: "hebdo"
-date: "2026-09-19"
-isoWeek: "2026-S38"
-parentWeek: null
-comparesTo: "2026-S33-E1"
-trigger: null
-regimeStatement: "Les trois grandes banques centrales ont resserré le même mois. L'inflation qu'elles combattent vient d'un détroit qu'elles ne contrôlent pas."
+kind: hebdo
+status: publiee
+provenance: fiche-notion
+date: '2026-09-19'
+comparesTo: 2026-S32
+regimeStatement: >-
+  Les trois grandes banques centrales ont resserré le même mois. L'inflation qu'elles
+  combattent vient d'un détroit qu'elles ne contrôlent pas.
 keyIndicators:
-  - label: "Fed funds"
-    value: "3,75–4,00 % (+25 pb le 16/09)"
-  - label: "BCE — facilité de dépôt"
-    value: "2,50 % (2e hausse depuis juin)"
-  - label: "BoJ — taux directeur"
-    value: "1,25 %, plus haut depuis 31 ans"
-  - label: "Brent"
-    value: "≈ 103 $ (−4,3 % sur la semaine)"
-zones: ["us", "ez", "fr", "jp", "global"]
-driverOrder: ["rates", "iran", "ai"]
-trendRefs: ["fin-desinflation", "prime-geopolitique-permanente", "capex-ia-concentre"]
-instrumentRefs: ["us10y", "brent", "eurusd", "gold", "spx", "cac40", "nikkei"]
-provenance: "fiche-notion"
+  - label: Fed funds
+    value: 3,75–4,00 % (+25 pb le 16/09)
+  - label: BCE — facilité de dépôt
+    value: 2,50 % (2e hausse depuis juin)
+  - label: BoJ — taux directeur
+    value: 1,25 %, plus haut depuis 31 ans
+  - label: Brent
+    value: ≈ 103 $ (−4,3 % sur la semaine)
+zones:
+  - us
+  - ez
+  - fr
+  - jp
+  - global
+driverOrder:
+  - rates
+  - iran
+  - ai
+trendRefs:
+  - desinflation-terminee
+  - prime-risque-permanente
+  - capex-ia-benefices
+instrumentRefs:
+  - us10y
+  - brent
+  - eurusd
+  - gold
+  - spx
+  - cac
+  - nky
+channels:
+  - fonction-reaction
+  - nature-choc
 sources:
-  - label: "Fiche Notion — Vues Macro, semaine S38 (14–20/09/2026)"
-    url: "https://app.notion.com/p/3dbda7c52a168130b6bee24962e15933"
+  CeQuiAChange:
+    - label: Fiche Notion — Vues Macro, semaine S38 (14–20/09/2026)
+      url: https://app.notion.com/p/3dbda7c52a168130b6bee24962e15933
+  CeQuiSestConfirme:
+    - label: Fiche Notion — Vues Macro, semaine S38 (14–20/09/2026)
+      url: https://app.notion.com/p/3dbda7c52a168130b6bee24962e15933
+  RevisionDesScenarios:
+    - label: Fiche Notion — Vues Macro, semaine S38 (14–20/09/2026)
+      url: https://app.notion.com/p/3dbda7c52a168130b6bee24962e15933
+  LeFilDeLaSemaine:
+    - label: Fiche Notion — Vues Macro, semaine S38 (14–20/09/2026)
+      url: https://app.notion.com/p/3dbda7c52a168130b6bee24962e15933
+guets:
+  - id: 2026-s38-g1
+    driverId: rates
+    libelle: Le coup d'arrêt aux taux longs tient-il ?
+    attendu: >-
+      La décision de la Fed a stoppé la montée des rendements longs ; ce répit tient
+      quatre semaines.
+    confirmeSi: >-
+      Le 10 ans américain reste sous son plus haut de la semaine du 14/09 jusqu'au 17/10.
+    infirmeSi: >-
+      Nouveau plus haut sur la période — ce qui validerait la prudence tactique à trois mois
+      de Goldman Sachs et ferait de la duration le point de rupture.
+    echeance: '2026-10-17'
+    sourceAttendue:
+      - 'FRED:DGS10'
+  - id: 2026-s38-g2
+    driverId: iran
+    libelle: Les restrictions à l'export passent-elles de l'évocation à la décision ?
+    attendu: >-
+      Les restrictions à l'export de produits pétroliers évoquées aux États-Unis et en
+      Arabie saoudite restent au stade de l'intention.
+    confirmeSi: Aucune mesure officielle d'ici fin octobre, et le Brent reste sous 110 $.
+    infirmeSi: >-
+      Restriction effectivement annoncée par l'un des deux, ou Brent au-dessus de 110 $ en
+      clôture — bascule alors vers « durcissement ».
+    echeance: '2026-10-31'
+    sourceAttendue:
+      - 'EIA:STEO'
+      - 'FRED:DCOILBRENTEU'
+  - id: 2026-s38-g3
+    driverId: ai
+    libelle: La monétisation de l'IA se chiffre-t-elle enfin ?
+    attendu: >-
+      À la saison de résultats du troisième trimestre, la proportion de sociétés du S&P 500
+      qui chiffrent l'effet de l'IA sur leurs résultats reste marginale.
+    confirmeSi: >-
+      Cette proportion reste sous 5 % — la thèse « marché d'infrastructure, pas de
+      productivité » tient, et la branche centrale avec elle.
+    infirmeSi: >-
+      Elle dépasse 10 % — la monétisation se diffuse, et la branche « profits et capex
+      accélèrent » redevient défendable.
+    echeance: '2026-11-15'
+    sourceAttendue:
+      - 'GS:Research'
 ---
 
 > **Provenance — à lire avant les chiffres.** Cette note est rédigée depuis la fiche macro
@@ -32,7 +106,7 @@ sources:
 > valent ce qu'elle vaut. Une note produite par le pipeline normal aurait bloqué sur la
 > plupart d'entre eux — c'est la règle, et elle reste juste.
 
-## 1. Ce qui a changé
+<CeQuiAChange>
 
 **Trois banques centrales ont resserré dans le même mois, et c'est la première fois depuis les
 années 1970 que cela arrive dans une économie molle.** La BCE a porté sa facilité de dépôt de
@@ -63,7 +137,9 @@ d'exporter en contournant Ormuz — a été frappé par des drones. Le Brent est
 
 La voie de contournement était la réponse au premier blocage. Elle est maintenant visée.
 
-## 2. Ce qui s'est confirmé
+</CeQuiAChange>
+
+<CeQuiSestConfirme>
 
 **La chaîne pétrole → inflation → resserrement, posée dès la note d'août, s'est vérifiée de
 bout en bout.** Elle a même été observable en temps réel dans la fiche de la semaine : annoncée
@@ -84,7 +160,9 @@ Oppenheimer (Goldman Sachs) attribue la performance des actions mondiales des di
 mois à la croissance des bénéfices dans toutes les régions, et attend que la croissance du PIB
 nominal continue de soutenir le cycle de résultats même sans expansion des multiples.
 
-## 3. Révision des scénarios
+</CeQuiSestConfirme>
+
+<RevisionDesScenarios>
 
 ### Driver taux — bascule vers la branche « hausse »
 
@@ -159,7 +237,9 @@ la main-d'œuvre qualifiée et la réglementation.
 Ce n'est pas une bascule de branche. C'est un axe à ajouter : **acceptabilité politique du
 coût énergétique.**
 
-## 4. Ce que j'avais mal lu
+</RevisionDesScenarios>
+
+<CeQueJavaisMalLu>
 
 > **Bloc à compléter — il ne peut pas être rédigé pour vous.**
 >
@@ -176,42 +256,25 @@ coût énergétique.**
 >   contournement n'étaient dans aucun axe. Est-ce un angle mort du cadre, ou un événement
 >   qu'aucun cadre n'aurait anticipé ?
 
-## 5. Ce que je surveille
+</CeQueJavaisMalLu>
 
-### Guet 1 — Le coup d'arrêt aux taux longs tient-il ?
+<CeQueJeSurveille>
 
-- **Driver** : taux · **Axe** : trajectoire de resserrement
-- **Attendu** : la décision de la Fed a stoppé la montée des rendements longs ; ce répit tient
-  quatre semaines.
-- **Confirme si** : le 10 ans américain reste sous son plus haut de la semaine du 14/09 jusqu'au
-  17/10.
-- **Infirme si** : nouveau plus haut sur la période — ce qui validerait la prudence tactique à
-  trois mois de Goldman Sachs et ferait de la duration le point de rupture.
-- **Échéance** : 17/10/2026 · **Source attendue** : FRED, série du 10 ans américain
+Trois guets, un par driver. Le détail de chacun — attendu, signal de confirmation, signal
+d'infirmation, échéance et source attendue — est structuré dans le frontmatter et rendu
+ci-dessous.
 
-### Guet 2 — Les restrictions à l'export passent-elles de l'évocation à la décision ?
+Deux d'entre eux portent sur un axe qui n'existait pas la semaine dernière : le
+**contournement** sur le driver Iran, et l'**acceptabilité politique du coût énergétique** sur
+le driver IA. Le troisième, sur la **trajectoire de resserrement**, est la continuation directe
+du sujet ouvert en août.
 
-- **Driver** : Iran · **Axe** : contournement *(axe nouveau, voir bloc 3)*
-- **Attendu** : les restrictions à l'export de produits pétroliers évoquées aux États-Unis et en
-  Arabie saoudite restent au stade de l'intention.
-- **Confirme si** : aucune mesure officielle d'ici fin octobre, et le Brent reste sous 110 $.
-- **Infirme si** : restriction effectivement annoncée par l'un des deux, ou Brent au-dessus de
-  110 $ en clôture — bascule alors vers « durcissement ».
-- **Échéance** : 31/10/2026 · **Source attendue** : EIA, communiqués officiels, cours du Brent
+*Référence de départ du guet 3* : 2 % des sociétés du S&P 500 au deuxième trimestre 2026
+(Ben Snider, Goldman Sachs).
 
-### Guet 3 — La monétisation de l'IA se chiffre-t-elle enfin ?
+</CeQueJeSurveille>
 
-- **Driver** : IA · **Axe** : monétisation hors fournisseurs
-- **Attendu** : à la saison de résultats du troisième trimestre, la proportion de sociétés du
-  S&P 500 qui chiffrent l'effet de l'IA sur leurs résultats reste marginale.
-- **Confirme si** : cette proportion reste sous 5 % — la thèse « marché d'infrastructure, pas de
-  productivité » tient, et la branche centrale avec elle.
-- **Infirme si** : elle dépasse 10 % — la monétisation se diffuse, et la branche « profits et
-  capex accélèrent » redevient défendable.
-- **Échéance** : 15/11/2026 · **Source attendue** : Goldman Sachs Research, FactSet
-- *Référence de départ* : 2 % au deuxième trimestre 2026 (Ben Snider, Goldman Sachs).
-
-## Le fil de la semaine
+<LeFilDeLaSemaine>
 
 - **10/09** — BCE : facilité de dépôt de 2,25 % à 2,50 %, deuxième hausse depuis juin *(Brief.eco)*
 - **13/09** — Drone russe sur un train Kiev-Varsovie, à 2 km de la frontière polonaise *(Brief.me)*
@@ -241,6 +304,4 @@ coût énergétique.**
 *L'Europe est le point faible de la semaine. Le Japon, dont la banque centrale vient pourtant
 de resserrer, est le seul marché en hausse.*
 
----
-
-*Support d'analyse personnel, pas un conseil en investissement.*
+</LeFilDeLaSemaine>

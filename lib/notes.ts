@@ -132,6 +132,14 @@ const frontmatterSchema = z.object({
   /** Figée au moment de la publication depuis le portail. */
   publishedAt: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).nullable().default(null),
   date: isoDate,
+  /**
+   * D'où vient la matière de la note. `pipeline` par défaut — c'est le cas courant, et une
+   * absence ne doit pas requalifier les notes écrites avant que la question ne se pose.
+   * `fiche-notion` dit que la note a été écrite depuis la fiche macro hebdomadaire ;
+   * `manuelle`, qu'elle a été rédigée de bout en bout à la main. La distinction n'est pas
+   * cosmétique : elle décide du régime de contrôle des chiffres applicable à la relecture.
+   */
+  provenance: z.enum(["pipeline", "fiche-notion", "manuelle"]).default("pipeline"),
   comparesTo: z.string().nullable().default(null),
   trigger: z.string().min(1).nullable().default(null),
   regimeStatement: z.string().min(1),
@@ -403,6 +411,7 @@ export function parseNote(slug: string, source: string): ParsedNote {
       date: fm.date,
       isoWeek,
       parentWeek,
+      provenance: fm.provenance,
       comparesTo: fm.comparesTo,
       trigger: fm.trigger,
       regimeStatement: fm.regimeStatement,

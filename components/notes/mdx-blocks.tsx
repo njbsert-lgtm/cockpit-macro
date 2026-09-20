@@ -141,12 +141,27 @@ function CeQueJeSurveilleBlock({
 }
 
 /**
- * Balise auto-porteuse : l'auteur écrit `<LeFilDeLaSemaine />`, sans contenu — la liste
- * chronologique est résolue au rendu depuis `Note.veilleItemRefs`, pas rédigée à la main.
- * Absent purement et simplement quand la note n'en cite aucun : pas de section vide.
+ * Le fil de la semaine, sous deux formes qui ne se mélangent jamais.
+ *
+ * **Rédigé** — `<LeFilDeLaSemaine>…</LeFilDeLaSemaine>` avec du contenu : c'est la forme des
+ * notes écrites depuis la fiche macro hebdomadaire, où la chronologie est un travail éditorial
+ * (une date, un fait, l'émetteur) et non une liste d'items de veille. Le contenu écrit gagne.
+ *
+ * **Auto-portée** — `<LeFilDeLaSemaine />`, sans contenu : la liste est résolue au rendu depuis
+ * `Note.veilleItemRefs`. C'est la forme des notes antérieures au basculement vers la fiche ;
+ * elle reste servie telle quelle plutôt que de les réécrire.
+ *
+ * Sans contenu rédigé **et** sans item résolu, le bloc disparaît : pas de section vide.
  */
-function LeFilDeLaSemaineBlock({ items }: { items: VeilleItem[] }) {
-  if (items.length === 0) return null;
+function LeFilDeLaSemaineBlock({
+  items,
+  children,
+}: {
+  items: VeilleItem[];
+  children?: React.ReactNode;
+}) {
+  const redige = children !== undefined && children !== null && children !== "";
+  if (!redige && items.length === 0) return null;
   const chronological = sortChronologically(items);
 
   return (
@@ -154,22 +169,28 @@ function LeFilDeLaSemaineBlock({ items }: { items: VeilleItem[] }) {
       <h4 className="text-11 font-semibold uppercase tracking-cap text-tenu">
         {BLOCK_TITLES.LeFilDeLaSemaine}
       </h4>
-      <ul className="mt-2.5 flex flex-col gap-1.5">
-        {chronological.map((item) => (
-          <li key={item.id} className="flex flex-wrap items-baseline gap-x-2 text-13 leading-snug text-doux">
-            <span className="shrink-0 text-10-5 text-tenu">{formatDateShort(item.publishedAt)}</span>
-            <a
-              href={item.url}
-              target="_blank"
-              rel="noreferrer"
-              className="hover:text-encre hover:underline"
-            >
-              {item.title}
-            </a>
-            <span className="shrink-0 text-10-5 text-tenu">— {item.source}</span>
-          </li>
-        ))}
-      </ul>
+      {redige ? (
+        <div className="mt-2 max-w-[70ch] text-15-5 leading-relaxed text-doux [&>p]:mt-3 [&>p:first-child]:mt-0">
+          {children}
+        </div>
+      ) : (
+        <ul className="mt-2.5 flex flex-col gap-1.5">
+          {chronological.map((item) => (
+            <li key={item.id} className="flex flex-wrap items-baseline gap-x-2 text-13 leading-snug text-doux">
+              <span className="shrink-0 text-10-5 text-tenu">{formatDateShort(item.publishedAt)}</span>
+              <a
+                href={item.url}
+                target="_blank"
+                rel="noreferrer"
+                className="hover:text-encre hover:underline"
+              >
+                {item.title}
+              </a>
+              <span className="shrink-0 text-10-5 text-tenu">— {item.source}</span>
+            </li>
+          ))}
+        </ul>
+      )}
     </section>
   );
 }
@@ -212,6 +233,8 @@ export function createNoteMdxComponents(
     RecapDesSpeciales: (p: BlockProps) => (
       <Block name="RecapDesSpeciales" {...props("RecapDesSpeciales")} {...p} />
     ),
-    LeFilDeLaSemaine: () => <LeFilDeLaSemaineBlock items={veilleItems} />,
+    LeFilDeLaSemaine: (p: BlockProps) => (
+      <LeFilDeLaSemaineBlock items={veilleItems} {...p} />
+    ),
   };
 }

@@ -9,6 +9,7 @@ function note(over: Partial<Note> = {}): Note {
     date: "2026-08-29",
     isoWeek: "2026-S35",
     parentWeek: null,
+    provenance: "pipeline",
     comparesTo: null,
     trigger: null,
     regimeStatement: "Un régime.",

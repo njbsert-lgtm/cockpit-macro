@@ -181,6 +181,8 @@ export type Note = {
   date: string;
   isoWeek: string; // '2026-S33', identique pour l'hebdo et ses spéciales
   parentWeek: string | null; // pour une spéciale : la hebdo de rattachement
+  /** D'où vient la matière : le pipeline, la fiche macro hebdomadaire, ou la main. */
+  provenance: "pipeline" | "fiche-notion" | "manuelle";
   comparesTo: string | null; // slug de la note de référence du bloc « ce qui a changé »
   trigger: string | null; // obligatoire pour une spéciale : le seuil franchi
   regimeStatement: string; // le régime en une phrase, à cette date
