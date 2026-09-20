@@ -16,7 +16,8 @@ function obs(): ObservationContexte {
     label: "US 10 ans",
     unit: "percent",
     valeurs: [{ date: "2026-09-04", value: 4.18 }],
-    variationSemaine: 0.05,
+    ytdBasis: null,
+    variationSeance: 0.05,
     variationYTD: null,
     fraicheur: "ok",
   };
@@ -264,7 +265,7 @@ describe("executerRun — le contrôle des chiffres bloque la publication", () =
 
   it("un chiffre du paquet laisse le brouillon publiable", async () => {
     const juste = brouillon({
-      blocs: { ...brouillon().blocs, CeQuiAChange: "Le 10 ans à 4,18 %." },
+      blocs: { ...brouillon().blocs, CeQuiAChange: "Le US 10 ans à 4,18 % au 04/09." },
     });
     const r = await executerRun(paquet(), callerRendant(juste), { dryRun: true, sourcesExistantes: CORPUS, graphe: GRAPHE });
     expect(r.rapportChiffres?.bloque).toBe(false);

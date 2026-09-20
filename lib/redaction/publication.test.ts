@@ -171,7 +171,8 @@ function paquet(): ContextePaquet {
         label: "US 10 ans",
         unit: "percent",
         valeurs: [{ date: "2026-09-04", value: 4.18 }],
-        variationSemaine: null,
+        ytdBasis: null,
+        variationSeance: null,
         variationYTD: null,
         fraicheur: "ok",
       },
@@ -302,7 +303,7 @@ describe("controlerChiffresPublication — bloquant sur ia/ia-relue, signalant a
 
   it("un chiffre du paquet ne bloque jamais, quelle que soit l'authorship", () => {
     const rapport = controlerChiffresPublication(
-      { CeQuiAChange: "Le 10 ans à 4,18 %." },
+      { CeQuiAChange: "Le US 10 ans à 4,18 % au 04/09." },
       { CeQuiAChange: "ia-relue" },
       paquet(),
     );

@@ -1,13 +1,6 @@
-import type { RapportChiffres, VerdictNom } from "@/lib/redaction/figures";
+import { reproche, type RapportChiffres } from "@/lib/redaction/figures";
 import { BLOCK_TITLES, type BlockName } from "@/lib/note-blocks";
 import { ValidationPill } from "./ValidationPill";
-
-/** Ce que chaque verdict reproche, en clair. Le régime seul ne le dit pas. */
-const REPROCHE: Record<Exclude<VerdictNom, "conforme">, string> = {
-  ecart: "écart avec la valeur en base",
-  introuvable: "ni en base, ni littéralement dans la fiche",
-  "sans-attribution": "dans la fiche, mais aucun émetteur nommé dans la phrase",
-};
 
 /**
  * Le rapport de contrôle des chiffres, en premier dans le portail (DESIGN.md) : une ligne par
@@ -60,11 +53,15 @@ export function FigureReport({ rapport }: { rapport: RapportChiffres }) {
               {v.verdict === "conforme" && v.source && (
                 <span className="ml-1.5 text-doux">— {v.source}</span>
               )}
-              {v.verdict !== "conforme" && (
-                <span className="ml-1.5 text-k-choc">
-                  {REPROCHE[v.verdict]}
-                  {v.attendu && ` — la base porte ${v.attendu}`}
+              {/* Le régime A dit toujours contre quoi il a tranché — la date retenue et la
+                  valeur en base. Sans les deux, un verdict ne se relit pas six mois plus tard. */}
+              {v.regime === "A" && v.dateRetenue && v.valeurBase && (
+                <span className="ml-1.5 text-tenu">
+                  base {v.valeurBase} · {v.dateRetenue}
                 </span>
+              )}
+              {v.verdict !== "conforme" && (
+                <span className="ml-1.5 text-k-choc">{reproche(v)}</span>
               )}
             </span>
           </li>

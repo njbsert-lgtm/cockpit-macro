@@ -37,7 +37,7 @@ Rien n'a modifié la thèse cette semaine.
 
 <CeQuiSestConfirme>
 
-Le cœur d'inflation continue de décélérer, à 4,18 % pour le 10 ans US.
+Le cœur d'inflation continue de décélérer, le US 10 ans à 4,18 % au 04/09.
 
 </CeQuiSestConfirme>
 
@@ -72,7 +72,8 @@ function paquet(): ContextePaquet {
         label: "US 10 ans",
         unit: "percent",
         valeurs: [{ date: "2026-09-04", value: 4.18 }],
-        variationSemaine: null,
+        ytdBasis: null,
+        variationSeance: null,
         variationYTD: null,
         fraicheur: "ok",
       },
@@ -114,7 +115,7 @@ function decisionsCompletes(): Decisions {
   d.blocs.CeQuiAChange = { authorship: "ia-relue", texte: "Rien n'a modifié la thèse cette semaine." };
   d.blocs.CeQuiSestConfirme = {
     authorship: "ia-relue",
-    texte: "Le cœur d'inflation continue de décélérer, à 4,18 % pour le 10 ans US.",
+    texte: "Le cœur d'inflation continue de décélérer, le US 10 ans à 4,18 % au 04/09.",
   };
   d.blocs.RevisionDesScenarios = { authorship: "ia-relue", texte: "Aucune révision ne s'impose." };
   d.blocs.CeQueJavaisMalLu = { authorship: "humaine", texte: "Rien de notable cette semaine." };

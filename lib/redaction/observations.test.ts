@@ -56,8 +56,8 @@ describe("construireObservationsDepuis", () => {
       ],
     });
     const [resultat] = construireObservationsDepuis([entree], series, "2026-09-19", toujoursCouvert);
-    expect(resultat.variationSemaine).not.toBeNull();
-    expect(resultat.variationSemaine!).toBeCloseTo(((4.0 - 3.75) / 3.75) * 100, 5);
+    expect(resultat.variationSeance).not.toBeNull();
+    expect(resultat.variationSeance!).toBeCloseTo(((4.0 - 3.75) / 3.75) * 100, 5);
     expect(resultat.variationYTD).toBeNull();
     expect(resultat.fraicheur).toBe("ok");
   });

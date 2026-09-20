@@ -10,7 +10,8 @@ function obs(instrumentId: string): ObservationContexte {
     label: instrumentId,
     unit: "percent",
     valeurs: [{ date: "2026-09-17", value: 4.0 }],
-    variationSemaine: null,
+    ytdBasis: null,
+    variationSeance: null,
     variationYTD: null,
     fraicheur: "ok",
   };

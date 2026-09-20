@@ -244,7 +244,10 @@ type ContextePaquet = {
   } | null;
 
   notePrecedente: { /* inchangé */ };
-  observations: Observation[];    // pour le régime A et les instruments cités
+  // Pour le régime A et les instruments cités. Trente clôtures datées par série — le prompt
+  // n'en affiche qu'une, mais le contrôle des chiffres a besoin des bornes d'une période pour
+  // recalculer une variation — plus la base YTD du 31 décembre, qui est de la configuration.
+  observations: Observation[];
   scenariosCourants: ScenarioVersion[];
   guetsOuverts: Guet[];
   guetsExpires: Guet[];
@@ -313,10 +316,54 @@ La règle devient : **deux provenances, deux vérifications, toutes deux bloquan
 **Régime A — instrument collecté par l'application.** Brent, 10 ans américain, EUR/USD, or,
 indices suivis, indicateurs macro en base.
 
-Le nombre doit correspondre à la valeur stockée, à la tolérance d'arrondi déclarée près. Un
-écart bloque la publication. **Sans exception.** Si la fiche cite un Brent à 104 $ et que la
-base a 102,96 $, la note affiche la valeur de la base. Pas de moyenne, pas d'arbitrage :
-l'application a sa propre source pour cet instrument, c'est elle qui fait foi.
+Le nombre doit correspondre à la valeur stockée **à la date qu'il porte**, à la tolérance
+d'arrondi déclarée près. Un écart bloque la publication. **Sans exception.** Si la fiche cite un
+Brent à 104 $ et que la base a 102,96 $, la note affiche la valeur de la base. Pas de moyenne,
+pas d'arbitrage : l'application a sa propre source pour cet instrument, c'est elle qui fait foi.
+
+**La date de référence fait partie de la vérification**, et c'est elle qui rend le régime A
+utile plutôt que décoratif : confronter un prix à la dernière cotation reviendrait à valider
+n'importe quelle valeur de la semaine pourvu qu'elle ait existé un jour. Trois cas, et un seul
+échec :
+
+| Le nombre | Se vérifie contre | Exemple |
+|---|---|---|
+| **Daté** | La clôture de cette date | « le Brent à 102,96 $ au 04/09 » |
+| **Variation sur période** | Un **recalcul** depuis les clôtures de début et de fin en base | « en hausse de 2,3 % sur la semaine » |
+| **Décrivant le présent** | La dernière clôture disponible à la génération | « le Brent cote aujourd'hui 102,96 $ » |
+
+Un chiffre du régime A **sans date exploitable bloque** : dans une note macro, un prix sans date
+n'est pas une information. Le présent n'est jamais sous-entendu — « le Brent s'établit à
+102,96 $ » est refusé, « aujourd'hui » ou « au dernier relevé » passent. Le doute ne bénéficie
+pas au texte.
+
+**Une variation est recalculée, jamais reprise.** Une maison de recherche calcule sa variation
+hebdomadaire sur ses propres bornes, parfois sur cinq jours ouvrés au lieu de sept jours
+calendaires, parfois depuis une clôture que nous n'avons pas. Recopier son pourcentage
+reviendrait à publier son calcul sous notre signature.
+
+**Deux cas particuliers, et leur distinction compte.**
+
+- *Tolérance d'arrondi.* On accepte de perdre **au plus une décimale** par rapport à la valeur
+  stockée : base à 102,96, « 103,0 » passe, « 103 » non. Sans ce plancher, il suffirait
+  d'écrire assez grossièrement pour que la tolérance avale un vrai écart — « 103 » tolérerait
+  ±0,5, donc couvrirait aussi bien 102,96 que 103,4, et le contrôle cesserait de contrôler.
+- *Valeur absente en base à la date citée.* Verdict **distinct** — « non vérifiable — donnée
+  absente au JJ/MM » —, et non « écart détecté ». Les deux bloquent, mais l'action corrective
+  n'est pas la même : un écart se corrige en changeant le chiffre, une donnée absente en
+  changeant la date ou en constatant un trou de collecte. Les confondre envoie réécrire une
+  phrase juste.
+
+**Trois masquages avant l'extraction des nombres**, tous pour la même raison — ces chiffres-là
+n'appartiennent pas à une mesure, et chacun se ferait sinon confronter à la base : les dates
+(le 19 de « au 19/09 »), les **noms d'instruments** (le 500 de « S&P 500 », le 40 de « CAC 40 »,
+le 10 de « US 10 ans ») et les marqueurs de période (le 1er de « depuis le 1er janvier », qui
+est aussi, mot pour mot, une date).
+
+**L'unité rouvre le contrôle sur les petits nombres.** Un entier inférieur à treize est tenu
+pour un compte — « les trois branches » — sauf s'il porte une unité : « en hausse de 2 % »,
+« taux directeur à 4 % » sont des mesures. Sans cette réserve, toute la partie basse des taux
+directeurs et des variations échappait au contrôle sans même y entrer.
 
 **Régime B — nombre absent de la base.** Décisions de banques centrales, chiffres d'études,
 prévisions de maisons, statistiques nationales non collectées.
@@ -347,11 +394,14 @@ que sa phrase la nomme reste du régime A : il n'est pas inventé, et la base en
 Et un nombre n'est trouvé que s'il n'est pas un morceau d'un autre : « 2,4 » ne se reconnaît pas
 dans « 12,45 ».
 
-**Ce que le rapport affiche.** Chaque nombre, sa provenance (A ou B), sa source, son verdict.
-Le total par régime en tête. Quatre verdicts plutôt que deux, parce qu'une note bloquée doit dire
-*pourquoi* : conforme, **écart** avec la valeur en base, **introuvable** (ni en base ni dans la
-fiche), **sans attribution** (dans la fiche, mais personne ne l'avance dans la phrase). Confondre
-un écart et un introuvable ferait chercher au mauvais endroit. Une note comportant une majorité de
+**Ce que le rapport affiche.** Pour chaque nombre du régime A : la **valeur citée**, la **date
+retenue**, la **valeur en base à cette date**, et le verdict. Pour le régime B : la valeur, la
+source, le verdict. Le total par régime en tête. Six verdicts plutôt que deux, parce qu'une note
+bloquée doit dire *pourquoi* : conforme, **écart** avec la valeur en base, **sans date**,
+**non vérifiable** (donnée absente à la date citée), **introuvable** (ni en base ni dans la
+fiche), **sans attribution** (dans la fiche, mais personne ne l'avance dans la phrase). Un écart
+de précision — le bon chiffre écrit trop grossièrement — se distingue d'un chiffre faux dans le
+libellé, sans quoi on enverrait corriger un nombre qui n'a pas besoin de l'être. Une note comportant une majorité de
 chiffres du régime B est normale ; une note n'en comportant que du régime B signale que la
 collecte n'a rien apporté cette semaine.
 

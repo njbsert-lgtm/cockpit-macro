@@ -37,6 +37,11 @@ export type EntreeObservable = {
  * de retard de publication (`STALENESS_TOLERANCE`), déjà calibré pour chaque cadence, évite
  * d'inventer un second seuil qui pourrait diverger du premier.
  */
+/** Le 31 décembre précédant la note : la date que porte `Instrument.ytdBasis`. */
+function baseYtdDu(dateCible: string): string {
+  return `${Number(dateCible.slice(0, 4)) - 1}-12-31`;
+}
+
 export function construireObservationsDepuis(
   entrees: EntreeObservable[],
   bySeries: ObservationsBySeries,
@@ -63,10 +68,17 @@ export function construireObservationsDepuis(
         instrumentId: entree.id,
         label: entree.label,
         unit: entree.unit,
-        // Les dix derniers relevés suffisent : le modèle écrit une note hebdomadaire, pas une
-        // analyse de série longue, et un paquet obèse dilue ce qui compte.
-        valeurs: obs.slice(-10).map((o) => ({ date: o.date, value: o.value })),
-        variationSemaine: dailyChange(obs, ecartMaximal)?.pct ?? null,
+        // Trente relevés, et non dix : le prompt n'en affiche qu'un — le dernier —, donc la
+        // longueur ne pèse pas sur ce que le modèle lit. Elle pèse sur ce que le contrôle des
+        // chiffres peut recalculer : une variation « sur un mois » a besoin de la clôture d'il
+        // y a trente jours, et sans elle le nombre serait déclaré non vérifiable alors que la
+        // base le porte. Dix couvrait à peine la semaine.
+        valeurs: obs.slice(-30).map((o) => ({ date: o.date, value: o.value })),
+        ytdBasis:
+          entree.ytdBasis !== null
+            ? { date: baseYtdDu(dateCible), value: entree.ytdBasis }
+            : null,
+        variationSeance: dailyChange(obs, ecartMaximal)?.pct ?? null,
         variationYTD,
         fraicheur: (retard === null ? "absent" : retard.late ? "retard" : "ok") as
           | "ok"

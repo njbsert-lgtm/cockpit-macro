@@ -27,7 +27,23 @@ export type ObservationContexte = {
   label: string;
   unit: string;
   valeurs: Array<{ date: string; value: number }>;
-  variationSemaine: number | null;
+  /**
+   * La base de performance annuelle — la clôture du 31 décembre, **saisie à la main** dans le
+   * catalogue, pas collectée. Elle entre dans le paquet pour que le contrôle des chiffres
+   * puisse recalculer une variation « depuis le 1er janvier » depuis ses deux bornes plutôt que
+   * de reprendre le pourcentage de la fiche. Le rapport la nomme pour ce qu'elle est : une base
+   * de configuration, non une observation.
+   */
+  ytdBasis: { date: string; value: number } | null;
+  /**
+   * La variation entre les **deux dernières clôtures**, et non sur sept jours — c'est
+   * `dailyChange` qui la produit. Le champ s'appelait `variationSemaine`, ce qui était faux et
+   * dangereux ici : la colonne du prompt reprenait ce nom, le modèle écrivait « sur la
+   * semaine », et le contrôle des chiffres — qui recalcule une vraie variation hebdomadaire
+   * depuis les clôtures — l'aurait refusée. Un nom de champ qui ment fait écrire des notes
+   * fausses.
+   */
+  variationSeance: number | null;
   variationYTD: number | null;
   fraicheur: "ok" | "retard" | "absent";
 };

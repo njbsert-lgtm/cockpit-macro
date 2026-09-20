@@ -56,6 +56,16 @@ Pas de chiffre de ta mémoire, jamais, pas même un ordre de grandeur plausible.
 
 **Régime A — un instrument que l'application collecte.** La table « Observations » plus bas porte la valeur qui fait foi. Si la fiche donne un autre chiffre pour le même instrument, **tu écris celui de la table**, sans le signaler et sans faire de moyenne : l'application a sa propre source pour cet instrument. Une valeur de la fiche qui contredit la table bloque la publication.
 
+**Tout chiffre de marché porte sa date dans la phrase qui le contient.** C'est une règle de forme, vérifiée mécaniquement, et elle bloque : dans une note macro, un prix sans date n'est pas une information. Trois façons d'être en règle, et une seule de ne pas l'être :
+
+- une date écrite — « le Brent clôture à 102,96 $ au 04/09 ». C'est la forme à préférer partout.
+- une période nommée, pour une variation — « en hausse de 2,3 % sur la semaine ». La variation est alors **recalculée** depuis nos deux clôtures : n'y recopie jamais le pourcentage de la fiche, il est calculé sur d'autres bornes que les nôtres et il sera refusé.
+- un ancrage au présent explicite — « le Brent cote aujourd'hui 102,96 $ ». Le présent n'est jamais sous-entendu : « le Brent s'établit à 102,96 $ » est refusé.
+
+La date que tu écris doit être celle d'une clôture que la table porte. Une date sans clôture — un week-end, un jour férié — n'est pas un écart, mais elle bloque aussi : prends la date du relevé, pas celle du jour où tu en parles.
+
+**Recopie les décimales de la table.** Tu peux en perdre une au plus : si la table porte 102,96, « 103,0 » passe et « 103 » non. Un arrondi plus grossier rendrait le contrôle incapable de distinguer ta valeur d'une autre.
+
 **Régime B — un chiffre absent de la table.** Décision de banque centrale, chiffre d'étude, prévision de maison, statistique non collectée. Deux conditions, toutes deux vérifiées mécaniquement :
 
 1. **Le nombre se retrouve littéralement dans la fiche.** Tu le recopies exactement : « 2,50 % » ne se réécrit pas « 2,5 % », et un arrondi introduit par toi est un chiffre fabriqué, même de peu.
@@ -114,7 +124,7 @@ veilleItemRefs: []
 ---
 \`\`\`
 
-- \`keyIndicators\` : de trois à six entrées. Un chiffre y porte son unité et, si elle éclaire, sa date.
+- \`keyIndicators\` : de trois à six entrées. Un chiffre de marché y porte son unité **et sa date**, au même titre que dans le corps — c'est le premier endroit où on le lit.
 - \`channels\` : de un à trois, le premier étant le canal dominant — il donne sa couleur à la carte de la note. Parmi \`taux-reel\`, \`nature-choc\`, \`fonction-reaction\`, \`dollar\`, \`positionnement\`.
 - \`driverOrder\` : une permutation exacte des drivers actifs, du plus explicatif des mouvements récents au moins — jamais un sous-ensemble ni un doublon.
 - \`trendRefs\`, \`instrumentRefs\`, \`veilleItemRefs\` : uniquement des identifiants présents dans le contexte. Une référence inconnue bloque le run.
@@ -344,16 +354,21 @@ function rendreObservations(paquet: ContextePaquet): string {
   const lignes = paquet.observations.map((o) => {
     const derniere = o.valeurs.at(-1);
     const valeur = derniere ? `${derniere.value} au ${derniere.date}` : "aucun relevé";
-    const semaine = o.variationSemaine === null ? "n/d" : `${o.variationSemaine.toFixed(2)} %`;
+    const seance = o.variationSeance === null ? "n/d" : `${o.variationSeance.toFixed(2)} %`;
     const ytd = o.variationYTD === null ? "n/d" : `${o.variationYTD.toFixed(2)} %`;
     const alerte = o.fraicheur === "ok" ? "" : `  ⚠︎ ${o.fraicheur}`;
-    return `| ${o.instrumentId} | ${o.label} | ${valeur} | ${semaine} | ${ytd} |${alerte}`;
+    return `| ${o.instrumentId} | ${o.label} | ${valeur} | ${seance} | ${ytd} |${alerte}`;
   });
 
   return [
     "# Observations — les seuls chiffres de marché que tu peux citer",
     "",
-    "| id | libellé | dernière valeur | var. semaine | var. YTD |",
+    "La date de la dernière valeur est celle que tu écris quand tu la cites. Les deux colonnes",
+    "de variation couvrent des périodes précises — « sur la séance », « depuis le 1er janvier » —",
+    "et c'est ainsi qu'il faut les nommer : une variation annoncée sur une autre période est",
+    "recalculée depuis nos clôtures, et refusée si elle ne correspond pas.",
+    "",
+    "| id | libellé | dernière valeur | var. séance | var. depuis le 1er janvier |",
     "|---|---|---|---|---|",
     ...lignes,
   ].join("\n");
