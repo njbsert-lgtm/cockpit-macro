@@ -135,12 +135,12 @@ describe("controlerChiffres — il bloque, il ne signale pas", () => {
                 likelihood: "central",
                 why: "Le cœur d'inflation à 2,9 % ne laisse pas de marge.",
                 thesis: "La Fed reprend son cycle.",
-                impacts: {
-                  eq: { direction: "down", label: "—", text: "…" },
-                  fi: { direction: "down", label: "—", text: "…" },
-                  fx: { direction: "flat", label: "—", text: "…" },
-                  cm: { direction: "flat", label: "—", text: "…" },
-                },
+                impacts: [
+                  { classe: "eq", direction: "down", label: "—", text: "…" },
+                  { classe: "fi", direction: "down", label: "—", text: "…" },
+                  { classe: "fx", direction: "flat", label: "—", text: "…" },
+                  { classe: "cm", direction: "flat", label: "—", text: "…" },
+                ],
                 watchSignals: "…",
               },
             ],

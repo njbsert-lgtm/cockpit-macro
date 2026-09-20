@@ -12,13 +12,23 @@ function impacts(dir: "up" | "down" | "flat" = "flat") {
   } satisfies ScenarioVersion["impacts"];
 }
 
+/** La forme tableau que porte un `Brouillon` — voir `impactEntrySchema` dans `schema.ts`. */
+function impactsBrouillon(dir: "up" | "down" | "flat" = "flat") {
+  return (["eq", "fi", "fx", "cm"] as const).map((classe) => ({
+    classe,
+    direction: dir,
+    label: "—",
+    text: "…",
+  })) satisfies Brouillon["scenarioRevisions"][number]["branches"][number]["impacts"];
+}
+
 function branche(over: Partial<Brouillon["scenarioRevisions"][number]["branches"][number]> = {}) {
   return {
     branchId: "hausse",
     likelihood: "central" as const,
     why: "Le CPI dépasse le consensus.",
     thesis: "La Fed reprend son cycle.",
-    impacts: impacts(),
+    impacts: impactsBrouillon(),
     watchSignals: "…",
     ...over,
   };
@@ -101,7 +111,7 @@ describe("construireDeltasScenarios — ne versionne que ce qui a changé", () =
   it("un impact modifié produit une version, vraisemblance et thèse inchangées", () => {
     const actuelle = versionActuelle({ likelihood: "central", impacts: impacts("flat") });
     const revisions: Brouillon["scenarioRevisions"] = [
-      { driverId: "rates", branches: [branche({ likelihood: "central", impacts: impacts("up") })] },
+      { driverId: "rates", branches: [branche({ likelihood: "central", impacts: impactsBrouillon("up") })] },
     ];
     const deltas = construireDeltasScenarios(
       revisions,

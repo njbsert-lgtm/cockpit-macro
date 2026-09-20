@@ -13,7 +13,7 @@ import {
 } from "./publication";
 import type { ContextePaquet } from "./context";
 import type { Brouillon } from "./schema";
-import type { Guet, ScenarioVersion } from "@/lib/types";
+import type { Guet } from "@/lib/types";
 
 function guet(over: Partial<Guet> = {}): Guet {
   return {
@@ -375,13 +375,14 @@ describe("assemblerNoteFinale — le MDX produit est une note publiée valide", 
   });
 });
 
+/** La forme tableau que porte un `Brouillon` — voir `impactEntrySchema` dans `schema.ts`. */
 function impacts(dir: "up" | "down" | "flat" = "flat") {
-  return {
-    eq: { direction: dir, label: "—", text: "…" },
-    fi: { direction: dir, label: "—", text: "…" },
-    fx: { direction: dir, label: "—", text: "…" },
-    cm: { direction: dir, label: "—", text: "…" },
-  } satisfies ScenarioVersion["impacts"];
+  return (["eq", "fi", "fx", "cm"] as const).map((classe) => ({
+    classe,
+    direction: dir,
+    label: "—",
+    text: "…",
+  }));
 }
 
 describe("construireArtefactsPublication — le calcul complet, sans disque", () => {

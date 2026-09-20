@@ -24,6 +24,24 @@ function memeImpacts(
 }
 
 /**
+ * Le modèle propose `impacts` en tableau, pas en `Record` (`schema.ts` — la forme `Record`,
+ * dépliée en quatre `$ref` distincts par la sortie structurée, a fait échouer la compilation
+ * de la grammaire en conditions réelles). `ScenarioVersion.impacts` reste un `Record` : c'est
+ * la forme que consomment les pages driver et la trajectoire, et elle ne change pas pour un
+ * détail d'encodage côté modèle. Le refine `couvreLesClassesActifs` (`schema.ts`) garantit déjà
+ * que le tableau porte exactement les quatre classes, sans doublon.
+ */
+function impactsVersRecord(
+  impacts: Brouillon["scenarioRevisions"][number]["branches"][number]["impacts"],
+): ScenarioVersion["impacts"] {
+  const record = {} as ScenarioVersion["impacts"];
+  for (const { classe, direction, label, text } of impacts) {
+    record[classe] = { direction, label, text };
+  }
+  return record;
+}
+
+/**
  * Réviser un driver, c'est émettre ses trois branches d'un coup — mais on ne **versionne** que
  * celles qui ont réellement changé. Une branche identique à sa version courante ne produit
  * aucune nouvelle entrée : sinon la trajectoire s'alourdirait chaque semaine de points qui ne
@@ -43,13 +61,14 @@ export function construireDeltasScenarios(
 
     for (const branche of revision.branches) {
       const actuelle = currentVersion(scenariosCourants, revision.driverId, branche.branchId);
+      const impacts = impactsVersRecord(branche.impacts);
 
       const inchangee =
         actuelle !== null &&
         actuelle.likelihood === branche.likelihood &&
         actuelle.thesis === branche.thesis &&
         actuelle.watchSignals === branche.watchSignals &&
-        memeImpacts(actuelle.impacts, branche.impacts);
+        memeImpacts(actuelle.impacts, impacts);
       if (inchangee) continue;
 
       const likelihoodChangedFrom =
@@ -65,7 +84,7 @@ export function construireDeltasScenarios(
         likelihoodChangedFrom,
         why: branche.why,
         thesis: branche.thesis,
-        impacts: branche.impacts,
+        impacts,
         watchSignals: branche.watchSignals,
       });
     }

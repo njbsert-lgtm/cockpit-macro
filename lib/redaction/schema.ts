@@ -42,7 +42,19 @@ function enumDe<T extends string>(valeurs: readonly T[]): z.ZodEnum<Record<T, T>
   return z.enum(valeurs as unknown as [T, ...T[]]);
 }
 
-const impactSchema = z.object({
+/**
+ * Un objet à quatre propriétés fixes (`eq`/`fi`/`fx`/`cm`), chacune un sous-objet à trois
+ * propriétés, référencé depuis chaque branche proposée : la compilation de la sortie
+ * structurée expanse chaque site d'utilisation d'un `$ref` plutôt que de le partager, et ce
+ * seul champ, à cette forme, a suffi à faire échouer un run réel (« The compiled grammar is
+ * too large »). Sous forme de **tableau** de quatre entrées `{ classe, direction, label, text }`,
+ * le compilateur n'a plus qu'une seule forme d'objet à traiter, quelle que soit la classe —
+ * même contenu, un site d'utilisation au lieu de quatre. `impactsVersRecord` (`deltas.ts`)
+ * reconvertit ce tableau dans la forme `Record` qu'exige `ScenarioVersion`, la seule qui compte
+ * une fois la révision acceptée.
+ */
+const impactEntrySchema = z.object({
+  classe: z.enum(CLASSES_ACTIFS),
   direction: z.enum(DIRECTIONS),
   label: z.string().min(1),
   text: z.string().min(1),
@@ -65,10 +77,13 @@ export type Brouillon = {
       likelihood: (typeof LIKELIHOODS)[number];
       why: string;
       thesis: string;
-      impacts: Record<
-        (typeof CLASSES_ACTIFS)[number],
-        { direction: (typeof DIRECTIONS)[number]; label: string; text: string }
-      >;
+      /** Tableau de quatre entrées, une par classe d'actifs — voir `impactEntrySchema`. */
+      impacts: Array<{
+        classe: (typeof CLASSES_ACTIFS)[number];
+        direction: (typeof DIRECTIONS)[number];
+        label: string;
+        text: string;
+      }>;
       watchSignals: string;
     }>;
   }>;
@@ -191,12 +206,10 @@ export function construireSchema(paquet: ContextePaquet, vivier: Vivier) {
                 likelihood: z.enum(LIKELIHOODS),
                 why: z.string().min(1).describe("Obligatoire dès qu'une vraisemblance bouge."),
                 thesis: z.string().min(1),
-                impacts: z.object(
-                  Object.fromEntries(CLASSES_ACTIFS.map((c) => [c, impactSchema])) as Record<
-                    string,
-                    typeof impactSchema
-                  >,
-                ),
+                impacts: z
+                  .array(impactEntrySchema)
+                  .length(4)
+                  .describe("Une entrée par classe d'actifs : eq, fi, fx, cm."),
                 watchSignals: z.string().min(1),
               }),
             )
@@ -223,7 +236,9 @@ export function construireSchema(paquet: ContextePaquet, vivier: Vivier) {
             .regex(/^\d{4}-\d{2}-\d{2}$/)
             .nullable()
             .describe("null quand l'événement n'a pas de date connue — il n'expirera jamais."),
-          sourceAttendue: z.array(z.string().min(1)).default([]),
+          // Pas de `.default([])` : un champ optionnel double l'espace d'états du compilateur de
+          // grammaire (présent/absent) pour un gain nul — le modèle peut très bien écrire `[]`.
+          sourceAttendue: z.array(z.string().min(1)),
         }),
       )
       .max(paquet.budgetGuets),
@@ -254,6 +269,16 @@ export function construireSchema(paquet: ContextePaquet, vivier: Vivier) {
         "chaque révision doit couvrir exactement les trois branches de son driver, avec une seule « central »",
       path: ["scenarioRevisions"],
     })
+    .refine(
+      (d) =>
+        d.scenarioRevisions.every((r) =>
+          r.branches.every((b) => couvreLesClassesActifs(b.impacts)),
+        ),
+      {
+        message: "impacts doit couvrir exactement eq, fi, fx et cm, sans doublon",
+        path: ["scenarioRevisions"],
+      },
+    )
     .refine(
       (d) => d.sources.every((s) => vivier.blocsAttendus.includes(s.block)),
       { message: "une source cite un bloc absent de la note", path: ["sources"] },
@@ -286,4 +311,18 @@ function estCoherente(
     revision.branches.filter((b) => b.likelihood === "central").length === 1;
 
   return memeEnsemble && uneSeuleCentrale;
+}
+
+/**
+ * `impacts` est un tableau plutôt qu'un `Record` dans le schéma envoyé au modèle (voir
+ * `impactEntrySchema`) ; cette fonction restaure la garantie qu'un `Record` aurait donnée
+ * gratuitement — exactement les quatre classes, sans doublon.
+ */
+function couvreLesClassesActifs(impacts: Array<{ classe: string }>): boolean {
+  const classes = impacts.map((i) => i.classe);
+  return (
+    classes.length === CLASSES_ACTIFS.length &&
+    CLASSES_ACTIFS.every((c) => classes.includes(c)) &&
+    new Set(classes).size === classes.length
+  );
 }
