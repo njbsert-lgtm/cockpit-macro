@@ -65,6 +65,7 @@ function paquet(): ContextePaquet {
     comparesTo: "2026-S35",
     specialesDeLaSemaine: [],
     notePrecedente: null,
+    ficheNotion: null,
     observations: [
       {
         instrumentId: "us10y",

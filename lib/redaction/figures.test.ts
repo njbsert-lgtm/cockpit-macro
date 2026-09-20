@@ -25,6 +25,7 @@ function paquet(observations: ObservationContexte[] = [obs()]): ContextePaquet {
     comparesTo: "2026-S35",
     specialesDeLaSemaine: [],
     notePrecedente: null,
+    ficheNotion: null,
     observations,
     drivers: [],
     itemsVeille: [],

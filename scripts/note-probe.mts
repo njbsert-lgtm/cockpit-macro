@@ -55,6 +55,7 @@ const VIVIER: Vivier = {
   trendIds: ["desinflation-terminee", "prime-risque-permanente", "capex-ia-benefices"],
   instrumentIds: ["us10y", "brent", "eurusd", "spx", "gold"],
   veilleItemIds: ["item-fomc", "item-hicp"],
+  sourceIds: ["item-fomc", "item-hicp", "Fed", "Eurostat", "Zonebourse", "Goldman Sachs"],
   blocsAttendus: ["CeQuiAChange", "CeQuiSestConfirme", "RevisionDesScenarios", "CeQueJeSurveille"],
   budgetGuets: 3,
 };

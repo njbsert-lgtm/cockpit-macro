@@ -32,6 +32,23 @@ export type ObservationContexte = {
   fraicheur: "ok" | "retard" | "absent";
 };
 
+/**
+ * La fiche macro hebdomadaire, **matière principale** de la note depuis le basculement Notion.
+ *
+ * `null` quand aucune fiche ne couvre la semaine, ou quand la base est injoignable. Les deux
+ * cas se traitent pareil côté rédaction — règle de suffisance : le modèle produit une note
+ * courte qui le dit, il ne comble jamais par des généralités de marché.
+ */
+export type FicheContexte = {
+  pageId: string;
+  url: string;
+  semaine: string;
+  contenu: string;
+  /** Les émetteurs que la fiche cite — les seules autorités que la note a le droit de nommer. */
+  sources: string[];
+  recupereLe: string;
+};
+
 export type ContextePaquet = {
   noteType: NoteKind;
   /** Calculés par le code, jamais par le modèle — voir `champsStructurels` plus bas. */
@@ -47,6 +64,7 @@ export type ContextePaquet = {
     blocs: Record<string, string>;
     driverOrder: string[];
   } | null;
+  ficheNotion: FicheContexte | null;
   observations: ObservationContexte[];
   /**
    * Les drivers actifs, avec ce qu'ils pilotent — `instrumentRefs` et `macroRefs`. Ce n'est pas
@@ -72,11 +90,18 @@ export type ContextePaquet = {
 /**
  * Le paquet est-il assez fourni pour qu'une note ait de la matière ?
  *
- * « Règle de suffisance » du cahier : si la collecte est en échec et qu'aucun item de veille
- * n'est remonté, le modèle produit une note courte qui le dit, plutôt que de combler par des
- * généralités de marché. Le drapeau est passé au prompt, pas déduit par le modèle.
+ * « Règle de suffisance » du cahier : sans matière, le modèle produit une note courte qui le
+ * dit, plutôt que de combler par des généralités de marché. Le drapeau est passé au prompt,
+ * pas déduit par le modèle.
+ *
+ * **La fiche décide seule quand elle est là.** Elle est la matière principale : une semaine
+ * avec fiche a de quoi écrire, même si la veille primaire n'a rien remonté et que la collecte
+ * a flanché — c'est même le cas ordinaire depuis que seul EDGAR remonte. Sans fiche, on
+ * retombe sur l'ancien critère, qui reste juste : ni veille ni observation fraîche, rien à
+ * dire.
  */
 export function estDegrade(paquet: ContextePaquet): boolean {
+  if (paquet.ficheNotion && paquet.ficheNotion.contenu.trim().length > 0) return false;
   const aucuneObservationFraiche = paquet.observations.every((o) => o.fraicheur !== "ok");
   return paquet.itemsVeille.length === 0 && aucuneObservationFraiche;
 }
@@ -153,6 +178,7 @@ export function construireContexte(input: {
   notes: Note[];
   notePrecedente: Note | null;
   blocsPrecedents: Record<string, string>;
+  ficheNotion?: FicheContexte | null;
   observations: ObservationContexte[];
   /** Optionnel pour les tests qui n'éprouvent pas le lien driver ↔ observation ; `[]` sinon. */
   drivers?: Driver[];
@@ -184,6 +210,7 @@ export function construireContexte(input: {
     comparesTo,
     specialesDeLaSemaine,
     notePrecedente: contextePrecedent(input.notePrecedente, input.blocsPrecedents),
+    ficheNotion: input.ficheNotion ?? null,
     observations: input.observations,
     drivers: input.drivers ?? [],
     itemsVeille: input.itemsVeille,

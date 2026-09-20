@@ -31,6 +31,8 @@ import {
   isMacroCovered,
 } from "../lib/observations";
 import { getInstruments, getMacroIndicators } from "../lib/data";
+import { chercherFiche, configNotion, marquerLue } from "../lib/notion";
+import { isoWeekOf } from "../lib/iso-week";
 
 const args = process.argv.slice(2);
 const dryRun = args.includes("--dry-run");
@@ -62,6 +64,7 @@ if (precedente) {
 
 const observations = await construireObservations();
 const itemsVeille = await getPendingVeilleItems().catch(() => []);
+const fiche = await recupererFiche(isoWeekOf(dateCible));
 
 const paquet = construireContexte({
   kind: "hebdo",
@@ -69,6 +72,7 @@ const paquet = construireContexte({
   notes,
   notePrecedente: precedente,
   blocsPrecedents,
+  ficheNotion: fiche,
   observations,
   drivers: getDrivers(),
   itemsVeille,
@@ -118,7 +122,53 @@ console.log(
     `Tokens : ${resultat.usage.input} entrée / ${resultat.usage.output} sortie.`,
 );
 
+// La bascule de `Lue` vient **après** une génération réussie, jamais avant : une fiche marquée
+// lue par un run qui a échoué serait invisible au run suivant. Le dry-run n'y touche pas non
+// plus — il ne doit rien laisser derrière lui, pas même dans Notion.
+if (fiche && !dryRun && resultat.mdx !== null) {
+  const config = configNotion();
+  if (config) {
+    const bascule = await marquerLue(fiche.pageId, config);
+    console.log(
+      bascule.ok
+        ? "Fiche marquée « Lue » dans Notion."
+        : `Fiche non marquée « Lue » (${bascule.erreur}) — sans conséquence sur le brouillon.`,
+    );
+  }
+}
+
 process.exit(0);
+
+/**
+ * La fiche de la semaine, ou `null`. Aucun cas n'est fatal : sans fiche, le modèle écrit une
+ * note courte qui le dit — c'est la règle de suffisance, et elle vaut mieux qu'un run avorté.
+ * Les trois issues sont journalisées distinctement, parce qu'elles appellent des gestes
+ * différents : un incident d'appel se réessaie, une base vide est presque toujours le partage
+ * oublié, une semaine sans fiche est une information éditoriale.
+ */
+async function recupererFiche(isoWeek: string) {
+  const config = configNotion();
+  if (!config) {
+    console.log("Notion non configuré (NOTION_TOKEN, NOTION_VUES_MACRO_DB) — rédaction sans fiche.");
+    return null;
+  }
+
+  const resultat = await chercherFiche(isoWeek, config);
+  if (!resultat.ok) {
+    console.log(`Fiche Notion injoignable : ${resultat.erreur} — rédaction sans fiche.`);
+    return null;
+  }
+  if (!resultat.fiche) {
+    console.log(`Pas de fiche : ${resultat.raison}.`);
+    return null;
+  }
+
+  console.log(
+    `Fiche « ${resultat.fiche.semaine} » — ${resultat.fiche.contenu.length} caractères, ` +
+      `${resultat.fiche.sources.length} émetteur(s) cité(s).`,
+  );
+  return resultat.fiche;
+}
 
 // ---------------------------------------------------------------------------
 

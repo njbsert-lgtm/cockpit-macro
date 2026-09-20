@@ -31,6 +31,7 @@ function paquet(over: Partial<ContextePaquet> = {}): ContextePaquet {
     comparesTo: "2026-S35",
     specialesDeLaSemaine: [],
     notePrecedente: null,
+    ficheNotion: null,
     observations: [obs()],
     drivers: [],
     itemsVeille: [],

@@ -57,6 +57,11 @@ jobs:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          # La fiche macro hebdomadaire — matière principale de la note. Absente, le run
+          # continue : le modèle écrit une note courte qui le dit, plutôt que de ne rien
+          # produire. C'est la règle de suffisance du cahier.
+          NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
+          NOTION_VUES_MACRO_DB: ${{ secrets.NOTION_VUES_MACRO_DB }}
           DRY_RUN: ${{ inputs.dry-run }}
           SEMAINE: ${{ inputs.semaine }}
         # `set +e` parce que GitHub lance ce script avec `bash -e` : sans ça, un échec couperait

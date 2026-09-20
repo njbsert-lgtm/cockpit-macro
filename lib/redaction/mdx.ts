@@ -80,20 +80,36 @@ export function guetsDuBrouillon(
 }
 
 /**
- * `Note.sources` se construit à partir des items **effectivement versés**, jamais depuis le
- * texte généré : le modèle a choisi des identifiants dans un vivier fermé, on résout ici.
+ * `Note.sources` se construit à partir des identifiants **choisis dans le vivier**, jamais
+ * depuis le texte généré : le modèle n'écrit pas d'URL, il désigne, et on résout ici.
+ *
+ * Deux provenances, une seule forme en sortie. Un item de veille porte sa propre URL. Un
+ * émetteur cité par la fiche — « Zonebourse », « Goldman Sachs » — n'en a pas : la fiche est
+ * ce que nous avons lu, c'est donc elle que la note pointe. Inventer l'URL du site de
+ * l'émetteur serait une référence que personne n'a ouverte.
  */
 function sourcesParBloc(
   brouillon: Brouillon,
   paquet: ContextePaquet,
 ): Record<string, Array<{ label: string; url: string }>> {
   const parId = new Map(paquet.itemsVeille.map((i) => [i.id, i]));
+  const fiche = paquet.ficheNotion;
+  const emetteurs = new Set(fiche?.sources ?? []);
   const sources: Record<string, Array<{ label: string; url: string }>> = {};
 
   for (const { block, sourceId } of brouillon.sources) {
     const item = parId.get(sourceId);
-    if (!item) continue; // un identifiant hors vivier ne peut pas arriver : l'enum l'interdit
-    (sources[block] ??= []).push({ label: item.source, url: item.url });
+    if (item) {
+      (sources[block] ??= []).push({ label: item.source, url: item.url });
+      continue;
+    }
+    if (fiche && emetteurs.has(sourceId)) {
+      (sources[block] ??= []).push({
+        label: `${sourceId} — via la fiche ${fiche.semaine}`,
+        url: fiche.url,
+      });
+    }
+    // Un identifiant hors vivier ne peut pas arriver : la réception l'aurait refusé.
   }
   return sources;
 }

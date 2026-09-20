@@ -395,14 +395,29 @@ propre jeton.
    partage explicite, le jeton est valide mais ne voit rien, et l'erreur ressemble à une
    base vide
 3. Secrets GitHub : `NOTION_TOKEN`, `NOTION_VUES_MACRO_DB`
+4. Vérifier avec `npm run notion:check` avant de laisser un run en dépendre — même rôle que
+   `fred:check` : confronter ce que la configuration suppose à ce que la source répond. Le
+   script distingue les trois issues que le collecteur distingue, parce qu'elles appellent des
+   gestes différents : un incident d'appel se réessaie, une base qui ne renvoie rien est
+   presque toujours le partage oublié, une semaine sans fiche est une information éditoriale
 
 **Sélection de la fiche.** La base porte une propriété `Semaine` au format
 `S38 — lundi 14/09 au dimanche 20/09`. Le collecteur sélectionne la fiche dont le numéro de
 semaine ISO correspond à la semaine courante, et non la plus récente par date de création —
 une fiche peut être créée en avance.
 
-Après génération réussie, basculer la propriété `Lue` à vrai. C'est le journal d'exécution le
-plus lisible qui soit, directement dans Notion.
+Après génération réussie, basculer la propriété `Lue` à vrai — **après**, jamais avant : une
+fiche marquée lue par un run qui a échoué serait invisible au run suivant. Un `--dry-run` n'y
+touche pas non plus. C'est le journal d'exécution le plus lisible qui soit, directement dans
+Notion.
+
+**Les émetteurs cités par la fiche sont lus dans son texte**, entre parenthèses — « (Zonebourse) »,
+« (Eurostat, publication du 17/09) » —, et forment le vivier des autorités que la note a le
+droit de nommer. Volontairement large plutôt que fin : ce n'est pas une extraction d'entités,
+c'est un vivier. Une parenthèse qui n'est pas un émetteur y entre sans conséquence, alors qu'un
+émetteur manquant bloquerait une phrase juste. Un émetteur cité dans `Note.sources` se résout
+vers **la fiche**, pas vers le site de l'émetteur : la fiche est ce que nous avons lu, et
+inventer l'URL de l'émetteur serait une référence que personne n'a ouverte.
 
 #### Génération — abandon de la sortie structurée
 

@@ -9,6 +9,7 @@ function vivier(over: Partial<Vivier> = {}): Vivier {
     trendIds: [],
     instrumentIds: ["us10y"],
     veilleItemIds: ["item-1"],
+    sourceIds: ["item-1"],
     blocsAttendus: ["CeQuiAChange", "CeQueJeSurveille"],
     budgetGuets: 3,
     ...over,

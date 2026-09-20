@@ -95,6 +95,10 @@ export function construireVivier(paquet: ContextePaquet, blocsAttendus: string[]
       .filter((id) => idsInstruments.has(id))
       .sort(),
     veilleItemIds: paquet.itemsVeille.map((i) => i.id),
+    sourceIds: [
+      ...paquet.itemsVeille.map((i) => i.id),
+      ...(paquet.ficheNotion?.sources ?? []),
+    ],
     blocsAttendus,
     budgetGuets: paquet.budgetGuets,
   };

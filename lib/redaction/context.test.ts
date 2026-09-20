@@ -231,6 +231,37 @@ describe("estDegrade — la règle de suffisance", () => {
     expect(estDegrade(avecObs)).toBe(false);
   });
 
+  it("une fiche suffit à elle seule — c'est la matière principale", () => {
+    // Le cas ordinaire depuis que seul EDGAR remonte : pas de veille, collecte en panne, mais
+    // une fiche bien remplie. Il y a de quoi écrire, et le dire dégradé ferait produire une
+    // note courte alors que la semaine est documentée.
+    const avecFiche = paquet({
+      ficheNotion: {
+        pageId: "p1",
+        url: "https://notion.so/p1",
+        semaine: "S36 — lundi 31/08 au dimanche 06/09",
+        contenu: "La Fed a relevé son taux directeur (communiqué FOMC).",
+        sources: ["communiqué FOMC"],
+        recupereLe: "2026-09-05T09:00:00Z",
+      },
+    });
+    expect(estDegrade(avecFiche)).toBe(false);
+  });
+
+  it("une fiche vide ne compte pas pour une fiche", () => {
+    const vide = paquet({
+      ficheNotion: {
+        pageId: "p1",
+        url: "https://notion.so/p1",
+        semaine: "S36",
+        contenu: "   ",
+        sources: [],
+        recupereLe: "2026-09-05T09:00:00Z",
+      },
+    });
+    expect(estDegrade(vide)).toBe(true);
+  });
+
   it("des observations toutes en retard ne suffisent pas", () => {
     const enRetard = paquet({
       observations: [

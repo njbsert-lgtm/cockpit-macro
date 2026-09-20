@@ -48,6 +48,12 @@ export type Vivier = {
   trendIds: string[];
   instrumentIds: string[];
   veilleItemIds: string[];
+  /**
+   * Ce qu'une source peut citer : les items de veille **et** les émetteurs que la fiche porte.
+   * Les deux, parce qu'une affirmation tirée de la fiche n'a pas d'item de veille à citer —
+   * et « citer une source absente de la fiche » est précisément ce que le cahier interdit.
+   */
+  sourceIds: string[];
   blocsAttendus: string[];
   /** Trois moins ce qui remonte de la note précédente. */
   budgetGuets: number;
@@ -274,11 +280,13 @@ function invariants(
         message: `« ${source.block} » n'est pas un bloc de cette note (${vivier.blocsAttendus.join(", ")}) — une source rattachée à un bloc absent ne s'afficherait nulle part`,
       });
     }
-    if (!vivier.veilleItemIds.includes(source.sourceId)) {
+    if (!vivier.sourceIds.includes(source.sourceId)) {
       ctx.addIssue({
         code: "custom",
         path: ["sources", i, "sourceId"],
-        message: `source inconnue « ${source.sourceId} » — cite un item de veille du contexte, jamais une URL`,
+        message:
+          `source inconnue « ${source.sourceId} » — cite un item de veille du contexte ou un ` +
+          `émetteur de la fiche (${vivier.sourceIds.join(", ") || "aucun cette semaine"}), jamais une URL`,
       });
     }
   }

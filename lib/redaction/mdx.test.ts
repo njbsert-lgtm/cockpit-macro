@@ -42,6 +42,7 @@ function paquet(over: Partial<ContextePaquet> = {}): ContextePaquet {
     comparesTo: "2026-S35",
     specialesDeLaSemaine: [],
     notePrecedente: null,
+    ficheNotion: null,
     observations: [],
     drivers: [],
     itemsVeille: [],
@@ -195,6 +196,56 @@ describe("rendreMdx — le fichier produit est une note valide", () => {
     expect(() => parseNote(slug, mdx)).not.toThrow();
     expect(mdx).not.toContain("CeQueJavaisMalLu");
     expect(matter(mdx).data.trigger).toBe("Brent ±8 %");
+  });
+});
+
+describe("rendreMdx — les sources, deux provenances et une seule forme", () => {
+  const FICHE = {
+    pageId: "p1",
+    url: "https://notion.so/p1",
+    semaine: "S36 — lundi 31/08 au dimanche 06/09",
+    contenu: "…",
+    sources: ["Zonebourse"],
+    recupereLe: "2026-09-05T09:00:00Z",
+  };
+
+  it("résout un item de veille vers sa propre URL", () => {
+    const item: VeilleItem = {
+      id: "i1",
+      title: "Titre",
+      url: "https://fed.gov/a",
+      source: "Fed",
+      publishedAt: "2026-09-03",
+      zones: ["us"],
+      driverRefs: [],
+      channels: [],
+      isSignal: true,
+      status: "nouveau",
+      attachedToBlock: null,
+      draftNoteSlug: null,
+    };
+    const { slug, mdx } = rendreMdx(
+      brouillon({ sources: [{ block: "CeQuiAChange", sourceId: "i1" }] }),
+      paquet({ itemsVeille: [item] }),
+      "2026-09-05",
+    );
+    expect(parseNote(slug, mdx).meta.sources.CeQuiAChange).toEqual([
+      { label: "Fed", url: "https://fed.gov/a" },
+    ]);
+  });
+
+  it("résout un émetteur de la fiche vers la fiche — jamais vers une URL inventée", () => {
+    // « Zonebourse » n'a pas d'URL dans le contexte. Pointer le site de l'émetteur serait une
+    // référence que personne n'a ouverte ; la fiche, elle, est ce qu'on a réellement lu.
+    const { slug, mdx } = rendreMdx(
+      brouillon({ sources: [{ block: "CeQuiAChange", sourceId: "Zonebourse" }] }),
+      paquet({ ficheNotion: FICHE }),
+      "2026-09-05",
+    );
+    const [source] = parseNote(slug, mdx).meta.sources.CeQuiAChange ?? [];
+    expect(source.url).toBe("https://notion.so/p1");
+    expect(source.label).toContain("Zonebourse");
+    expect(source.label).toContain("S36");
   });
 });
 

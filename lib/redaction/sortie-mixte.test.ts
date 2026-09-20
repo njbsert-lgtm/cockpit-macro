@@ -17,6 +17,7 @@ function vivier(over: Partial<Vivier> = {}): Vivier {
     trendIds: ["desinflation-terminee"],
     instrumentIds: ["us10y", "brent"],
     veilleItemIds: ["item-1", "item-2"],
+    sourceIds: ["item-1", "item-2", "Eurostat"],
     blocsAttendus: ["CeQuiAChange", "CeQuiSestConfirme"],
     budgetGuets: 3,
     ...over,
