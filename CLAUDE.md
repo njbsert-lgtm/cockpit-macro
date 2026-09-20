@@ -332,10 +332,28 @@ Deux conditions cumulatives, toutes deux bloquantes :
 La seconde condition est la plus importante. Elle transforme une faiblesse — des chiffres non
 vérifiables — en discipline éditoriale : le lecteur sait toujours qui avance quoi.
 
+**Comment un nombre tombe dans un régime.** Le rattachement se fait à la **phrase**, pas à la
+note : un nombre est en régime A si sa phrase **nomme** un instrument collecté — par son libellé
+ou son identifiant. C'est ce qui permet de détecter l'écart plutôt que de le laisser filer : sans
+ce rattachement, un Brent à 104 $ écrit dans une phrase qui dit « Brent » repartirait en régime B,
+où il est bien présent dans la fiche et bien attribué, et passerait. La détection est
+volontairement étroite — « les rendements longs » ne nomme aucun instrument —, et un nombre qui
+n'est pas rattaché repart en régime B, lui-même bloquant : l'échec par défaut est le régime le
+plus exigeant, jamais un passage silencieux. Un nombre qui correspond à une valeur en base sans
+que sa phrase la nomme reste du régime A : il n'est pas inventé, et la base en est la source.
+
+**La recherche littérale du régime B ne normalise que les espaces** — insécable, fine, ordinaire
+—, **jamais les chiffres** : une note qui écrit « 2,5 % » là où la fiche porte « 2,50 % » bloque.
+Et un nombre n'est trouvé que s'il n'est pas un morceau d'un autre : « 2,4 » ne se reconnaît pas
+dans « 12,45 ».
+
 **Ce que le rapport affiche.** Chaque nombre, sa provenance (A ou B), sa source, son verdict.
-Le total par régime en tête. Une note comportant une majorité de chiffres du régime B est
-normale ; une note n'en comportant que du régime B signale que la collecte n'a rien apporté
-cette semaine.
+Le total par régime en tête. Quatre verdicts plutôt que deux, parce qu'une note bloquée doit dire
+*pourquoi* : conforme, **écart** avec la valeur en base, **introuvable** (ni en base ni dans la
+fiche), **sans attribution** (dans la fiche, mais personne ne l'avance dans la phrase). Confondre
+un écart et un introuvable ferait chercher au mauvais endroit. Une note comportant une majorité de
+chiffres du régime B est normale ; une note n'en comportant que du régime B signale que la
+collecte n'a rien apporté cette semaine.
 
 **Pourquoi bloquant et non signalant.** Un chiffre légèrement de travers dans une phrase bien
 tournée est invisible à la relecture — c'est précisément ce qu'un modèle produit quand il

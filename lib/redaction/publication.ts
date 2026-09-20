@@ -180,7 +180,9 @@ export function controlerChiffresPublication(
   const verdicts = extraireVerdicts(entrees, paquet);
 
   const bloque = verdicts.some((v) => {
-    if (v.verdict !== "introuvable") return false;
+    // Les trois verdicts fautifs comptent pareil ici : écart avec la base, absence de la
+    // fiche, absence d'attribution. Ce qui varie est le geste de correction, pas le blocage.
+    if (v.verdict === "conforme") return false;
     const authorship = authorshipFinaleParBloc[v.bloc as BlockName];
     return authorship === "ia" || authorship === "ia-relue" || authorship === undefined;
   });

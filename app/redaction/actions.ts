@@ -148,7 +148,7 @@ export async function publierBrouillon(slug: string): Promise<void> {
   if (!publication.pret) {
     throw new Error(
       publication.rapportChiffres.bloque
-        ? "un chiffre reste introuvable dans un bloc non relu"
+        ? "un chiffre reste non conforme dans un bloc non relu"
         : (publication.manquantes[0]?.message ?? "des conditions de publication manquent"),
     );
   }

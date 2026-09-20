@@ -16,7 +16,23 @@ function obs(over: Partial<ObservationContexte> = {}): ObservationContexte {
   };
 }
 
-function paquet(observations: ObservationContexte[] = [obs()]): ContextePaquet {
+const FICHE = {
+  pageId: "p1",
+  url: "https://notion.so/p1",
+  semaine: "S36 — lundi 31/08 au dimanche 06/09",
+  contenu:
+    "La BCE a porté sa facilité de dépôt à 2,50 % (communiqué BCE).\n" +
+    "L'IPCH ressort à 2,4 % en août (Eurostat).\n" +
+    "Le Brent a fini à 104 $ sur la semaine (Zonebourse).\n" +
+    "La croissance est révisée à 12,45 % par le FMI.",
+  sources: ["communiqué BCE", "Eurostat", "Zonebourse", "FMI"],
+  recupereLe: "2026-09-05T09:00:00Z",
+};
+
+function paquet(
+  observations: ObservationContexte[] = [obs()],
+  ficheNotion: ContextePaquet["ficheNotion"] = null,
+): ContextePaquet {
   return {
     noteType: "hebdo",
     slug: "2026-S36",
@@ -25,7 +41,7 @@ function paquet(observations: ObservationContexte[] = [obs()]): ContextePaquet {
     comparesTo: "2026-S35",
     specialesDeLaSemaine: [],
     notePrecedente: null,
-    ficheNotion: null,
+    ficheNotion,
     observations,
     drivers: [],
     itemsVeille: [],
@@ -66,7 +82,11 @@ describe("controlerChiffres — un chiffre du paquet passe", () => {
       paquet(),
     );
     expect(r.bloque).toBe(false);
-    expect(r.verdicts[0]).toMatchObject({ verdict: "trouve", source: "spx au 2026-09-04" });
+    expect(r.verdicts[0]).toMatchObject({
+      verdict: "conforme",
+      regime: "A",
+      source: "spx au 2026-09-04",
+    });
   });
 
   it("accepte un arrondi à la décimale écrite — 3,4 pour 3,42", () => {
@@ -87,7 +107,7 @@ describe("controlerChiffres — un chiffre du paquet passe", () => {
       brouillon({ blocs: { CeQuiAChange: "Le Nasdaq à 25 249,85." } }),
       p,
     );
-    expect(r.verdicts.some((v) => v.verdict === "introuvable")).toBe(false);
+    expect(r.verdicts.every((v) => v.verdict === "conforme")).toBe(true);
   });
 
   it("rattache une variation signée à sa valeur absolue", () => {
@@ -186,7 +206,7 @@ describe("rendreRapport", () => {
       brouillon({ blocs: { CeQuiAChange: "Inflation à 4,7 %." } }),
       paquet(),
     );
-    expect(rendreRapport(r)).toMatch(/1 chiffre\(s\) introuvable\(s\).*publication bloquée/);
+    expect(rendreRapport(r)).toMatch(/1 non conforme\(s\).*publication bloquée/);
   });
 
   it("nomme la source de chaque chiffre rattaché", () => {
@@ -199,7 +219,126 @@ describe("rendreRapport", () => {
 
   it("le dit quand le texte ne porte aucun chiffre", () => {
     expect(rendreRapport(controlerChiffres(brouillon(), paquet()))).toBe(
-      "Aucun chiffre dans le texte.",
+      "Aucun chiffre à contrôler dans le texte.",
     );
+  });
+});
+
+describe("régime A — la base fait foi, sans exception", () => {
+  it("un écart sur un instrument nommé dans la phrase bloque, et dit la bonne valeur", () => {
+    // Le cas qui justifie le régime : la fiche écrit 104 $, la base a 102,96 $. Sans détection
+    // d'écart, ce nombre repartirait en régime B — il est bien dans la fiche, bien attribué —
+    // et passerait. L'application a sa propre source pour cet instrument, c'est elle qui fait foi.
+    const p = paquet(
+      [obs({ instrumentId: "brent", label: "Brent", valeurs: [{ date: "2026-09-04", value: 102.96 }], variationSemaine: null, variationYTD: null })],
+      FICHE,
+    );
+    const r = controlerChiffres(
+      brouillon({ blocs: { CeQuiAChange: "Le Brent a fini à 104 $ sur la semaine (Zonebourse)." } }),
+      p,
+    );
+    expect(r.bloque).toBe(true);
+    expect(r.verdicts[0]).toMatchObject({ regime: "A", verdict: "ecart", attendu: "102,96" });
+    expect(rendreRapport(r)).toContain("la base porte 102,96");
+  });
+
+  it("la valeur de la base passe, dans la même phrase", () => {
+    const p = paquet(
+      [obs({ instrumentId: "brent", label: "Brent", valeurs: [{ date: "2026-09-04", value: 102.96 }], variationSemaine: null, variationYTD: null })],
+      FICHE,
+    );
+    const r = controlerChiffres(
+      brouillon({ blocs: { CeQuiAChange: "Le Brent a fini à 102,96 $ sur la semaine." } }),
+      p,
+    );
+    expect(r.bloque).toBe(false);
+    expect(r.verdicts[0]).toMatchObject({ regime: "A", verdict: "conforme" });
+  });
+
+  it("une phrase qui ne nomme aucun instrument ne déclenche pas d'écart", () => {
+    // Volontairement étroit : « les rendements longs » ne nomme pas us10y, donc le nombre
+    // repart en régime B — lui-même bloquant. L'échec par défaut est le régime le plus exigeant.
+    const p = paquet([obs({ instrumentId: "us10y", label: "US 10 ans", valeurs: [{ date: "2026-09-04", value: 4.18 }], variationSemaine: null, variationYTD: null })], FICHE);
+    const r = controlerChiffres(
+      brouillon({ blocs: { CeQuiAChange: "Les rendements longs tiennent à 4,55 %." } }),
+      p,
+    );
+    expect(r.verdicts[0]).toMatchObject({ regime: "B", verdict: "introuvable" });
+  });
+});
+
+describe("régime B — dans la fiche, et attribué", () => {
+  it("accepte un nombre littéralement dans la fiche et attribué dans la phrase", () => {
+    const r = controlerChiffres(
+      brouillon({ blocs: { CeQuiAChange: "La facilité de dépôt passe à 2,50 % (communiqué BCE)." } }),
+      paquet([obs()], FICHE),
+    );
+    expect(r.bloque).toBe(false);
+    expect(r.verdicts[0]).toMatchObject({ regime: "B", verdict: "conforme", source: "communiqué BCE" });
+  });
+
+  it("refuse un nombre de la fiche que personne n'avance dans la phrase", () => {
+    // La condition la plus importante : elle transforme des chiffres non vérifiables en
+    // discipline éditoriale — le lecteur sait toujours qui avance quoi.
+    const r = controlerChiffres(
+      brouillon({ blocs: { CeQuiAChange: "La facilité de dépôt passe à 2,50 %." } }),
+      paquet([obs()], FICHE),
+    );
+    expect(r.bloque).toBe(true);
+    expect(r.verdicts[0]).toMatchObject({ regime: "B", verdict: "sans-attribution" });
+  });
+
+  it("refuse un arrondi introduit par le modèle — « 2,5 % » pour « 2,50 % »", () => {
+    // La recherche est littérale : on normalise les espaces, jamais les chiffres. Un arrondi
+    // de plus est un chiffre fabriqué, même de peu.
+    const r = controlerChiffres(
+      brouillon({ blocs: { CeQuiAChange: "La facilité de dépôt passe à 2,5 % (communiqué BCE)." } }),
+      paquet([obs()], FICHE),
+    );
+    expect(r.bloque).toBe(true);
+    expect(r.verdicts[0]).toMatchObject({ verdict: "introuvable" });
+  });
+
+  it("ne reconnaît pas un nombre dans un nombre plus long", () => {
+    // « 2,4 » figure dans « 12,45 » ; ce n'est pas pour autant un nombre de la fiche.
+    const r = controlerChiffres(
+      brouillon({ blocs: { CeQuiAChange: "La croissance ressort à 2,4 % (FMI)." } }),
+      paquet([obs()], { ...FICHE, contenu: "La croissance est révisée à 12,45 % par le FMI." }),
+    );
+    expect(r.verdicts[0]).toMatchObject({ verdict: "introuvable" });
+  });
+
+  it("sans fiche, le régime B n'a pas de texte source : il ne reste qu'introuvable", () => {
+    const r = controlerChiffres(
+      brouillon({ blocs: { CeQuiAChange: "L'inflation atteint 4,7 % (Eurostat)." } }),
+      paquet(),
+    );
+    expect(r.bloque).toBe(true);
+    expect(r.verdicts[0]).toMatchObject({ regime: "B", verdict: "introuvable" });
+  });
+});
+
+describe("rendreRapport — le total par régime en tête", () => {
+  it("compte les deux régimes séparément", () => {
+    const p = paquet([obs()], FICHE);
+    const r = controlerChiffres(
+      brouillon({
+        blocs: {
+          CeQuiAChange: "L'indice à 7674,37. La facilité de dépôt passe à 2,50 % (communiqué BCE).",
+        },
+      }),
+      p,
+    );
+    expect(rendreRapport(r)).toContain("régime A : 1, régime B : 1");
+    expect(r.bloque).toBe(false);
+  });
+
+  it("signale une note sans aucun chiffre du régime A — la collecte n'a rien apporté", () => {
+    const r = controlerChiffres(
+      brouillon({ blocs: { CeQuiAChange: "L'IPCH ressort à 2,4 % en août (Eurostat)." } }),
+      paquet([], FICHE),
+    );
+    expect(r.bloque).toBe(false);
+    expect(rendreRapport(r)).toContain("la collecte n'a rien apporté");
   });
 });
