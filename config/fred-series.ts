@@ -348,6 +348,39 @@ export const FRED_SERIES: FredMapping[] = [
   // au même niveau. Le substituer donnerait un chiffre plausible et faux ; même raison que le
   // PMI et l'Economic Sentiment Indicator côté Eurostat.
 
+  // --- Taux directeurs hors États-Unis — à vérifier avant activation ---------
+  //
+  // `ez-policy-rate` figure au catalogue depuis l'origine et n'a jamais eu de source : Eurostat
+  // ne publie pas les taux directeurs de la BCE — ce sont les instruments de la BCE, pas des
+  // statistiques harmonisées —, et aucune autre source branchée ne les porte. L'écran Macro
+  // affiche donc « non suivi » pour la zone euro, ce qui est exact mais laisse un trou sur
+  // l'indicateur le plus regardé de la zone.
+  //
+  // Deux routes, et FRED est la moins coûteuse : le collecteur, le contrôle de plausibilité et
+  // `npm run fred:check` existent déjà, alors que le portail BCE demanderait un client SDMX.
+  // `ECBDFR` est l'identifiant usuel de la facilité de dépôt chez FRED, à la cadence
+  // quotidienne, ce qui en fait un palier au même titre que `DFEDTARU`.
+  //
+  // **Laissé désactivé faute d'appel réel.** La règle du dépôt est qu'une série ne passe en
+  // collecte qu'après être sortie verte de `npm run fred:check`, et cet identifiant n'a pas
+  // encore été confronté à l'API. C'est le seul geste qui manque : lancer le script, puis
+  // basculer `enabled` si les métadonnées correspondent à ce que `expect` déclare.
+  {
+    target: { kind: "macro", id: "ez-policy-rate" },
+    seriesId: "ECBDFR",
+    units: "lin",
+    cadence: "business-daily",
+    plausible: { min: -2, max: 15 },
+    expect: { units: "Percent", frequency: "Daily" },
+    enabled: false,
+    disabledReason:
+      "Jamais confrontée à l'API — aucune clé FRED disponible au moment de l'écriture. " +
+      "Lancer `npm run fred:check` et n'activer que si la série sort verte ; si l'identifiant " +
+      "a été retiré, la route de repli est le portail BCE (dataflow FM, clé " +
+      "B.U2.EUR.4F.KR.DFR.LEV), libre de droits puisque la BCE publie là son propre " +
+      "instrument — contrairement aux cotations Bund et OAT, sous licence Bloomberg.",
+  },
+
   {
     target: { kind: "macro", id: "us-current-account" },
     seriesId: "IEABC",

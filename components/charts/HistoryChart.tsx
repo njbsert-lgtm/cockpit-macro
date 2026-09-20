@@ -3,12 +3,32 @@
 import { CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { formatDateShort } from "@/lib/format";
 
-/** Graphique de série générique, réutilisé pour un instrument de marché comme pour un
- * indicateur macro : les deux ne sont qu'une suite de points datés. */
+/**
+ * Graphique de série générique, réutilisé pour un instrument de marché comme pour un
+ * indicateur macro : les deux ne sont qu'une suite de points datés.
+ *
+ * Deux réglages sont pilotés par la nature de la série, et ils comptent autant l'un que
+ * l'autre pour que le tracé ne mente pas.
+ *
+ * **La forme.** Une série continue s'interpole ; une série en **palier** — un taux directeur —
+ * se trace en escalier. Une interpolation sur un palier dessine une pente douce entre deux
+ * décisions, donc un taux qui aurait dérivé alors qu'il a sauté. C'est faux à la lecture, et
+ * c'est le genre de faux qu'on ne remarque pas.
+ *
+ * **Les points.** Un point par relevé rend le trait inhomogène : là où les relevés sont denses
+ * — une série quotidienne sur cinq ans — les points se chevauchent et le trait paraît épaissi,
+ * là où ils sont rares il reste fin. Le même trait semble alors changer d'épaisseur selon la
+ * période regardée. On ne dessine donc les points que lorsqu'ils sont assez espacés pour être
+ * lus un par un.
+ */
+const DENSITE_MAX_POUR_POINTS = 60;
+
 export function HistoryChart({
   points,
+  forme = "continue",
 }: {
   points: Array<{ date: string; value: number }>;
+  forme?: "continue" | "palier";
 }) {
   if (points.length < 2) {
     return (
@@ -48,11 +68,12 @@ export function HistoryChart({
             }}
           />
           <Line
-            type="monotone"
+            type={forme === "palier" ? "stepAfter" : "monotone"}
             dataKey="value"
             stroke="var(--color-encre)"
             strokeWidth={2}
-            dot={{ r: 2.5 }}
+            dot={points.length <= DENSITE_MAX_POUR_POINTS ? { r: 2.5 } : false}
+            activeDot={{ r: 3.5 }}
             isAnimationActive={false}
           />
         </LineChart>

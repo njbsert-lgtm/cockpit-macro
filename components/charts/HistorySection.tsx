@@ -23,7 +23,14 @@ import {
  * La période réellement couverte est écrite sous le graphique : un axe seul ne dit pas si
  * « 5 ans » affiche cinq ans ou trois mois d'historique disponible.
  */
-export function HistorySection({ points }: { points: SeriesPoint[] }) {
+export function HistorySection({
+  points,
+  forme = "continue",
+}: {
+  points: SeriesPoint[];
+  /** « palier » pour une série qui ne bouge qu'à une décision — voir `lib/paliers.ts`. */
+  forme?: "continue" | "palier";
+}) {
   const [range, setRange] = useState<RangeKey>(DEFAULT_RANGE);
   const visible = filterByRange(points, range);
   const first = visible[0];
@@ -58,7 +65,7 @@ export function HistorySection({ points }: { points: SeriesPoint[] }) {
       </div>
 
       <div className="mt-3">
-        <HistoryChart points={visible} />
+        <HistoryChart points={visible} forme={forme} />
       </div>
 
       <p className="mt-2 text-11 text-tenu">
@@ -66,7 +73,9 @@ export function HistorySection({ points }: { points: SeriesPoint[] }) {
           ? "Aucun relevé sur cette période."
           : `${visible.length} relevé${visible.length > 1 ? "s" : ""} — du ${formatDateShort(
               first.date,
-            )} au ${formatDateShort(last.date)}.`}
+            )} au ${formatDateShort(last.date)}.${
+              forme === "palier" ? " Le taux tient entre deux décisions : le tracé est en escalier." : ""
+            }`}
       </p>
     </div>
   );

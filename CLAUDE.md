@@ -870,7 +870,28 @@ compte autant que sa valeur.
 
 Un clic sur un indicateur — carte en mode zone, ligne en mode comparaison — ouvre sa fiche :
 la série en graphique, avec la même échelle de temps que la fiche instrument, et son historique
-en table, date par date. Une fenêtre plus courte que la cadence de publication — « 1 semaine »
+en table, date par date.
+
+**Un taux directeur est une série en palier, pas une série continue**, et se rend comme tel —
+dans toutes les zones, la règle se décide sur la métrique et jamais sur le pays. Il est fixé par
+un comité, il vaut exactement la même chose tous les jours jusqu'au comité suivant, et il saute.
+Le collecter quotidiennement est juste — c'est ce que la source publie — mais le *rendre*
+quotidiennement produit deux mensonges d'affichage : un graphique interpolé dessine des pentes
+douces entre deux décisions, donc un taux qui aurait dérivé alors qu'il a sauté ; une table qui
+répète la même valeur des centaines de fois noie les quelques lignes qui portent toute
+l'information. Le graphique se trace donc **en escalier**, et la table liste les **décisions** —
+le premier relevé, puis chaque changement, avec sa variation en points de base. Réduire aux
+ruptures n'enlève rien : entre deux ruptures, la valeur est celle de la rupture précédente, par
+construction. Une réunion qui laisse le taux inchangé ne produit aucun relevé distinct et n'y
+figure donc pas : afficher la liste des réunions demanderait un calendrier historique des
+comités de chaque banque centrale que nous n'avons pas, et l'inventer serait de la donnée
+fabriquée.
+
+**Le trait d'un graphique a une épaisseur constante.** Un point dessiné sur chaque relevé rend
+le trait inhomogène : là où les relevés sont denses ils se chevauchent et le trait paraît
+épaissi, là où ils sont rares il reste fin — le même trait semble changer d'épaisseur selon la
+période regardée. Les points ne sont donc dessinés que lorsqu'ils sont assez espacés pour être
+lus un par un. Une fenêtre plus courte que la cadence de publication — « 1 semaine »
 sur une série mensuelle — affiche l'état vide plutôt qu'un graphique à un point : c'est une
 information sur la série, pas une panne.
 
@@ -1187,7 +1208,7 @@ Gratuites, en accès programmatique. Clés en variables d'environnement, jamais 
 | Donnée | Source | Note |
 |---|---|---|
 | Macro US, taux, inflation | **FRED API** | Gratuit, très fiable, couvre aussi de l'international |
-| Macro zone euro et pays | **ECB Data Portal**, **Eurostat** | APIs publiques sans clé. Eurostat branché : IPCH total et sous-jacent, PIB, chômage, pour `ez` `fr` `de` `es` `it` |
+| Macro zone euro et pays | **ECB Data Portal**, **Eurostat** | APIs publiques sans clé. Eurostat branché : IPCH total et sous-jacent, PIB, chômage, pour `ez` `fr` `de` `es` `it`. **Le taux directeur BCE n'est pas une série Eurostat** — c'est un instrument de la BCE, pas une statistique harmonisée : `ez-policy-rate` n'a donc jamais eu de source et s'affiche « non suivi ». Entrée FRED `ECBDFR` préparée dans `config/fred-series.ts`, désactivée tant que `npm run fred:check` ne l'a pas vue verte ; repli documenté sur le portail BCE |
 | Macro France | **INSEE** (API BDM) | Gratuit, inscription requise |
 | Macro UK | **ONS API** (contenu du site, `api.ons.gov.uk/v1/data?uri=…`) | Gratuit, sans clé. Branchée : IPCH total et sous-jacent, PIB (croissance trimestre sur trimestre, `IHYQ`), chômage et salaires. Le solde budgétaire reste désactivé — chemin non localisé sur la nouvelle API, voir `config/ons-series.ts`. Le taux directeur n'est pas une série ONS — c'est la Banque d'Angleterre qui le publie, chantier séparé ; le PMI composite reste au seed, propriétaire S&P Global comme ailleurs |
 | Macro Japon | **e-Stat API** | Gratuit, clé d'application requise (`ESTAT_APP_ID`). Branchée : IPC total et sous-jacent, chômage. Les salaires répondent mais sont désactivés — données interrompues depuis 2015 sur la seule combinaison de dimensions disponible. La croissance du PIB reste au seed — pas de table longue série stable, voir `config/estat-series.ts` |

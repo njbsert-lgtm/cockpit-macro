@@ -9,6 +9,7 @@ import { ZONE_LABELS } from "@/lib/zones";
 import { ZONE_PARAM } from "@/lib/zone-param";
 import { DataValue } from "@/components/states/DataValue";
 import { HistorySection } from "@/components/charts/HistorySection";
+import { enPointsDeBase, estEnPalier, paliersDe } from "@/lib/paliers";
 
 /** Un an de revalidation en heure suffit largement pour une collecte quotidienne. */
 export const revalidate = 3600;
@@ -26,8 +27,14 @@ export default async function MacroIndicatorPage({
     a.date.localeCompare(b.date),
   );
   const latest = obs.at(-1) ?? null;
-  const history = [...obs].reverse();
   const nextRelease = resolveNextRelease(indicator.nextRelease);
+
+  // Un taux directeur ne bouge qu'à une décision. Lister ses relevés quotidiens répéterait la
+  // même valeur des centaines de fois et noierait les quelques lignes qui portent toute
+  // l'information — voir `lib/paliers.ts`.
+  const enPalier = estEnPalier(indicator);
+  const paliers = enPalier ? paliersDe(obs).reverse() : [];
+  const history = [...obs].reverse();
 
   return (
     <div className="mx-auto max-w-colonne md:max-w-content px-4.5 py-7 md:px-6">
@@ -63,14 +70,24 @@ export default async function MacroIndicatorPage({
       </p>
 
       <div className="mt-6">
-        <HistorySection points={obs.map((o) => ({ date: o.date, value: o.value }))} />
+        <HistorySection
+          points={obs.map((o) => ({ date: o.date, value: o.value }))}
+          forme={enPalier ? "palier" : "continue"}
+        />
       </div>
 
       <section className="mt-10">
         <h2 className="text-17 font-semibold text-encre">
-          Historique ({history.length})
+          {enPalier ? `Décisions (${paliers.length})` : `Historique (${history.length})`}
         </h2>
-        {history.length === 0 ? (
+        {enPalier && (
+          <p className="mt-1 max-w-[60ch] text-12-5 text-tenu">
+            Chaque ligne est un changement de taux, avec la date à laquelle il prend effet. Une
+            réunion qui laisse le taux inchangé ne produit aucun relevé distinct : elle n&rsquo;y
+            figure donc pas.
+          </p>
+        )}
+        {(enPalier ? paliers.length : history.length) === 0 ? (
           <p className="mt-3 max-w-[60ch] text-14-5 text-tenu">
             Aucun relevé encore enregistré pour cet indicateur.
           </p>
@@ -80,22 +97,39 @@ export default async function MacroIndicatorPage({
               <thead>
                 <tr className="border-b border-trait bg-repos text-left text-10-5 uppercase tracking-cap text-tenu">
                   <th className="px-3.5 py-2 font-semibold">Date</th>
-                  <th className="px-3.5 py-2 font-semibold">Valeur</th>
-                  <th className="px-3.5 py-2 font-semibold">Source</th>
+                  <th className="px-3.5 py-2 font-semibold">{enPalier ? "Nouveau taux" : "Valeur"}</th>
+                  {enPalier && <th className="px-3.5 py-2 font-semibold">Variation</th>}
+                  {!enPalier && <th className="px-3.5 py-2 font-semibold">Source</th>}
                 </tr>
               </thead>
               <tbody>
-                {history.map((o) => (
-                  <tr key={o.date} className="border-b border-trait last:border-b-0">
-                    <td className="px-3.5 py-2 text-13 text-doux">
-                      {formatDateShort(o.date)}
-                    </td>
-                    <td className="px-3.5 py-2 font-semibold tabular-nums text-encre">
-                      {formatIndicatorValue(indicator, o.value)}
-                    </td>
-                    <td className="px-3.5 py-2 text-12-5 text-tenu">{o.source}</td>
-                  </tr>
-                ))}
+                {enPalier
+                  ? paliers.map((p) => (
+                      <tr key={p.date} className="border-b border-trait last:border-b-0">
+                        <td className="px-3.5 py-2 text-13 text-doux">{formatDateShort(p.date)}</td>
+                        <td className="px-3.5 py-2 font-semibold tabular-nums text-encre">
+                          {formatIndicatorValue(indicator, p.value)}
+                        </td>
+                        {/* Jamais de tiret pour le premier palier : « premier relevé » dit
+                            pourquoi il n'y a pas de variation, un tiret laisserait croire à zéro. */}
+                        <td className="px-3.5 py-2 text-13 tabular-nums text-doux">
+                          {p.variation === null ? (
+                            <span className="text-tenu">premier relevé</span>
+                          ) : (
+                            enPointsDeBase(p.variation)
+                          )}
+                        </td>
+                      </tr>
+                    ))
+                  : history.map((o) => (
+                      <tr key={o.date} className="border-b border-trait last:border-b-0">
+                        <td className="px-3.5 py-2 text-13 text-doux">{formatDateShort(o.date)}</td>
+                        <td className="px-3.5 py-2 font-semibold tabular-nums text-encre">
+                          {formatIndicatorValue(indicator, o.value)}
+                        </td>
+                        <td className="px-3.5 py-2 text-12-5 text-tenu">{o.source}</td>
+                      </tr>
+                    ))}
               </tbody>
             </table>
           </div>
