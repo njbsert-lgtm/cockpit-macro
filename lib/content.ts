@@ -4,7 +4,7 @@ import { SCENARIO_VERSIONS } from "@/content/scenarios";
 import { OUTLOOKS } from "@/content/outlooks";
 import { GENERATED_SCENARIO_VERSIONS } from "@/content/generated/scenarios.generated";
 import { GENERATED_TREND_DELTAS } from "@/content/generated/tendances.generated";
-import { getInstruments } from "./data";
+import { getInstruments, getMacroIndicators } from "./data";
 import { currentVersion } from "./integrity";
 import { activeDrivers } from "./drivers";
 import { extractBlockText, readNoteSources, type BlockName } from "./notes";
@@ -25,6 +25,7 @@ function loadContent() {
     outlooks: OUTLOOKS,
     generated: { scenarios: GENERATED_SCENARIO_VERSIONS, trendDeltas: GENERATED_TREND_DELTAS },
     instrumentIds: new Set(getInstruments().map((i) => i.id)),
+    macroIndicatorIds: new Set(getMacroIndicators().map((i) => i.id)),
   });
 }
 
@@ -107,6 +108,11 @@ export function getActiveDrivers(): Driver[] {
 /** Inverse de `Driver.instrumentRefs` — calculé, jamais stocké. */
 export function getDriversForInstrument(instrumentId: string): Driver[] {
   return CONTENT.drivers.filter((d) => d.instrumentRefs.includes(instrumentId));
+}
+
+/** Inverse de `Driver.macroRefs` — calculé, jamais stocké. */
+export function getDriversForMacroIndicator(macroIndicatorId: string): Driver[] {
+  return CONTENT.drivers.filter((d) => d.macroRefs.includes(macroIndicatorId));
 }
 
 /**

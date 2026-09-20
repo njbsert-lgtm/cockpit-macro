@@ -20,6 +20,9 @@ export const DRIVERS: DriverInput[] = [
     // Le 10 ans US porte la fonction de réaction ; le spread transatlantique et l'EUR/USD en
     // sont la traduction directe en devises et en flux de capitaux.
     instrumentRefs: ["us10y", "spread-us10y-bund10y", "eurusd", "dxy"],
+    // Le taux directeur répond directement à la question du driver ; l'inflation et le chômage
+    // sont ce que la Fed regarde pour décider — le double mandat, littéralement.
+    macroRefs: ["us-policy-rate", "us-cpi", "us-cpi-core", "us-unemployment"],
     trendRefs: ["desinflation-terminee", "japon-anomalie", "capex-ia-benefices"],
     zones: ["us", "ez", "global"],
     retiredAt: null,
@@ -30,6 +33,8 @@ export const DRIVERS: DriverInput[] = [
     question: "Ormuz rouvre-t-il ?",
     // La variable maîtresse : elle entre dans le modèle avant toutes les autres.
     instrumentRefs: ["brent", "wti", "gold"],
+    // Purement géopolitique : aucun indicateur macro ne répond directement à la question.
+    macroRefs: [],
     trendRefs: ["prime-risque-permanente", "desinflation-terminee"],
     zones: ["global", "ez", "jp", "in"],
     retiredAt: null,
@@ -40,6 +45,8 @@ export const DRIVERS: DriverInput[] = [
     question: "Les profits justifient-ils le capex ?",
     // Le cuivre plutôt que la puce : le goulet d'étranglement de l'IA est le mégawatt.
     instrumentRefs: ["ndx", "spx", "copper"],
+    // Question de profits et de capex d'entreprises : aucun indicateur macro suivi n'y répond.
+    macroRefs: [],
     trendRefs: ["capex-ia-benefices", "recomposition-flux-hors-chine"],
     zones: ["us", "global"],
     retiredAt: null,

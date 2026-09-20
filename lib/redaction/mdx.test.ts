@@ -42,6 +42,7 @@ function paquet(over: Partial<ContextePaquet> = {}): ContextePaquet {
     specialesDeLaSemaine: [],
     notePrecedente: null,
     observations: [],
+    drivers: [],
     itemsVeille: [],
     scenariosCourants: [],
     tendancesCourantes: [],

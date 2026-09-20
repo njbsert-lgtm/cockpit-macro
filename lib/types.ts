@@ -59,6 +59,15 @@ export type DriverInput = {
   label: string; // 'Taux directeurs'
   question: string; // 'La Fed reprend-elle son cycle de hausse ?'
   instrumentRefs: string[]; // les instruments qu'il pilote
+  /**
+   * Les indicateurs macro qui répondent directement à la question du driver — le taux
+   * directeur pour « la Fed reprend-elle son cycle de hausse ? », par exemple. Séparé
+   * d'`instrumentRefs` : les deux catalogues ne se recoupent jamais (deux natures de contenu
+   * distinctes, cahier des charges), et la page du driver comme la rédaction assistée doivent
+   * pouvoir dire de laquelle vient chaque référence. Peut être vide — un driver purement
+   * géopolitique n'a pas d'indicateur macro qui le pilote directement.
+   */
+  macroRefs: string[];
   trendRefs: string[]; // les tendances qu'il alimente OU pourrait invalider
   zones: Zone[];
   retiredAt: string | null; // un driver peut cesser d'en être un ; on ne le supprime pas

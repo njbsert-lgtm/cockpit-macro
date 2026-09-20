@@ -31,6 +31,7 @@ function paquet(over: Partial<ContextePaquet> = {}): ContextePaquet {
     specialesDeLaSemaine: [],
     notePrecedente: null,
     observations: [obs()],
+    drivers: [],
     itemsVeille: [],
     scenariosCourants: [
       {
@@ -140,6 +141,7 @@ const GRAPHE = {
       label: "Taux directeurs",
       question: "La Fed reprend-elle son cycle ?",
       instrumentRefs: [],
+      macroRefs: [],
       trendRefs: [],
       zones: ["us" as const],
       retiredAt: null,
@@ -169,6 +171,7 @@ const GRAPHE = {
   })),
   outlooks: [],
   instrumentIds: new Set<string>(["us10y"]),
+  macroIndicatorIds: new Set<string>(),
 };
 
 function callerRendant(...valeurs: Brouillon[]): StructuredCaller {

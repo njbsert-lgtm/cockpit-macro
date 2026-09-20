@@ -31,6 +31,7 @@ export type ContentGraph = {
   scenarios: ScenarioVersion[];
   outlooks: Outlook[];
   instrumentIds: ReadonlySet<string>;
+  macroIndicatorIds: ReadonlySet<string>;
 };
 
 const BRANCHES_PER_DRIVER = 3;
@@ -68,7 +69,7 @@ function checkDuplicateIds({ drivers, trends, notes, outlooks }: ContentGraph) {
 // ---------------------------------------------------------------------------
 
 function checkDrivers(
-  { drivers, scenarios, instrumentIds }: ContentGraph,
+  { drivers, scenarios, instrumentIds, macroIndicatorIds }: ContentGraph,
   refs: { trendIds: ReadonlySet<string>; noteSlugs: ReadonlySet<string> },
 ) {
   for (const driver of drivers) {
@@ -77,6 +78,11 @@ function checkDrivers(
     for (const id of driver.instrumentRefs) {
       if (!instrumentIds.has(id)) {
         throw new IntegrityError(where, `instrument inconnu « ${id} » dans instrumentRefs`);
+      }
+    }
+    for (const id of driver.macroRefs) {
+      if (!macroIndicatorIds.has(id)) {
+        throw new IntegrityError(where, `indicateur macro inconnu « ${id} » dans macroRefs`);
       }
     }
     for (const id of driver.trendRefs) {

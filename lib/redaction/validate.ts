@@ -6,7 +6,7 @@ import { SCENARIO_VERSIONS } from "@/content/scenarios";
 import { OUTLOOKS } from "@/content/outlooks";
 import { GENERATED_SCENARIO_VERSIONS } from "@/content/generated/scenarios.generated";
 import { GENERATED_TREND_DELTAS } from "@/content/generated/tendances.generated";
-import { getInstruments } from "@/lib/data";
+import { getInstruments, getMacroIndicators } from "@/lib/data";
 
 /**
  * Le portail de validation — il assemble la note candidate **avec le corpus réel** et fait
@@ -46,6 +46,7 @@ export type GrapheInjecte = {
   scenarios: typeof SCENARIO_VERSIONS;
   outlooks: typeof OUTLOOKS;
   instrumentIds: ReadonlySet<string>;
+  macroIndicatorIds: ReadonlySet<string>;
 };
 
 export function validerBrouillon(input: {
@@ -67,6 +68,7 @@ export function validerBrouillon(input: {
     scenarios: SCENARIO_VERSIONS,
     outlooks: OUTLOOKS,
     instrumentIds: new Set(getInstruments().map((i) => i.id)),
+    macroIndicatorIds: new Set(getMacroIndicators().map((i) => i.id)),
   };
 
   try {
@@ -89,6 +91,7 @@ export function validerBrouillon(input: {
         trendDeltas: GENERATED_TREND_DELTAS,
       },
       instrumentIds: graphe.instrumentIds,
+      macroIndicatorIds: graphe.macroIndicatorIds,
     });
   } catch (error) {
     return { ok: false, raison: (error as Error).message };

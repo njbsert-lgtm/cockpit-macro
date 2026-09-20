@@ -1,4 +1,5 @@
 import type {
+  Driver,
   Echeance,
   Guet,
   Note,
@@ -47,6 +48,13 @@ export type ContextePaquet = {
     driverOrder: string[];
   } | null;
   observations: ObservationContexte[];
+  /**
+   * Les drivers actifs, avec ce qu'ils pilotent — `instrumentRefs` et `macroRefs`. Ce n'est pas
+   * une donnée chiffrée en soi, mais le lien explicite qui permet au modèle de rattacher une
+   * observation (un instrument de marché ou un indicateur macro) au driver dont elle peut faire
+   * bouger le scénario, plutôt que de le deviner depuis les libellés.
+   */
+  drivers: Driver[];
   itemsVeille: VeilleItem[];
   scenariosCourants: ScenarioVersion[];
   tendancesCourantes: Trend[];
@@ -146,6 +154,8 @@ export function construireContexte(input: {
   notePrecedente: Note | null;
   blocsPrecedents: Record<string, string>;
   observations: ObservationContexte[];
+  /** Optionnel pour les tests qui n'éprouvent pas le lien driver ↔ observation ; `[]` sinon. */
+  drivers?: Driver[];
   itemsVeille: VeilleItem[];
   scenariosCourants: ScenarioVersion[];
   tendancesCourantes: Trend[];
@@ -175,6 +185,7 @@ export function construireContexte(input: {
     specialesDeLaSemaine,
     notePrecedente: contextePrecedent(input.notePrecedente, input.blocsPrecedents),
     observations: input.observations,
+    drivers: input.drivers ?? [],
     itemsVeille: input.itemsVeille,
     scenariosCourants: input.scenariosCourants,
     tendancesCourantes: input.tendancesCourantes,

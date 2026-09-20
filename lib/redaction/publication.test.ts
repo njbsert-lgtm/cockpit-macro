@@ -174,6 +174,7 @@ function paquet(): ContextePaquet {
         fraicheur: "ok",
       },
     ],
+    drivers: [],
     itemsVeille: [],
     scenariosCourants: [],
     tendancesCourantes: [],

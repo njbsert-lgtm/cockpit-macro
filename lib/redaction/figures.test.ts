@@ -26,6 +26,7 @@ function paquet(observations: ObservationContexte[] = [obs()]): ContextePaquet {
     specialesDeLaSemaine: [],
     notePrecedente: null,
     observations,
+    drivers: [],
     itemsVeille: [],
     scenariosCourants: [],
     tendancesCourantes: [],

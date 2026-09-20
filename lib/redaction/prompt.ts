@@ -147,6 +147,8 @@ function rendreObservations(paquet: ContextePaquet): string {
 function rendreScenarios(paquet: ContextePaquet): string {
   if (paquet.scenariosCourants.length === 0) return "# Scénarios courants\n\nAucun.";
 
+  const driversParId = new Map(paquet.drivers.map((d) => [d.id, d]));
+
   const parDriver = new Map<string, string[]>();
   for (const v of paquet.scenariosCourants) {
     const lignes = parDriver.get(v.driverId) ?? [];
@@ -162,7 +164,25 @@ function rendreScenarios(paquet: ContextePaquet): string {
     "Réviser un driver, c'est réémettre ses trois branches, avec une seule « central ».",
     "Ne propose une révision que si le contexte la justifie ; une liste vide est une réponse valide.",
     "",
-    ...[...parDriver.entries()].flatMap(([driverId, lignes]) => [`## ${driverId}`, ...lignes, ""]),
+    ...[...parDriver.entries()].flatMap(([driverId, lignes]) => {
+      const driver = driversParId.get(driverId);
+      const references =
+        driver && (driver.instrumentRefs.length > 0 || driver.macroRefs.length > 0)
+          ? [
+              `Indicateurs de référence pour ce driver — dans la table « Observations » ci-dessus : ` +
+                [
+                  driver.instrumentRefs.length > 0
+                    ? `marché : ${driver.instrumentRefs.join(", ")}`
+                    : null,
+                  driver.macroRefs.length > 0 ? `macro : ${driver.macroRefs.join(", ")}` : null,
+                ]
+                  .filter(Boolean)
+                  .join(" ; "),
+              "",
+            ]
+          : [];
+      return [`## ${driverId}`, ...references, ...lignes, ""];
+    }),
   ].join("\n");
 }
 

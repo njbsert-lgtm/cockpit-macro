@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { getInstruments } from "@/lib/data";
 import type { ContextePaquet } from "./context";
 
 /**
@@ -97,11 +98,21 @@ export function construireVivier(paquet: ContextePaquet, blocsAttendus: string[]
     branchesParDriver.set(version.driverId, branches);
   }
 
+  // `Note.instrumentRefs` n'a de sens que pour des instruments de marché — c'est ce que
+  // `lib/integrity.ts` valide, et c'est ce que la fiche instrument sait résoudre. Un indicateur
+  // macro peut figurer dans `paquet.observations` (pour être cité en prose, contrôlé comme
+  // n'importe quel chiffre) sans pour autant devenir un `instrumentRefs` citable : les deux
+  // catalogues ne se recoupent jamais, même ici.
+  const idsInstruments = new Set(getInstruments().map((i) => i.id));
+
   return {
     driverIds: [...branchesParDriver.keys()].sort(),
     branchesParDriver,
     trendIds: paquet.tendancesCourantes.map((t) => t.id).sort(),
-    instrumentIds: paquet.observations.map((o) => o.instrumentId).sort(),
+    instrumentIds: paquet.observations
+      .map((o) => o.instrumentId)
+      .filter((id) => idsInstruments.has(id))
+      .sort(),
     veilleItemIds: paquet.itemsVeille.map((i) => i.id),
     blocsAttendus,
   };

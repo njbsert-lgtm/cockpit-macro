@@ -12,6 +12,7 @@ function driver(over: Partial<DriverInput> = {}): DriverInput {
     label: "Taux directeurs",
     question: "La Fed reprend-elle son cycle de hausse ?",
     instrumentRefs: ["us10y"],
+    macroRefs: [],
     trendRefs: ["desinflation"],
     zones: ["us"],
     retiredAt: null,
@@ -117,6 +118,7 @@ function inputs(over: Partial<ContentInputs> = {}): ContentInputs {
     outlooks: [],
     generated: { scenarios: [], trendDeltas: [] },
     instrumentIds: new Set(["us10y"]),
+    macroIndicatorIds: new Set(),
     ...over,
   };
 }

@@ -15,18 +15,22 @@
  * `content/brouillons/`, hors du corpus validé.
  */
 import { getAnthropicCaller } from "../lib/anthropic";
-import { getNotes, getNoteBody } from "../lib/content";
+import { getNotes, getNoteBody, getDrivers } from "../lib/content";
 import { readNoteSources, extractBlockText, BLOCK_NAMES } from "../lib/notes";
 import { getTrends, getScenarioVersions } from "../lib/content";
 import { construireContexte, type ObservationContexte } from "../lib/redaction/context";
+import { construireObservationsDepuis, type EntreeObservable } from "../lib/redaction/observations";
 import { executerRun } from "../lib/redaction/run";
 import { rendreRapport } from "../lib/redaction/figures";
 import { isoWeekBounds } from "../lib/iso-week";
 import { getPendingVeilleItems } from "../lib/veille/queries";
-import { loadObservations, observationsOf } from "../lib/observations";
-import { getInstruments } from "../lib/data";
-import { dailyChange, ytdChange, latestObservation } from "../lib/performance";
-import { publicationDelay } from "../lib/staleness";
+import {
+  loadObservations,
+  loadMacroObservations,
+  isInstrumentCovered,
+  isMacroCovered,
+} from "../lib/observations";
+import { getInstruments, getMacroIndicators } from "../lib/data";
 
 const args = process.argv.slice(2);
 const dryRun = args.includes("--dry-run");
@@ -66,6 +70,7 @@ const paquet = construireContexte({
   notePrecedente: precedente,
   blocsPrecedents,
   observations,
+  drivers: getDrivers(),
   itemsVeille,
   scenariosCourants: getScenarioVersions(),
   tendancesCourantes: getTrends(),
@@ -115,37 +120,43 @@ function samediDe(isoWeek: string): string {
 }
 
 /**
- * Les observations mises en forme pour le paquet. La fraîcheur reprend le retard de
- * publication déjà calculé par `lib/staleness.ts` : c'est le même signal que l'interface
- * affiche, pas une seconde définition qui divergerait.
+ * Les observations mises en forme pour le paquet — instruments de marché **et** indicateurs
+ * macro. Les deux passent par `construireObservationsDepuis` (`lib/redaction/observations.ts`),
+ * filtrés par `isInstrumentCovered`/`isMacroCovered` : une entrée restée au seed (jamais
+ * collectée) ne doit jamais entrer dans le paquet avec une valeur figée que le contrôle des
+ * chiffres validerait comme si elle était réelle.
+ *
+ * Les indicateurs macro y ont leur place au même titre que les instruments — c'est ce qui
+ * permet à une note de savoir qu'un taux directeur a bougé, et de proposer une révision de
+ * scénario en conséquence (voir `Driver.macroRefs`, exposé au modèle dans le prompt).
  */
 async function construireObservations(): Promise<ObservationContexte[]> {
   const instruments = getInstruments();
-  const bySeries = await loadObservations(instruments.map((i) => i.id));
+  const indicateurs = getMacroIndicators();
 
-  return instruments.flatMap((instrument) => {
-    const obs = observationsOf(bySeries, instrument.id);
-    if (obs.length === 0) return [];
+  const [bySeriesInstruments, bySeriesMacro] = await Promise.all([
+    loadObservations(instruments.map((i) => i.id)),
+    loadMacroObservations(indicateurs.map((i) => i.id)),
+  ]);
 
-    const derniere = latestObservation(obs);
-    const retard = publicationDelay(
-      derniere?.date ?? null,
-      "business-daily",
-      new Date(dateCible),
-    );
+  const entreesInstruments: EntreeObservable[] = instruments.map((i) => ({
+    id: i.id,
+    label: i.label,
+    unit: i.unit,
+    cadence: "business-daily",
+    ytdBasis: i.ytdBasis,
+  }));
 
-    return [
-      {
-        instrumentId: instrument.id,
-        label: instrument.label,
-        unit: instrument.unit,
-        // Les dix dernières clôtures suffisent : le modèle écrit une note hebdomadaire, pas
-        // une analyse de série longue, et un paquet obèse dilue ce qui compte.
-        valeurs: obs.slice(-10).map((o) => ({ date: o.date, value: o.value })),
-        variationSemaine: dailyChange(obs)?.pct ?? null,
-        variationYTD: ytdChange(instrument, obs)?.pct ?? null,
-        fraicheur: retard === null ? "absent" : retard.late ? "retard" : "ok",
-      },
-    ];
-  });
+  const entreesMacro: EntreeObservable[] = indicateurs.map((i) => ({
+    id: i.id,
+    label: i.label,
+    unit: i.unit,
+    cadence: i.frequency,
+    ytdBasis: null,
+  }));
+
+  return [
+    ...construireObservationsDepuis(entreesInstruments, bySeriesInstruments, dateCible, isInstrumentCovered),
+    ...construireObservationsDepuis(entreesMacro, bySeriesMacro, dateCible, isMacroCovered),
+  ];
 }

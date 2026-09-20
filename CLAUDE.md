@@ -234,6 +234,16 @@ aucun item de veille —, le modèle produit une note courte qui le dit explicit
 comble jamais un contexte pauvre par des généralités de marché. Une semaine sans matière
 produit trois paragraphes honnêtes, pas deux pages de meublage.
 
+**`observations` porte les instruments de marché et les indicateurs macro, ensemble.** Les deux
+suivent la même règle de couverture — seule une entrée réellement collectée y figure, jamais
+une valeur restée au seed — et le même filtre de fraîcheur, adapté à leur cadence propre
+(l'écart entre deux clôtures quotidiennes n'est pas celui entre deux publications mensuelles).
+C'est ce qui permet à une décision de banque centrale de peser sur le scénario d'un driver :
+sans le taux directeur dans ce paquet, le modèle ne peut pas savoir qu'il a bougé, quelle que
+soit la qualité de la collecte en amont. Le lien entre un driver et les indicateurs qui
+répondent à sa question est explicite (`Driver.macroRefs`) et donné au modèle en même temps que
+les scénarios courants — il n'a pas à le deviner depuis les libellés.
+
 #### Répartition par bloc
 
 Chaque bloc porte un champ `authorship`, affiché discrètement sur la note publiée.
@@ -826,6 +836,7 @@ type Driver = {
   dominantBranchId: string;  // la branche jugée la plus vraisemblable aujourd'hui
   intensityRank: number;     // ordre d'affichage, fixé à la main dans la note
   instrumentRefs: string[];  // les instruments qu'il pilote
+  macroRefs: string[];       // les indicateurs macro qui répondent directement à sa question — peut être vide
   trendRefs: string[];       // les tendances qu'il alimente ou pourrait invalider
   zones: Zone[];
   lastRevisedAt: string;

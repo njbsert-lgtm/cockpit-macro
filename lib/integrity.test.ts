@@ -7,7 +7,7 @@ import { DRIVERS } from "@/content/drivers";
 import { TRENDS } from "@/content/tendances";
 import { SCENARIO_VERSIONS } from "@/content/scenarios";
 import { OUTLOOKS } from "@/content/outlooks";
-import { getInstruments } from "./data";
+import { getInstruments, getMacroIndicators } from "./data";
 import { deriveDrivers, activeDrivers } from "./drivers";
 import type {
   DriverInput,
@@ -27,6 +27,7 @@ function driver(over: Partial<DriverInput> = {}): DriverInput {
     label: "Taux directeurs",
     question: "La Fed reprend-elle son cycle de hausse ?",
     instrumentRefs: ["us10y"],
+    macroRefs: [],
     trendRefs: ["desinflation"],
     zones: ["us"],
     retiredAt: null,
@@ -130,6 +131,7 @@ function graph(over: Partial<ContentGraph> = {}): ContentGraph {
     scenarios: branches(),
     outlooks: [],
     instrumentIds: new Set(["us10y"]),
+    macroIndicatorIds: new Set(),
     ...over,
   };
 }
@@ -429,6 +431,7 @@ describe("la note de test à référence morte", () => {
       scenarios: SCENARIO_VERSIONS,
       outlooks: OUTLOOKS,
       instrumentIds: new Set(getInstruments().map((i) => i.id)),
+      macroIndicatorIds: new Set(getMacroIndicators().map((i) => i.id)),
     };
     expect(() => checkIntegrity(graph)).toThrow(
       /2026-S33\.mdx — driver inconnu « geopolitique-europe » dans driverOrder/,
@@ -444,6 +447,7 @@ describe("la note de test à référence morte", () => {
       scenarios: SCENARIO_VERSIONS,
       outlooks: OUTLOOKS,
       instrumentIds: new Set(getInstruments().map((i) => i.id)),
+      macroIndicatorIds: new Set(getMacroIndicators().map((i) => i.id)),
     };
     expect(() => checkIntegrity(graph)).not.toThrow();
   });

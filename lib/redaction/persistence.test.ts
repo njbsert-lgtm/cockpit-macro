@@ -14,6 +14,7 @@ function paquet(): ContextePaquet {
     specialesDeLaSemaine: [],
     notePrecedente: null,
     observations: [],
+    drivers: [],
     itemsVeille: [],
     scenariosCourants: [],
     tendancesCourantes: [],
