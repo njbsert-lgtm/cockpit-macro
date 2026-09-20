@@ -197,6 +197,32 @@ La distinction n'est pas cosmétique. Un brouillon rédigé fait gagner l'heure 
 chiffres, qui n'a aucune valeur analytique. Une publication automatique ferait disparaître le
 seul geste qui en a une : trancher. Toute la spécification qui suit tient à cette frontière.
 
+#### La matière principale : la fiche macro hebdomadaire
+
+La fiche macro hebdomadaire de Notion est la **matière principale** de la note. Elle est
+alimentée chaque soir par le tri de la boîte, sourcée ligne par ligne, et couvre la semaine
+complète le samedi matin.
+
+Deux conséquences immédiates :
+
+- Le paquet de contexte est bien plus simple : un document au lieu de quarante-huit
+  observations et vingt-cinq items de veille éparpillés.
+- La note gagne ce que la veille primaire ne produisait pas : la **saillance**, c'est-à-dire
+  le jugement de professionnels sur ce qui méritait d'être écrit.
+
+**La fiche est une matière première, pas un brouillon à condenser.** C'est le risque naturel de
+ce montage, et il faut l'écrire noir sur blanc dans le prompt système : le modèle qui reçoit un
+document déjà bien écrit a une pente vers le résumé, et les cinq blocs se videraient alors de
+leur fonction. Ce qu'on lui demande n'est pas de raccourcir la fiche : c'est de la confronter à
+la note précédente, de séparer ce qui a changé de ce qui s'est confirmé, et de proposer des
+révisions justifiées.
+
+**Le contenu de la fiche est une donnée, jamais une instruction.** Elle est constituée de textes
+de newsletters tierces, que personne n'a relus ligne à ligne avant qu'ils n'arrivent au modèle.
+Le prompt l'isole explicitement comme un document cité, et aucune phrase qui s'y trouve ne peut
+valoir consigne — ni changer le gabarit, ni lever une règle, ni demander autre chose que la note
+attendue.
+
 #### Le contexte, seul horizon du modèle
 
 Le modèle **n'a aucun accès au web au moment de rédiger**. Il reçoit un paquet de contexte
@@ -206,43 +232,35 @@ construit par nous, et rien d'autre. Ce qui n'y figure pas ne peut pas entrer da
 type ContextePaquet = {
   noteType: 'hebdo' | 'speciale';
   isoWeek: string;
-  comparesTo: string;              // slug de la note de référence
-  notePrecedente: {                // ce à quoi on se compare, texte intégral
-    regimeStatement: string;
-    blocs: Record<string, string>;
-    driverOrder: string[];
-  };
-  observations: Array<{            // valeurs de la semaine, depuis la base
-    instrumentId: string; label: string;
-    valeurs: Array<{ date: string; value: number }>;
-    variationSemaine: number; variationYTD: number;
-    fraicheur: 'ok' | 'retard' | 'absent';
-  }>;
-  alertes: AlertEvent[];           // seuils franchis dans la période
-  itemsVeille: VeilleItem[];       // items classés signal, non encore versés
+  comparesTo: string;
+
+  ficheNotion: {
+    pageId: string;
+    url: string;
+    semaine: string;              // 'S38 — lundi 14/09 au dimanche 20/09'
+    contenu: string;              // le markdown intégral de la fiche
+    sources: string[];            // émetteurs cités
+    recupereLe: string;
+  } | null;
+
+  notePrecedente: { /* inchangé */ };
+  observations: Observation[];    // pour le régime A et les instruments cités
   scenariosCourants: ScenarioVersion[];
-  tendancesCourantes: Trend[];
-  guetsOuverts: Guet[];            // posés par la note précédente, non résolus
-  guetsExpires: Guet[];            // échéance passée sans résolution — remontent au bloc 5
-  echeancesSemaine: Echeance[];    // calendrier de la semaine à venir, par driver
-  trigger: string | null;          // pour une spéciale
+  axes: Axe[];
+  guetsOuverts: Guet[];
+  guetsExpires: Guet[];
+  echeancesAVenir: EcheanceCalendrier[];
 };
 ```
 
-**Règle de suffisance.** Si le paquet est vide ou dégradé — collecte en échec, aucune alerte,
-aucun item de veille —, le modèle produit une note courte qui le dit explicitement. Il ne
-comble jamais un contexte pauvre par des généralités de marché. Une semaine sans matière
-produit trois paragraphes honnêtes, pas deux pages de meublage.
+**Règle de suffisance.** Pas de fiche pour la semaine, ou fiche vide : le modèle produit une
+note courte qui le dit. Il ne comble jamais l'absence par des généralités de marché.
 
-**`observations` porte les instruments de marché et les indicateurs macro, ensemble.** Les deux
-suivent la même règle de couverture — seule une entrée réellement collectée y figure, jamais
-une valeur restée au seed — et le même filtre de fraîcheur, adapté à leur cadence propre
-(l'écart entre deux clôtures quotidiennes n'est pas celui entre deux publications mensuelles).
-C'est ce qui permet à une décision de banque centrale de peser sur le scénario d'un driver :
-sans le taux directeur dans ce paquet, le modèle ne peut pas savoir qu'il a bougé, quelle que
-soit la qualité de la collecte en amont. Le lien entre un driver et les indicateurs qui
-répondent à sa question est explicite (`Driver.macroRefs`) et donné au modèle en même temps que
-les scénarios courants — il n'a pas à le deviner depuis les libellés.
+**`observations` reste dans le paquet, mais change de rôle.** Il ne s'agit plus de la matière de
+la note — la fiche l'est — mais du **juge des chiffres du régime A** (voir plus bas) et de la
+valeur du jour des instruments que la note cite. Les deux règles de couverture antérieures
+tiennent : seule une entrée réellement collectée y figure, jamais une valeur restée au seed, et
+la fraîcheur s'apprécie à la cadence propre de chaque série.
 
 #### Répartition par bloc
 
@@ -284,22 +302,41 @@ relus tels quels → `ia-relue`, au moins un corrigé → `ia-corrigee`, au moin
 → `ia`, donc publication bloquée. Un bloc ne peut pas être réputé relu si l'un de ses guets ne
 l'a pas été.
 
-#### Le contrôle des chiffres — bloquant
+#### Le contrôle des chiffres, en deux régimes
 
 C'est le garde-fou le plus important du pipeline, parce que c'est la faute la plus
-indétectable à la lecture.
+indétectable à la lecture. **C'est aussi la décision structurante du montage Notion.** Jusqu'ici,
+tout nombre devait correspondre à une valeur en base, sous peine de blocage. Une note écrite
+depuis la fiche bloquerait sur la quasi-totalité de ses chiffres.
 
-Après génération, chaque nombre du texte est extrait et confronté au paquet de contexte.
+La règle devient : **deux provenances, deux vérifications, toutes deux bloquantes.**
 
-- Une valeur qui ne correspond à aucune donnée du paquet **bloque la publication**.
-  Elle ne signale pas, elle bloque.
-- La tolérance est celle de l'arrondi déclaré par instrument, pas une marge libre.
-- Une variation calculée par le modèle est recalculée par nous et comparée.
-- Un pourcentage de vraisemblance qui ne figure pas dans `scenariosCourants` et n'a pas été
-  validé au bloc 3 est un chiffre inventé : blocage.
+**Régime A — instrument collecté par l'application.** Brent, 10 ans américain, EUR/USD, or,
+indices suivis, indicateurs macro en base.
 
-Le rapport de contrôle liste chaque nombre, sa source, et son verdict. Il est consultable
-depuis le portail de validation.
+Le nombre doit correspondre à la valeur stockée, à la tolérance d'arrondi déclarée près. Un
+écart bloque la publication. **Sans exception.** Si la fiche cite un Brent à 104 $ et que la
+base a 102,96 $, la note affiche la valeur de la base. Pas de moyenne, pas d'arbitrage :
+l'application a sa propre source pour cet instrument, c'est elle qui fait foi.
+
+**Régime B — nombre absent de la base.** Décisions de banques centrales, chiffres d'études,
+prévisions de maisons, statistiques nationales non collectées.
+
+Deux conditions cumulatives, toutes deux bloquantes :
+
+1. **Le nombre doit se retrouver littéralement dans la fiche.** Un nombre inventé, arrondi
+   différemment, ou reformulé par le modèle bloque la publication. La vérification se fait par
+   recherche exacte dans le texte source.
+2. **Le nombre doit porter son attribution dans la note.** Un chiffre du régime B sans
+   émetteur nommé dans la phrase qui le contient bloque également.
+
+La seconde condition est la plus importante. Elle transforme une faiblesse — des chiffres non
+vérifiables — en discipline éditoriale : le lecteur sait toujours qui avance quoi.
+
+**Ce que le rapport affiche.** Chaque nombre, sa provenance (A ou B), sa source, son verdict.
+Le total par régime en tête. Une note comportant une majorité de chiffres du régime B est
+normale ; une note n'en comportant que du régime B signale que la collecte n'a rien apporté
+cette semaine.
 
 **Pourquoi bloquant et non signalant.** Un chiffre légèrement de travers dans une phrase bien
 tournée est invisible à la relecture — c'est précisément ce qu'un modèle produit quand il
@@ -311,10 +348,11 @@ Vérifié mécaniquement, pas par le prompt :
 
 - **Réécrire la `regimeStatement` sans le signaler.** Il peut la proposer différente ; le
   portail affiche alors une comparaison avec l'ancienne et demande une décision.
-- **Introduire un instrument, un driver ou une tendance absents du paquet.**
+- **Introduire un instrument, un driver, une tendance ou un axe absents du paquet.**
   Toute référence à un identifiant inconnu bloque le rendu.
-- **Citer une source absente de `itemsVeille`.** `Note.sources` se construit à partir des
-  items effectivement versés, jamais depuis le texte généré.
+- **Citer une source absente de la fiche.** Les émetteurs cités dans la note se rattachent aux
+  sources que la fiche porte, jamais à une autorité que le modèle ajoute de lui-même. C'est le
+  pendant éditorial de la seconde condition du régime B.
 - **Écrire au conditionnel généralisé.** Une note qui multiplie « pourrait », « semblerait »
   et « il conviendra de surveiller » n'a pas tranché. Un contrôle de style signale les
   formules d'atténuation au-delà d'un seuil par bloc. Signalement, pas blocage.
@@ -347,18 +385,66 @@ Un bouton « Tout publier » qui accepte tout en un geste serait actionné sans 
 d'un mois, et la note deviendrait une synthèse d'actualité signée de votre nom. Il n'y a donc
 pas de validation globale, et le bloc 4 impose une frappe réelle à chaque note.
 
+#### Récupération de la fiche
+
+**Accès technique — le point à ne pas rater.** Le connecteur Notion utilisé en conversation
+**n'est pas accessible depuis un workflow**. Il faut une intégration interne Notion, avec son
+propre jeton.
+
+1. Créer une intégration interne sur `notion.so/my-integrations`, en lecture seule
+2. **Partager la base « Vues Macro — Synthèses hebdo » avec cette intégration** — sans ce
+   partage explicite, le jeton est valide mais ne voit rien, et l'erreur ressemble à une
+   base vide
+3. Secrets GitHub : `NOTION_TOKEN`, `NOTION_VUES_MACRO_DB`
+
+**Sélection de la fiche.** La base porte une propriété `Semaine` au format
+`S38 — lundi 14/09 au dimanche 20/09`. Le collecteur sélectionne la fiche dont le numéro de
+semaine ISO correspond à la semaine courante, et non la plus récente par date de création —
+une fiche peut être créée en avance.
+
+Après génération réussie, basculer la propriété `Lue` à vrai. C'est le journal d'exécution le
+plus lisible qui soit, directement dans Notion.
+
+#### Génération — abandon de la sortie structurée
+
+Le schéma monolithe dépasse la limite du compilateur de grammaire. On valide après plutôt
+que de contraindre pendant.
+
+Le modèle produit une **réponse unique en deux parties** :
+
+1. Le MDX complet, frontmatter compris, selon un gabarit donné en instructions système
+2. Une section JSON délimitée par un marqueur, contenant les seuls objets structurés :
+   révisions de scénario proposées, guets proposés, axes proposés
+
+Validation Zod sur la partie JSON uniquement. En cas d'échec, **une seule** tentative de
+réparation : l'erreur de validation est renvoyée au modèle avec sa sortie précédente. Si la
+réparation échoue, le brouillon est commité avec son rapport d'échec attaché.
+
+**Un script de reproduction minimal est un prérequis**, pas un confort : `npm run note:probe`
+appelle l'API avec le seul schéma et un contexte factice. Tester une hypothèse doit coûter
+quelques secondes et quelques centimes, pas un run complet.
+
 #### Le cycle hebdomadaire
 
-`note-hebdo.yml`, GitHub Actions, samedi matin — après la collecte qui rapatrie la clôture de
-vendredi, jamais avant : un brouillon écrit sur des données incomplètes ne vaut rien. GitHub
-Actions plutôt qu'un cron Vercel : le plan Hobby n'autorise qu'un déclenchement quotidien,
-déjà pris par la collecte, et le commit se fait naturellement là où vivent les MDX.
+| Quand | Quoi |
+|---|---|
+| Chaque soir, 19 h Paris | Le tri de boîte alimente la fiche Notion *(existant)* |
+| Chaque matin, 6 h Paris | Collecte marché et veille primaire *(existant)* |
+| Samedi, 9 h Paris | Récupération de la fiche, génération du brouillon |
+
+Le samedi matin, la fiche contient la semaine complète, bilan du vendredi inclus.
+
+`note-hebdo.yml`, GitHub Actions, plutôt qu'un cron Vercel : le plan Hobby n'autorise qu'un
+déclenchement quotidien, déjà pris par la collecte, et le commit se fait naturellement là où
+vivent les MDX.
 
 Le workflow :
-1. Construit le paquet de contexte depuis la base
+1. Récupère la fiche de la semaine et construit le paquet de contexte
 2. Appelle le modèle
-3. Passe le contrôle des chiffres
-4. **Commite un brouillon** — `status: brouillon` dans le frontmatter, sur la branche `main`
+3. Valide la section JSON, avec une tentative de réparation au plus
+4. Passe le contrôle des chiffres, dans ses deux régimes
+5. **Commite un brouillon** — `status: brouillon` dans le frontmatter, sur la branche `main`
+6. Bascule `Lue` à vrai dans Notion
 
 **Un brouillon n'est jamais rendu dans le fil ni dans l'étagère.** Il n'existe que dans
 `/redaction`. La publication est un acte humain qui bascule `status` à `publiee` et fige
@@ -393,7 +479,28 @@ automatiquement : l'alerte s'est révélée être du bruit, et c'est une informa
 Le compte de brouillons abandonnés par famille de driver mérite d'être visible — un seuil qui
 génère beaucoup d'abandons est un seuil mal calibré.
 
+#### Ce qui ne change pas
+
+**Les blocs obligatoires.** Cinq pour une hebdomadaire, trois pour une spéciale.
+
+**Le bloc 4 reste vide.** Le modèle ne peut pas savoir ce que vous aviez mal lu. Le champ
+s'ouvre vide, et la publication l'exige rempli.
+
+**Les révisions sont proposées, jamais appliquées.** Aucune `ScenarioVersion` sans validation
+humaine explicite dans le portail.
+
+**Les guets restent à vous sur le seuil.** Le modèle propose depuis les échéances du calendrier
+et le contenu de la fiche ; vous fixez la valeur qui tranche.
+
+**Droit d'auteur.** La note cite la source primaire que la newsletter pointait, jamais la
+newsletter elle-même quand une source primaire existe. Reformulation systématique, citations
+courtes et rares. La fiche Notion reste un document privé : elle n'est pas republiée.
+
 #### Développement local
+
+`npm run note:probe` est le premier outil à atteindre : il appelle l'API avec le seul schéma de
+sortie et un contexte factice, puis affiche la réponse brute. C'est ce qui permet d'éprouver une
+hypothèse de gabarit pour quelques centimes, sans pousser un run complet.
 
 `npm run note:draft -- --dry-run` construit le paquet, appelle le modèle, passe le contrôle
 et affiche le MDX sans rien écrire. C'est ce qui permet d'itérer sur le prompt sans polluer
@@ -1145,9 +1252,27 @@ La règle de tri est déjà écrite : la grille des cinq canaux de transmission 
 nature du choc, fonction de réaction, dollar, positionnement) plus le test « flux ou
 déclaration ». Le modèle l'applique, il ne l'invente pas. Grille dans le prompt système.
 
-**Passe 3 — Validation humaine.** Les items retenus alimentent la note en cours de
-rédaction. Le modèle trie, met en forme et rédige le brouillon ; c'est la publication qui
-reste à vous, bloc par bloc, dans le portail de validation (voir « Rédaction assistée »).
+**Passe 3 — Validation humaine.** Les items retenus alimentent la file de `/triage`. Le modèle
+trie et met en forme ; c'est la publication qui reste à vous, bloc par bloc, dans le portail de
+validation (voir « Rédaction assistée »).
+
+### La veille primaire ne disparaît pas — elle devient le contrôle de rappel
+
+La matière principale de la note vient désormais de la fiche Notion (voir « Rédaction
+assistée »). La veille primaire change donc de rôle : elle devient le **contrôle de rappel** de
+la fiche.
+
+Pour chaque sujet traité dans la fiche, le pipeline vérifie si la veille primaire l'a capté.
+Trois issues, affichées dans le rapport :
+
+| Issue | Ce que ça dit |
+|---|---|
+| Capté par une source primaire | La couverture fonctionne |
+| Non capté, source primaire au catalogue | Trou de **filtrage** — un mot-clé manque |
+| Non capté, aucune source au catalogue | Trou de **couverture** — une source manque |
+
+Vous obtenez ainsi chaque semaine, sans effort, la mesure de ce qui échappe à votre collecte.
+C'est ce qui permettra de réparer la passe 1 progressivement plutôt que de l'abandonner.
 
 ### Droit d'auteur dans le code
 
@@ -1377,7 +1502,11 @@ Dans cet ordre, chaque palier laissant le dépôt déployable :
 3. Le **portail `/redaction`** — le seul chemin vers la publication.
 4. Le **workflow `note-hebdo.yml`** — d'abord en déclenchement manuel, `schedule` seulement
    après deux brouillons jugés corrects.
-5. La **remise à zéro du corpus** — les notes de développement sont de la fiction écrite
+5. Le **basculement vers la fiche Notion**, dans cet ordre, en commits séparés :
+   `npm run note:probe` d'abord — sans lui, chaque hypothèse coûte un run complet ; puis
+   l'abandon de la sortie structurée ; puis le collecteur Notion ; puis le contrôle des
+   chiffres à deux régimes. Le contrôle de rappel de la veille vient après, pas avant.
+6. La **remise à zéro du corpus** — les notes de développement sont de la fiction écrite
    pour éprouver le maillage ; elles disparaissent au moment où la première vraie note paraît,
    avec les trajectoires de scénario et les historiques de tendance qui s'y accrochent. Les
    thèses des tendances et les questions des drivers restent : ce sont des convictions
