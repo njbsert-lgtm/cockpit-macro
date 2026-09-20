@@ -17,7 +17,7 @@
     "veille:classer": "tsx --env-file-if-exists=.env.local scripts/classer-veille.mts",
     "veille:ajouter": "tsx --env-file-if-exists=.env.local scripts/ajouter-veille-item.mts",
     "note:draft": "tsx --env-file-if-exists=.env.local scripts/rediger-note.mts",
-    "redaction:repro": "tsx --env-file-if-exists=.env.local scripts/repro-mdx-redaction.mts"
+    "note:probe": "tsx --env-file-if-exists=.env.local scripts/note-probe.mts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.120.0",
