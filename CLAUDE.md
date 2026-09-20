@@ -246,7 +246,6 @@ type ContextePaquet = {
   notePrecedente: { /* inchangé */ };
   observations: Observation[];    // pour le régime A et les instruments cités
   scenariosCourants: ScenarioVersion[];
-  axes: Axe[];
   guetsOuverts: Guet[];
   guetsExpires: Guet[];
   echeancesAVenir: EcheanceCalendrier[];
@@ -348,7 +347,7 @@ Vérifié mécaniquement, pas par le prompt :
 
 - **Réécrire la `regimeStatement` sans le signaler.** Il peut la proposer différente ; le
   portail affiche alors une comparaison avec l'ancienne et demande une décision.
-- **Introduire un instrument, un driver, une tendance ou un axe absents du paquet.**
+- **Introduire un instrument, un driver ou une tendance absents du paquet.**
   Toute référence à un identifiant inconnu bloque le rendu.
 - **Citer une source absente de la fiche.** Les émetteurs cités dans la note se rattachent aux
   sources que la fiche porte, jamais à une autorité que le modèle ajoute de lui-même. C'est le
@@ -414,11 +413,25 @@ Le modèle produit une **réponse unique en deux parties** :
 
 1. Le MDX complet, frontmatter compris, selon un gabarit donné en instructions système
 2. Une section JSON délimitée par un marqueur, contenant les seuls objets structurés :
-   révisions de scénario proposées, guets proposés, axes proposés
+   révisions de scénario proposées, guets proposés, changements de statut de tendance, et les
+   sources rattachées bloc par bloc — un identifiant choisi dans le paquet, jamais une URL
 
-Validation Zod sur la partie JSON uniquement. En cas d'échec, **une seule** tentative de
-réparation : l'erreur de validation est renvoyée au modèle avec sa sortie précédente. Si la
-réparation échoue, le brouillon est commité avec son rapport d'échec attaché.
+Validation Zod après réception, sur la section JSON **et sur le frontmatter** — les deux
+portent des références au paquet, et les valider d'un seul coup donne un unique message
+d'échec là où deux passes en donneraient deux. Le corps, lui, n'est pas un objet : on y vérifie
+que chaque bloc attendu est présent et non vide, et que le bloc 4 ne l'est pas.
+
+Le frontmatter ne reçoit que les sept champs de jugement — `regimeStatement`, `keyIndicators`,
+`channels`, `driverOrder`, `trendRefs`, `instrumentRefs`, `veilleItemRefs`. Slug, date, statut,
+zones, sources résolues et identifiants de guet restent au code : ce sont des conséquences
+mécaniques, et le MDX reçu n'est jamais écrit tel quel — il est reconstruit dans l'ordre
+canonique depuis ce qu'on en a lu.
+
+En cas d'échec, **une seule** tentative de réparation : l'erreur de validation est renvoyée au
+modèle avec sa sortie précédente. Si la réparation échoue, le brouillon est commité avec son
+rapport d'échec attaché. Une réponse qui n'a jamais pu être lue n'a pas de brouillon du tout :
+la sortie brute est archivée en `.echec.txt` — pas en `.mdx`, pour que le portail ne trouve pas
+une note là où il n'y en a pas.
 
 **Un script de reproduction minimal est un prérequis**, pas un confort : `npm run note:probe`
 appelle l'API avec le seul schéma et un contexte factice. Tester une hypothèse doit coûter
@@ -587,6 +600,7 @@ type Guet = {
   id: string;
   noteSlug: string;              // la note qui l'a posé
   driverId: string;              // obligatoire — un guet sans driver n'a pas de sens
+  axeLibelle: string | null;     // l'angle du driver où ça se joue : 'Contournement', pas 'Ormuz'
   libelle: string;               // 'Résultats NVIDIA, guidance data center'
   attendu: string;               // ce que j'anticipe, en clair
   confirmeSi: string;            // signal qui valide la branche dominante

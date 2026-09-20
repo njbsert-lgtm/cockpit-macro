@@ -4,7 +4,8 @@ import path from "node:path";
 import { describe, expect, it, vi } from "vitest";
 import { ecrireBrouillon, executerRun } from "./run";
 import { controlerChiffres } from "./figures";
-import type { StructuredCaller } from "@/lib/anthropic";
+import type { TexteCaller } from "@/lib/anthropic";
+import { MARQUEUR_DEBUT, MARQUEUR_FIN } from "./sortie-mixte";
 import { REDACTION_MODEL } from "@/config/ai-models";
 import type { ContextePaquet, ObservationContexte } from "./context";
 import type { Brouillon } from "./schema";
@@ -88,6 +89,7 @@ function brouillon(over: Partial<Brouillon> = {}): Brouillon {
     guets: [
       {
         driverId: "rates",
+        axeLibelle: null,
         libelle: "Réunion de la Fed",
         attendu: "Statu quo",
         confirmeSi: "Taux inchangé",
@@ -174,12 +176,51 @@ const GRAPHE = {
   macroIndicatorIds: new Set<string>(),
 };
 
-function callerRendant(...valeurs: Brouillon[]): StructuredCaller {
+/**
+ * La réponse brute qu'un modèle produirait pour ce brouillon.
+ *
+ * Les tests passent donc par la réception réelle — extraction, frontmatter, blocs, section JSON
+ * — au lieu de la court-circuiter. C'est précisément le morceau que l'abandon de la sortie
+ * structurée a introduit, et le court-circuiter reviendrait à ne pas l'éprouver.
+ */
+function sortieDe(b: Brouillon): string {
+  const frontmatter = [
+    `regimeStatement: ${JSON.stringify(b.regimeStatement)}`,
+    "keyIndicators:",
+    ...b.keyIndicators.flatMap((k) => [
+      `  - label: ${JSON.stringify(k.label)}`,
+      `    value: ${JSON.stringify(k.value)}`,
+    ]),
+    `channels: ${JSON.stringify(b.channels)}`,
+    `driverOrder: ${JSON.stringify(b.driverOrder)}`,
+    `trendRefs: ${JSON.stringify(b.trendRefs)}`,
+    `instrumentRefs: ${JSON.stringify(b.instrumentRefs)}`,
+    `veilleItemRefs: ${JSON.stringify(b.veilleItemRefs)}`,
+  ].join("\n");
+
+  const corps = [
+    ...Object.entries(b.blocs).map(([nom, texte]) => `<${nom}>\n${texte}\n</${nom}>`),
+    "<CeQueJavaisMalLu>\n</CeQueJavaisMalLu>",
+  ].join("\n\n");
+
+  const structure = {
+    scenarioRevisions: b.scenarioRevisions,
+    guets: b.guets,
+    trendUpdates: b.trendUpdates,
+    sources: b.sources,
+    driverCandidate: b.driverCandidate,
+    redactionNotes: b.redactionNotes,
+  };
+
+  return `---\n${frontmatter}\n---\n\n${corps}\n\n${MARQUEUR_DEBUT}\n${JSON.stringify(structure, null, 2)}\n${MARQUEUR_FIN}\n`;
+}
+
+function callerRendant(...valeurs: Brouillon[]): TexteCaller {
   let i = 0;
   return vi.fn(async () => ({
-    value: valeurs[Math.min(i++, valeurs.length - 1)],
+    texte: sortieDe(valeurs[Math.min(i++, valeurs.length - 1)]),
     usage: { input: 100, output: 200 },
-  })) as unknown as StructuredCaller;
+  })) as unknown as TexteCaller;
 }
 
 describe("executerRun — le dry-run n'écrit rien", () => {
@@ -199,9 +240,9 @@ describe("executerRun — le dry-run n'écrit rien", () => {
     // Garde-fou explicite : `config/ai-models.ts` est le seul endroit où ce choix doit se lire.
     // Si ce test casse, c'est que quelque chose a réintroduit un modèle en dur ici.
     const caller = vi.fn(async () => ({
-      value: brouillon(),
+      texte: sortieDe(brouillon()),
       usage: { input: 100, output: 200 },
-    })) as unknown as StructuredCaller;
+    })) as unknown as TexteCaller;
 
     await executerRun(paquet(), caller, { dryRun: true, sourcesExistantes: CORPUS, graphe: GRAPHE });
 
@@ -215,7 +256,7 @@ describe("executerRun — le contrôle des chiffres bloque la publication", () =
       blocs: { ...brouillon().blocs, CeQuiAChange: "L'inflation atteint 4,7 %." },
     });
     const r = await executerRun(paquet(), callerRendant(faux), { dryRun: true, sourcesExistantes: CORPUS, graphe: GRAPHE });
-    expect(r.rapportChiffres.bloque).toBe(true);
+    expect(r.rapportChiffres?.bloque).toBe(true);
     expect(r.publiable).toBe(false);
     expect(r.notes).toContain("Contrôle des chiffres bloquant");
   });
@@ -225,7 +266,7 @@ describe("executerRun — le contrôle des chiffres bloque la publication", () =
       blocs: { ...brouillon().blocs, CeQuiAChange: "Le 10 ans à 4,18 %." },
     });
     const r = await executerRun(paquet(), callerRendant(juste), { dryRun: true, sourcesExistantes: CORPUS, graphe: GRAPHE });
-    expect(r.rapportChiffres.bloque).toBe(false);
+    expect(r.rapportChiffres?.bloque).toBe(false);
     expect(r.publiable).toBe(true);
   });
 
@@ -245,8 +286,8 @@ describe("executerRun — la réparation, une seule fois", () => {
     expect(caller).toHaveBeenCalledTimes(1);
   });
 
-  it("rappelle le modèle une fois sur un rejet structurel, avec la raison", async () => {
-    // driverOrder vide : refusé par le frontmatter (min 1).
+  it("rappelle le modèle une fois sur un rejet de réception, en lui renvoyant sa sortie", async () => {
+    // driverOrder amputé : le vivier porte « rates », la permutation n'est pas exacte.
     const casse = brouillon({ driverOrder: [] });
     const caller = callerRendant(casse, brouillon());
     const r = await executerRun(paquet(), caller, { dryRun: true, sourcesExistantes: CORPUS, graphe: GRAPHE });
@@ -255,8 +296,26 @@ describe("executerRun — la réparation, une seule fois", () => {
     expect(r.structureValide).toBe(true);
     expect(r.notes).toContain("Première tentative rejetée");
 
-    const secondAppel = (caller as unknown as ReturnType<typeof vi.fn>).mock.calls[1][0];
-    expect(secondAppel.user).toContain("Correction demandée");
+    // Le tour de réparation renvoie la sortie précédente puis la raison — c'est ce qui permet
+    // au modèle de corriger un point plutôt que de tout réécrire au jugé.
+    const second = (caller as unknown as ReturnType<typeof vi.fn>).mock.calls[1][0];
+    expect(second.messages).toHaveLength(3);
+    expect(second.messages[1].role).toBe("assistant");
+    expect(second.messages[2].content).toContain("permutation exacte");
+  });
+
+  it("répare aussi un rejet de validation, survenu après la réception", async () => {
+    // Le brouillon est lisible, mais la note se compare à une note absente du corpus : c'est
+    // `validateNoteChain` qui refuse, pas le contrat de sortie.
+    const p = paquet({ comparesTo: "2026-S99" });
+    const caller = callerRendant(brouillon());
+    const r = await executerRun(p, caller, { dryRun: true, sourcesExistantes: CORPUS, graphe: GRAPHE });
+
+    expect(caller).toHaveBeenCalledTimes(2);
+    expect(r.structureValide).toBe(false);
+    // Le brouillon existe malgré le rejet : il est fautif, mais lisible.
+    expect(r.mdx).toContain("<CeQuiAChange>");
+    expect(r.notes).toContain("Réparation rejetée à son tour");
   });
 
   it("abandonne après un second rejet, sans boucler", async () => {
@@ -268,6 +327,30 @@ describe("executerRun — la réparation, une seule fois", () => {
     expect(r.structureValide).toBe(false);
     expect(r.publiable).toBe(false);
     expect(r.notes).toContain("Réparation rejetée à son tour");
+  });
+
+  it("une réponse jamais lisible s'archive brute, avec sa raison", async () => {
+    const dossier = mkdtempSync(path.join(tmpdir(), "brouillons-"));
+    const illisible = vi.fn(async () => ({
+      texte: "Je ne peux pas produire cette note.",
+      usage: { input: 10, output: 5 },
+    })) as unknown as TexteCaller;
+
+    const r = await executerRun(paquet(), illisible, {
+      sourcesExistantes: CORPUS,
+      graphe: GRAPHE,
+      dossierBrouillons: dossier,
+      persisterEtat: async () => ({ ok: true }),
+    });
+
+    expect(r.mdx).toBeNull();
+    expect(r.rapportChiffres).toBeNull();
+    expect(r.ecrit).toBe(path.join(dossier, "2026-S36.echec.txt"));
+    const contenu = readFileSync(r.ecrit as string, "utf8");
+    expect(contenu).toContain("section structurée introuvable");
+    expect(contenu).toContain("Je ne peux pas produire cette note.");
+    // Pas de `.mdx` : le portail ne doit pas trouver une note là où il n'y en a pas.
+    expect(existsSync(path.join(dossier, "2026-S36.mdx"))).toBe(false);
   });
 
   it("ne tente aucune réparation quand on la refuse", async () => {

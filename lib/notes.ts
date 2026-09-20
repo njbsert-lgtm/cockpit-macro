@@ -108,6 +108,11 @@ const guetSchema = z.object({
    */
   noteSlug: z.string().min(1).optional(),
   driverId: z.string().min(1),
+  /**
+   * L'angle du driver sur lequel le guet se joue. Facultatif : beaucoup de drivers n'en ont
+   * qu'un, et forcer un libellé là où il n'apporte rien produirait de la redite.
+   */
+  axeLibelle: z.string().min(1).nullable().default(null),
   libelle: z.string().min(1),
   attendu: z.string().min(1),
   confirmeSi: z.string().min(1),

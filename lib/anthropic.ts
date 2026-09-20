@@ -103,7 +103,82 @@ export function anthropicCaller(apiKey: string): StructuredCaller {
   };
 }
 
+/**
+ * L'appel en **texte libre** — la rédaction de note, depuis l'abandon de la sortie structurée.
+ *
+ * Même client, mêmes journaux, mais sans `output_config.format` : un schéma qui décrit une note
+ * entière ne tient pas dans le compilateur de grammaire (quatre 400 « The compiled grammar is
+ * too large » en conditions réelles). La forme est imposée par le prompt et vérifiée à la
+ * réception, par `lib/redaction/reception.ts`.
+ *
+ * `messages` plutôt qu'un simple `user` : le tour de réparation renvoie au modèle sa propre
+ * sortie précédente, ce qu'un unique message utilisateur ne permet pas d'exprimer.
+ */
+export type TexteRequest = {
+  system: string;
+  messages: Array<{ role: "user" | "assistant"; content: string }>;
+  model: string;
+  maxTokens?: number;
+  effort?: StructuredRequest<unknown>["effort"];
+  thinking?: boolean;
+};
+
+export type TexteResult = {
+  texte: string;
+  usage: { input: number; output: number };
+};
+
+/** Injectable, même rôle que `StructuredCaller` : le pipeline reste testable sans réseau. */
+export type TexteCaller = (req: TexteRequest) => Promise<TexteResult>;
+
+export function anthropicTexteCaller(apiKey: string): TexteCaller {
+  const client = new Anthropic({ apiKey });
+
+  return async (req: TexteRequest): Promise<TexteResult> => {
+    const stream = client.messages.stream({
+      model: req.model,
+      max_tokens: req.maxTokens ?? DEFAULT_MAX_TOKENS,
+      ...(req.thinking === false ? {} : { thinking: { type: "adaptive" } }),
+      ...(req.effort ? { output_config: { effort: req.effort } } : {}),
+      system: req.system,
+      messages: req.messages,
+    });
+
+    const message = await stream.finalMessage();
+
+    console.log(
+      `[anthropic] model=${req.model} stop_reason=${message.stop_reason} ` +
+        `input_tokens=${message.usage.input_tokens} output_tokens=${message.usage.output_tokens}`,
+    );
+
+    if (message.stop_reason === "refusal") {
+      throw new Error(
+        `Claude a refusé la requête (${message.stop_details?.category ?? "raison non précisée"})`,
+      );
+    }
+
+    const texte = message.content
+      .filter((b): b is Anthropic.TextBlock => b.type === "text")
+      .map((b) => b.text)
+      .join("");
+
+    // Une réponse tronquée produirait une section JSON jamais refermée : le dire ici évite de
+    // faire passer une limite de tokens pour une faute de format du modèle.
+    if (message.stop_reason === "max_tokens") {
+      throw new Error(
+        `réponse tronquée à ${req.maxTokens ?? DEFAULT_MAX_TOKENS} tokens — augmenter maxTokens`,
+      );
+    }
+
+    return {
+      texte,
+      usage: { input: message.usage.input_tokens, output: message.usage.output_tokens },
+    };
+  };
+}
+
 let caller: StructuredCaller | null | undefined;
+let texteCaller: TexteCaller | null | undefined;
 
 /**
  * `ANTHROPIC_API_KEY`, rognée comme les clés Supabase (`lib/supabase.ts`) — un copier-coller
@@ -117,7 +192,17 @@ export function getAnthropicCaller(): StructuredCaller | null {
   return caller;
 }
 
-/** Remise à zéro du client mémoïsé — pour les tests, qui changent l'environnement. */
+/** Même mémoïsation, même repli sur `null` que `getAnthropicCaller`. */
+export function getAnthropicTexteCaller(): TexteCaller | null {
+  if (texteCaller !== undefined) return texteCaller;
+
+  const apiKey = process.env.ANTHROPIC_API_KEY?.trim();
+  texteCaller = apiKey ? anthropicTexteCaller(apiKey) : null;
+  return texteCaller;
+}
+
+/** Remise à zéro des clients mémoïsés — pour les tests, qui changent l'environnement. */
 export function resetAnthropicCallerForTests(): void {
   caller = undefined;
+  texteCaller = undefined;
 }

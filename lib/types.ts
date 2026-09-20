@@ -145,6 +145,12 @@ export type Guet = {
   id: string;
   noteSlug: string; // la note qui l'a posé
   driverId: string; // obligatoire — un guet sans driver n'a pas de sens
+  /**
+   * L'angle du driver sur lequel ce guet se joue — « Contournement » plutôt qu'« Ormuz ». Un
+   * libellé porté par le guet, pas un objet à part : dire *par où* regarder ne justifie pas un
+   * registre à tenir à jour. `null` quand le driver n'a qu'un angle.
+   */
+  axeLibelle: string | null;
   libelle: string;
   attendu: string; // ce qu'on anticipe, en clair
   confirmeSi: string; // signal qui valide la branche dominante

@@ -14,7 +14,7 @@
  * Ne publie jamais. Le brouillon produit porte `status: brouillon` et vit dans
  * `content/brouillons/`, hors du corpus validé.
  */
-import { getAnthropicCaller } from "../lib/anthropic";
+import { getAnthropicTexteCaller } from "../lib/anthropic";
 import { getNotes, getNoteBody, getDrivers } from "../lib/content";
 import { readNoteSources, extractBlockText, BLOCK_NAMES } from "../lib/notes";
 import { getTrends, getScenarioVersions } from "../lib/content";
@@ -36,7 +36,7 @@ const args = process.argv.slice(2);
 const dryRun = args.includes("--dry-run");
 const semaine = args.find((a) => a.startsWith("--week="))?.slice("--week=".length);
 
-const caller = getAnthropicCaller();
+const caller = getAnthropicTexteCaller();
 if (!caller) {
   console.error("ANTHROPIC_API_KEY manquante. Copier .env.example en .env.local et la renseigner.");
   process.exit(1);
@@ -89,15 +89,25 @@ const resultat = await executerRun(paquet, caller, {
   sourcesExistantes: readNoteSources(),
 });
 
-console.log("--- contrôle des chiffres ---");
-console.log(rendreRapport(resultat.rapportChiffres));
+if (resultat.rapportChiffres) {
+  console.log("--- contrôle des chiffres ---");
+  console.log(rendreRapport(resultat.rapportChiffres));
+}
 
 if (!resultat.structureValide) {
-  console.log(`\n--- structure refusée ---\n${resultat.raisonStructure}`);
+  console.log(`\n--- réponse refusée ---\n${resultat.raisonStructure}`);
 }
 if (resultat.notes) console.log(`\n--- notes du run ---\n${resultat.notes}`);
 
-if (dryRun) {
+if (resultat.mdx === null) {
+  // La réponse n'a jamais pu être lue : il n'y a pas de note à montrer, seulement la sortie
+  // brute archivée. Afficher un « null » ici ferait croire à une note vide.
+  console.log(
+    dryRun
+      ? "\nAucun brouillon : la réponse du modèle n'a pas pu être lue, réparation comprise."
+      : `\nAucun brouillon. Sortie brute archivée : ${resultat.ecrit}`,
+  );
+} else if (dryRun) {
   console.log(`\n--- MDX (non écrit) ---\n${resultat.mdx}`);
 } else {
   console.log(`\nBrouillon écrit : ${resultat.ecrit}`);

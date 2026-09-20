@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { getInstruments } from "@/lib/data";
 import type { ContextePaquet, ObservationContexte } from "./context";
 import type { ScenarioVersion, VeilleItem } from "@/lib/types";
-import { construireSchema, construireVivier } from "./schema";
+import { construireVivier } from "./schema";
 
 function obs(instrumentId: string): ObservationContexte {
   return {
@@ -76,60 +76,26 @@ function veilleItem(id: string): VeilleItem {
   };
 }
 
-/** Un Brouillon minimal, valide contre le vivier — chaque test n'en casse qu'un seul champ. */
-function brouillonValide() {
-  return {
-    regimeStatement: "Un régime.",
-    keyIndicators: [
-      { label: "a", value: "1" },
-      { label: "b", value: "2" },
-      { label: "c", value: "3" },
-    ],
-    channels: ["fonction-reaction"],
-    driverOrder: ["rates"],
-    trendRefs: [],
-    instrumentRefs: ["us10y"],
-    veilleItemRefs: ["item-1"],
-    blocs: { CeQuiAChange: "Texte." },
-    sources: [{ block: "CeQuiAChange", sourceId: "item-1" }],
-    scenarioRevisions: [],
-    trendUpdates: [],
-    guets: [],
-    driverCandidate: null,
-    redactionNotes: "",
-  };
-}
-
-describe("construireSchema — appartenance au vivier sans z.enum à forte cardinalité", () => {
-  const base = paquet([obs("us10y")]);
-  const withDriver: ContextePaquet = {
-    ...base,
-    scenariosCourants: [scenarioVersion()],
+describe("construireVivier — ce que le modèle a le droit de citer", () => {
+  const complet: ContextePaquet = {
+    ...paquet([obs("us10y")]),
+    scenariosCourants: [scenarioVersion(), { ...scenarioVersion(), branchId: "baisses" }],
     itemsVeille: [veilleItem("item-1")],
   };
-  const vivier = construireVivier(withDriver, ["CeQuiAChange"]);
-  const schema = construireSchema(withDriver, vivier);
 
-  it("accepte un brouillon dont toutes les références existent dans le vivier", () => {
-    expect(schema.safeParse(brouillonValide()).success).toBe(true);
+  it("déduit les branches réelles de chaque driver des scénarios courants", () => {
+    // Réviser un driver, c'est réémettre ses branches d'un coup : le vivier doit donc savoir
+    // lesquelles existent, sans quoi l'invariant ne pourrait pas s'énoncer.
+    const vivier = construireVivier(complet, ["CeQuiAChange"]);
+    expect(vivier.driverIds).toEqual(["rates"]);
+    expect(vivier.branchesParDriver.get("rates")).toEqual(["hausse", "baisses"]);
   });
 
-  it("rejette un instrumentRefs qui cite un instrument hors du paquet", () => {
-    const r = schema.safeParse({ ...brouillonValide(), instrumentRefs: ["spx-invente"] });
-    expect(r.success).toBe(false);
-  });
-
-  it("rejette un veilleItemRefs qui cite un item de veille inexistant", () => {
-    const r = schema.safeParse({ ...brouillonValide(), veilleItemRefs: ["item-fantome"] });
-    expect(r.success).toBe(false);
-  });
-
-  it("rejette une source dont le sourceId ne correspond à aucun item de veille", () => {
-    const r = schema.safeParse({
-      ...brouillonValide(),
-      sources: [{ block: "CeQuiAChange", sourceId: "item-fantome" }],
-    });
-    expect(r.success).toBe(false);
+  it("porte les blocs attendus et le budget de guets du paquet", () => {
+    const vivier = construireVivier(complet, ["CeQuiAChange", "CeQueJeSurveille"]);
+    expect(vivier.blocsAttendus).toEqual(["CeQuiAChange", "CeQueJeSurveille"]);
+    expect(vivier.budgetGuets).toBe(3);
+    expect(vivier.veilleItemIds).toEqual(["item-1"]);
   });
 });
 

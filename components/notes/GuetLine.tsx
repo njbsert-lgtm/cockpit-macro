@@ -19,6 +19,12 @@ export function GuetLine({ guet, noteSlug }: { guet: Guet; noteSlug?: string }) 
     <li className="border-t border-trait py-3 first:border-t-0 first:pt-0">
       <div className="grid grid-cols-[1fr_auto] items-start gap-3">
         <div>
+          {/* L'axe avant le libellé : il dit par où on regarde, le libellé dit quoi. */}
+          {guet.axeLibelle && (
+            <p className="text-9-5 font-semibold uppercase tracking-cap text-tenu">
+              {guet.axeLibelle}
+            </p>
+          )}
           <p className="text-14-5 text-encre">
             {remonte && (
               <span className="mr-1.5 text-11 text-tenu">Posé en {guet.noteSlug} —</span>

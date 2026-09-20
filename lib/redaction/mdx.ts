@@ -64,6 +64,7 @@ export function guetsDuBrouillon(
     id: idGuet(slug, i),
     noteSlug: slug,
     driverId: g.driverId,
+    axeLibelle: g.axeLibelle,
     libelle: g.libelle,
     attendu: g.attendu,
     confirmeSi: g.confirmeSi,

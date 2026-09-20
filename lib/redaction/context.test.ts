@@ -34,6 +34,7 @@ function guet(over: Partial<Guet> = {}): Guet {
     id: "g1",
     noteSlug: "2026-S35",
     driverId: "rates",
+    axeLibelle: null,
     libelle: "Réunion de la Fed",
     attendu: "Statu quo",
     confirmeSi: "Taux inchangé",

@@ -58,6 +58,7 @@ function paquet(over: Partial<ContextePaquet> = {}): ContextePaquet {
 
 const GUET = {
   driverId: "rates",
+  axeLibelle: null,
   libelle: "Réunion de la Fed",
   attendu: "Statu quo",
   confirmeSi: "Taux inchangé",
@@ -235,6 +236,7 @@ describe("guets remontés — l'ancienneté survit au report", () => {
     id: "2026-s34-g1",
     noteSlug: "2026-S34",
     driverId: "iran",
+    axeLibelle: "Contournement",
     libelle: "Réouverture du détroit",
     attendu: "Le détroit reste contraint",
     confirmeSi: "Trafic rétabli",
