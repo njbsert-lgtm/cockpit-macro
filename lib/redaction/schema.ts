@@ -5,10 +5,21 @@ import type { ContextePaquet } from "./context";
 /**
  * Le schéma de la sortie du modèle, **construit au run** depuis le corpus réel.
  *
- * Principe directeur : toute référence sortante est un `enum` bâti sur ce qui existe, jamais
- * une chaîne libre. Une référence morte devient impossible à produire, pas seulement
- * détectable après coup. Corollaire : **le modèle n'écrit jamais d'URL** — il choisit un
- * `sourceId` dans un vivier fermé, et une citation inventée n'a pas de représentation.
+ * Principe directeur : toute référence sortante est vérifiée contre ce qui existe, jamais
+ * laissée à une chaîne libre incontrôlée. Une référence morte ne doit jamais survivre à la
+ * validation. Corollaire : **le modèle n'écrit jamais d'URL** — il choisit un `sourceId` dans un
+ * vivier fermé, et une citation inventée n'a pas de représentation valide.
+ *
+ * Deux mécanismes portent cette garantie, choisis selon la cardinalité du vivier :
+ * - un `z.enum` quand le vivier est petit et stable (drivers, tendances, blocs, branches) —
+ *   une référence morte devient alors *impossible à produire*, pas seulement détectable après
+ *   coup, et c'est le mécanisme à préférer par défaut ;
+ * - une chaîne libre confrontée à un `.refine()` de ce module quand le vivier peut devenir
+ *   grand ou non borné (instruments, items de veille) — un `z.enum` de plusieurs dizaines de
+ *   valeurs, a fortiori répété à deux endroits du schéma, a fait échouer en conditions réelles
+ *   la compilation de la sortie structurée (« The compiled grammar is too large »). Le refine
+ *   s'exécute après coup, jamais compilé en grammaire, mais donne la même garantie : rien
+ *   n'atteint `Note` sans être passé par le vivier.
  *
  * Deux catégories de champs n'y figurent jamais :
  * - les identifiants structurels (`date`, `slug`, `comparesTo`, `version`, `noteSlug`),
@@ -125,8 +136,6 @@ export function construireVivier(paquet: ContextePaquet, blocsAttendus: string[]
 export function construireSchema(paquet: ContextePaquet, vivier: Vivier) {
   const driverEnum = enumDe(vivier.driverIds);
   const trendEnum = enumDe(vivier.trendIds);
-  const instrumentEnum = enumDe(vivier.instrumentIds);
-  const veilleEnum = enumDe(vivier.veilleItemIds);
   const blocEnum = enumDe(vivier.blocsAttendus);
 
   if (!driverEnum || !blocEnum) {
@@ -152,8 +161,15 @@ export function construireSchema(paquet: ContextePaquet, vivier: Vivier) {
       .array(driverEnum)
       .describe("Permutation exacte des drivers actifs, du plus explicatif au moins."),
     trendRefs: trendEnum ? z.array(trendEnum) : z.array(z.never()).max(0),
-    instrumentRefs: instrumentEnum ? z.array(instrumentEnum) : z.array(z.never()).max(0),
-    veilleItemRefs: veilleEnum ? z.array(veilleEnum) : z.array(z.never()).max(0),
+    // `instrumentIds` et `veilleItemIds` ne sont jamais des `z.enum` : le premier grossit avec
+    // la couverture des sources, le second avec la file de veille (aucune limite dessus — voir
+    // `getPendingVeilleItems`), et une énumération de plusieurs dizaines de valeurs, répétée à
+    // deux endroits du schéma pour la veille, a fait échouer la compilation de la sortie
+    // structurée en conditions réelles (« The compiled grammar is too large »). L'appartenance
+    // au vivier est vérifiée par les `refine` ci-dessous plutôt que par le schéma envoyé à
+    // l'API — même garantie, jamais compilée en grammaire.
+    instrumentRefs: z.array(z.string()),
+    veilleItemRefs: z.array(z.string()),
 
     blocs: z.object(
       Object.fromEntries(
@@ -162,7 +178,7 @@ export function construireSchema(paquet: ContextePaquet, vivier: Vivier) {
     ),
 
     // Liste plate plutôt qu'un Record à clés dynamiques : mal sérialisé en JSON Schema strict.
-    sources: z.array(z.object({ block: blocEnum, sourceId: veilleEnum ?? z.string().min(1) })),
+    sources: z.array(z.object({ block: blocEnum, sourceId: z.string().min(1) })),
 
     scenarioRevisions: z
       .array(
@@ -241,7 +257,19 @@ export function construireSchema(paquet: ContextePaquet, vivier: Vivier) {
     .refine(
       (d) => d.sources.every((s) => vivier.blocsAttendus.includes(s.block)),
       { message: "une source cite un bloc absent de la note", path: ["sources"] },
-    );
+    )
+    .refine((d) => d.instrumentRefs.every((id) => vivier.instrumentIds.includes(id)), {
+      message: "instrumentRefs cite un instrument absent du paquet",
+      path: ["instrumentRefs"],
+    })
+    .refine((d) => d.veilleItemRefs.every((id) => vivier.veilleItemIds.includes(id)), {
+      message: "veilleItemRefs cite un item de veille absent du paquet",
+      path: ["veilleItemRefs"],
+    })
+    .refine((d) => d.sources.every((s) => vivier.veilleItemIds.includes(s.sourceId)), {
+      message: "une source cite un item de veille absent du paquet",
+      path: ["sources"],
+    });
 }
 
 function estCoherente(
