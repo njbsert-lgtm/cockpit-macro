@@ -10,14 +10,16 @@ import type { ContextePaquet } from "./context";
  * validation. Corollaire : **le modèle n'écrit jamais d'URL** — il choisit un `sourceId` dans un
  * vivier fermé, et une citation inventée n'a pas de représentation valide.
  *
- * Deux mécanismes portent cette garantie, choisis selon la cardinalité du vivier :
- * - un `z.enum` quand le vivier est petit et stable (drivers, tendances, blocs, branches) —
- *   une référence morte devient alors *impossible à produire*, pas seulement détectable après
- *   coup, et c'est le mécanisme à préférer par défaut ;
- * - une chaîne libre confrontée à un `.refine()` de ce module quand le vivier peut devenir
- *   grand ou non borné (instruments, items de veille) — un `z.enum` de plusieurs dizaines de
- *   valeurs, a fortiori répété à deux endroits du schéma, a fait échouer en conditions réelles
- *   la compilation de la sortie structurée (« The compiled grammar is too large »). Le refine
+ * Deux mécanismes portent cette garantie :
+ * - un `z.enum` pour les viviers les plus petits et les plus stables (drivers, tendances,
+ *   blocs) — une référence morte devient alors *impossible à produire*, pas seulement
+ *   détectable après coup ;
+ * - une chaîne libre confrontée à un `.refine()` de ce module partout ailleurs — instruments,
+ *   items de veille (vivier non borné, voir `getPendingVeilleItems`), branches de scénario.
+ *   Un premier run réel a échoué à la compilation de la sortie structurée
+ *   (« The compiled grammar is too large ») avec un schéma qui n'utilisait pourtant que des
+ *   viviers de quelques dizaines d'entrées au plus : chaque `z.enum`, chaque objet imbriqué et
+ *   chaque `.describe()` pèse sur cette compilation, pas seulement les gros viviers. Le refine
  *   s'exécute après coup, jamais compilé en grammaire, mais donne la même garantie : rien
  *   n'atteint `Note` sans être passé par le vivier.
  *
@@ -159,10 +161,13 @@ export function construireSchema(paquet: ContextePaquet, vivier: Vivier) {
     );
   }
 
-  const brancheEnum = enumDe([...new Set([...vivier.branchesParDriver.values()].flat())]);
-
+  // Aucune description de champ (`.describe()`) dans ce schéma : chacune ajoutait un nœud à la
+  // sortie structurée compilée, et la grammaire d'un schéma déjà chargé (révisions de scénario,
+  // guets) a échoué en conditions réelles (« The compiled grammar is too large »). Toute
+  // instruction qu'un `.describe()` aurait portée vit maintenant dans SYSTEM_PROMPT (prompt.ts),
+  // lu une fois par le modèle, jamais recompilé en grammaire à chaque run.
   const base = z.object({
-    regimeStatement: z.string().min(1).describe("Le régime en une phrase, à cette date."),
+    regimeStatement: z.string().min(1),
     keyIndicators: z
       .array(z.object({ label: z.string().min(1), value: z.string().min(1) }))
       .min(3)
@@ -170,11 +175,8 @@ export function construireSchema(paquet: ContextePaquet, vivier: Vivier) {
     channels: z
       .array(z.enum(["taux-reel", "nature-choc", "fonction-reaction", "dollar", "positionnement"]))
       .min(1)
-      .max(3)
-      .describe("Le premier est le canal dominant : il donne sa couleur à la carte."),
-    driverOrder: z
-      .array(driverEnum)
-      .describe("Permutation exacte des drivers actifs, du plus explicatif au moins."),
+      .max(3),
+    driverOrder: z.array(driverEnum),
     trendRefs: trendEnum ? z.array(trendEnum) : z.array(z.never()).max(0),
     // `instrumentIds` et `veilleItemIds` ne sont jamais des `z.enum` : le premier grossit avec
     // la couverture des sources, le second avec la file de veille (aucune limite dessus — voir
@@ -202,22 +204,21 @@ export function construireSchema(paquet: ContextePaquet, vivier: Vivier) {
           branches: z
             .array(
               z.object({
-                branchId: brancheEnum ?? z.string().min(1),
+                // Chaîne libre plutôt qu'un `z.enum` : `estCoherente` (plus bas) vérifie déjà
+                // que l'ensemble des branchId émis correspond exactement aux branches réelles
+                // du driver, une garantie équivalente à un enum sans en payer le coût de
+                // compilation.
+                branchId: z.string().min(1),
                 likelihood: z.enum(LIKELIHOODS),
-                why: z.string().min(1).describe("Obligatoire dès qu'une vraisemblance bouge."),
+                why: z.string().min(1),
                 thesis: z.string().min(1),
-                impacts: z
-                  .array(impactEntrySchema)
-                  .length(4)
-                  .describe("Une entrée par classe d'actifs : eq, fi, fx, cm."),
+                impacts: z.array(impactEntrySchema).length(4),
                 watchSignals: z.string().min(1),
               }),
             )
-            .length(3)
-            .describe("Réviser un driver, c'est émettre ses trois branches d'un coup."),
+            .length(3),
         }),
-      )
-      .describe("Vide si rien ne justifie une révision cette semaine — c'est une réponse valide."),
+      ),
 
     trendUpdates: trendEnum
       ? z.array(z.object({ trendId: trendEnum, status: z.enum(TREND_STATUSES), why: z.string().min(1) }))
@@ -231,11 +232,7 @@ export function construireSchema(paquet: ContextePaquet, vivier: Vivier) {
           attendu: z.string().min(1),
           confirmeSi: z.string().min(1),
           infirmeSi: z.string().min(1),
-          echeance: z
-            .string()
-            .regex(/^\d{4}-\d{2}-\d{2}$/)
-            .nullable()
-            .describe("null quand l'événement n'a pas de date connue — il n'expirera jamais."),
+          echeance: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).nullable(),
           // Pas de `.default([])` : un champ optionnel double l'espace d'états du compilateur de
           // grammaire (présent/absent) pour un gain nul — le modèle peut très bien écrire `[]`.
           sourceAttendue: z.array(z.string().min(1)),
@@ -243,15 +240,9 @@ export function construireSchema(paquet: ContextePaquet, vivier: Vivier) {
       )
       .max(paquet.budgetGuets),
 
-    driverCandidate: z
-      .string()
-      .nullable()
-      .describe(
-        "Texte libre si un driver nouveau semble émerger. Jamais un objet structuré : sa " +
-          "création reste une décision humaine.",
-      ),
+    driverCandidate: z.string().nullable(),
 
-    redactionNotes: z.string().describe("Ce qui a manqué, ce qui a été difficile à trancher."),
+    redactionNotes: z.string(),
   });
 
   return base
