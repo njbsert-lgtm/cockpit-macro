@@ -253,6 +253,26 @@ Peter Oppenheimer (Goldman Sachs) note la concentration.`;
     expect(trouves).toContain("brief.eco");
     expect(trouves).not.toContain("brief.eco, édition du 23/09");
   });
+
+  it("retient une source primaire nommée en prose, sujet d'un « Selon X »", () => {
+    // « la Cour des comptes » n'est jamais entre parenthèses : elle est le sujet de la phrase,
+    // pas une attribution en incise. Sans cette extraction, citer la source primaire plutôt
+    // que le relais qui la rapporte — ce que le cahier demande — perdait l'attribution.
+    const trouves = emetteursCites(
+      "Selon la Cour des comptes, citée par [brief.eco](http://brief.eco/), un effort est requis.",
+    );
+    expect(trouves).toContain("la Cour des comptes");
+  });
+
+  it("ne confond pas un lien markdown qui suit « Selon » avec une source en prose", () => {
+    // « brief.eco » contient un point : sans exclure les crochets du motif, la capture
+    // s'arrêterait à tort sur ce point interne et ajouterait un fragment « [brief » au vivier.
+    const trouves = emetteursCites(
+      "Selon [brief.eco](http://brief.eco/), le déficit atteindrait 5 % du PIB.",
+    );
+    expect(trouves).not.toContain("[brief");
+    expect(trouves).toContain("brief.eco");
+  });
 });
 
 // ---------------------------------------------------------------------------

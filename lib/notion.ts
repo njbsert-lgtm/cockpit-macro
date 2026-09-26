@@ -401,6 +401,16 @@ export function emetteursCites(markdown: string): string[] {
     ajouter(dedans);
   }
 
+  // Une source primaire nommée en toutes lettres — « Selon la Cour des comptes, citée par
+  // brief.eco » — jamais entre parenthèses puisqu'elle est le sujet de la phrase, pas une
+  // attribution en incise. Le cahier demande de citer cette source-là plutôt que le relais qui
+  // la rapporte quand elle existe ; sans cette extraction, suivre cette règle de droit d'auteur
+  // faisait perdre l'attribution reconnue par le vivier, alors que la fiche la nomme bel et
+  // bien. Bornée au premier séparateur, comme les deux passes précédentes.
+  for (const [, dedans] of markdown.matchAll(/\bSelon\s+([^,.()[\]]{2,60})[,.]/gi)) {
+    ajouter(dedans);
+  }
+
   return [...trouves].sort();
 }
 
