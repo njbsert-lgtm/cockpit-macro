@@ -4,14 +4,18 @@
 # `status: brouillon` dans `content/brouillons/`, hors du corpus validé. Le passage à
 # `publiee` est un acte humain, depuis `/redaction`.
 #
-# ⚠︎ `schedule` est délibérément absent pour l'instant. Le cahier fixe le samedi matin
-# (`0 8 * * 6`, après la collecte de 4 h UTC qui rapatrie la clôture de vendredi), mais on ne
-# l'active qu'après deux dry-runs jugés corrects à l'œil — on ne laisse pas un pipeline
-# commiter tout seul avant d'avoir lu ce qu'il écrit.
+# `schedule` : samedi 8 h UTC, après la collecte de 4 h UTC qui rapatrie la clôture de
+# vendredi — activé après plusieurs dry-runs en conditions réelles sur la fiche S39 (jugés
+# corrects à l'œil une fois deux bugs réels corrigés en cours de route : troncature du modèle
+# à 32 000 tokens, émetteurs cités en lien markdown non reconnus). Une exécution planifiée
+# tourne toujours en écriture, jamais en dry-run — `dry-run: true` n'est utile qu'en
+# déclenchement manuel, pour rejouer une hypothèse sans polluer le dépôt.
 
 name: Note hebdomadaire
 
 on:
+  schedule:
+    - cron: "0 8 * * 6"
   workflow_dispatch:
     inputs:
       dry-run:
@@ -62,7 +66,11 @@ jobs:
           # produire. C'est la règle de suffisance du cahier.
           NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
           NOTION_VUES_MACRO_DB: ${{ secrets.NOTION_VUES_MACRO_DB }}
-          DRY_RUN: ${{ inputs.dry-run }}
+          # `inputs` n'existe que pour workflow_dispatch : sur un déclenchement planifié,
+          # `inputs.dry-run` vaut `null`, jamais `false` — comparer l'un à l'autre reposerait
+          # sur la coercition de type de GitHub Actions plutôt que sur une intention explicite.
+          # Une exécution planifiée écrit donc toujours.
+          DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && inputs.dry-run || false }}
           SEMAINE: ${{ inputs.semaine }}
         # `set +e` parce que GitHub lance ce script avec `bash -e` : sans ça, un échec couperait
         # avant d'avoir refermé le bloc du résumé. `pipefail` pour que le code de sortie survive
@@ -91,13 +99,17 @@ jobs:
         # Ceinture ultime avant le commit : ce qui est sur le disque doit typer et builder.
         # Un brouillon peut être refusé par le contrôle des chiffres sans être malformé — mais
         # il ne doit jamais empêcher le site de se construire.
-        if: ${{ inputs.dry-run == false }}
+        #
+        # Explicite plutôt que `inputs.dry-run == false`, qui vaudrait aussi vrai sur un
+        # déclenchement planifié via la coercition `null == false` de GitHub Actions — juste
+        # dans ce cas précis, mais pas quelque chose sur quoi faire reposer une étape qui écrit.
+        if: ${{ github.event_name == 'schedule' || inputs.dry-run == false }}
         run: |
           npx tsc --noEmit
           npm run build
 
       - name: Publier le brouillon
-        if: ${{ inputs.dry-run == false }}
+        if: ${{ github.event_name == 'schedule' || inputs.dry-run == false }}
         run: |
           set -e
           if [ -z "$(git status --porcelain content/brouillons/)" ]; then
