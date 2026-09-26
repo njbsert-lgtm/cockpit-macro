@@ -83,8 +83,14 @@ export type RapportChiffres = {
 /**
  * Repère les nombres d'un texte français : « 3,4 », « 25 249,85 », « +41 », « 2,5 % ».
  * L'espace insécable et l'espace fine sont des séparateurs de milliers courants en français.
+ *
+ * Le signe n'est capté que s'il n'est pas collé à un chiffre précédent — sans ce garde-fou,
+ * « 2027-2028 » (une plage d'années, pas une soustraction) se lit comme deux nombres, « 2027 »
+ * puis « -2028 », et ce dernier échappe au repère d'année de `estNeutre` (qui n'attend que
+ * quatre chiffres, jamais un signe) : il se fait alors chercher tel quel dans la fiche, où il
+ * n'a bien sûr aucune chance de se trouver.
  */
-const NOMBRE = /[+-]?\d[\d   ]*(?:[.,]\d+)?/g;
+const NOMBRE = /(?<!\d)[+-]?\d[\d   ]*(?:[.,]\d+)?/g;
 
 /**
  * Les nombres qu'on ne confronte à rien : ils ne prétendent pas à une mesure.

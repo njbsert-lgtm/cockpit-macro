@@ -419,6 +419,17 @@ describe("ce qui n'est pas une mesure", () => {
     expect(r.verdicts).toHaveLength(0);
   });
 
+  it("laisse passer une plage d'années — « 2027-2028 » n'est pas « 2027 » et « -2028 »", () => {
+    // Sixième dry-run réel sur S39 : « trajectoire 2027-2028 » bloquait en « introuvable ».
+    // Le tiret collé au chiffre précédent se lisait comme un signe négatif ; « -2028 » échappe
+    // alors au repère d'année, qui n'attend que quatre chiffres, jamais un signe, et se fait
+    // chercher tel quel dans la fiche — où un nombre négatif n'a évidemment aucune chance
+    // de se trouver.
+    const r = controler("Une trajectoire de BPA sur 2027-2028 se dessine.");
+    expect(r.bloque).toBe(false);
+    expect(r.verdicts).toHaveLength(0);
+  });
+
   it("laisse passer un petit compte — « les trois branches »", () => {
     expect(controler("Les 3 branches du driver restent en place.").bloque).toBe(false);
   });
