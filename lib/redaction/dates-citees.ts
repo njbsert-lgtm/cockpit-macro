@@ -40,6 +40,14 @@ const EN_LETTRES = new RegExp(
   `\\b(\\d{1,2})(?:er)?\\s+(${Object.keys(MOIS).join("|")})(?:\\s+(\\d{4}))?\\b`,
   "gi",
 );
+/**
+ * Une plage courte de deux jours — « 21-22/09 » — que `NUMERIQUE` seul laisse de côté à moitié :
+ * il trouve bien « 22/09 », jamais le « 21- » qui le précède. Traitée en un seul bloc, datée
+ * sur le second jour ; l'ordre des boucles dans `datesCitees` la fait gagner sur le
+ * chevauchement, pour qu'un seul repère naisse de la plage entière plutôt que deux qui se
+ * recouvriraient à moitié.
+ */
+const PLAGE_JOURS = /\b(\d{1,2})-(\d{1,2})\/(\d{1,2})(?:\/(\d{2,4}))?\b/g;
 
 /**
  * Les dates de la phrase, avec leur position — la position sert à rattacher la bonne date au
@@ -54,6 +62,9 @@ export function datesCitees(phrase: string, dateDeLaNote: string): DateCitee[] {
 
   for (const m of phrase.matchAll(ISO)) {
     pousser(trouvees, m.index, m[0].length, `${m[1]}-${m[2]}-${m[3]}`, dateDeLaNote, false);
+  }
+  for (const m of phrase.matchAll(PLAGE_JOURS)) {
+    pousser(trouvees, m.index, m[0].length, iso(annee(m[4]), Number(m[3]), Number(m[2])), dateDeLaNote, m[4] === undefined);
   }
   for (const m of phrase.matchAll(NUMERIQUE)) {
     pousser(trouvees, m.index, m[0].length, iso(annee(m[3]), Number(m[2]), Number(m[1])), dateDeLaNote, m[3] === undefined);

@@ -430,6 +430,15 @@ describe("ce qui n'est pas une mesure", () => {
     expect(r.verdicts).toHaveLength(0);
   });
 
+  it("laisse passer une plage de deux jours — « 21-22/09 » n'est pas un chiffre isolé", () => {
+    // Septième dry-run réel sur S39 : « la lecture du 21-22/09 » bloquait en « sans
+    // attribution » — 21 n'est l'affirmation de personne, c'est le premier jour d'une plage
+    // de dates dont seul le second (22/09) était reconnu comme une date.
+    const r = controler("La lecture du 21-22/09 se vérifie point par point.");
+    expect(r.bloque).toBe(false);
+    expect(r.verdicts).toHaveLength(0);
+  });
+
   it("laisse passer un petit compte — « les trois branches »", () => {
     expect(controler("Les 3 branches du driver restent en place.").bloque).toBe(false);
   });

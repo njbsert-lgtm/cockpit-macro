@@ -49,6 +49,21 @@ describe("datesCitees", () => {
     expect(a.debut).toBeLessThan(b.debut);
     expect(a.iso).toBe("2026-09-03");
   });
+
+  it("lit une plage de deux jours — « 21-22/09 » — comme une seule date, sur le second jour", () => {
+    // Septième dry-run réel sur S39 : « la lecture du 21-22/09 » laissait le 21 sans date, seul
+    // le 22/09 était reconnu — le 21 se faisait alors vérifier comme un chiffre isolé.
+    // Note du 26/09 : le 22/09 déduit tombe avant elle, pas de bascule vers l'année précédente.
+    expect(iso("la lecture du 21-22/09", "2026-09-26")).toEqual(["2026-09-22"]);
+  });
+
+  it("masque la plage entière, pas seulement le second jour", () => {
+    const phrase = "la lecture du 21-22/09 se confirme";
+    const masquee = masquer(phrase, datesCitees(phrase, NOTE));
+    expect(masquee).not.toContain("21");
+    expect(masquee).not.toContain("22/09");
+    expect(masquee).toContain("se confirme");
+  });
 });
 
 describe("masquer", () => {
