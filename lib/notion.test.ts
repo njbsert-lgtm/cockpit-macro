@@ -237,6 +237,22 @@ Peter Oppenheimer (Goldman Sachs) note la concentration.`;
   it("dédoublonne et trie", () => {
     expect(emetteursCites("(Eurostat) puis (Eurostat) et (BCE)")).toEqual(["BCE", "Eurostat"]);
   });
+
+  it("retient un émetteur cité en lien markdown, dont la parenthèse ne porte que l'URL", () => {
+    const trouves = emetteursCites(
+      "Selon [brief.eco](http://brief.eco/), le déficit atteindrait 5 % du PIB.",
+    );
+    expect(trouves).toContain("brief.eco");
+    expect(trouves).not.toContain("http://brief.eco/");
+  });
+
+  it("coupe aussi au premier séparateur dans un lien markdown avec sous-titre", () => {
+    const trouves = emetteursCites(
+      "[brief.eco, édition du 23/09](http://brief.eco/) rapporte que...",
+    );
+    expect(trouves).toContain("brief.eco");
+    expect(trouves).not.toContain("brief.eco, édition du 23/09");
+  });
 });
 
 // ---------------------------------------------------------------------------

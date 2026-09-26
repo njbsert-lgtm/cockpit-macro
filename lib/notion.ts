@@ -378,16 +378,27 @@ function rendreRichText(morceaux: z.infer<typeof richTextSchema>): string {
 export function emetteursCites(markdown: string): string[] {
   const trouves = new Set<string>();
 
-  for (const [, dedans] of markdown.matchAll(/\(([^()]{2,60})\)/g)) {
+  const ajouter = (dedans: string) => {
     // Le nom seul : « Eurostat, publication du 17/09 » donne « Eurostat ».
     const nom = dedans.split(/[,;—–]/)[0].trim();
     // Ni une URL, ni une date, ni une mesure : une source est un nom, et un nom ne commence
     // pas par un chiffre — « 25 bps », « 2026 », « 16/09 » sortent tous par cette seule règle.
     // Un média dont le nom commence par un chiffre y passerait aussi ; la conséquence est
     // seulement qu'il ne serait pas citable, jamais qu'un chiffre faux passerait.
-    if (!nom || /^https?:/i.test(nom) || /^\d/.test(nom)) continue;
-    if (!/\p{L}/u.test(nom)) continue;
+    if (!nom || /^https?:/i.test(nom) || /^\d/.test(nom)) return;
+    if (!/\p{L}/u.test(nom)) return;
     trouves.add(nom);
+  };
+
+  for (const [, dedans] of markdown.matchAll(/\(([^()]{2,60})\)/g)) ajouter(dedans);
+
+  // Un émetteur cité en lien markdown — « [brief.eco](http://brief.eco/) », la forme que
+  // Notion produit pour tout nom déjà lié dans la fiche — ne porte son nom que dans les
+  // crochets : la parenthèse qui suit est l'URL, et la première boucle l'écarte à bon droit.
+  // Sans cette seconde passe, un émetteur écrit uniquement sous cette forme n'entre jamais
+  // dans le vivier, et toute phrase qui l'attribue correctement échoue « sans attribution ».
+  for (const [, dedans] of markdown.matchAll(/\[([^\[\]]{2,60})\]\(https?:\/\/[^()]*\)/g)) {
+    ajouter(dedans);
   }
 
   return [...trouves].sort();
