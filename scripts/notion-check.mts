@@ -12,7 +12,7 @@
  *   npm run notion:check -- --week=2026-S38
  *   npm run notion:check -- --show        # affiche le markdown récupéré
  */
-import { chercherFiche, configNotion, emetteursCites } from "../lib/notion";
+import { chercherFiche, configNotion, emetteursCites, normaliserIdBase } from "../lib/notion";
 import { isoWeekOf } from "../lib/iso-week";
 
 const args = process.argv.slice(2);
@@ -21,11 +21,25 @@ const SHOW = args.includes("--show");
 
 const config = configNotion();
 if (!config) {
-  console.error(
-    "NOTION_TOKEN et NOTION_VUES_MACRO_DB attendues. Créer une intégration interne en lecture\n" +
-      "seule sur notion.so/my-integrations, puis **partager la base avec elle** — sans ce partage\n" +
-      "explicite, le jeton est valide mais ne voit rien.",
-  );
+  const tokenBrut = process.env.NOTION_TOKEN?.trim();
+  const dbBrut = process.env.NOTION_VUES_MACRO_DB?.trim();
+
+  // Les deux variables sont là, mais l'identifiant ne se ramène pas à 32 caractères
+  // hexadécimaux : un diagnostic précis plutôt que le message générique d'absence, qui ferait
+  // chercher une variable qui existe déjà.
+  if (tokenBrut && dbBrut && !normaliserIdBase(dbBrut)) {
+    console.error(
+      `NOTION_VUES_MACRO_DB (« ${dbBrut} ») n'est pas un identifiant Notion valide : il faut\n` +
+        "32 caractères hexadécimaux, avec ou sans tirets (l'un ou l'autre est accepté et normalisé\n" +
+        "automatiquement) — pas l'URL entière de la base.",
+    );
+  } else {
+    console.error(
+      "NOTION_TOKEN et NOTION_VUES_MACRO_DB attendues. Créer une intégration interne en lecture\n" +
+        "seule sur notion.so/my-integrations, puis **partager la base avec elle** — sans ce partage\n" +
+        "explicite, le jeton est valide mais ne voit rien.",
+    );
+  }
   process.exit(1);
 }
 
@@ -59,7 +73,15 @@ if (fiche.contenu.trim().length === 0) {
   process.exit(1);
 }
 
-if (SHOW) console.log(`\n--- markdown récupéré ---\n\n${fiche.contenu}`);
+// Un aperçu par défaut — pas seulement la longueur — pour confirmer que ce qui est arrivé est
+// bien du texte lisible et pas, par exemple, une page d'erreur HTML aplatie en markdown.
+const APERCU_LIGNES = 8;
+console.log(
+  `\n--- premières lignes (${APERCU_LIGNES} sur ${fiche.contenu.split("\n").length}) ---\n`,
+);
+console.log(fiche.contenu.split("\n").slice(0, APERCU_LIGNES).join("\n"));
+
+if (SHOW) console.log(`\n--- markdown récupéré en entier ---\n\n${fiche.contenu}`);
 
 console.log("\nLa propriété « Lue » n'est pas touchée : seul un run réussi la bascule.");
 process.exit(0);

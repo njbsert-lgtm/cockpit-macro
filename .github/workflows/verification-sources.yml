@@ -21,6 +21,7 @@ on:
           - ons
           - estat
           - fred
+          - notion
           - les-deux
           - explorer-eurostat
           - sonder-hote
@@ -54,6 +55,8 @@ on:
         # Fred-release-dates : un ou plusieurs series_id séparés par une virgule — résout le
         # « release » (le calendrier de publication) de chaque série puis liste ses prochaines
         # dates programmées, pour corriger `nextRelease` sans deviner.
+        # Notion : vide (semaine ISO courante), « --week=2026-S38 » pour une semaine précise, ou
+        # « --show » pour afficher la fiche entière plutôt que son aperçu.
 
 jobs:
   verifier:
@@ -601,6 +604,30 @@ jobs:
             printf '%s\n' "$PRETTY" | head -c 6000 | tee -a "$GITHUB_STEP_SUMMARY"
           fi
           echo '```' | tee -a "$GITHUB_STEP_SUMMARY"
+
+      - name: Notion
+        # Même garde que FRED et e-Stat : le jeton et l'identifiant de base sont des secrets du
+        # dépôt, leur absence se dit au lieu d'échouer sur une erreur d'authentification qu'on
+        # prendrait pour un problème de partage.
+        if: ${{ inputs.source == 'notion' }}
+        env:
+          SERIES: ${{ inputs.series }}
+          NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
+          NOTION_VUES_MACRO_DB: ${{ secrets.NOTION_VUES_MACRO_DB }}
+        run: |
+          set +e -o pipefail
+          if [ -z "$NOTION_TOKEN" ] || [ -z "$NOTION_VUES_MACRO_DB" ]; then
+            echo "NOTION_TOKEN ou NOTION_VUES_MACRO_DB absente des secrets du dépôt — étape sautée." | tee -a "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          {
+            echo '## Notion'
+            echo '```'
+          } | tee -a "$GITHUB_STEP_SUMMARY"
+          npm run notion:check --silent -- $SERIES 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
+          code=$?
+          echo '```' | tee -a "$GITHUB_STEP_SUMMARY"
+          exit $code
 
       - name: FRED
         # `always()` pour que FRED soit quand même vérifié après un Eurostat rouge.

@@ -462,7 +462,10 @@ propre jeton.
 2. **Partager la base « Vues Macro — Synthèses hebdo » avec cette intégration** — sans ce
    partage explicite, le jeton est valide mais ne voit rien, et l'erreur ressemble à une
    base vide
-3. Secrets GitHub : `NOTION_TOKEN`, `NOTION_VUES_MACRO_DB`
+3. Secrets GitHub : `NOTION_TOKEN`, `NOTION_VUES_MACRO_DB` — **avec ou sans tirets**, les deux
+   formes que Notion affiche selon l'écran d'où l'identifiant est copié sont acceptées : le
+   collecteur les ramène à une forme canonique unique à la lecture de la configuration
+   (`normaliserIdBase`, `lib/notion.ts`), pour ne jamais faire deviner laquelle coller
 4. Vérifier avec `npm run notion:check` avant de laisser un run en dépendre — même rôle que
    `fred:check` : confronter ce que la configuration suppose à ce que la source répond. Le
    script distingue les trois issues que le collecteur distingue, parce qu'elles appellent des

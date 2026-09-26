@@ -443,9 +443,33 @@ async function appeler(url: string, config: NotionConfig, init: RequestInit): Pr
   }
 }
 
+/**
+ * L'identifiant de base Notion, ramené à sa forme canonique — 32 caractères hexadécimaux,
+ * regroupés avec des tirets (`8-4-4-4-12`).
+ *
+ * Notion l'affiche indifféremment dans les deux formes selon l'écran d'où on le copie : sans
+ * tiret dans l'URL brute d'une base, avec tirets dans d'autres vues. Exiger une forme précise
+ * ferait deviner à l'utilisateur laquelle coller ; on normalise une fois ici, à la lecture de
+ * la configuration, et tout le reste du module ne voit plus jamais qu'une seule forme.
+ *
+ * `null` si ce n'est pas 32 caractères hexadécimaux une fois les tirets retirés — un identifiant
+ * copié à moitié ou une URL entière collée par erreur ne doit pas produire un appel à une base
+ * qui n'existe pas, sans qu'on sache pourquoi.
+ */
+export function normaliserIdBase(brut: string): string | null {
+  const hex = brut.trim().replace(/-/g, "").toLowerCase();
+  if (!/^[0-9a-f]{32}$/.test(hex)) return null;
+  return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20)}`;
+}
+
 /** La configuration depuis l'environnement, `null` quand elle manque — jamais une exception. */
 export function configNotion(): NotionConfig | null {
   const token = process.env.NOTION_TOKEN?.trim();
-  const databaseId = process.env.NOTION_VUES_MACRO_DB?.trim();
-  return token && databaseId ? { token, databaseId } : null;
+  const brut = process.env.NOTION_VUES_MACRO_DB?.trim();
+  if (!token || !brut) return null;
+
+  const databaseId = normaliserIdBase(brut);
+  if (!databaseId) return null; // « NOTION_VUES_MACRO_DB (…) n'est pas un identifiant valide » — voir notion-check.mts, qui distingue ce cas de l'absence pure et simple.
+
+  return { token, databaseId };
 }

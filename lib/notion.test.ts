@@ -1,14 +1,88 @@
-import { describe, expect, it, vi } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import {
   chercherFiche,
+  configNotion,
   couvre,
   emetteursCites,
   lireSemaine,
   marquerLue,
+  normaliserIdBase,
   rendreBloc,
   texteDePropriete,
   type NotionConfig,
 } from "./notion";
+
+// ---------------------------------------------------------------------------
+// L'identifiant de base — les deux formes que Notion affiche
+// ---------------------------------------------------------------------------
+
+describe("normaliserIdBase — avec ou sans tirets, une seule forme en sortie", () => {
+  const CANONIQUE = "3dbda7c5-2a16-8130-b6be-e24962e15933";
+
+  it("accepte la forme sans tirets, celle de l'URL brute d'une base", () => {
+    expect(normaliserIdBase("3dbda7c52a168130b6bee24962e15933")).toBe(CANONIQUE);
+  });
+
+  it("accepte la forme déjà groupée avec des tirets, et la rend identique", () => {
+    expect(normaliserIdBase(CANONIQUE)).toBe(CANONIQUE);
+  });
+
+  it("ignore la casse", () => {
+    expect(normaliserIdBase("3DBDA7C52A168130B6BEE24962E15933")).toBe(CANONIQUE);
+  });
+
+  it("tolère les espaces en bout de chaîne", () => {
+    expect(normaliserIdBase(`  ${CANONIQUE}  `)).toBe(CANONIQUE);
+  });
+
+  it("refuse un identifiant trop court plutôt que d'appeler une base qui n'existe pas", () => {
+    expect(normaliserIdBase("3dbda7c5")).toBeNull();
+  });
+
+  it("refuse l'URL entière collée par erreur, plutôt que la fiche à l'intérieur", () => {
+    expect(
+      normaliserIdBase("https://notion.so/monworkspace/3dbda7c52a168130b6bee24962e15933?v=abc"),
+    ).toBeNull();
+  });
+
+  it("refuse une chaîne vide", () => {
+    expect(normaliserIdBase("")).toBeNull();
+  });
+});
+
+describe("configNotion — normalise l'identifiant de base à la lecture", () => {
+  const ORIGINAL_ENV = { ...process.env };
+  afterEach(() => {
+    process.env = { ...ORIGINAL_ENV };
+  });
+
+  it("rend un config utilisable à partir d'un identifiant sans tirets", () => {
+    process.env.NOTION_TOKEN = "secret_test";
+    process.env.NOTION_VUES_MACRO_DB = "3dbda7c52a168130b6bee24962e15933";
+    expect(configNotion()).toEqual({
+      token: "secret_test",
+      databaseId: "3dbda7c5-2a16-8130-b6be-e24962e15933",
+    });
+  });
+
+  it("rend le même config, tirets déjà présents dans la variable", () => {
+    process.env.NOTION_TOKEN = "secret_test";
+    process.env.NOTION_VUES_MACRO_DB = "3dbda7c5-2a16-8130-b6be-e24962e15933";
+    expect(configNotion()?.databaseId).toBe("3dbda7c5-2a16-8130-b6be-e24962e15933");
+  });
+
+  it("rend null quand une variable manque", () => {
+    process.env.NOTION_TOKEN = "secret_test";
+    delete process.env.NOTION_VUES_MACRO_DB;
+    expect(configNotion()).toBeNull();
+  });
+
+  it("rend null quand l'identifiant ne se ramène pas à 32 caractères hexadécimaux", () => {
+    process.env.NOTION_TOKEN = "secret_test";
+    process.env.NOTION_VUES_MACRO_DB = "pas-un-identifiant";
+    expect(configNotion()).toBeNull();
+  });
+});
 
 // ---------------------------------------------------------------------------
 // La propriété `Semaine`
