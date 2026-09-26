@@ -18,8 +18,14 @@ import type { z } from "zod";
  * Assez pour laisser le modèle rédiger une note complète (cinq blocs, révisions de scénario) en
  * une seule réponse structurée. En flux dans tous les cas — obligatoire au-delà de quelques
  * milliers de tokens de sortie pour ne pas heurter les délais HTTP du SDK.
+ *
+ * 32 000 s'est révélé insuffisant en conditions réelles : la première note alimentée par une
+ * vraie fiche Notion (30 000 caractères, 57 émetteurs) a tronqué à `stop_reason: "max_tokens"`
+ * sans même finir le MDX, faute d'avoir jamais été mesurée que sur des paquets factices ou sans
+ * fiche. La pensée adaptative (`effort: "high"`) consomme aussi ce budget, pas seulement le
+ * texte rendu.
  */
-const DEFAULT_MAX_TOKENS = 32_000;
+const DEFAULT_MAX_TOKENS = 64_000;
 
 export type StructuredRequest<T> = {
   /** Instructions stables — grille de classification, ton du corpus, règles de citation. */
