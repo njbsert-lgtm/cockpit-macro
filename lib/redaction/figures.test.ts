@@ -336,6 +336,22 @@ describe("régime A — la base fait foi, sans exception", () => {
     const r = controler("Le S&P 500 est en hausse de 2,3 % sur la semaine.");
     expect(r.verdicts[0]).toMatchObject({ regime: "A", verdict: "conforme" });
   });
+
+  it("un prix dans une autre devise n'est le niveau d'aucun instrument suivi", () => {
+    // « le gaz européen à 73 €/MWh » cité dans une phrase qui nomme aussi Brent : 73 n'est le
+    // niveau ni du Brent (coté en dollars) ni d'aucun autre instrument suivi, qui ne se cotent
+    // jamais en euros, livres ou yens.
+    const fiche = {
+      ...FICHE,
+      contenu: `${FICHE.contenu}Le gaz européen se tend à 73 €/MWh pendant que le Brent recule (Goldman Sachs).\n`,
+      sources: [...FICHE.sources, "Goldman Sachs"],
+    };
+    const r = controler(
+      "Le gaz européen se tend à 73 €/MWh pendant que le Brent recule (Goldman Sachs).",
+      paquet([BRENT], fiche),
+    );
+    expect(r.verdicts[0]).toMatchObject({ regime: "B", verdict: "conforme" });
+  });
 });
 
 describe("régime B — dans la fiche, et attribué", () => {

@@ -111,7 +111,7 @@ function estNeutre(brut: string, valeur: number, suite: string): boolean {
   return false;
 }
 
-type UniteEcrite = "percent" | "usd" | "multiple" | null;
+type UniteEcrite = "percent" | "usd" | "multiple" | "autre-devise" | null;
 
 /**
  * L'unité qui suit immédiatement un nombre, quand elle en réfute la nature plutôt que quand
@@ -119,14 +119,15 @@ type UniteEcrite = "percent" | "usd" | "multiple" | null;
  *
  * `null` ne veut pas dire « sans unité » : un nombre nu (« 6714,59 ») peut très bien être la
  * valeur d'un instrument coté en points d'indice. C'est un signal négatif exploitable pour un
- * multiple (« 19x ») ou un dollar (« 415 USD ») sur un instrument qui ne se cote jamais ainsi,
- * jamais un signal positif pour les cas ambigus.
+ * multiple (« 19x »), un dollar (« 415 USD ») ou une autre devise (« 73 €/MWh ») sur un
+ * instrument qui ne se cote jamais ainsi, jamais un signal positif pour les cas ambigus.
  */
 function uniteEcriteApres(suite: string): UniteEcrite {
   const s = suite.trimStart();
   if (/^%/.test(s)) return "percent";
   if (/^(\$|usd\b)/i.test(s)) return "usd";
   if (/^x\b/i.test(s)) return "multiple";
+  if (/^(€|£|¥)/.test(s)) return "autre-devise";
   return null;
 }
 
@@ -135,20 +136,22 @@ function uniteEcriteApres(suite: string): UniteEcrite {
  * peut effectivement prendre ?
  *
  * C'est le trou révélé par la première fiche Notion réelle : « le BPA du S&P 500 a progressé
- * de 51 % » ou « un P/E forward de 19x » nomment l'indice sans être son niveau — 51 (un
- * pourcentage de croissance de bénéfices) ou 19 (un multiple de valorisation) n'ont rien à voir
- * avec 6714,59 (le niveau de l'indice, en points). Sans ce garde-fou, ces nombres se faisaient
- * confronter au niveau stocké et échouaient en « écart » ou en « sans-date » pour une raison
- * qui n'a pas de sens : ce ne sont pas des mesures de l'instrument nommé.
+ * de 51 % », « un P/E forward de 19x » ou « le gaz européen à 73 €/MWh », cité dans une phrase
+ * qui nomme aussi Brent et WTI, nomment un instrument suivi sans être son niveau — 51 (une
+ * croissance de bénéfices), 19 (un multiple de valorisation) et 73 (un prix du gaz, pas du
+ * pétrole) n'ont rien à voir avec le niveau réellement stocké. Sans ce garde-fou, ces nombres
+ * se faisaient confronter au niveau stocké et échouaient en « écart » ou en « sans-date » pour
+ * une raison qui n'a pas de sens : ce ne sont pas des mesures de l'instrument nommé.
  *
- * Aucun instrument suivi ne se cote en multiple — `multiple` est donc toujours incompatible.
- * Un pourcentage ou un dollar n'est compatible qu'avec un instrument dont l'unité déclarée est
- * la même : un taux directeur (`percent`) accepte « 4 % », un indice (`index`) ne l'accepte
- * pas. Un nombre sans unité écrite (`null`) ne réfute rien : il reste rattaché, comme avant.
+ * Aucun instrument suivi ne se cote en multiple ni dans une devise autre que le dollar —
+ * `multiple` et `autre-devise` sont donc toujours incompatibles. Un pourcentage ou un dollar
+ * n'est compatible qu'avec un instrument dont l'unité déclarée est la même : un taux directeur
+ * (`percent`) accepte « 4 % », un indice (`index`) ne l'accepte pas. Un nombre sans unité
+ * écrite (`null`) ne réfute rien : il reste rattaché, comme avant.
  */
 function compatibleAvecInstrument(unite: UniteEcrite, uniteInstrument: string): boolean {
   if (unite === null) return true;
-  if (unite === "multiple") return false;
+  if (unite === "multiple" || unite === "autre-devise") return false;
   return unite === uniteInstrument;
 }
 
