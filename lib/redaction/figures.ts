@@ -111,6 +111,47 @@ function estNeutre(brut: string, valeur: number, suite: string): boolean {
   return false;
 }
 
+type UniteEcrite = "percent" | "usd" | "multiple" | null;
+
+/**
+ * L'unité qui suit immédiatement un nombre, quand elle en réfute la nature plutôt que quand
+ * elle la confirme — c'est tout ce dont ce garde-fou a besoin.
+ *
+ * `null` ne veut pas dire « sans unité » : un nombre nu (« 6714,59 ») peut très bien être la
+ * valeur d'un instrument coté en points d'indice. C'est un signal négatif exploitable pour un
+ * multiple (« 19x ») ou un dollar (« 415 USD ») sur un instrument qui ne se cote jamais ainsi,
+ * jamais un signal positif pour les cas ambigus.
+ */
+function uniteEcriteApres(suite: string): UniteEcrite {
+  const s = suite.trimStart();
+  if (/^%/.test(s)) return "percent";
+  if (/^(\$|usd\b)/i.test(s)) return "usd";
+  if (/^x\b/i.test(s)) return "multiple";
+  return null;
+}
+
+/**
+ * Un nombre nomme un instrument dans sa phrase, mais porte-t-il une unité que cet instrument
+ * peut effectivement prendre ?
+ *
+ * C'est le trou révélé par la première fiche Notion réelle : « le BPA du S&P 500 a progressé
+ * de 51 % » ou « un P/E forward de 19x » nomment l'indice sans être son niveau — 51 (un
+ * pourcentage de croissance de bénéfices) ou 19 (un multiple de valorisation) n'ont rien à voir
+ * avec 6714,59 (le niveau de l'indice, en points). Sans ce garde-fou, ces nombres se faisaient
+ * confronter au niveau stocké et échouaient en « écart » ou en « sans-date » pour une raison
+ * qui n'a pas de sens : ce ne sont pas des mesures de l'instrument nommé.
+ *
+ * Aucun instrument suivi ne se cote en multiple — `multiple` est donc toujours incompatible.
+ * Un pourcentage ou un dollar n'est compatible qu'avec un instrument dont l'unité déclarée est
+ * la même : un taux directeur (`percent`) accepte « 4 % », un indice (`index`) ne l'accepte
+ * pas. Un nombre sans unité écrite (`null`) ne réfute rien : il reste rattaché, comme avant.
+ */
+function compatibleAvecInstrument(unite: UniteEcrite, uniteInstrument: string): boolean {
+  if (unite === null) return true;
+  if (unite === "multiple") return false;
+  return unite === uniteInstrument;
+}
+
 function normaliser(brut: string): number {
   return Number(brut.replace(/[   ]/g, "").replace(",", "."));
 }
@@ -449,12 +490,17 @@ export function extraireVerdicts(
 
         if (nommes.length > 0) {
           const obs = nommes[0];
-          const issue =
-            periode && estUneVariation(nue, debutDuSegment, m.index)
-              ? verdictVariation(ecrit, obs, periode, dates)
+          const estVariation = Boolean(periode) && estUneVariation(nue, debutDuSegment, m.index);
+          // Une variation se recalcule dans n'importe quelle unité déclarée — un indice se
+          // rapporte toujours en pourcentage. Seul le niveau brut exige que l'unité écrite
+          // corresponde à celle de l'instrument nommé ; sinon ce nombre ne le mesure pas.
+          if (estVariation || compatibleAvecInstrument(uniteEcriteApres(nue.slice(finPrecedente)), obs.unit)) {
+            const issue = estVariation
+              ? verdictVariation(ecrit, obs, periode as Periode, dates)
               : verdictNiveau(ecrit, obs, phrase, m.index, dates);
-          verdicts.push({ ...commun, regime: "A", ...issue });
-          continue;
+            verdicts.push({ ...commun, regime: "A", ...issue });
+            continue;
+          }
         }
 
         // Régime B. Sans fiche, il n'y a pas de texte source où retrouver le nombre : il ne

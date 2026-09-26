@@ -28,6 +28,7 @@ function obs(over: Partial<ObservationContexte> = {}): ObservationContexte {
 const BRENT = obs({
   instrumentId: "brent",
   label: "Brent",
+  unit: "usd",
   valeurs: [
     { date: "2026-09-03", value: 101.4 },
     { date: "2026-09-04", value: 102.96 },
@@ -289,6 +290,51 @@ describe("régime A — la base fait foi, sans exception", () => {
     // régime B — lui-même bloquant. L'échec par défaut est le régime le plus exigeant.
     const r = controler("Les rendements longs tiennent à 4,55 % au 04/09.", paquet([BRENT], FICHE));
     expect(r.verdicts[0]).toMatchObject({ regime: "B", verdict: "introuvable" });
+  });
+
+  it("un pourcentage qui n'est pas le niveau de l'instrument nommé repart en régime B", () => {
+    // « le BPA du S&P 500 a progressé de 51 % » nomme l'indice, mais 51 est une croissance de
+    // bénéfices, pas un niveau d'indice (unit: "index") — confronter 51 à 7674,37 n'a aucun
+    // sens. Sans ce garde-fou, ce nombre bloquait en « sans-date » pour une raison qui n'existe
+    // pas : ce n'est pas une mesure de l'instrument nommé.
+    const fiche = {
+      ...FICHE,
+      contenu: `${FICHE.contenu}Le BPA du S&P 500 a progressé de 51 % (Goldman Sachs).\n`,
+      sources: [...FICHE.sources, "Goldman Sachs"],
+    };
+    const r = controler("Le BPA du S&P 500 a progressé de 51 % (Goldman Sachs).", paquet([obs()], fiche));
+    expect(r.verdicts[0]).toMatchObject({ regime: "B", verdict: "conforme" });
+  });
+
+  it("un multiple (« 19x ») n'est jamais le niveau d'un instrument suivi", () => {
+    // Aucun instrument du catalogue ne se cote en multiple — un P/E forward de 19x, cité dans
+    // une phrase qui nomme le S&P 500, n'est pas son niveau.
+    const fiche = {
+      ...FICHE,
+      contenu: `${FICHE.contenu}Le P/E forward du S&P 500 est de 19x (Goldman Sachs).\n`,
+      sources: [...FICHE.sources, "Goldman Sachs"],
+    };
+    const r = controler("Le P/E forward du S&P 500 est de 19x (Goldman Sachs).", paquet([obs()], fiche));
+    expect(r.verdicts[0]).toMatchObject({ regime: "B", verdict: "conforme" });
+  });
+
+  it("un dollar sur un instrument coté en points d'indice n'est pas son niveau", () => {
+    // Un BPA en dollars cité dans la même phrase que le S&P 500 (unit: "index") n'est pas le
+    // niveau de l'indice.
+    const fiche = {
+      ...FICHE,
+      contenu: `${FICHE.contenu}Le BPA du S&P 500 est attendu à 415 USD (Goldman Sachs).\n`,
+      sources: [...FICHE.sources, "Goldman Sachs"],
+    };
+    const r = controler("Le BPA du S&P 500 est attendu à 415 USD (Goldman Sachs).", paquet([obs()], fiche));
+    expect(r.verdicts[0]).toMatchObject({ regime: "B", verdict: "conforme" });
+  });
+
+  it("une variation en pourcentage reste en régime A même sur un instrument coté en points", () => {
+    // Le garde-fou d'unité ne s'applique qu'au niveau brut : une variation se recalcule et se
+    // rapporte toujours en pourcentage, quelle que soit l'unité de l'instrument.
+    const r = controler("Le S&P 500 est en hausse de 2,3 % sur la semaine.");
+    expect(r.verdicts[0]).toMatchObject({ regime: "A", verdict: "conforme" });
   });
 });
 
