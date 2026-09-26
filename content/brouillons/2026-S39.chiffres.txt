@@ -1,0 +1,24 @@
+21 chiffre(s) — régime A : 0, régime B : 21 · 2 non conforme(s) — publication bloquée
+  ✓ [B] 22           keyIndicators/10 ans US — Zonebourse
+  ✓ [B] 2,75         keyIndicators/BCE anticipée déc. 2026 — Goldman Sachs
+  ✓ [B] 5            keyIndicators/Déficit France 2027 — brief.eco
+  ✓ [B] 4 2026       keyIndicators/Gaz Europe T4 2026 — Goldman Sachs
+  ✓ [B] 70           keyIndicators/Gaz Europe T4 2026 — Goldman Sachs
+  ✓ [B] 2,75         CeQuiAChange — Goldman Sachs
+  ✓ [B] 3            CeQuiAChange — Goldman Sachs
+  ✓ [B] 60           CeQuiAChange — Zonebourse
+  ✓ [B] 22           CeQuiAChange — Zonebourse
+  ✓ [B] 54           CeQuiAChange — brief.eco
+  ✓ [B] 45           CeQuiAChange — brief.eco
+  ✓ [B] 89,6         CeQuiAChange — brief.eco
+  ✗ [B] 21           CeQuiSestConfirme — dans la fiche, mais aucun émetteur nommé dans la phrase
+  ✓ [B] 23           CeQuiSestConfirme — Ben Snider
+  ✓ [B] 19           CeQuiSestConfirme — Ben Snider
+  ✓ [B] +11          CeQuiSestConfirme — Ben Snider
+  ✓ [B] 415          CeQuiSestConfirme — Ben Snider
+  ✓ [B] 460          CeQuiSestConfirme — Ben Snider
+  ✓ [B] 100          RevisionDesScenarios — PMI manufacturier au plus haut depuis juillet 2021
+  ✗ [B] 2            CeQueJeSurveille — dans la fiche, mais aucun émetteur nommé dans la phrase
+  ✓ [B] 100          scenarioRevisions/rates/rates-hausse/why — PMI manufacturier au plus haut depuis juillet 2021
+
+  Aucun chiffre du régime A : la collecte n'a rien apporté à cette note.

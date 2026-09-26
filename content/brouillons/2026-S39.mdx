@@ -1,0 +1,194 @@
+---
+kind: hebdo
+status: brouillon
+publishedAt: null
+date: '2026-09-26'
+comparesTo: 2026-S38
+regimeStatement: >-
+  Les taux longs battent de nouveaux records et l'IA absorbe le choc ; les
+  artisans mêmes du resserrement commencent à contester l'ampleur que le marché
+  leur prête.
+keyIndicators:
+  - label: 10 ans US
+    value: 'franchit un nouveau seuil (Zonebourse, semaine du 22-26/09)'
+  - label: Nasdaq 100
+    value: 'record de clôture, 23/09 (Zonebourse)'
+  - label: BCE anticipée déc. 2026
+    value: '2,75 % (Goldman Sachs Research, 25/09)'
+  - label: Déficit France 2027
+    value: 'cible 5 % du PIB (Lecornu, via brief.eco, 23/09)'
+  - label: Gaz Europe T4 2026
+    value: '70 €/MWh anticipés (Goldman Sachs Research, 25/09)'
+zones:
+  - ez
+  - fr
+  - global
+  - in
+  - jp
+  - us
+driverOrder:
+  - rates
+  - ai
+  - iran
+trendRefs:
+  - desinflation-terminee
+  - capex-ia-benefices
+  - prime-risque-permanente
+instrumentRefs:
+  - us10y
+  - ndx
+  - brent
+  - wti
+veilleItemRefs:
+  - 233180e02e4ad21edc013c75
+  - 71d83397ac99a89e5433a1af
+  - 5423864bf4f0512c060095a8
+channels:
+  - taux-reel
+  - fonction-reaction
+  - nature-choc
+sources:
+  CeQuiAChange:
+    - label: >-
+        Goldman Sachs Research — via la fiche S39 — lundi 21/09 au dimanche
+        27/09
+      url: >-
+        https://app.notion.com/p/S39-lundi-21-09-au-dimanche-27-09-3e2da7c52a1681a197f0dc8f1922b178
+    - label: BCE
+      url: >-
+        https://www.ecb.europa.eu//press/pr/date/2026/html/ecb.pr260924~bea1dd9824.en.html
+    - label: brief.eco — via la fiche S39 — lundi 21/09 au dimanche 27/09
+      url: >-
+        https://app.notion.com/p/S39-lundi-21-09-au-dimanche-27-09-3e2da7c52a1681a197f0dc8f1922b178
+  CeQuiSestConfirme:
+    - label: Zonebourse — via la fiche S39 — lundi 21/09 au dimanche 27/09
+      url: >-
+        https://app.notion.com/p/S39-lundi-21-09-au-dimanche-27-09-3e2da7c52a1681a197f0dc8f1922b178
+    - label: >-
+        Goldman Sachs Research — via la fiche S39 — lundi 21/09 au dimanche
+        27/09
+      url: >-
+        https://app.notion.com/p/S39-lundi-21-09-au-dimanche-27-09-3e2da7c52a1681a197f0dc8f1922b178
+  RevisionDesScenarios:
+    - label: ONU
+      url: 'https://news.un.org/feed/view/en/story/2026/09/1168412'
+    - label: ONU
+      url: 'https://news.un.org/feed/view/en/story/2026/09/1168414'
+  CeQueJeSurveille:
+    - label: Zonebourse — via la fiche S39 — lundi 21/09 au dimanche 27/09
+      url: >-
+        https://app.notion.com/p/S39-lundi-21-09-au-dimanche-27-09-3e2da7c52a1681a197f0dc8f1922b178
+guets:
+  - id: 2026-s38-g1
+    driverId: rates
+    axeLibelle: null
+    libelle: Le coup d'arrêt aux taux longs tient-il ?
+    attendu: >-
+      La décision de la Fed a stoppé la montée des rendements longs ; ce répit
+      tient quatre semaines.
+    confirmeSi: >-
+      Le 10 ans américain reste sous son plus haut de la semaine du 14/09
+      jusqu'au 17/10.
+    infirmeSi: >-
+      Nouveau plus haut sur la période — ce qui validerait la prudence tactique
+      à trois mois de Goldman Sachs et ferait de la duration le point de
+      rupture.
+    echeance: '2026-10-17'
+    sourceAttendue:
+      - 'FRED:DGS10'
+    statut: ouvert
+    resoluPar: null
+    resoluLe: null
+    noteSlug: 2026-S38
+  - id: 2026-s38-g2
+    driverId: iran
+    axeLibelle: null
+    libelle: Les restrictions à l'export passent-elles de l'évocation à la décision ?
+    attendu: >-
+      Les restrictions à l'export de produits pétroliers évoquées aux États-Unis
+      et en Arabie saoudite restent au stade de l'intention.
+    confirmeSi: 'Aucune mesure officielle d''ici fin octobre, et le Brent reste sous 110 $.'
+    infirmeSi: >-
+      Restriction effectivement annoncée par l'un des deux, ou Brent au-dessus
+      de 110 $ en clôture — bascule alors vers « durcissement ».
+    echeance: '2026-10-31'
+    sourceAttendue:
+      - 'EIA:STEO'
+      - 'FRED:DCOILBRENTEU'
+    statut: ouvert
+    resoluPar: null
+    resoluLe: null
+    noteSlug: 2026-S38
+  - id: 2026-s38-g3
+    driverId: ai
+    axeLibelle: null
+    libelle: La monétisation de l'IA se chiffre-t-elle enfin ?
+    attendu: >-
+      À la saison de résultats du troisième trimestre, la proportion de sociétés
+      du S&P 500 qui chiffrent l'effet de l'IA sur leurs résultats reste
+      marginale.
+    confirmeSi: >-
+      Cette proportion reste sous 5 % — la thèse « marché d'infrastructure, pas
+      de productivité » tient, et la branche centrale avec elle.
+    infirmeSi: >-
+      Elle dépasse 10 % — la monétisation se diffuse, et la branche « profits et
+      capex accélèrent » redevient défendable.
+    echeance: '2026-11-15'
+    sourceAttendue:
+      - 'GS:Research'
+    statut: ouvert
+    resoluPar: null
+    resoluLe: null
+    noteSlug: 2026-S38
+redigeLe: '2026-09-26'
+---
+
+<CeQuiAChange>
+
+Le débat sur les taux change de nature. La semaine dernière, la question était « la Fed monte-t-elle encore ». Cette semaine, la question devient « jusqu'où » — et pour la première fois, des voix internes à Goldman Sachs y répondent par un chiffre inférieur à celui du marché. Selon Jari Stehn (Goldman Sachs Research, 25/09), la BCE porterait son taux de dépôt à 2,75 % en décembre, quand le marché l'anticipe au-delà de 3 %. Selon Rob Kaplan (Goldman Sachs, 25/09), le taux de la Fed ne freinera ni le capex IA ni les dépenses de défense : le marché intègre plus de resserrement que justifié. Ce n'est pas une inflexion de la trajectoire des banques centrales ; c'est la première contestation chiffrée de l'ampleur que le marché leur prête depuis que le cycle a repris. Isabel Schnabel quitte le directoire de la BCE pour le FMI en pleine semaine de ce débat, ce qui ajoute une inconnue de personnel à une institution déjà sous tension sur sa trajectoire.
+
+Sur l'Iran, le théâtre change de forme sans changer de statut. Washington et Téhéran négocient à New York une sortie de guerre par étapes : réouverture du détroit d'Ormuz contre levée du blocus économique. Selon Zonebourse (25/09), environ 60 navires y ont transité mercredi, transportant 22 millions de barils — avant tout accord politique. La normalisation physique précède la normalisation diplomatique, pas l'inverse. En parallèle, les Houthis menacent Yanbu et des drones frappent des raffineries russes : le théâtre élargi ouvert en août reste actif, cette fois sur deux fronts périphériques distincts du cœur de la négociation.
+
+Le risque politique européen, évoqué sans chiffre la semaine dernière, en reçoit enfin. Selon brief.eco (23/09), Sébastien Lecornu propose environ 54 milliards d'euros d'économies pour 2027, dont 45 milliards d'euros d'efforts nouveaux ; la Cour des comptes chiffre à 89,6 Md€, soit 3 points de PIB, l'effort nécessaire pour seulement interrompre la hausse du ratio dette/PIB. La prime de risque politique a désormais un ordre de grandeur.
+
+</CeQuiAChange>
+
+<CeQuiSestConfirme>
+
+La lecture du 21-22/09 — la hausse de la Fed était déjà dans les cours — se vérifie point par point. Cinq séances consécutives de rebond des semi-conducteurs, record de clôture du Nasdaq 100 le 23/09 selon Zonebourse : le marché actions n'a pas seulement encaissé le resserrement, il l'a dépassé.
+
+La chaîne « profits tiennent, capex plafonne » reçoit son premier chiffrage à deux ans. Selon Ben Snider (Goldman Sachs Research, 25/09), le P/E forward du S&P 500 est revenu de 23x à 19x, sa moyenne sur dix ans, sans indice de bulle à court terme ; Goldman Sachs Research prévoit +11 % de BPA en 2027 (415 USD) et en 2028 (460 USD) — une décélération, pas un effondrement. C'est exactement la confirmation attendue depuis plusieurs semaines : le capex sera un frein marginal en 2028, pas un mur.
+
+L'enlisement iranien reste le régime de fait. Aucun accord politique n'est acquis à New York malgré les tractations ; le pétrole reste piloté par les cycles de rumeur plus que par un choc confirmé. Le statu quo documenté en août n'a pas changé de nature, seulement de scène.
+
+</CeQuiSestConfirme>
+
+<RevisionDesScenarios>
+
+Driver taux — la branche centrale « hausse » retenue la semaine dernière se confirme dans les faits : PMI manufacturier au plus haut depuis juillet 2021, adjudication à deux ans exigeant des taux plus élevés, pétrole repassé au-dessus de 100 dollars entretenant les craintes inflationnistes. Rien ne justifie un retour au statu quo. Mais nous ajustons la marge : la branche statu quo passe de faible à modérée — pas parce que le cycle s'arrête, mais parce qu'un contre-argument chiffré apparaît pour la première fois. Jari Stehn prévoit une BCE sous le pricing de marché ; Rob Kaplan juge le marché déjà trop restrictif dans ses anticipations Fed. Ce n'est pas un doute sur la direction, c'est un doute sur l'ampleur. La branche baisse reste faible : rien n'indique de choc de demande cette semaine.
+
+Driver Iran — la branche centrale enlisement est maintenue, mais sa description change. Nous relevons la branche fin de faible à modérée : pour la première fois, une négociation concrète est rapportée, avec un début de normalisation physique antérieur à tout accord politique. C'est un pas, pas un accord — la nuance mérite d'être gardée intacte. La branche durcissement reste modérée : les attaques Houthis sur Yanbu et les drones sur les raffineries russes maintiennent le risque d'escalade périphérique vif, sans toucher le cœur de la négociation new-yorkaise.
+
+Driver IA — pas de bascule. La branche centrale est confirmée, avec pour la première fois un chiffrage à deux ans de la trajectoire de bénéfices. Le déplacement du trade IA des constructeurs vers les utilisateurs, souligné à la fois par ODDO BHF (Laurent Denize) et Morgan Stanley (Ellen Zentner, Sarah Wolfe), ne change pas la branche : c'est une reformulation de la même thèse — « plafonne » inclut désormais qui capte la marge, pas seulement si elle existe. Une note de contexte à garder : un briefing d'urgence sur les risques de l'IA a eu lieu au Conseil de sécurité de l'ONU cette semaine — un angle politique qui ne touche pas encore les scénarios de marché, mais que nous rattachons à l'axe « acceptabilité politique » ouvert en août.
+
+</RevisionDesScenarios>
+
+<CeQueJavaisMalLu>
+
+
+
+</CeQueJavaisMalLu>
+
+<CeQueJeSurveille>
+
+Aucun guet nouveau cette semaine : le quota disponible est nul, et rien ne justifierait d'en forcer un.
+
+Guet 1 (coup d'arrêt aux taux longs, échéance 17/10) s'éloigne plutôt de sa confirmation : le 10 ans américain a franchi un nouveau seuil au lieu de refluer. Mais pour la première fois, deux voix de Goldman Sachs documentent un doute chiffré sur l'ampleur du mouvement — un signal à mi-chemin, à noter sans trancher le guet.
+
+Guet 2 (restrictions à l'export, échéance 31/10) reste au milieu du gué. Les restrictions américaines sur les exportations de diesel, évoquées cette semaine par Zonebourse comme pesant déjà sur le WTI, restent une évocation de marché — pas une décision administrative actée.
+
+Guet 3 (monétisation de l'IA, échéance 15/11) reçoit sa première réponse partielle. Goldman Sachs chiffre pour la première fois une trajectoire de BPA à deux ans et un P/E revenu à sa moyenne historique. Ce n'est pas encore la preuve entreprise par entreprise que réclamait le guet — la référence de départ restait 2 % des sociétés du S&P 500 ayant chiffré l'effet de l'IA au deuxième trimestre. Nous ne le clôturons pas ; nous notons le progrès.
+
+</CeQueJeSurveille>
+
+<LeFilDeLaSemaine />
