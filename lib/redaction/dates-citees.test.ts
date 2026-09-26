@@ -5,6 +5,7 @@ import {
   estUneVariation,
   masquer,
   periodeCitee,
+  spansDeSemaines,
   spansDeTermes,
 } from "./dates-citees";
 
@@ -78,6 +79,28 @@ describe("spansDeTermes — les noms d'instruments portent des chiffres", () => 
 
   it("ignore la casse", () => {
     expect(spansDeTermes("le brent recule", ["Brent"])).toHaveLength(1);
+  });
+});
+
+describe("spansDeSemaines — une référence courte à une semaine ISO n'est pas une mesure", () => {
+  it("masque le 38 de « S38 »", () => {
+    const phrase = "Le régime acté en S38 se confirme cette semaine.";
+    const masquee = masquer(phrase, spansDeSemaines(phrase));
+    expect(masquee).not.toContain("38");
+    expect(masquee).toContain("se confirme cette semaine");
+  });
+
+  it("masque plusieurs références dans la même phrase", () => {
+    const phrase = "Depuis S38, en passant par S39, rien n'a bougé.";
+    expect(spansDeSemaines(phrase)).toHaveLength(2);
+  });
+
+  it("ignore un nombre à deux chiffres au-delà de 53, qui ne peut pas être une semaine ISO", () => {
+    expect(spansDeSemaines("Le titre S99 n'existe pas.")).toHaveLength(0);
+  });
+
+  it("ne masque rien dans une phrase sans référence de semaine", () => {
+    expect(spansDeSemaines("Le Brent recule de 2 %.")).toHaveLength(0);
   });
 });
 

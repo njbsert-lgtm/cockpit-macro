@@ -6,6 +6,7 @@ import {
   estUneVariation,
   masquer,
   periodeCitee,
+  spansDeSemaines,
   spansDeTermes,
   type Periode,
 } from "./dates-citees";
@@ -464,16 +465,18 @@ export function extraireVerdicts(
         (d) => !periode || d.debut >= periode.fin || d.fin <= periode.debut,
       );
 
-      // Trois masquages avant l'extraction, tous pour la même raison : ces chiffres-là
+      // Quatre masquages avant l'extraction, tous pour la même raison : ces chiffres-là
       // n'appartiennent pas à une mesure. Le 19 de « au 19/09 », le 500 de « S&P 500 », le
-      // 1er de « depuis le 1er janvier » — chacun se ferait confronter à la base et bloquerait
-      // la note sur un nombre que personne n'a écrit comme un prix.
+      // 1er de « depuis le 1er janvier », le 38 de « depuis S38 » — chacun se ferait confronter
+      // à la base ou à la fiche et bloquerait la note sur un nombre que personne n'a écrit
+      // comme un prix.
       const aMasquer = [
         ...datesCitees(phrase, paquet.date),
         ...spansDeTermes(
           phrase,
           nommes.flatMap((o) => [o.label, o.instrumentId]),
         ),
+        ...spansDeSemaines(phrase),
         ...(periode ? [periode] : []),
       ];
       const nue = masquer(phrase, aMasquer);

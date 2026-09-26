@@ -376,6 +376,15 @@ describe("régime B — dans la fiche, et attribué", () => {
     );
   });
 
+  it("ne confond pas une référence de semaine (« S38 ») avec une mesure à attribuer", () => {
+    // Cinquième dry-run réel sur S39 : « le régime acté en S38 » bloquait en « sans
+    // attribution » — 38 n'est vérifiable contre rien, ce n'est pas une affirmation chiffrée,
+    // c'est un renvoi à la note précédente.
+    const r = controler("Le régime acté en S38 se confirme cette semaine.");
+    expect(r.verdicts).toHaveLength(0);
+    expect(r.bloque).toBe(false);
+  });
+
   it("refuse un nombre de la fiche que personne n'avance dans la phrase", () => {
     const r = controler("La facilité de dépôt passe à 2,50 %.", paquet([obs()], FICHE));
     expect(r.bloque).toBe(true);

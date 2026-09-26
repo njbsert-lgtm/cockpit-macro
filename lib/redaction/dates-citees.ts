@@ -147,6 +147,28 @@ export function spansDeTermes(phrase: string, termes: string[]): Span[] {
   return spans;
 }
 
+const SEMAINE_ISO = /\bS(\d{1,2})\b/g;
+
+/**
+ * La référence courte à une semaine ISO — « en S38 », « depuis S38 » — jamais une mesure.
+ *
+ * Une note compare la sienne à la précédente en toutes lettres, hors du frontmatter où
+ * `comparesTo` porte déjà la forme longue (`2026-S38`). Sans ce masquage, le 38 de « S38 »
+ * entre dans le contrôle comme n'importe quel autre nombre : il est bien littéralement dans la
+ * fiche s'il s'y trouve par coïncidence, mais aucune phrase ne l'« attribue » jamais à un
+ * émetteur — ce n'est pas une affirmation qui vient de quelqu'un, c'est un renvoi interne.
+ * Bornée à 53 pour ne pas masquer un nombre à deux chiffres qui suivrait un « S » par hasard
+ * dans un tout autre sens.
+ */
+export function spansDeSemaines(phrase: string): Span[] {
+  const spans: Span[] = [];
+  for (const m of phrase.matchAll(SEMAINE_ISO)) {
+    if (Number(m[1]) > 53) continue;
+    spans.push({ debut: m.index, fin: m.index + m[0].length });
+  }
+  return spans;
+}
+
 // ---------------------------------------------------------------------------
 // Les périodes
 // ---------------------------------------------------------------------------
