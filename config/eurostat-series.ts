@@ -210,6 +210,9 @@ const DEBT_GDP_BOUNDS = { min: 0, max: 250 };
  * consolidated gross debt, seule valeur), `sector=S13`, `unit=PC_GDP` — sans suffixe NSA cette
  * fois, contrairement à `teina205`. Trois zones ont une entrée au catalogue : `ez`, `fr`, `it` ;
  * `de` et `es` n'en ont pas.
+ *
+ * Confirmées par `npm run eurostat:check` : Italie autour de 137-138 % du PIB sur les
+ * trimestres récents, cohérent avec la réalité — dans les bornes déclarées.
  */
 function debtGdp(geo: string, suffix: string): EurostatMapping {
   return {
@@ -226,8 +229,7 @@ function debtGdp(geo: string, suffix: string): EurostatMapping {
     zone: GEO[geo],
     plausible: DEBT_GDP_BOUNDS,
     expect: { frequency: "Quarterly" },
-    enabled: false,
-    disabledReason: "Jamais confrontée à `npm run eurostat:check` — dimensions confirmées par eurostat:explore.",
+    enabled: true,
   };
 }
 
