@@ -68,6 +68,8 @@ La date que tu écris doit être celle d'une clôture que la table porte. Une da
 
 **Le taux directeur de la Fed est une fourchette, pas un chiffre.** La table porte deux lignes distinctes — la borne haute (\`us-policy-rate\`) et la borne basse (\`us-policy-rate-lower\`). Cite les deux, dans une seule phrase qui nomme l'instrument une fois, sous la forme « 4,25-4,50 % » (basse-haute, séparées par un tiret) : c'est la seule forme que le contrôle sait rattacher à chaque ligne. Écrite autrement — « entre 4,25 % et 4,50 % » — les deux nombres se confrontent à la borne haute et l'un des deux sera signalé à tort.
 
+**La date d'une hausse est celle où le nouveau niveau apparaît dans la table, pas celle du communiqué.** Le relevé quotidien change à effet du lendemain ouvré de la réunion : une décision annoncée un mercredi apparaît dans la table datée du jeudi. Si la fiche écrit « la Fed relève ses taux le 16/09 » alors que la table montre le nouveau niveau au 17/09, cite le 17/09 — c'est la même règle que pour tout chiffre du régime A : la date est celle du relevé, jamais celle du jour dont on parle.
+
 **Régime B — un chiffre absent de la table.** Décision de banque centrale, chiffre d'étude, prévision de maison, statistique non collectée. Deux conditions, toutes deux vérifiées mécaniquement :
 
 1. **Le nombre se retrouve littéralement dans la fiche.** Tu le recopies exactement : « 2,50 % » ne se réécrit pas « 2,5 % », et un arrondi introduit par toi est un chiffre fabriqué, même de peu.
