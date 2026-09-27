@@ -37,8 +37,9 @@ on:
           - estat-getdata
           - fred-release-dates
           - sonder-alphavantage
+          - sonder-alphavantage-ytd
       series:
-        description: "Séries à vérifier (vide = toutes). Explorer : « catalogue <terme> » ou « <dataset> <dimension> ». Sonder-hôte : l'hôte. Sonder-marché : rien. Sonder-page : une URL, ou « URL||motif-grep ». Sonder-twelvedata : rien (tous les candidats). Twelve-data : symbole(s), ex. XAU/USD. Fred-observation / twelve-data-observation : « ID(S)||AAAA-MM-JJ||AAAA-MM-JJ » (plusieurs séries séparées par une virgule, début||fin). Sonder-alphavantage : identifiants séparés par un espace (vide = tous les candidats — silver, sx5e, ukx, cac, hsi, csi300, nifty50, dxy)"
+        description: "Séries à vérifier (vide = toutes). Explorer : « catalogue <terme> » ou « <dataset> <dimension> ». Sonder-hôte : l'hôte. Sonder-marché : rien. Sonder-page : une URL, ou « URL||motif-grep ». Sonder-twelvedata : rien (tous les candidats). Twelve-data : symbole(s), ex. XAU/USD. Fred-observation / twelve-data-observation : « ID(S)||AAAA-MM-JJ||AAAA-MM-JJ » (plusieurs séries séparées par une virgule, début||fin). Sonder-alphavantage : identifiants séparés par un espace (vide = tous les candidats — silver, sx5e, ukx, cac, hsi, csi300, nifty50, dxy). Sonder-alphavantage-ytd : identifiants séparés par un espace (vide = les sept confirmés — silver, sx5e, ukx, cac, csi300, nifty50, dxy)"
         type: string
         required: false
         default: ""
@@ -449,6 +450,68 @@ jobs:
               echo "--- $id ($MODE $K=$V) ---"
               curl -sS -m 15 -G --data-urlencode "function=$MODE" --data-urlencode "$K=$V" \
                 --data-urlencode "apikey=$APIKEY" "https://www.alphavantage.co/query"
+              echo
+              sleep 15
+            done
+            echo '```'
+          } | tee -a "$GITHUB_STEP_SUMMARY"
+
+      - name: Sonder Alpha Vantage — clôtures du 31/12/2025
+        # Les sept tickers confirmés (silver, sx5e, ukx, cac, csi300, nifty50, dxy — voir
+        # config/alpha-vantage-series.ts) n'ont chacun qu'un cours du jour connu (GLOBAL_QUOTE).
+        # Avant d'activer quoi que ce soit, il faut la clôture réelle du 31/12/2025 pour
+        # recalibrer `ytdBasis` à l'échelle du cours de part plutôt qu'à celle de l'indice — même
+        # correction déjà faite pour acwi et copper. TIME_SERIES_MONTHLY renvoie l'historique
+        # complet en un seul appel ; le nom exact de la clé englobante n'a jamais été confirmé
+        # depuis cet environnement, donc le script la découvre plutôt que de la deviner, et
+        # n'imprime que l'entrée de décembre 2025 pour ne pas noyer le journal sous des décennies
+        # de mensuel.
+        if: ${{ inputs.source == 'sonder-alphavantage-ytd' }}
+        env:
+          APIKEY: ${{ secrets.ALPHA_VANTAGE_API }}
+          ONLY: ${{ inputs.series }}
+        run: |
+          set +e -o pipefail
+          if [ -z "$APIKEY" ]; then
+            echo "ALPHA_VANTAGE_API absente des secrets du dépôt — étape sautée." | tee -a "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          declare -A SYMBOLS=(
+            [silver]="SLV"
+            [sx5e]="C50.PAR"
+            [ukx]="ISF.LON"
+            [cac]="CAC.PAR"
+            [csi300]="ASHR"
+            [nifty50]="INDY"
+            [dxy]="UUP"
+          )
+          IDS="silver sx5e ukx cac csi300 nifty50 dxy"
+          if [ -n "$ONLY" ]; then IDS="$ONLY"; fi
+          {
+            echo '## Alpha Vantage — clôtures de décembre 2025'
+            echo '```'
+            for id in $IDS; do
+              SYM="${SYMBOLS[$id]}"
+              echo "--- $id (TIME_SERIES_MONTHLY symbol=$SYM) ---"
+              curl -sS -m 20 -G --data-urlencode "function=TIME_SERIES_MONTHLY" \
+                --data-urlencode "symbol=$SYM" --data-urlencode "apikey=$APIKEY" \
+                "https://www.alphavantage.co/query" > /tmp/av-monthly.json
+              python3 -c "
+              import json
+              with open('/tmp/av-monthly.json') as f:
+                  d = json.load(f)
+              ts_key = next((k for k in d if 'Time Series' in k or 'Monthly' in k), None)
+              if ts_key is None:
+                  print('Pas de série reconnue — réponse brute :')
+                  print(json.dumps(d, ensure_ascii=False, indent=2)[:1500])
+              else:
+                  dec = {date: v for date, v in d[ts_key].items() if date.startswith('2025-12')}
+                  if not dec:
+                      print('Aucune entrée « 2025-12 » — clés les plus proches :')
+                      print(sorted(d[ts_key].keys(), reverse=True)[:5])
+                  else:
+                      print(json.dumps(dec, ensure_ascii=False, indent=2))
+              "
               echo
               sleep 15
             done
