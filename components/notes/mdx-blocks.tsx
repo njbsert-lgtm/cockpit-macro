@@ -177,7 +177,9 @@ function LeFilDeLaSemaineBlock({
         <ul className="mt-2.5 flex flex-col gap-1.5">
           {chronological.map((item) => (
             <li key={item.id} className="flex flex-wrap items-baseline gap-x-2 text-13 leading-snug text-doux">
-              <span className="shrink-0 text-10-5 text-tenu">{formatDateShort(item.publishedAt)}</span>
+              <span className="shrink-0 text-10-5 text-tenu">
+                {formatDateShort(item.publishedAt.slice(0, 10))}
+              </span>
               <a
                 href={item.url}
                 target="_blank"
