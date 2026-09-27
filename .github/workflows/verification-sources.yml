@@ -397,12 +397,12 @@ jobs:
         # Deuxième passage, un ETF réel par instrument (même principe que MSCI ACWI, `acwi`,
         # déjà dans le catalogue) : quatre confirmés par un vrai prix (SLV pour l'argent, FEZ
         # pour Euro Stoxx 50, ASHR pour CSI 300, UUP pour le DXY), quatre sans résultat via
-        # `SYMBOL_SEARCH` par mot-clé (FTSE 100, CAC 40, Hang Seng, Nifty 50 — le mot-clé
-        # n'atteint que peu de tickers). Troisième passage : un ticker ETF précis par
-        # `GLOBAL_QUOTE` pour ces quatre, plutôt qu'un mot-clé — EWU, EWQ, EWH, INDY, les ETF
-        # MSCI pays iShares les plus proches de chaque indice, jamais l'indice lui-même. Chaque
-        # candidat est un couple fonction/paramètre, pour rejouer la sonde sans réécrire le
-        # script.
+        # `SYMBOL_SEARCH` par mot-clé. Troisième passage, GLOBAL_QUOTE sur un ticker précis pour
+        # les quatre restants : EWU, EWQ, EWH, INDY confirmés eux aussi — mais EWU, EWQ et EWH
+        # suivent le pays (MSCI Royaume-Uni, France, Hong Kong), pas l'indice nommé, refusé
+        # comme substitut. Quatrième passage : un ETF coté localement, dans la devise de
+        # l'indice — Londres en livres, Paris en euros, Hong Kong en dollars HK — plutôt qu'un
+        # proxy pays coté à New York.
         #
         # Palier gratuit à 25 appels par jour et 5 par minute : un appel par identifiant, 15 s
         # d'écart, jamais plusieurs hypothèses dans le même passage.
@@ -422,9 +422,9 @@ jobs:
           declare -A CANDIDATES=(
             [silver]="GLOBAL_QUOTE:symbol=SLV"
             [sx5e]="GLOBAL_QUOTE:symbol=FEZ"
-            [ukx]="GLOBAL_QUOTE:symbol=EWU"
-            [cac]="GLOBAL_QUOTE:symbol=EWQ"
-            [hsi]="GLOBAL_QUOTE:symbol=EWH"
+            [ukx]="GLOBAL_QUOTE:symbol=ISF.LON"
+            [cac]="GLOBAL_QUOTE:symbol=CAC.PAR"
+            [hsi]="GLOBAL_QUOTE:symbol=2800.HKG"
             [csi300]="GLOBAL_QUOTE:symbol=ASHR"
             [nifty50]="GLOBAL_QUOTE:symbol=INDY"
             [dxy]="GLOBAL_QUOTE:symbol=UUP"
