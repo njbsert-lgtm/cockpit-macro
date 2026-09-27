@@ -424,7 +424,7 @@ jobs:
             [sx5e]="GLOBAL_QUOTE:symbol=FEZ"
             [ukx]="GLOBAL_QUOTE:symbol=ISF.LON"
             [cac]="GLOBAL_QUOTE:symbol=CAC.PAR"
-            [hsi]="GLOBAL_QUOTE:symbol=2800.HKG"
+            [hsi]="GLOBAL_QUOTE:symbol=2800.HK"
             [csi300]="GLOBAL_QUOTE:symbol=ASHR"
             [nifty50]="GLOBAL_QUOTE:symbol=INDY"
             [dxy]="GLOBAL_QUOTE:symbol=UUP"
