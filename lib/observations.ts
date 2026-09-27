@@ -1,10 +1,6 @@
 import type { Observation } from "./types";
 import { getObservations as seedObservations, getMacroObservations as seedMacroObservations } from "./data";
-import { mappingForInstrument, mappingForMacro } from "@/config/fred-series";
-import { eurostatMappingFor } from "@/config/eurostat-series";
-import { onsMappingFor } from "@/config/ons-series";
-import { estatMappingFor } from "@/config/estat-series";
-import { twelveDataMappingForInstrument } from "@/config/twelve-data-series";
+import { fournisseurInstrument, fournisseurMacro } from "@/config/providers";
 import { getReadClient } from "./supabase";
 
 /**
@@ -100,16 +96,16 @@ async function load(
 }
 
 /**
- * Un instrument de marché est couvert dès qu'une source active le collecte — FRED ou Twelve
- * Data. Les deux ne se recoupent pas : chaque identifiant appartient à une source et une seule.
- * Oublier Twelve Data ici faisait retomber l'or et MSCI ACWI sur le seed pour toujours, même
- * une fois réellement collectés — bug réel trouvé le 13/09 : les observations de seed d'ACWI
- * datent d'avant le passage à l'ETF iShares (échelle en points d'indice, ~800), tandis
- * qu'`ytdBasis` avait déjà été mis à jour à l'échelle du prix par part (~141) ; la performance
- * YTD mélangeait donc deux échelles et affichait une valeur absurde.
+ * Un instrument de marché est couvert dès qu'un fournisseur est actif pour lui dans la chaîne
+ * (`config/providers.ts`) — FRED ou Twelve Data aujourd'hui. Oublier Twelve Data ici faisait
+ * retomber l'or et MSCI ACWI sur le seed pour toujours, même une fois réellement collectés —
+ * bug réel trouvé le 13/09 : les observations de seed d'ACWI datent d'avant le passage à l'ETF
+ * iShares (échelle en points d'indice, ~800), tandis qu'`ytdBasis` avait déjà été mis à jour à
+ * l'échelle du prix par part (~141) ; la performance YTD mélangeait donc deux échelles et
+ * affichait une valeur absurde.
  */
 export function isInstrumentCovered(id: string): boolean {
-  return mappingForInstrument(id) !== null || twelveDataMappingForInstrument(id) !== null;
+  return fournisseurInstrument(id) !== null;
 }
 
 /** Les observations de marché pour un ensemble d'instruments, en une requête. */
@@ -118,23 +114,18 @@ export function loadObservations(instrumentIds: string[]): Promise<ObservationsB
 }
 
 /**
- * Un indicateur est couvert dès qu'une source active le collecte — FRED, Eurostat, ONS ou
- * e-Stat. Aucune ne se recoupe : chaque identifiant appartient à une source et une seule, ce
- * que `lib/integrity.ts` vérifie au chargement. La règle « jamais de fusion pour un même
- * identifiant » tient donc au-delà de la première source.
+ * Un indicateur est couvert dès qu'un fournisseur est actif pour lui dans la chaîne
+ * (`config/providers.ts`) — FRED, Eurostat, ONS ou e-Stat aujourd'hui. La chaîne garantit
+ * qu'un seul fournisseur fait foi par identifiant ; `config/providers.test.ts` le vérifie
+ * contre la configuration réelle plutôt que de le supposer.
  *
- * Oublier une source ici ne casse rien bruyamment : l'indicateur retombe sur le seed, qui est
- * vide dès que la source a été activée (la valeur en dur en est retirée) — l'écran affiche
- * silencieusement l'état vide au lieu de la donnée réellement collectée. C'est exactement le
- * bug qui a touché `uk-*` puis `jp-*` : ajouté ici seulement après coup.
+ * Oublier une source dans la chaîne ne casse rien bruyamment : l'indicateur retombe sur le
+ * seed, qui est vide dès que la source a été activée (la valeur en dur en est retirée) —
+ * l'écran affiche silencieusement l'état vide au lieu de la donnée réellement collectée. C'est
+ * exactement le bug qui a touché `uk-*` puis `jp-*` : ajouté à la chaîne seulement après coup.
  */
 export function isMacroCovered(id: string): boolean {
-  return (
-    mappingForMacro(id) !== null ||
-    eurostatMappingFor(id) !== null ||
-    onsMappingFor(id) !== null ||
-    estatMappingFor(id) !== null
-  );
+  return fournisseurMacro(id) !== null;
 }
 
 /** Les observations macro pour un ensemble d'indicateurs, en une requête. */

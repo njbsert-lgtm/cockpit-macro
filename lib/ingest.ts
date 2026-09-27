@@ -11,6 +11,7 @@ import {
 } from "@/config/twelve-data-series";
 import { ENABLED_ONS_SERIES, ONS_SOURCE, type OnsMapping } from "@/config/ons-series";
 import { ENABLED_ESTAT_SERIES, ESTAT_SOURCE, type EstatMapping } from "@/config/estat-series";
+import { fournisseurInstrument, fournisseurMacro } from "@/config/providers";
 import { fetchFredSeries, FRED_SOURCE, type FredFetchResult } from "./fred";
 import { fetchEurostatSeries } from "./eurostat";
 import { fetchTwelveDataSeries, TWELVE_DATA_SOURCE } from "./twelve-data";
@@ -87,21 +88,31 @@ export async function runIngest(
   const startedAt = now.toISOString();
   const outcomes: SeriesOutcome[] = [];
 
+  // La chaîne fait foi, pas seulement l'activation locale du fichier FRED : un identifiant
+  // qu'une autre source revendiquerait aussi ne doit jamais recevoir une seconde écriture
+  // (`config/providers.ts`). Sans overlap réel aujourd'hui, ce filtre ne retire rien — c'est
+  // le jour où une configuration se trompe qu'il protège.
+  const series = ENABLED_SERIES.filter(
+    (m) =>
+      (m.target.kind === "instrument" ? fournisseurInstrument : fournisseurMacro)(m.target.id) ===
+      "fred",
+  );
+
   // Si la toute première écriture est refusée, les séries échoueront toutes de la même façon
   // et pour la même raison. Autant le dire une fois, clairement, plutôt que quatorze fois.
   const databaseError = await syncMacroIndicators(client);
   if (databaseError) {
-    return { ...report(FRED_SOURCE, startedAt, [], ENABLED_SERIES.length), databaseError };
+    return { ...report(FRED_SOURCE, startedAt, [], series.length), databaseError };
   }
 
-  for (const mapping of ENABLED_SERIES) {
+  for (const mapping of series) {
     // Chaque série écrit avant qu'on passe à la suivante : s'arrêter ici ne perd rien de ce
     // qui précède, et le passage du lendemain reprendra les séries non tentées.
     if (outOfTime(options.deadline)) break;
     outcomes.push(await ingestOne(client, mapping, apiKey, now, fetcher));
   }
 
-  return report(FRED_SOURCE, startedAt, outcomes, ENABLED_SERIES.length);
+  return report(FRED_SOURCE, startedAt, outcomes, series.length);
 }
 
 // ---------------------------------------------------------------------------
@@ -135,7 +146,10 @@ export async function runEurostatIngest(
   const fetcher = options.fetcher ?? fetchEurostatSeries;
   const startedAt = now.toISOString();
   const outcomes: SeriesOutcome[] = [];
-  const series = options.series ?? ENABLED_EUROSTAT_SERIES;
+  // Un `series` explicite est un choix délibéré de l'appelant (test, rejeu) : il n'est jamais
+  // refiltré par la chaîne. Seul le défaut — le passage quotidien réel — s'y aligne.
+  const series =
+    options.series ?? ENABLED_EUROSTAT_SERIES.filter((m) => fournisseurMacro(m.target.id) === "eurostat");
 
   for (const mapping of series) {
     if (outOfTime(options.deadline)) break;
@@ -173,7 +187,8 @@ export async function runOnsIngest(
   const fetcher = options.fetcher ?? fetchOnsSeries;
   const startedAt = now.toISOString();
   const outcomes: SeriesOutcome[] = [];
-  const series = options.series ?? ENABLED_ONS_SERIES;
+  const series =
+    options.series ?? ENABLED_ONS_SERIES.filter((m) => fournisseurMacro(m.target.id) === "ons");
 
   for (const mapping of series) {
     if (outOfTime(options.deadline)) break;
@@ -217,7 +232,8 @@ export async function runEstatIngest(
   const fetcher = options.fetcher ?? fetchEstatSeries;
   const startedAt = now.toISOString();
   const outcomes: SeriesOutcome[] = [];
-  const series = options.series ?? ENABLED_ESTAT_SERIES;
+  const series =
+    options.series ?? ENABLED_ESTAT_SERIES.filter((m) => fournisseurMacro(m.target.id) === "estat");
 
   for (const mapping of series) {
     if (outOfTime(options.deadline)) break;
@@ -329,7 +345,9 @@ export async function runTwelveDataIngest(
   const fetcher = options.fetcher ?? fetchTwelveDataSeries;
   const startedAt = now.toISOString();
   const outcomes: SeriesOutcome[] = [];
-  const series = options.series ?? ENABLED_TWELVE_DATA_SERIES;
+  const series =
+    options.series ??
+    ENABLED_TWELVE_DATA_SERIES.filter((m) => fournisseurInstrument(m.target.id) === "twelve-data");
 
   for (const mapping of series) {
     if (outOfTime(options.deadline)) break;
