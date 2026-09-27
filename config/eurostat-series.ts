@@ -82,6 +82,7 @@ const EURO_AREA_GEO: Record<string, string> = {
   prc_hicp_minr: "EA",
   namq_10_gdp: "EA",
   une_rt_m: "EA21",
+  teina205: "EA21",
 };
 
 /** Traduit notre code de zone en code Eurostat pour un dataset donné. */
@@ -166,6 +167,37 @@ function unemployment(geo: string): EurostatMapping {
 
 const ZONES = ["EA", "FR", "DE", "ES", "IT"];
 
+const BUDGET_BALANCE_BOUNDS = { min: -25, max: 15 };
+
+/**
+ * Solde budgétaire, sur `teina205` (« General government deficit (-) and surplus (+) »,
+ * trimestriel). Quatre dimensions à fixer : `na_item=B9` (net lending/net borrowing — le solde
+ * lui-même, seule valeur que porte ce dataset), `sector=S13` (administrations publiques, seule
+ * valeur aussi), `unit=PC_GDP_NSA` (pourcentage du PIB, non corrigé des variations
+ * saisonnières — le dataset ne propose pas de version SCA en pourcentage du PIB avec un
+ * historique complet). Seuls `ez` et `fr` ont une entrée dans le catalogue des indicateurs ;
+ * `de`, `es` et `it` n'en ont pas, donc pas de fonction générique sur `ZONES` ici.
+ */
+function budgetBalance(geo: string, suffix: string): EurostatMapping {
+  return {
+    target: { kind: "macro", id: idFor(geo, suffix) },
+    dataset: "teina205",
+    dimensions: {
+      freq: "Q",
+      na_item: "B9",
+      sector: "S13",
+      unit: "PC_GDP_NSA",
+      geo: geoFor(geo, "teina205"),
+    },
+    cadence: "quarterly",
+    zone: GEO[geo],
+    plausible: BUDGET_BALANCE_BOUNDS,
+    expect: { unitLabel: "Percentage of gross domestic product (GDP)", frequency: "Quarterly" },
+    enabled: false,
+    disabledReason: "Jamais confrontée à `npm run eurostat:check` — dimensions confirmées par eurostat:explore.",
+  };
+}
+
 export const EUROSTAT_SERIES: EurostatMapping[] = [
   // --- Inflation totale (IPCH, glissement annuel) --------------------------
   // `TOTAL` : l'ensemble des postes. En ECOICOP v2 il remplace `CP00`, qui n'existe plus —
@@ -183,6 +215,10 @@ export const EUROSTAT_SERIES: EurostatMapping[] = [
 
   // --- Taux de chômage -----------------------------------------------------
   ...ZONES.map(unemployment),
+
+  // --- Solde budgétaire (zone euro et France uniquement) --------------------
+  budgetBalance("EA", "budget-balance"),
+  budgetBalance("FR", "budget-balance"),
 ];
 
 /**
