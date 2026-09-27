@@ -260,13 +260,11 @@ export const FRED_SERIES: FredMapping[] = [
   // --- Royaume-Uni, Italie, Espagne, Japon — même repli OCDE que Bund et OAT --------
   //
   // Le même dataflow OCDE (« Main Economic Indicators », taux longs) couvre ces quatre places,
-  // pas seulement l'Allemagne et la France : `IRLTLT01<pays>M156N` existe pour `GB`, `IT`, `ES`
-  // et `JP`, confirmé par appel direct à `fred/series/observations` (pas encore par
-  // `fred:check`, qui valide aussi les métadonnées avant activation) — huit points 2026 par
-  // série, dans l'ordre de grandeur attendu (Gilt ≈ 5,0 %, BTP ≈ 4,0 %, Bono ≈ 3,6 %,
-  // JGB ≈ 2,9 % en août 2026). `IRLTLT01INM156N` et `IRLTLT01CNM156N` n'existent pas — l'Inde et
-  // la Chine ne sont pas membres de l'OCDE, donc hors de ce dataflow ; leurs courbes restent au
-  // seed, sans piste identifiée pour l'instant.
+  // pas seulement l'Allemagne et la France. Confirmé par `npm run fred:check` : les quatre
+  // séries sortent en « Percent · Monthly », dans l'ordre de grandeur attendu (Gilt ≈ 5,0 %,
+  // BTP ≈ 4,0 %, Bono ≈ 3,6 %, JGB ≈ 2,9 % en août 2026). `IRLTLT01INM156N` et
+  // `IRLTLT01CNM156N` n'existent pas — l'Inde et la Chine ne sont pas membres de l'OCDE, donc
+  // hors de ce dataflow ; leurs courbes restent au seed, sans piste identifiée pour l'instant.
   {
     target: { kind: "instrument", id: "uk10y" },
     seriesId: "IRLTLT01GBM156N",
@@ -274,8 +272,7 @@ export const FRED_SERIES: FredMapping[] = [
     cadence: "monthly",
     plausible: YIELD_BOUNDS,
     expect: { units: "Percent", frequency: "Monthly" },
-    enabled: false,
-    disabledReason: "Jamais confrontée à `fred:check` — seule l'existence de la série est confirmée.",
+    enabled: true,
   },
   {
     target: { kind: "instrument", id: "it10y" },
@@ -284,8 +281,7 @@ export const FRED_SERIES: FredMapping[] = [
     cadence: "monthly",
     plausible: YIELD_BOUNDS,
     expect: { units: "Percent", frequency: "Monthly" },
-    enabled: false,
-    disabledReason: "Jamais confrontée à `fred:check` — seule l'existence de la série est confirmée.",
+    enabled: true,
   },
   {
     target: { kind: "instrument", id: "es10y" },
@@ -294,8 +290,7 @@ export const FRED_SERIES: FredMapping[] = [
     cadence: "monthly",
     plausible: YIELD_BOUNDS,
     expect: { units: "Percent", frequency: "Monthly" },
-    enabled: false,
-    disabledReason: "Jamais confrontée à `fred:check` — seule l'existence de la série est confirmée.",
+    enabled: true,
   },
   {
     target: { kind: "instrument", id: "jp10y" },
@@ -304,8 +299,7 @@ export const FRED_SERIES: FredMapping[] = [
     cadence: "monthly",
     plausible: YIELD_BOUNDS,
     expect: { units: "Percent", frequency: "Monthly" },
-    enabled: false,
-    disabledReason: "Jamais confrontée à `fred:check` — seule l'existence de la série est confirmée.",
+    enabled: true,
   },
 
   // --- Désactivées --------------------------------------------------------

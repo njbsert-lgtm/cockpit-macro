@@ -1216,9 +1216,10 @@ Gratuites, en accès programmatique. Clés en variables d'environnement, jamais 
 | Macro UK | **ONS API** (contenu du site, `api.ons.gov.uk/v1/data?uri=…`) | Gratuit, sans clé. Branchée : IPCH total et sous-jacent, PIB (croissance trimestre sur trimestre, `IHYQ`), chômage et salaires. Le solde budgétaire reste désactivé — chemin non localisé sur la nouvelle API, voir `config/ons-series.ts`. Le taux directeur n'est pas une série ONS — c'est la Banque d'Angleterre qui le publie, chantier séparé ; le PMI composite reste au seed, propriétaire S&P Global comme ailleurs |
 | Macro Japon | **e-Stat API** | Gratuit, clé d'application requise (`ESTAT_APP_ID`). Branchée : IPC total et sous-jacent, chômage. Les salaires répondent mais sont désactivés — données interrompues depuis 2015 sur la seule combinaison de dimensions disponible. La croissance du PIB reste au seed — pas de table longue série stable, voir `config/estat-series.ts` |
 | Énergie | **EIA API** | Gratuit, données officielles |
-| Indices actions, FX | **FRED** (huit séries) et **Twelve Data** | FRED : S&P 500, Nasdaq 100, Nikkei 225, EUR/USD, GBP/USD, USD/JPY, Brent, WTI. Twelve Data branché pour l'or (`XAU/USD`) et MSCI ACWI (ETF iShares `ACWI`) ; le reste des indices propriétaires visés (Euro Stoxx 50, FTSE 100, CSI 300, Nifty 50, Hang Seng, CAC 40), l'argent, le cuivre et le DXY restent au seed — verrouillés au palier payant ou absents du catalogue sous les codes usuels, voir `config/twelve-data-series.ts`. Palier gratuit à 8 appels par minute. |
-| Bund et OAT 10 ans | **ECB Data Portal**, **Bundesbank**, **Banque de France** | Gratuit, sans clé |
-| Métaux | **Twelve Data** | Or branché ; argent et cuivre verrouillés à un palier payant chez ce fournisseur |
+| Indices actions, FX | **FRED** (huit séries) et **Twelve Data** | FRED : S&P 500, Nasdaq 100, Nikkei 225, EUR/USD, GBP/USD, USD/JPY, Brent, WTI. Twelve Data branché pour l'or (`XAU/USD`) et MSCI ACWI (ETF iShares `ACWI`) ; le reste des indices propriétaires visés (Euro Stoxx 50, FTSE 100, CSI 300, Nifty 50, Hang Seng, CAC 40), l'argent et le DXY restent au seed — verrouillés au palier payant ou absents du catalogue sous les codes usuels, voir `config/twelve-data-series.ts`. Palier gratuit à 8 appels par minute. |
+| Bund, OAT et quatre autres points à 10 ans | **FRED** (taux longs mensuels de l'OCDE) | Gratuit, sans clé — voir plus bas pourquoi le quotidien reste hors de portée |
+| Cuivre | **FRED** (`PCOPPUSDM`, Fonds monétaire international, mensuel) | Gratuit, sans clé — le futur continu `HG1` de Twelve Data reste verrouillé au palier payant |
+| Métaux | **Twelve Data** | Or branché ; argent verrouillé à un palier payant chez ce fournisseur |
 
 Contraintes dans le code :
 - **Un appel par instrument par jour.** Cron à 4 h UTC (6 h heure française, sous réserve du
@@ -1314,7 +1315,10 @@ seed, verrouillés au palier payant ou absents de son catalogue, chacun document
 (voir plus bas) l'a porté à 18. L'activation d'e-Stat (IPC total et sous-jacent, chômage) a
 porté le second chiffre collecté à 31, sur un dénominateur passé à 70 : `jp-wages` a rejoint le
 catalogue à cette occasion mais reste désactivé, faute de données récentes (voir plus bas), donc
-compté au dénominateur sans l'être au numérateur. L'appliquer d'un coup viderait l'application. Chaque source branchée fait donc basculer son périmètre — les séries
+compté au dénominateur sans l'être au numérateur. L'activation d'ECBDFR (taux directeur BCE,
+dépôt) a porté le second chiffre à 32. Le cuivre via FRED (`PCOPPUSDM`) puis quatre points de
+courbe souveraine de plus (Royaume-Uni, Italie, Espagne, Japon, même repli OCDE que Bund et
+OAT — voir plus bas) ont porté le premier chiffre à 23. L'appliquer d'un coup viderait l'application. Chaque source branchée fait donc basculer son périmètre — les séries
 qu'elle couvre passent en collecté, leurs valeurs en dur sont retirées du seed. Les séries
 qu'aucune source ne couvre encore affichent l'état vide plutôt qu'un chiffre inventé.
 
@@ -1503,14 +1507,34 @@ pour la France, tous deux vérifiés par `npm run fred:check` (Percent · Monthl
 OAT ≈ 3,7 %). Les deux spreads (US10Y/Bund, OAT/Bund) restent donc calculés sur une cadence
 mensuelle tant qu'aucune source quotidienne libre de droits n'est trouvée.
 
-Périmètre Twelve Data, le fournisseur dédié pour le reste des onze instruments visés (indices
+**Le même dataflow couvre aussi le Royaume-Uni, l'Italie, l'Espagne et le Japon.** Quatre
+points de courbe de plus, jusque-là au seed, activés sur le même principe : `IRLTLT01GBM156N`,
+`IRLTLT01ITM156N`, `IRLTLT01ESM156N`, `IRLTLT01JPM156N`, tous vérifiés par `npm run fred:check`
+(Percent · Monthly, Gilt ≈ 5,0 %, BTP ≈ 4,0 %, Bono ≈ 3,6 %, JGB ≈ 2,9 % en août 2026).
+`IRLTLT01INM156N` et `IRLTLT01CNM156N` n'existent pas — l'Inde et la Chine ne sont pas membres
+de l'OCDE, donc hors de ce dataflow ; leurs points à 10 ans restent au seed, sans piste
+identifiée pour l'instant. Cette extension ne donne qu'un seul point par pays, pas une courbe
+complète : l'OCDE ne publie que le taux long de référence à 10 ans, jamais les autres
+maturités, qui resteraient de toute façon sous la même licence Bloomberg que Bund et OAT bruts.
+
+**Le cuivre a trouvé une source FRED distincte.** `PCOPPUSDM` (« Global price of Copper », FMI,
+mensuel, dollars par tonne métrique) redistribue ce que Twelve Data verrouille au palier payant
+sous `HG1`. Vérifié par appel réel : les deux fournisseurs cotent le cuivre à des échelles
+différentes ($/tonne contre $/livre chez Twelve Data) — la base YTD et les bornes de
+plausibilité du catalogue ont été recalibrées sur cette échelle avant activation, même piège
+déjà rencontré et corrigé pour `acwi`.
+
+Périmètre Twelve Data, le fournisseur dédié pour le reste des instruments visés (indices
 européens et asiatiques, MSCI ACWI, métaux, DXY) : le palier gratuit ne sert en réalité que
 l'or (`XAU/USD`) et MSCI ACWI, sous la forme de son ETF iShares (`ACWI`, en dollars par part,
-pas en points d'indice — voir `data/seed.json`). Les neuf autres — Euro Stoxx 50, FTSE 100,
-CSI 300, argent, cuivre, CAC 40, Hang Seng, Nifty 50, DXY — sont soit verrouillés à un palier
+pas en points d'indice — voir `data/seed.json`). Les huit autres — Euro Stoxx 50, FTSE 100,
+CSI 300, argent, CAC 40, Hang Seng, Nifty 50, DXY — sont soit verrouillés à un palier
 payant (le symbole existe, la réponse le dit explicitement), soit absents du catalogue sous
 les codes usuels testés, Yahoo-style comme Bloomberg-style. Chaque cas est confirmé par appel
 réel, jamais par la page de tarification, et documenté dans `config/twelve-data-series.ts`.
+Sept d'entre eux (tous sauf le Hang Seng) ont depuis un candidat ETF confirmé chez Alpha
+Vantage, fournisseur de secours — voir `config/alpha-vantage-series.ts` pour l'état
+d'avancement, encore désactivé en attendant les bases YTD réelles.
 Le palier gratuit plafonne à 8 appels par minute, ce qui borne aussi `npm run twelve-data:check`
 à un délai entre symboles plutôt qu'à des appels en rafale.
 
