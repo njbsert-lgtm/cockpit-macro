@@ -49,6 +49,18 @@ const NOT_FOUND =
   "aucun plan — confirmé par appel réel à /quote, réponse « symbol or figi parameter is missing " +
   "or invalid ».";
 
+// Stooq (CSV sans clé) a été sondé comme fournisseur de secours pour les séries ci-dessous,
+// silver comprise : `https://stooq.com/q/d/l/?s=<symbole>&i=d`. Les huit requêtes réelles (via
+// `.github/workflows/verification-sources.yml`, mode `sonder-brut`) reçoivent toutes la même
+// page — un défi anti-robot en JavaScript (preuve de travail SHA-256 à résoudre côté
+// navigateur avant que le CSV ne se charge), jamais les données. Ce n'est pas une question de
+// droits — déjà tranchée — mais un mur technique : aucun appel serveur simple ne le passe, et
+// un navigateur headless serait hors de portée d'un cron Vercel quotidien. Écarté comme
+// fournisseur de secours pour ces séries ; Alpha Vantage et EODHD restent à sonder.
+const STOOQ_BLOCKED =
+  " Sondé chez Stooq comme fournisseur de secours : bloqué par un défi anti-robot en " +
+  "JavaScript, pas par les droits — confirmé par appel réel, voir le commentaire plus haut.";
+
 export const TWELVE_DATA_SERIES: TwelveDataMapping[] = [
   // --- Actives --------------------------------------------------------------
   {
@@ -85,7 +97,7 @@ export const TWELVE_DATA_SERIES: TwelveDataMapping[] = [
     plausible: { min: 1_000, max: 20_000 },
     expect: {},
     enabled: false,
-    disabledReason: PAID_PLAN("Pro or Venture"),
+    disabledReason: PAID_PLAN("Pro or Venture") + STOOQ_BLOCKED,
   },
   {
     target: { kind: "instrument", id: "ukx" },
@@ -94,7 +106,7 @@ export const TWELVE_DATA_SERIES: TwelveDataMapping[] = [
     plausible: { min: 1_000, max: 20_000 },
     expect: {},
     enabled: false,
-    disabledReason: PAID_PLAN("Grow or Venture"),
+    disabledReason: PAID_PLAN("Grow or Venture") + STOOQ_BLOCKED,
   },
   {
     target: { kind: "instrument", id: "csi300" },
@@ -103,7 +115,7 @@ export const TWELVE_DATA_SERIES: TwelveDataMapping[] = [
     plausible: { min: 500, max: 10_000 },
     expect: {},
     enabled: false,
-    disabledReason: PAID_PLAN("Pro or Venture"),
+    disabledReason: PAID_PLAN("Pro or Venture") + STOOQ_BLOCKED,
   },
   {
     target: { kind: "instrument", id: "silver" },
@@ -112,7 +124,7 @@ export const TWELVE_DATA_SERIES: TwelveDataMapping[] = [
     plausible: { min: 1, max: 500 },
     expect: {},
     enabled: false,
-    disabledReason: PAID_PLAN("Grow or Venture"),
+    disabledReason: PAID_PLAN("Grow or Venture") + STOOQ_BLOCKED,
   },
   {
     // Le seul candidat reconnu par Twelve Data pour le cuivre est le future continu `HG1`, lui
@@ -134,7 +146,7 @@ export const TWELVE_DATA_SERIES: TwelveDataMapping[] = [
     plausible: { min: 1_000, max: 20_000 },
     expect: {},
     enabled: false,
-    disabledReason: `${NOT_FOUND} Codes testés : FCHI, PX1, CAC (ce dernier existe mais désigne Camden National Corporation, un titre NASDAQ sans rapport).`,
+    disabledReason: `${NOT_FOUND} Codes testés : FCHI, PX1, CAC (ce dernier existe mais désigne Camden National Corporation, un titre NASDAQ sans rapport).${STOOQ_BLOCKED}`,
   },
   {
     target: { kind: "instrument", id: "hsi" },
@@ -143,7 +155,7 @@ export const TWELVE_DATA_SERIES: TwelveDataMapping[] = [
     plausible: { min: 5_000, max: 60_000 },
     expect: {},
     enabled: false,
-    disabledReason: `${NOT_FOUND} Codes testés : HSI, HANGSENG.`,
+    disabledReason: `${NOT_FOUND} Codes testés : HSI, HANGSENG.${STOOQ_BLOCKED}`,
   },
   {
     target: { kind: "instrument", id: "nifty50" },
@@ -152,7 +164,7 @@ export const TWELVE_DATA_SERIES: TwelveDataMapping[] = [
     plausible: { min: 5_000, max: 60_000 },
     expect: {},
     enabled: false,
-    disabledReason: `${NOT_FOUND} Codes testés : NSEI, NIFTY50, NIFTY.`,
+    disabledReason: `${NOT_FOUND} Codes testés : NSEI, NIFTY50, NIFTY.${STOOQ_BLOCKED}`,
   },
   {
     target: { kind: "instrument", id: "dxy" },
@@ -161,7 +173,7 @@ export const TWELVE_DATA_SERIES: TwelveDataMapping[] = [
     plausible: { min: 50, max: 200 },
     expect: {},
     enabled: false,
-    disabledReason: `${NOT_FOUND} Codes testés : DXY, USDX (ce dernier existe mais désigne SGI Enhanced Core ETF, sans rapport). FRED publie DTWEXBGS, mais c'est l'indice large de la Fed, pas le DXY d'ICE — voir config/fred-series.ts.`,
+    disabledReason: `${NOT_FOUND} Codes testés : DXY, USDX (ce dernier existe mais désigne SGI Enhanced Core ETF, sans rapport). FRED publie DTWEXBGS, mais c'est l'indice large de la Fed, pas le DXY d'ICE — voir config/fred-series.ts.${STOOQ_BLOCKED}`,
   },
 ];
 
