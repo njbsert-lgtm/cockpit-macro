@@ -5364,8 +5364,8 @@
       "label": "Taux directeur (BCE, dépôt)",
       "zone": "ez",
       "unit": "percent",
-      "frequency": "monthly",
-      "seriesKey": "ECB.MRR",
+      "frequency": "business-daily",
+      "seriesKey": "ECBDFR",
       "nextRelease": "2026-09-11"
     },
     {

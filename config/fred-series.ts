@@ -394,10 +394,10 @@ export const FRED_SERIES: FredMapping[] = [
   // `ECBDFR` est l'identifiant usuel de la facilité de dépôt chez FRED, à la cadence
   // quotidienne, ce qui en fait un palier au même titre que `DFEDTARU`.
   //
-  // **Laissé désactivé faute d'appel réel.** La règle du dépôt est qu'une série ne passe en
-  // collecte qu'après être sortie verte de `npm run fred:check`, et cet identifiant n'a pas
-  // encore été confronté à l'API. C'est le seul geste qui manque : lancer le script, puis
-  // basculer `enabled` si les métadonnées correspondent à ce que `expect` déclare.
+  // Confirmée par appel réel (`npm run fred:check` via le workflow) : « ECB Deposit Facility
+  // Rate for Euro Area », Percent · Daily, 7-Day — 2,5 % du 23 au 25/09/2026, dans les bornes
+  // déclarées. Le catalogue (`data/seed.json`) déclarait ce taux mensuel ; corrigé en
+  // `business-daily`, même correction déjà faite pour `us-policy-rate`.
   {
     target: { kind: "macro", id: "ez-policy-rate" },
     seriesId: "ECBDFR",
@@ -405,13 +405,7 @@ export const FRED_SERIES: FredMapping[] = [
     cadence: "business-daily",
     plausible: { min: -2, max: 15 },
     expect: { units: "Percent", frequency: "Daily" },
-    enabled: false,
-    disabledReason:
-      "Jamais confrontée à l'API — aucune clé FRED disponible au moment de l'écriture. " +
-      "Lancer `npm run fred:check` et n'activer que si la série sort verte ; si l'identifiant " +
-      "a été retiré, la route de repli est le portail BCE (dataflow FM, clé " +
-      "B.U2.EUR.4F.KR.DFR.LEV), libre de droits puisque la BCE publie là son propre " +
-      "instrument — contrairement aux cotations Bund et OAT, sous licence Bloomberg.",
+    enabled: true,
   },
 
   {
