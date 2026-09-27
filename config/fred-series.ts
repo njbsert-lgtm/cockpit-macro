@@ -497,15 +497,20 @@ export const FRED_SERIES: FredMapping[] = [
   // (dernier point 2025-03 et 2025-04) — même défaut que `USAB6BLTT02STSAQ` ci-dessus,
   // laissées de côté sans entrée de config puisqu'aucune n'est activable. `NAEXKP01CNQ657S`
   // (Chine, même convention) n'existe pas du tout chez FRED.
+  //
+  // Confirmée par `npm run fred:check` : « National Accounts: GDP by Expenditure: Constant
+  // Prices: Gross Domestic Product: Total for India », Growth rate previous period ·
+  // Quarterly — exactement ce qu'attend le catalogue. Bornes élargies de [-20 ; 20] à
+  // [-30 ; 30] après un premier rejet réel et informatif : le confinement du T2 2020 produit
+  // -24 % en un seul trimestre, une valeur réelle et documentée, pas une unité erronée.
   {
     target: { kind: "macro", id: "in-gdp" },
     seriesId: "NAEXKP01INQ657S",
     units: "lin",
     cadence: "quarterly",
-    plausible: { min: -20, max: 20 },
-    expect: { frequency: "Quarterly" },
-    enabled: false,
-    disabledReason: "Jamais confrontée à `fred:check` — seule l'existence de la série est confirmée.",
+    plausible: { min: -30, max: 30 },
+    expect: { units: "Growth rate previous period", frequency: "Quarterly" },
+    enabled: true,
   },
 ];
 
