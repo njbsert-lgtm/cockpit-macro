@@ -22,16 +22,16 @@
  *   été écarté au profit de C50.PAR pour la même raison qui a déjà écarté EWU/EWQ/EWH : la
  *   devise de référence prime, même quand le premier candidat était déjà vérifié.
  *
- * **Toutes les entrées ci-dessous restent désactivées.** La plupart des prix ont été confirmés
+ * **Toutes les entrées ci-dessous restent désactivées.** Les huit prix ont tous été confirmés
  * par un appel réel (`GLOBAL_QUOTE`, clôture du 25/09/2026, voir le commentaire de chaque
- * entrée) ; `sx5e` (C50.PAR) ne l'est pas encore. L'activation exige encore, par instrument : la
- * confirmation par appel réel pour C50.PAR, puis pour tous, la clôture réelle du 31/12/2025 pour
- * `ytdBasis` (aucune n'a été collectée — `GLOBAL_QUOTE` ne donne que le dernier cours, pas
- * l'historique) et la correction du `note`/`unit` du catalogue dans `data/seed.json`, sur le
- * modèle déjà appliqué à `acwi` et `copper` : les échelles actuelles du seed sont des points
- * d'indice (ex. `sx5e` autour de 4 950), incompatibles avec un cours de part ETF. Activer sans
- * cette correction reproduirait exactement le bug de mise à l'échelle déjà attrapé deux fois
- * cette session (`acwi`, `copper`).
+ * entrée), à l'exception du Hang Seng — voir `hsi` plus bas. L'activation exige encore, par
+ * instrument, la clôture réelle du 31/12/2025 pour `ytdBasis` (aucune n'a été collectée —
+ * `GLOBAL_QUOTE` ne donne que le dernier cours, pas l'historique) et la correction du
+ * `note`/`unit` du catalogue dans `data/seed.json`, sur le modèle déjà appliqué à `acwi` et
+ * `copper` : les échelles actuelles du seed sont des points d'indice (ex. `sx5e` autour de
+ * 4 950), incompatibles avec un cours de part ETF (C50.PAR à 169,60 €). Activer sans cette
+ * correction reproduirait exactement le bug de mise à l'échelle déjà attrapé deux fois cette
+ * session (`acwi`, `copper`).
  *
  * Palier gratuit : 25 appels par jour, 5 par minute — plus contraignant que Twelve Data (8/min).
  * Sept instruments à raison d'un appel quotidien chacun tiennent largement dans ce budget une
@@ -83,18 +83,13 @@ export const ALPHA_VANTAGE_SERIES: AlphaVantageMapping[] = [
     // référence de l'indice. Remplace FEZ (SPDR Euro Stoxx 50, confirmé à 68,65 $ le
     // 25/09/2026 mais coté à New York en dollars) : la devise de référence prime sur un
     // candidat déjà confirmé mais dans la mauvaise devise, même exigence que pour ukx et cac.
-    // **Pas encore confirmé par appel réel** — candidat à tester, pas un prix vérifié.
+    // Confirmé par appel réel à 169,60 € le 25/09/2026 (clôture précédente 169,34 €).
     target: { kind: "instrument", id: "sx5e" },
     symbol: "C50.PAR",
     cadence: "business-daily",
     plausible: { min: 10, max: 300 },
     enabled: false,
-    disabledReason:
-      "Candidat non confirmé par appel réel — voir sonder-alphavantage dans " +
-      ".github/workflows/verification-sources.yml. Remplace FEZ (confirmé mais en dollars, " +
-      "coté à New York) pour respecter la devise de référence de l'indice, sur le même " +
-      "principe que ukx (ISF.LON) et cac (CAC.PAR)." +
-      PENDING_YTD_BASIS,
+    disabledReason: PENDING_YTD_BASIS,
   },
   {
     // ISF.LON (iShares Core FTSE 100 UCITS ETF, place de Londres) — coté en pence sterling
