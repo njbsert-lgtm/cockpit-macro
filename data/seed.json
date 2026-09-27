@@ -225,8 +225,8 @@
         "global"
       ],
       "unit": "usd",
-      "ytdBasis": 4.47,
-      "note": "+47 % sur un an, déficit de concentrés, goulet d'étranglement électrique de l'IA."
+      "ytdBasis": 11790.96,
+      "note": "+39 % sur un an (FRED, PCOPPUSDM), déficit de concentrés, goulet d'étranglement électrique de l'IA."
     },
     {
       "id": "eurusd",
@@ -1733,34 +1733,6 @@
       "instrumentId": "silver",
       "date": "2026-08-12",
       "value": 63.1,
-      "source": "seed",
-      "fetchedAt": "2026-08-12T19:05:00Z"
-    },
-    {
-      "instrumentId": "copper",
-      "date": "2025-12-31",
-      "value": 4.47,
-      "source": "seed",
-      "fetchedAt": "2025-12-31T21:05:00Z"
-    },
-    {
-      "instrumentId": "copper",
-      "date": "2026-07-13",
-      "value": 6.3,
-      "source": "seed",
-      "fetchedAt": "2026-07-13T21:05:00Z"
-    },
-    {
-      "instrumentId": "copper",
-      "date": "2026-08-06",
-      "value": 6.52,
-      "source": "seed",
-      "fetchedAt": "2026-08-06T21:05:00Z"
-    },
-    {
-      "instrumentId": "copper",
-      "date": "2026-08-12",
-      "value": 6.57,
       "source": "seed",
       "fetchedAt": "2026-08-12T19:05:00Z"
     },
