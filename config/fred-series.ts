@@ -356,6 +356,26 @@ export const FRED_SERIES: FredMapping[] = [
     // à zéro rejetterait une valeur réelle, comme les bornes du PIB espagnol l'ont fait.
   },
 
+  // --- Cuivre — à vérifier avant activation -----------------------------
+  //
+  // `PCOPPUSDM` (« Global price of Copper », FMI, redistribuée par FRED) est un candidat pour
+  // `copper`, resté verrouillé au palier payant chez Twelve Data. Jamais confrontée à l'API
+  // depuis cet environnement, sans accès réseau sortant : `expect` porte une attente à vérifier,
+  // pas une certitude. Mensuelle si elle sort verte — Twelve Data n'offre rien de mieux ici de
+  // toute façon, verrouillé.
+  {
+    target: { kind: "instrument", id: "copper" },
+    seriesId: "PCOPPUSDM",
+    units: "lin",
+    cadence: "monthly",
+    plausible: { min: 0.5, max: 50 },
+    expect: { frequency: "Monthly" },
+    enabled: false,
+    disabledReason:
+      "Jamais confrontée à l'API — aucune clé FRED disponible au moment de l'écriture. " +
+      "Lancer `npm run fred:check` et n'activer que si la série sort verte.",
+  },
+
   // `dxy` reste non collecté. FRED publie bien un indice du dollar (DTWEXBGS), mais c'est
   // l'indice large de la Fed, pondéré par les échanges commerciaux sur une vingtaine de
   // devises — pas le DXY d'ICE, qui en compte six. Les deux ne cotent ni sur la même base ni
