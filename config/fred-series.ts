@@ -488,6 +488,25 @@ export const FRED_SERIES: FredMapping[] = [
       "L'ISM a fait retirer ses indices de FRED pour des raisons de licence. L'existence " +
       "de ce code n'est pas confirmée — `npm run fred:check` tranchera.",
   },
+
+  // --- Inde — croissance du PIB, même famille OCDE MEI ------------------------------
+  //
+  // `NAEXKP01INQ657S` (OCDE, MEI, croissance trimestre sur trimestre précédent) répond avec
+  // des points récents (jusqu'à 2026-04-01), contrairement à `CPALTT01INM659N` (IPC Inde) et
+  // `CPALTT01CNM659N` (IPC Chine), trouvées dans la même exploration mais discontinuées
+  // (dernier point 2025-03 et 2025-04) — même défaut que `USAB6BLTT02STSAQ` ci-dessus,
+  // laissées de côté sans entrée de config puisqu'aucune n'est activable. `NAEXKP01CNQ657S`
+  // (Chine, même convention) n'existe pas du tout chez FRED.
+  {
+    target: { kind: "macro", id: "in-gdp" },
+    seriesId: "NAEXKP01INQ657S",
+    units: "lin",
+    cadence: "quarterly",
+    plausible: { min: -20, max: 20 },
+    expect: { frequency: "Quarterly" },
+    enabled: false,
+    disabledReason: "Jamais confrontée à `fred:check` — seule l'existence de la série est confirmée.",
+  },
 ];
 
 export const ENABLED_SERIES = FRED_SERIES.filter((s) => s.enabled);
