@@ -83,6 +83,7 @@ const EURO_AREA_GEO: Record<string, string> = {
   namq_10_gdp: "EA",
   une_rt_m: "EA21",
   teina205: "EA21",
+  teina230: "EA21",
 };
 
 /** Traduit notre code de zone en code Eurostat pour un dataset donné. */
@@ -200,6 +201,36 @@ function budgetBalance(geo: string, suffix: string): EurostatMapping {
   };
 }
 
+const DEBT_GDP_BOUNDS = { min: 0, max: 250 };
+
+/**
+ * Dette publique / PIB, sur `teina230` (« General government gross debt », trimestriel) — le
+ * dataset jumeau de `teina205` pour le solde budgétaire, même famille « euro indicators »
+ * (préfixe `tei`). Dimensions confirmées par `eurostat:explore` : `na_item=GD` (Government
+ * consolidated gross debt, seule valeur), `sector=S13`, `unit=PC_GDP` — sans suffixe NSA cette
+ * fois, contrairement à `teina205`. Trois zones ont une entrée au catalogue : `ez`, `fr`, `it` ;
+ * `de` et `es` n'en ont pas.
+ */
+function debtGdp(geo: string, suffix: string): EurostatMapping {
+  return {
+    target: { kind: "macro", id: idFor(geo, suffix) },
+    dataset: "teina230",
+    dimensions: {
+      freq: "Q",
+      na_item: "GD",
+      sector: "S13",
+      unit: "PC_GDP",
+      geo: geoFor(geo, "teina230"),
+    },
+    cadence: "quarterly",
+    zone: GEO[geo],
+    plausible: DEBT_GDP_BOUNDS,
+    expect: { frequency: "Quarterly" },
+    enabled: false,
+    disabledReason: "Jamais confrontée à `npm run eurostat:check` — dimensions confirmées par eurostat:explore.",
+  };
+}
+
 export const EUROSTAT_SERIES: EurostatMapping[] = [
   // --- Inflation totale (IPCH, glissement annuel) --------------------------
   // `TOTAL` : l'ensemble des postes. En ECOICOP v2 il remplace `CP00`, qui n'existe plus —
@@ -221,6 +252,11 @@ export const EUROSTAT_SERIES: EurostatMapping[] = [
   // --- Solde budgétaire (zone euro et France uniquement) --------------------
   budgetBalance("EA", "budget-balance"),
   budgetBalance("FR", "budget-balance"),
+
+  // --- Dette publique / PIB (zone euro, France, Italie) ----------------------
+  debtGdp("EA", "debt-gdp"),
+  debtGdp("FR", "debt-gdp"),
+  debtGdp("IT", "debt-gdp"),
 ];
 
 /**
