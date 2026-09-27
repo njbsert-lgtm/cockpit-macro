@@ -394,11 +394,15 @@ jobs:
         # Premier passage (CURRENCY_EXCHANGE_RATE pour l'argent, SYMBOL_SEARCH par mot-clé pour
         # les indices) n'a rien donné d'utilisable : XAG non reconnu comme devise, et pour CAC
         # et Hang Seng, les résultats nommaient un produit inverse et une banque, pas l'indice.
-        # Deuxième passage : un ETF réel par instrument, sur le même principe que MSCI ACWI
-        # (`acwi`) déjà dans le catalogue — un fonds investissable qui réplique l'indice, pas
-        # l'indice lui-même, donc jamais présenté comme un chiffre exact. Chaque candidat est un
-        # couple fonction/paramètre plutôt qu'un mot-clé fixe, pour rejouer la sonde avec
-        # d'autres candidats sans réécrire le script.
+        # Deuxième passage, un ETF réel par instrument (même principe que MSCI ACWI, `acwi`,
+        # déjà dans le catalogue) : quatre confirmés par un vrai prix (SLV pour l'argent, FEZ
+        # pour Euro Stoxx 50, ASHR pour CSI 300, UUP pour le DXY), quatre sans résultat via
+        # `SYMBOL_SEARCH` par mot-clé (FTSE 100, CAC 40, Hang Seng, Nifty 50 — le mot-clé
+        # n'atteint que peu de tickers). Troisième passage : un ticker ETF précis par
+        # `GLOBAL_QUOTE` pour ces quatre, plutôt qu'un mot-clé — EWU, EWQ, EWH, INDY, les ETF
+        # MSCI pays iShares les plus proches de chaque indice, jamais l'indice lui-même. Chaque
+        # candidat est un couple fonction/paramètre, pour rejouer la sonde sans réécrire le
+        # script.
         #
         # Palier gratuit à 25 appels par jour et 5 par minute : un appel par identifiant, 15 s
         # d'écart, jamais plusieurs hypothèses dans le même passage.
@@ -418,11 +422,11 @@ jobs:
           declare -A CANDIDATES=(
             [silver]="GLOBAL_QUOTE:symbol=SLV"
             [sx5e]="GLOBAL_QUOTE:symbol=FEZ"
-            [ukx]="SYMBOL_SEARCH:keywords=FTSE 100 ETF"
-            [cac]="SYMBOL_SEARCH:keywords=Amundi CAC 40 ETF"
-            [hsi]="SYMBOL_SEARCH:keywords=Hang Seng Index Fund"
+            [ukx]="GLOBAL_QUOTE:symbol=EWU"
+            [cac]="GLOBAL_QUOTE:symbol=EWQ"
+            [hsi]="GLOBAL_QUOTE:symbol=EWH"
             [csi300]="GLOBAL_QUOTE:symbol=ASHR"
-            [nifty50]="SYMBOL_SEARCH:keywords=Nifty 50 ETF"
+            [nifty50]="GLOBAL_QUOTE:symbol=INDY"
             [dxy]="GLOBAL_QUOTE:symbol=UUP"
           )
           IDS="silver sx5e ukx cac hsi csi300 nifty50 dxy"
