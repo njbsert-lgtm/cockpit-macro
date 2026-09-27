@@ -144,6 +144,17 @@ export const ONS_SERIES: OnsMapping[] = [
   // dataset PSA ou son remplaçant présumé PUSF. Plutôt que de deviner un chemin de plus,
   // désactivée jusqu'à confirmation par appel réel (même discipline que `us-pmi` : on documente
   // l'incertitude plutôt que d'activer une série non vérifiée).
+  //
+  // Trois pistes de découverte tentées en plus, toutes des impasses réelles : l'ancien point de
+  // recherche `api.ons.gov.uk/search` répond le même message de décommissionnement que l'ancien
+  // point de données ; `api.ons.gov.uk/v1/search` (même famille que le point de données qui
+  // fonctionne, `api.ons.gov.uk/v1/data`) répond un corps vide, sans erreur ; et la page de
+  // recherche humaine (`www.ons.gov.uk/timeseries?query=...`) est rendue côté client — son HTML
+  // brut ne contient que des liens de langue/canonique, aucun résultat, donc rien à en extraire
+  // sans un navigateur. Le CDID `PSAB` lui-même n'a jamais été confronté à la nouvelle API :
+  // l'obstacle rencontré à chaque fois est de découvrir le bon `topic`, pas de le deviner à
+  // l'aveugle une fois qu'on l'a. À relocaliser via une recherche manuelle sur ons.gov.uk avant
+  // d'activer.
   {
     target: { kind: "macro", id: "uk-budget-balance" },
     topic: "economy/governmentpublicsectorandtaxes/publicsectorfinance",
@@ -158,8 +169,10 @@ export const ONS_SERIES: OnsMapping[] = [
       "chemin de la nouvelle API non confirmé — l'ancien point de terminaison " +
       "(api.ons.gov.uk/timeseries/psab/dataset/psa/data) a été retiré le 25/11/2024, et ni " +
       "governmentpublicsectorandtaxes/publicsectorfinance ni .../publicspending, avec PSA ou " +
-      "PUSF comme dataset, ne répondent sur api.ons.gov.uk/v1/data?uri=. À relocaliser avant " +
-      "d'activer.",
+      "PUSF comme dataset, ne répondent sur api.ons.gov.uk/v1/data?uri=. Recherche automatisée " +
+      "du bon chemin également en impasse : api.ons.gov.uk/search décommissionné, " +
+      "api.ons.gov.uk/v1/search vide, et la page de recherche humaine est rendue côté client. " +
+      "À relocaliser via une recherche manuelle avant d'activer.",
   },
 ];
 
