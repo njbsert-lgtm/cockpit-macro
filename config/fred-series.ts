@@ -257,6 +257,57 @@ export const FRED_SERIES: FredMapping[] = [
     enabled: true,
   },
 
+  // --- Royaume-Uni, Italie, Espagne, Japon — même repli OCDE que Bund et OAT --------
+  //
+  // Le même dataflow OCDE (« Main Economic Indicators », taux longs) couvre ces quatre places,
+  // pas seulement l'Allemagne et la France : `IRLTLT01<pays>M156N` existe pour `GB`, `IT`, `ES`
+  // et `JP`, confirmé par appel direct à `fred/series/observations` (pas encore par
+  // `fred:check`, qui valide aussi les métadonnées avant activation) — huit points 2026 par
+  // série, dans l'ordre de grandeur attendu (Gilt ≈ 5,0 %, BTP ≈ 4,0 %, Bono ≈ 3,6 %,
+  // JGB ≈ 2,9 % en août 2026). `IRLTLT01INM156N` et `IRLTLT01CNM156N` n'existent pas — l'Inde et
+  // la Chine ne sont pas membres de l'OCDE, donc hors de ce dataflow ; leurs courbes restent au
+  // seed, sans piste identifiée pour l'instant.
+  {
+    target: { kind: "instrument", id: "uk10y" },
+    seriesId: "IRLTLT01GBM156N",
+    units: "lin",
+    cadence: "monthly",
+    plausible: YIELD_BOUNDS,
+    expect: { units: "Percent", frequency: "Monthly" },
+    enabled: false,
+    disabledReason: "Jamais confrontée à `fred:check` — seule l'existence de la série est confirmée.",
+  },
+  {
+    target: { kind: "instrument", id: "it10y" },
+    seriesId: "IRLTLT01ITM156N",
+    units: "lin",
+    cadence: "monthly",
+    plausible: YIELD_BOUNDS,
+    expect: { units: "Percent", frequency: "Monthly" },
+    enabled: false,
+    disabledReason: "Jamais confrontée à `fred:check` — seule l'existence de la série est confirmée.",
+  },
+  {
+    target: { kind: "instrument", id: "es10y" },
+    seriesId: "IRLTLT01ESM156N",
+    units: "lin",
+    cadence: "monthly",
+    plausible: YIELD_BOUNDS,
+    expect: { units: "Percent", frequency: "Monthly" },
+    enabled: false,
+    disabledReason: "Jamais confrontée à `fred:check` — seule l'existence de la série est confirmée.",
+  },
+  {
+    target: { kind: "instrument", id: "jp10y" },
+    seriesId: "IRLTLT01JPM156N",
+    units: "lin",
+    cadence: "monthly",
+    plausible: YIELD_BOUNDS,
+    expect: { units: "Percent", frequency: "Monthly" },
+    enabled: false,
+    disabledReason: "Jamais confrontée à `fred:check` — seule l'existence de la série est confirmée.",
+  },
+
   // --- Désactivées --------------------------------------------------------
 
   // --- Marchés : ce que FRED publie déjà --------------------------------
