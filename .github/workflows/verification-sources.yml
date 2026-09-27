@@ -36,8 +36,9 @@ on:
           - explorer-estat
           - estat-getdata
           - fred-release-dates
+          - sonder-alphavantage
       series:
-        description: "Séries à vérifier (vide = toutes). Explorer : « catalogue <terme> » ou « <dataset> <dimension> ». Sonder-hôte : l'hôte. Sonder-marché : rien. Sonder-page : une URL, ou « URL||motif-grep ». Sonder-twelvedata : rien (tous les candidats). Twelve-data : symbole(s), ex. XAU/USD. Fred-observation / twelve-data-observation : « ID(S)||AAAA-MM-JJ||AAAA-MM-JJ » (plusieurs séries séparées par une virgule, début||fin)"
+        description: "Séries à vérifier (vide = toutes). Explorer : « catalogue <terme> » ou « <dataset> <dimension> ». Sonder-hôte : l'hôte. Sonder-marché : rien. Sonder-page : une URL, ou « URL||motif-grep ». Sonder-twelvedata : rien (tous les candidats). Twelve-data : symbole(s), ex. XAU/USD. Fred-observation / twelve-data-observation : « ID(S)||AAAA-MM-JJ||AAAA-MM-JJ » (plusieurs séries séparées par une virgule, début||fin). Sonder-alphavantage : identifiants séparés par un espace (vide = tous les candidats — silver, sx5e, ukx, cac, hsi, csi300, nifty50, dxy)"
         type: string
         required: false
         default: ""
@@ -385,6 +386,58 @@ jobs:
             done
           } | tee -a "$GITHUB_STEP_SUMMARY"
           echo '```' | tee -a "$GITHUB_STEP_SUMMARY"
+
+      - name: Sonder Alpha Vantage
+        # Fournisseur de secours pour les instruments verrouillés chez Twelve Data, après
+        # l'échec de Stooq (défi anti-robot en JavaScript, voir config/twelve-data-series.ts).
+        # Deux mécanismes distincts, jamais un symbole deviné : `CURRENCY_EXCHANGE_RATE` pour
+        # l'argent (XAG est un code devise ISO 4217, au même titre que XAU déjà collecté chez
+        # Twelve Data) ; `SYMBOL_SEARCH` pour les indices et le DXY — la nomenclature des
+        # indices n'est pas standardisée, mieux vaut demander à la source son propre symbole
+        # que d'en écrire un et attendre l'échec.
+        #
+        # Palier gratuit à 25 appels par jour et 5 par minute : un appel par identifiant, 15 s
+        # d'écart, jamais plusieurs hypothèses dans le même passage.
+        if: ${{ inputs.source == 'sonder-alphavantage' }}
+        env:
+          APIKEY: ${{ secrets.ALPHA_VANTAGE_API }}
+          ONLY: ${{ inputs.series }}
+        run: |
+          set +e -o pipefail
+          if [ -z "$APIKEY" ]; then
+            echo "ALPHA_VANTAGE_API absente des secrets du dépôt — étape sautée." | tee -a "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          declare -A KEYWORDS=(
+            [sx5e]="EURO STOXX 50"
+            [ukx]="FTSE 100"
+            [cac]="CAC 40"
+            [hsi]="HANG SENG"
+            [csi300]="CSI 300"
+            [nifty50]="NIFTY 50"
+            [dxy]="US DOLLAR INDEX"
+          )
+          IDS="silver sx5e ukx cac hsi csi300 nifty50 dxy"
+          if [ -n "$ONLY" ]; then IDS="$ONLY"; fi
+          {
+            echo '## Alpha Vantage — candidats'
+            echo '```'
+            for id in $IDS; do
+              echo "--- $id ---"
+              if [ "$id" = "silver" ]; then
+                curl -sS -m 15 -G --data-urlencode "function=CURRENCY_EXCHANGE_RATE" \
+                  --data-urlencode "from_currency=XAG" --data-urlencode "to_currency=USD" \
+                  --data-urlencode "apikey=$APIKEY" "https://www.alphavantage.co/query"
+              else
+                curl -sS -m 15 -G --data-urlencode "function=SYMBOL_SEARCH" \
+                  --data-urlencode "keywords=${KEYWORDS[$id]}" --data-urlencode "apikey=$APIKEY" \
+                  "https://www.alphavantage.co/query"
+              fi
+              echo
+              sleep 15
+            done
+            echo '```'
+          } | tee -a "$GITHUB_STEP_SUMMARY"
 
       - name: Twelve Data
         # Exécute `npm run twelve-data:check`, le contrôle permanent — pas la sonde ad hoc
