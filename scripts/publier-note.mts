@@ -7,7 +7,7 @@ import { construireArtefactsPublication } from "../lib/redaction/publication";
 import { BROUILLONS_DIR } from "../lib/redaction/run";
 import { assembleContent } from "../lib/content-assembly";
 import { parseNote, readNoteSources } from "../lib/notes";
-import { getInstruments } from "../lib/data";
+import { getInstruments, getMacroIndicators } from "../lib/data";
 import { DRIVERS } from "../content/drivers";
 import { TRENDS } from "../content/tendances";
 import { SCENARIO_VERSIONS } from "../content/scenarios";
@@ -96,6 +96,7 @@ async function main(): Promise<void> {
       outlooks: OUTLOOKS,
       generated: { scenarios: scenariosGeneres, trendDeltas: tendancesGenerees },
       instrumentIds: new Set(getInstruments().map((i) => i.id)),
+      macroIndicatorIds: new Set(getMacroIndicators().map((i) => i.id)),
     });
   } catch (erreur) {
     console.error(
