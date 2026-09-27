@@ -453,6 +453,50 @@ export function attributionDans(phrase: string, emetteurs: string[]): string | n
  * de tolérance doit s'appliquer aux deux moments, sans quoi un chiffre jugé correct à la
  * rédaction pourrait être jugé faux à la publication pour une raison purement technique.
  */
+/**
+ * Certaines séries collectées sont une fourchette, pas un niveau unique — la Fed fixe une
+ * cible haute et une cible basse, publiées par FRED comme deux séries distinctes (`DFEDTARU`,
+ * `DFEDTARL`). Une phrase qui nomme « Taux directeur (Fed funds) » une seule fois et écrit
+ * « 4,25-4,50 % » cite pourtant deux niveaux : sans ce rattachement, la borne basse serait
+ * confrontée à la valeur haute et bloquerait sur un écart qui n'en est pas un.
+ *
+ * Portée volontairement étroite : seule la borne haute (l'instrument réellement nommé dans le
+ * paquet) déclenche la recherche, et seule la forme « X-Y » ou « X–Y » est reconnue — la forme
+ * établie dans les notes existantes (voir 2026-S38). Une fourchette écrite autrement (« entre
+ * 4,25 % et 4,50 % ») n'est pas reconnue et se confronte alors, comme avant, entièrement à la
+ * borne haute.
+ */
+const BORNE_BASSE: Record<string, string> = {
+  "us-policy-rate": "us-policy-rate-lower",
+};
+
+const NOMBRE_SANS_SIGNE = /\d[\d   ]*(?:[.,]\d+)?/;
+const FOURCHETTE = new RegExp(
+  `(${NOMBRE_SANS_SIGNE.source})\\s*[-–]\\s*(${NOMBRE_SANS_SIGNE.source})`,
+);
+
+/** La borne basse à substituer à `nommes[0]`, par position du nombre dans `nue`. */
+function bornesDeFourchette(
+  nue: string,
+  instrumentNomme: ObservationContexte,
+  paquet: ContextePaquet,
+): Map<number, ObservationContexte> {
+  const overrides = new Map<number, ObservationContexte>();
+  const idBasse = BORNE_BASSE[instrumentNomme.instrumentId];
+  if (!idBasse) return overrides;
+
+  const basse = paquet.observations.find((o) => o.instrumentId === idBasse);
+  if (!basse) return overrides; // pas encore collectée : on retombe sur le comportement d'avant
+
+  const m = FOURCHETTE.exec(nue);
+  if (!m) return overrides;
+
+  // Le premier nombre de la paire est la borne basse par convention d'écriture (« bas-haut ») —
+  // celle déjà en usage dans le corpus. Le second reste `nommes[0]`, déjà la bonne borne.
+  overrides.set(m.index, basse);
+  return overrides;
+}
+
 export function extraireVerdicts(
   aControler: Array<[string, string]>,
   paquet: ContextePaquet,
@@ -486,6 +530,8 @@ export function extraireVerdicts(
         ...(periode ? [periode] : []),
       ];
       const nue = masquer(phrase, aMasquer);
+      const bornes: Map<number, ObservationContexte> =
+        nommes.length > 0 ? bornesDeFourchette(nue, nommes[0], paquet) : new Map();
 
       let finPrecedente = 0;
       for (const m of nue.matchAll(NOMBRE)) {
@@ -501,7 +547,7 @@ export function extraireVerdicts(
         const commun = { ecrit, valeur, bloc };
 
         if (nommes.length > 0) {
-          const obs = nommes[0];
+          const obs = bornes.get(m.index) ?? nommes[0];
           const estVariation = Boolean(periode) && estUneVariation(nue, debutDuSegment, m.index);
           // Une variation se recalcule dans n'importe quelle unité déclarée — un indice se
           // rapporte toujours en pourcentage. Seul le niveau brut exige que l'unité écrite

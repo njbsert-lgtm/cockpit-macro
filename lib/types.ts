@@ -43,7 +43,9 @@ export type MacroIndicator = {
   label: string;
   zone: Zone;
   unit: "percent" | "index" | "level";
-  frequency: "monthly" | "quarterly";
+  // 'business-daily' n'a qu'un représentant : un taux directeur, fixé par un comité mais
+  // republié chaque jour ouvré par la source (voir `lib/paliers.ts`).
+  frequency: "business-daily" | "monthly" | "quarterly";
   seriesKey: string; // identifiant chez la source, ex. FRED
   nextRelease: string | null;
 };

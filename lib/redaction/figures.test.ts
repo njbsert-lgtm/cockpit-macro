@@ -354,6 +354,76 @@ describe("régime A — la base fait foi, sans exception", () => {
   });
 });
 
+describe("régime A — la fourchette de la Fed cite deux bornes", () => {
+  const FED_HAUT = obs({
+    instrumentId: "us-policy-rate",
+    label: "Taux directeur (Fed funds)",
+    unit: "percent",
+    valeurs: [{ date: "2026-09-16", value: 4.5 }],
+    ytdBasis: null,
+  });
+  const FED_BAS = obs({
+    instrumentId: "us-policy-rate-lower",
+    label: "Taux directeur (Fed funds) — borne basse",
+    unit: "percent",
+    valeurs: [{ date: "2026-09-16", value: 4.25 }],
+    ytdBasis: null,
+  });
+
+  it("confronte chaque borne à sa propre série, sans faire d'écart entre elles", () => {
+    // Le bug que la borne basse résout : sans elle, « 4,25 » se ferait confronter à 4,50 (la
+    // seule série alors disponible) et bloquerait en écart alors que les deux chiffres sont
+    // exacts.
+    const r = controler(
+      "Le taux directeur (Fed funds) est relevé à 4,25-4,50 % au 16/09.",
+      { ...paquet([FED_HAUT, FED_BAS]), date: "2026-09-20" },
+    );
+    expect(r.bloque).toBe(false);
+    expect(r.verdicts).toHaveLength(2);
+    expect(r.verdicts[0]).toMatchObject({
+      ecrit: "4,25",
+      regime: "A",
+      verdict: "conforme",
+      source: "us-policy-rate-lower au 16/09",
+    });
+    expect(r.verdicts[1]).toMatchObject({
+      ecrit: "4,50",
+      regime: "A",
+      verdict: "conforme",
+      source: "us-policy-rate au 16/09",
+    });
+  });
+
+  it("détecte un vrai écart sur la seule borne fautive", () => {
+    const fautive = obs({ ...FED_BAS, valeurs: [{ date: "2026-09-16", value: 4.0 }] });
+    const r = controler(
+      "Le taux directeur (Fed funds) est relevé à 4,25-4,50 % au 16/09.",
+      { ...paquet([FED_HAUT, fautive]), date: "2026-09-20" },
+    );
+    expect(r.bloque).toBe(true);
+    expect(r.verdicts[0]).toMatchObject({ verdict: "ecart", valeurBase: "4" });
+    expect(r.verdicts[1]).toMatchObject({ verdict: "conforme" });
+  });
+
+  it("sans la série basse encore collectée, retombe sur l'ancien comportement — la borne basse se compare à la haute", () => {
+    const r = controler(
+      "Le taux directeur (Fed funds) est relevé à 4,25-4,50 % au 16/09.",
+      { ...paquet([FED_HAUT]), date: "2026-09-20" },
+    );
+    expect(r.verdicts[0]).toMatchObject({ ecrit: "4,25", verdict: "ecart", valeurBase: "4,5" });
+    expect(r.verdicts[1]).toMatchObject({ ecrit: "4,50", verdict: "conforme" });
+  });
+
+  it("une seule borne citée reste vérifiée normalement, sans chercher de fourchette", () => {
+    const r = controler(
+      "Le taux directeur (Fed funds) ressort à 4,50 % au 16/09.",
+      { ...paquet([FED_HAUT, FED_BAS]), date: "2026-09-20" },
+    );
+    expect(r.verdicts).toHaveLength(1);
+    expect(r.verdicts[0]).toMatchObject({ verdict: "conforme", source: "us-policy-rate au 16/09" });
+  });
+});
+
 describe("régime B — dans la fiche, et attribué", () => {
   it("accepte un nombre littéralement dans la fiche et attribué dans la phrase", () => {
     const r = controler(

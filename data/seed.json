@@ -5293,8 +5293,17 @@
       "label": "Taux directeur (Fed funds)",
       "zone": "us",
       "unit": "percent",
-      "frequency": "monthly",
+      "frequency": "business-daily",
       "seriesKey": "DFEDTARU",
+      "nextRelease": "2026-10-28"
+    },
+    {
+      "id": "us-policy-rate-lower",
+      "label": "Taux directeur (Fed funds) — borne basse",
+      "zone": "us",
+      "unit": "percent",
+      "frequency": "business-daily",
+      "seriesKey": "DFEDTARL",
       "nextRelease": "2026-10-28"
     },
     {

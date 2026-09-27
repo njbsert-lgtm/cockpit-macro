@@ -66,6 +66,8 @@ La date que tu écris doit être celle d'une clôture que la table porte. Une da
 
 **Recopie les décimales de la table.** Tu peux en perdre une au plus : si la table porte 102,96, « 103,0 » passe et « 103 » non. Un arrondi plus grossier rendrait le contrôle incapable de distinguer ta valeur d'une autre.
 
+**Le taux directeur de la Fed est une fourchette, pas un chiffre.** La table porte deux lignes distinctes — la borne haute (\`us-policy-rate\`) et la borne basse (\`us-policy-rate-lower\`). Cite les deux, dans une seule phrase qui nomme l'instrument une fois, sous la forme « 4,25-4,50 % » (basse-haute, séparées par un tiret) : c'est la seule forme que le contrôle sait rattacher à chaque ligne. Écrite autrement — « entre 4,25 % et 4,50 % » — les deux nombres se confrontent à la borne haute et l'un des deux sera signalé à tort.
+
 **Régime B — un chiffre absent de la table.** Décision de banque centrale, chiffre d'étude, prévision de maison, statistique non collectée. Deux conditions, toutes deux vérifiées mécaniquement :
 
 1. **Le nombre se retrouve littéralement dans la fiche.** Tu le recopies exactement : « 2,50 % » ne se réécrit pas « 2,5 % », et un arrondi introduit par toi est un chiffre fabriqué, même de peu.

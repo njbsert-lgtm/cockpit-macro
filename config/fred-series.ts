@@ -160,9 +160,23 @@ export const FRED_SERIES: FredMapping[] = [
   // --- Politique monétaire ------------------------------------------------
   {
     // Haut de la fourchette des Fed funds. Quotidienne chez FRED, pas mensuelle comme le
-    // seed le déclarait : c'est la cadence de la source qui fait foi.
+    // seed le déclarait : c'est la cadence de la source qui fait foi — corrigé dans le
+    // catalogue (`MacroIndicator.frequency`) en même temps que l'ajout de la borne basse.
     target: { kind: "macro", id: "us-policy-rate" },
     seriesId: "DFEDTARU",
+    units: "lin",
+    cadence: "business-daily",
+    plausible: { min: 0, max: 25 },
+    expect: { units: "Percent", frequency: "Daily" },
+    enabled: true,
+  },
+  {
+    // Bas de la fourchette. La Fed fixe une cible haute et une cible basse, jamais un chiffre
+    // unique — les collecter séparément est ce que la source publie, pas un choix. Sans cette
+    // série, une note qui cite « 4,25-4,50 % » ferait confronter la borne basse au niveau
+    // stocké de la borne haute (`lib/redaction/figures.ts`, `BORNE_BASSE`).
+    target: { kind: "macro", id: "us-policy-rate-lower" },
+    seriesId: "DFEDTARL",
     units: "lin",
     cadence: "business-daily",
     plausible: { min: 0, max: 25 },
