@@ -1,5 +1,6 @@
 import { mappingForInstrument, mappingForMacro } from "./fred-series";
 import { twelveDataMappingForInstrument } from "./twelve-data-series";
+import { alphaVantageMappingForInstrument } from "./alpha-vantage-series";
 import { eurostatMappingFor } from "./eurostat-series";
 import { onsMappingFor } from "./ons-series";
 import { estatMappingFor } from "./estat-series";
@@ -23,13 +24,17 @@ import { estatMappingFor } from "./estat-series";
  * (`enabled: true`) : rien ici n'a besoin de changer. Ce fichier ne change que le jour où une
  * *nouvelle* source rejoint la chaîne d'un identifiant déjà couvert.
  */
-export type Provider = "fred" | "twelve-data" | "eurostat" | "ons" | "estat";
+export type Provider = "fred" | "twelve-data" | "alpha-vantage" | "eurostat" | "ons" | "estat";
 
 type Maillon = { source: Provider; actif: (id: string) => boolean };
 
 const CHAINE_INSTRUMENT: Maillon[] = [
   { source: "fred", actif: (id) => mappingForInstrument(id) !== null },
   { source: "twelve-data", actif: (id) => twelveDataMappingForInstrument(id) !== null },
+  // Toutes les entrées d'ALPHA_VANTAGE_SERIES restent désactivées (voir ce fichier) : ce
+  // maillon n'active encore rien, mais sa présence permet de l'activer sans toucher à la chaîne
+  // le jour où les ytdBasis du seed auront été recalibrés sur l'échelle des ETF trouvés.
+  { source: "alpha-vantage", actif: (id) => alphaVantageMappingForInstrument(id) !== null },
 ];
 
 const CHAINE_MACRO: Maillon[] = [

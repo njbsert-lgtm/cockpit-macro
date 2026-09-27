@@ -155,7 +155,13 @@ export const TWELVE_DATA_SERIES: TwelveDataMapping[] = [
     plausible: { min: 5_000, max: 60_000 },
     expect: {},
     enabled: false,
-    disabledReason: `${NOT_FOUND} Codes testés : HSI, HANGSENG.${STOOQ_BLOCKED}`,
+    disabledReason:
+      `${NOT_FOUND} Codes testés : HSI, HANGSENG.${STOOQ_BLOCKED} Sondé aussi chez Alpha ` +
+      `Vantage comme fournisseur de secours (voir config/alpha-vantage-series.ts) : le seul ` +
+      `ETF qui réplique explicitement le Hang Seng (Tracker Fund of Hong Kong, 2800) renvoie un ` +
+      `Global Quote vide sous « .HKG » comme sous « .HK » — le palier gratuit ne couvre ` +
+      `vraisemblablement pas la place de Hong Kong. Seul instrument des huit encore sans aucun ` +
+      `candidat confirmé.`,
   },
   {
     target: { kind: "instrument", id: "nifty50" },

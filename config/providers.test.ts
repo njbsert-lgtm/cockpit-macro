@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { FRED_SERIES } from "./fred-series";
 import { TWELVE_DATA_SERIES } from "./twelve-data-series";
+import { ALPHA_VANTAGE_SERIES } from "./alpha-vantage-series";
 import { EUROSTAT_SERIES } from "./eurostat-series";
 import { ONS_SERIES } from "./ons-series";
 import { ESTAT_SERIES } from "./estat-series";
@@ -19,6 +20,7 @@ import {
 const instrumentIds = new Set([
   ...FRED_SERIES.filter((m) => m.target.kind === "instrument").map((m) => m.target.id),
   ...TWELVE_DATA_SERIES.map((m) => m.target.id),
+  ...ALPHA_VANTAGE_SERIES.map((m) => m.target.id),
 ]);
 
 const macroIds = new Set([
