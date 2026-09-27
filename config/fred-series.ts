@@ -454,6 +454,15 @@ export const FRED_SERIES: FredMapping[] = [
   },
 
   {
+    // IEABC est publiée en millions de dollars, le seed attend un pourcentage du PIB — `pc1` ne
+    // convient pas : une variation relative n'a pas de sens sur une grandeur qui traverse zéro.
+    // Un candidat en ratio au PIB existe bien chez FRED — `USAB6BLTT02STSAQ`, redistribution
+    // OCDE (MEI), même famille que les taux longs `IRLTLT01xxM156N` qui ont résolu Bund/OAT et
+    // les quatre points de courbe ci-dessus — mais confirmé mort par appel réel : 100
+    // observations trimestrielles de 2000 à fin 2024, puis plus rien alors que la fenêtre
+    // demandée allait jusqu'à aujourd'hui. Un écart de deux ans n'est pas un retard de
+    // publication normal, c'est une série que l'OCDE a cessé d'alimenter sous cet identifiant.
+    // La retenir produirait un indicateur éternellement périmé plutôt qu'un trou honnête.
     target: { kind: "macro", id: "us-current-account" },
     seriesId: "IEABC",
     units: "lin",
@@ -464,7 +473,8 @@ export const FRED_SERIES: FredMapping[] = [
     disabledReason:
       "Publiée en millions de dollars, le seed attend un pourcentage du PIB. `pc1` ne " +
       "convient pas : une variation relative n'a pas de sens sur une grandeur qui traverse " +
-      "zéro. Il faudrait une série de ratio au PIB, à identifier.",
+      "zéro. Candidat de ratio identifié (USAB6BLTT02STSAQ, OCDE) mais confirmé discontinué " +
+      "depuis fin 2024 par appel réel — voir le commentaire ci-dessus.",
   },
   {
     target: { kind: "macro", id: "us-pmi" },
