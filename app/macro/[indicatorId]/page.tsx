@@ -7,7 +7,10 @@ import { formatIndicatorValue, METRIC_LABELS, metricOf } from "@/lib/macro";
 import { formatDateLong, formatDateShort } from "@/lib/format";
 import { ZONE_LABELS } from "@/lib/zones";
 import { ZONE_PARAM } from "@/lib/zone-param";
+import { estNonCollectee } from "@/lib/provenance";
 import { DataValue } from "@/components/states/DataValue";
+import { NonCollecteBadge } from "@/components/states/NonCollecteBadge";
+import { SerieNonCollectee } from "@/components/states/SerieNonCollectee";
 import { HistorySection } from "@/components/charts/HistorySection";
 import { enPointsDeBase, estEnPalier, paliersDe } from "@/lib/paliers";
 
@@ -57,11 +60,13 @@ export default async function MacroIndicatorPage({
             date={latest.date}
             fetchedAt={latest.fetchedAt}
             source={latest.source}
+            showSource
           />
         ) : (
           <span className="text-13 italic text-tenu">Aucun relevé pour l&rsquo;instant</span>
         )}
       </div>
+      {estNonCollectee(latest) && <SerieNonCollectee />}
 
       <p className="mt-3 text-11 text-tenu">
         {nextRelease
@@ -127,7 +132,9 @@ export default async function MacroIndicatorPage({
                         <td className="px-3.5 py-2 font-semibold tabular-nums text-encre">
                           {formatIndicatorValue(indicator, o.value)}
                         </td>
-                        <td className="px-3.5 py-2 text-12-5 text-tenu">{o.source}</td>
+                        <td className="px-3.5 py-2 text-12-5 text-tenu">
+                          {estNonCollectee(o) ? <NonCollecteBadge /> : o.source}
+                        </td>
                       </tr>
                     ))}
               </tbody>

@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { ObservationsBySeries } from "@/lib/observations";
+import { SEED_SOURCE } from "@/lib/provenance";
 import { construireObservationsDepuis, type EntreeObservable } from "./observations";
 
 function bySeries(entries: Record<string, Array<{ date: string; value: number }>>): ObservationsBySeries {
@@ -36,6 +37,33 @@ describe("construireObservationsDepuis", () => {
     };
     const series = bySeries({ cac40: [{ date: "2026-09-01", value: 7600 }] });
     expect(construireObservationsDepuis([entree], series, "2026-09-19", jamaisCouvert)).toEqual([]);
+  });
+
+  it("exclut une série couverte retombée sur le seed parce que la base ne répond pas", () => {
+    // Couverte ne suffit pas : base injoignable pendant le run du samedi, la série arrive avec
+    // les valeurs du seed. Le régime A ne doit jamais juger une note contre elles.
+    const entree: EntreeObservable = {
+      id: "spx",
+      label: "S&P 500",
+      unit: "index",
+      cadence: "business-daily",
+      ytdBasis: 5881.63,
+    };
+    const series: ObservationsBySeries = new Map([
+      [
+        "spx",
+        [
+          {
+            instrumentId: "spx",
+            date: "2026-08-13",
+            value: 6400,
+            source: SEED_SOURCE,
+            fetchedAt: "2026-08-13T20:05:00Z",
+          },
+        ],
+      ],
+    ]);
+    expect(construireObservationsDepuis([entree], series, "2026-09-26", toujoursCouvert)).toEqual([]);
   });
 
   it("calcule la variation d'un indicateur mensuel malgré l'écart de trente jours entre relevés", () => {

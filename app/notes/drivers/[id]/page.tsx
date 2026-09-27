@@ -17,6 +17,7 @@ import { BRANCH_LABELS, BRANCH_ORDER, LIKELIHOOD_LABELS } from "@/lib/scenario-l
 import { DriverBranches } from "@/components/notes/DriverBranches";
 import { ScenarioTrajectory } from "@/components/notes/ScenarioTrajectory";
 import { DataValue } from "@/components/states/DataValue";
+import { NonCollecteBadge } from "@/components/states/NonCollecteBadge";
 import { TREND_STATUS_CLASS, TREND_STATUS_LABEL } from "@/lib/trend-labels";
 
 /**
@@ -151,7 +152,7 @@ export default async function DriverPage({ params }: { params: Promise<{ id: str
               </div>
               {alerts.length > 0 && (
                 <ul className="mt-2 flex flex-col gap-1">
-                  {alerts.map(({ rule, event }) => (
+                  {alerts.map(({ rule, event, nonCollecte }) => (
                     <li
                       key={`${event.ruleId}-${event.firedAt}`}
                       className="border-l-3 border-k-choc bg-k-choc/11 px-3 py-1.5 text-13 text-doux"
@@ -159,6 +160,11 @@ export default async function DriverPage({ params }: { params: Promise<{ id: str
                       <span className="text-10-5 font-semibold uppercase tracking-cap text-k-choc">
                         Alerte
                       </span>{" "}
+                      {nonCollecte && (
+                        <>
+                          <NonCollecteBadge />{" "}
+                        </>
+                      )}
                       {rule.label} — {event.direction === "up" ? "hausse" : "baisse"} de{" "}
                       {rule.measure === "percent"
                         ? formatSignedPct(event.direction === "up" ? event.observed : -event.observed)

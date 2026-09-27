@@ -7,17 +7,14 @@ import { FRED_SOURCE } from "./fred";
 const NOW = new Date("2026-08-18T12:00:00Z");
 
 describe("getFreshnessSummary — seules les sources collectées figurent", () => {
-  it("n'emprunte jamais la date du seed, même pour une source qui y est étiquetée", async () => {
-    // Le bug : une entrée du seed étiquetée « FRED » et datée d'avril écrasait ce que le cron
-    // venait d'écrire, la fusion retenant le relevé le plus ancien. `us-current-account` en
-    // est le cas le plus retors — il n'est même pas collecté, mais son entrée porte quand même
-    // l'étiquette FRED, donc l'exclure série par série n'aurait pas suffi.
-    const piegees = getMacroIndicators()
-      .flatMap((i) => getMacroObservations(i.id))
-      .filter((o) => o.source === FRED_SOURCE);
-    // Le cas existe bel et bien dans le seed — sans quoi ce test ne prouverait rien.
-    expect(piegees.length).toBeGreaterThan(0);
-    expect(piegees.some((o) => o.fetchedAt < "2026-05")).toBe(true);
+  it("n'emprunte jamais la date du seed", async () => {
+    // Le bug d'origine : une entrée du seed étiquetée « FRED » et datée d'avril écrasait ce que
+    // le cron venait d'écrire, la fusion retenant le relevé le plus ancien. Le seed ne peut plus
+    // s'étiqueter FRED (`lib/provenance.test.ts`), mais il porte toujours des dates anciennes :
+    // aucune ne doit ressortir au nom d'une source collectée.
+    const seedees = getMacroIndicators().flatMap((i) => getMacroObservations(i.id));
+    // Il y a bien des dates anciennes à emprunter — sans quoi ce test ne prouverait rien.
+    expect(seedees.some((o) => o.fetchedAt < "2026-05")).toBe(true);
 
     // Et pourtant aucune de ces dates ne ressort au nom de FRED.
     const summary = await getFreshnessSummary(NOW);

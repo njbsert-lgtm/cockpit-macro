@@ -15,7 +15,9 @@ import { getDriversForInstrument, getNotes } from "@/lib/content";
 import { BRANCH_LABELS } from "@/lib/scenario-labels";
 import { formatDateLong } from "@/lib/format";
 import type { AssetClass } from "@/lib/types";
+import { estNonCollectee } from "@/lib/provenance";
 import { DataValue } from "@/components/states/DataValue";
+import { SerieNonCollectee } from "@/components/states/SerieNonCollectee";
 import { PerfValue } from "@/components/marches/PerfValue";
 import { HistorySection } from "@/components/charts/HistorySection";
 
@@ -71,11 +73,13 @@ export default async function InstrumentPage({
             date={latest.date}
             fetchedAt={latest.fetchedAt}
             source={latest.source}
+            showSource
           />
         ) : (
           <span className="text-13 italic text-tenu">Aucun relevé pour l&rsquo;instant</span>
         )}
       </div>
+      {estNonCollectee(latest) && <SerieNonCollectee />}
 
       <dl className="mt-5 grid grid-cols-3 gap-3 rounded-rc border border-trait bg-page p-4 sm:max-w-md">
         <div>

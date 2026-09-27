@@ -14,6 +14,7 @@ import { getInstrumentsByAssetClass } from "@/lib/data";
 import { loadObservations, observationsOf, type ObservationsBySeries } from "@/lib/observations";
 import { dailyChange, latestObservation, MAX_SESSION_GAP_DAYS, ytdChange } from "@/lib/performance";
 import { freshnessTier } from "@/lib/freshness";
+import { estNonCollectee } from "@/lib/provenance";
 import { ZONE_LABELS } from "@/lib/zones";
 import { formatDateLong } from "@/lib/format";
 import type { AssetClass, Instrument, Zone } from "@/lib/types";
@@ -49,8 +50,11 @@ function buildRows(
   return instruments.map((instrument) => {
     const obs = observationsOf(bySeries, instrument.id);
     const latest = latestObservation(obs);
-    const change = dailyChange(obs);
-    const ytd = ytdChange(instrument, obs);
+    // Rien ne se calcule sur une valeur saisie à la main : une pastille verte ou un YTD rouge
+    // dessinés sur des chiffres inventés se liraient comme de vrais mouvements.
+    const nonCollecte = estNonCollectee(latest);
+    const change = nonCollecte ? null : dailyChange(obs);
+    const ytd = nonCollecte ? null : ytdChange(instrument, obs);
     const sorted = [...obs].sort((a, b) => a.date.localeCompare(b.date));
     const previous = sorted.at(-2) ?? null;
 
@@ -63,7 +67,8 @@ function buildRows(
       tier: freshnessTier(latest?.fetchedAt),
       change: change ? formatDailyChange(instrument, change) : null,
       direction: change?.direction ?? null,
-      ytd: formatYtd(instrument, obs),
+      ytd: nonCollecte ? null : formatYtd(instrument, obs),
+      nonCollecte,
       // Un écart exactement nul reste « flat » : il ne se peint ni en vert ni en rouge.
       ytdDirection: ytd === null ? null : ytd.absolute > 0 ? "up" : ytd.absolute < 0 ? "down" : "flat",
       changeUnavailableReason: change

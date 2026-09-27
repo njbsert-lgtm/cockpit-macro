@@ -12,7 +12,12 @@ export function ruleInstrumentId(rule: AlertRule): string {
     : `spread-${rule.target.longLegId}-${rule.target.shortLegId}`;
 }
 
-export type InstrumentAlert = { rule: AlertRule; event: AlertEvent };
+/**
+ * `nonCollecte` : aucun moteur d'alertes ne tourne encore, tous les événements viennent de
+ * `data/seed.json` — écrits à la main pour éprouver l'affichage, jamais déclenchés par une
+ * clôture réelle. Le jour où le moteur écrit en base, ses événements porteront `false`.
+ */
+export type InstrumentAlert = { rule: AlertRule; event: AlertEvent; nonCollecte: boolean };
 
 /** Les alertes déclenchées sur un instrument, de la plus récente à la plus ancienne. */
 export function getAlertsForInstrument(instrumentId: string): InstrumentAlert[] {
@@ -25,5 +30,5 @@ export function getAlertsForInstrument(instrumentId: string): InstrumentAlert[] 
   return getAlertEvents()
     .filter((e) => rules.has(e.ruleId))
     .sort((a, b) => b.firedAt.localeCompare(a.firedAt))
-    .map((event) => ({ rule: rules.get(event.ruleId)!, event }));
+    .map((event) => ({ rule: rules.get(event.ruleId)!, event, nonCollecte: true }));
 }

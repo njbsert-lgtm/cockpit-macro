@@ -1,6 +1,8 @@
 import { formatDateLong, formatDateShort } from "@/lib/format";
 import { freshnessTier } from "@/lib/freshness";
+import { SEED_SOURCE } from "@/lib/provenance";
 import { FreshnessDot } from "./FreshnessDot";
+import { NonCollecteBadge } from "./NonCollecteBadge";
 
 type DataValueProps = {
   value: string | null; // null = non suivi pour ce point (pas la même chose qu'une source en panne)
@@ -9,6 +11,8 @@ type DataValueProps = {
   source: string;
   now?: Date;
   size?: "sm" | "md";
+  /** Nommer la source aussi quand la valeur est fraîche — sur les fiches, pas dans les listes. */
+  showSource?: boolean;
 };
 
 /**
@@ -22,12 +26,30 @@ export function DataValue({
   source,
   now,
   size = "md",
+  showSource = false,
 }: DataValueProps) {
   const valueClass = size === "sm" ? "text-14-5" : "text-15-5";
 
   if (value === null || date === null) {
     return (
       <span className="text-13 italic text-tenu">non suivi</span>
+    );
+  }
+
+  // Avant la fraîcheur : une valeur du seed n'est pas une collecte en retard, c'est une
+  // collecte qui n'existe pas. Un point rouge « dernière valeur connue » la ferait passer
+  // pour une vraie donnée dont seule la copie aurait vieilli.
+  if (source === SEED_SOURCE) {
+    return (
+      <span className="inline-flex flex-col gap-1">
+        <span className={`font-semibold tabular-nums text-encre ${valueClass}`}>
+          {value}
+        </span>
+        <span className="inline-flex items-center gap-1.5 text-11 text-doux">
+          <NonCollecteBadge />
+          saisie à la main · au {formatDateShort(date)}
+        </span>
+      </span>
     );
   }
 
@@ -76,6 +98,7 @@ export function DataValue({
       </span>
       <span className="text-11 text-tenu" title={formatDateLong(date)}>
         au {formatDateShort(date)}
+        {showSource && ` · source : ${source}`}
       </span>
     </span>
   );

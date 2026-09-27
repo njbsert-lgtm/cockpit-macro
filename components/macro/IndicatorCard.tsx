@@ -3,6 +3,7 @@ import type { MacroIndicator, Observation } from "@/lib/types";
 import { formatIndicatorValue } from "@/lib/macro";
 import { resolveNextRelease } from "@/lib/next-release";
 import { formatDateLong, formatDateShort } from "@/lib/format";
+import { estNonCollectee } from "@/lib/provenance";
 import { DataValue } from "@/components/states/DataValue";
 import { Sparkline } from "./Sparkline";
 
@@ -16,7 +17,10 @@ export function IndicatorCard({
   const obs = [...observations].sort((a, b) => a.date.localeCompare(b.date));
   const latest = obs.at(-1) ?? null;
   const previous = obs.length > 1 ? obs[obs.length - 2] : null;
-  const variation = latest && previous ? latest.value - previous.value : null;
+  // Une variation calculée sur des valeurs saisies à la main se peindrait en vert ou en rouge
+  // comme un vrai mouvement : l'étiquette de la valeur ne suffirait pas à la désamorcer.
+  const variation =
+    latest && previous && !estNonCollectee(latest) ? latest.value - previous.value : null;
   const nextRelease = resolveNextRelease(indicator.nextRelease);
 
   return (

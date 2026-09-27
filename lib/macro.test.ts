@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { comparisonRows, recentMacroChanges } from "./macro";
 import type { MacroIndicator, Observation } from "./types";
+import { SEED_SOURCE } from "./provenance";
 
 function indicator(over: Partial<MacroIndicator> = {}): MacroIndicator {
   return {
@@ -32,6 +33,15 @@ describe("recentMacroChanges", () => {
     expect(changes[0].date).toBe("2026-08-20");
     expect(changes[0].value).toBe(2.1);
     expect(changes[0].variation).toBeCloseTo(0.3, 10);
+  });
+
+  it("écarte une valeur du seed, même datée de la semaine : ce n'est pas une publication", () => {
+    const ind = indicator();
+    const bySeries = new Map([
+      [ind.id, [obs("2026-08-01", 1.8, { source: SEED_SOURCE }), obs("2026-08-20", 2.1, { source: SEED_SOURCE })]],
+    ]);
+
+    expect(recentMacroChanges([ind], bySeries, NOW)).toHaveLength(0);
   });
 
   it("écarte un indicateur dont le dernier relevé date de plus de 7 jours", () => {

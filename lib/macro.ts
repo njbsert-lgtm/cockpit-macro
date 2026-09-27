@@ -1,6 +1,7 @@
 import type { MacroIndicator, Observation, Zone } from "./types";
 import { getMacroIndicators } from "./data";
 import { observationsOf, type ObservationsBySeries } from "./observations";
+import { estNonCollectee } from "./provenance";
 
 // Chaque id d'indicateur suit le motif '${zone}-${metrique}' (ex. 'fr-cpi-core'), ce qui
 // permet de regrouper les indicateurs par métrique pour le mode comparaison sans champ
@@ -87,7 +88,9 @@ export function recentMacroChanges(
       a.date.localeCompare(b.date),
     );
     const latest = obs.at(-1);
-    if (!latest || latest.date < cutoffIso) continue;
+    // « Publié cette semaine » affirme une publication : une valeur saisie à la main n'en est
+    // pas une, quelle que soit la date qu'elle porte.
+    if (!latest || latest.date < cutoffIso || estNonCollectee(latest)) continue;
     const previous = obs.length > 1 ? obs[obs.length - 2] : null;
     changes.push({
       indicator,

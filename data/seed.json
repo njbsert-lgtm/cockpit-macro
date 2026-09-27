@@ -970,4284 +970,4284 @@
       "instrumentId": "ndx",
       "date": "2026-07-27",
       "value": 24000,
-      "source": "Twelve Data",
+      "source": "seed",
       "fetchedAt": "2026-07-27T21:05:00Z"
     },
     {
       "instrumentId": "ndx",
       "date": "2026-07-28",
       "value": 24050,
-      "source": "Twelve Data",
+      "source": "seed",
       "fetchedAt": "2026-07-28T21:05:00Z"
     },
     {
       "instrumentId": "ndx",
       "date": "2026-07-29",
       "value": 24020,
-      "source": "Twelve Data",
+      "source": "seed",
       "fetchedAt": "2026-07-29T21:05:00Z"
     },
     {
       "instrumentId": "ndx",
       "date": "2026-07-30",
       "value": 24400,
-      "source": "Twelve Data",
+      "source": "seed",
       "fetchedAt": "2026-07-30T21:05:00Z"
     },
     {
       "instrumentId": "ndx",
       "date": "2026-07-31",
       "value": 24700,
-      "source": "Twelve Data",
+      "source": "seed",
       "fetchedAt": "2026-07-31T21:05:00Z"
     },
     {
       "instrumentId": "ndx",
       "date": "2026-08-03",
       "value": 25550,
-      "source": "Twelve Data",
+      "source": "seed",
       "fetchedAt": "2026-08-03T21:05:00Z"
     },
     {
       "instrumentId": "ndx",
       "date": "2026-08-04",
       "value": 25500,
-      "source": "Twelve Data",
+      "source": "seed",
       "fetchedAt": "2026-08-04T21:05:00Z"
     },
     {
       "instrumentId": "ndx",
       "date": "2026-08-05",
       "value": 25300,
-      "source": "Twelve Data",
+      "source": "seed",
       "fetchedAt": "2026-08-05T21:05:00Z"
     },
     {
       "instrumentId": "ndx",
       "date": "2026-08-06",
       "value": 25150,
-      "source": "Twelve Data",
+      "source": "seed",
       "fetchedAt": "2026-08-06T21:05:00Z"
     },
     {
       "instrumentId": "ndx",
       "date": "2026-08-07",
       "value": 25200,
-      "source": "Twelve Data",
+      "source": "seed",
       "fetchedAt": "2026-08-07T21:05:00Z"
     },
     {
       "instrumentId": "ndx",
       "date": "2026-08-10",
       "value": 25100,
-      "source": "Twelve Data",
+      "source": "seed",
       "fetchedAt": "2026-08-10T21:05:00Z"
     },
     {
       "instrumentId": "ndx",
       "date": "2026-08-11",
       "value": 25000,
-      "source": "Twelve Data",
+      "source": "seed",
       "fetchedAt": "2026-08-11T21:05:00Z"
     },
     {
       "instrumentId": "ndx",
       "date": "2026-08-12",
       "value": 24950,
-      "source": "Twelve Data",
+      "source": "seed",
       "fetchedAt": "2026-08-12T21:05:00Z"
     },
     {
       "instrumentId": "ndx",
       "date": "2026-08-13",
       "value": 25000,
-      "source": "Twelve Data",
+      "source": "seed",
       "fetchedAt": "2026-08-13T21:05:00Z"
     },
     {
       "instrumentId": "spx",
       "date": "2025-08-13",
       "value": 5500,
-      "source": "Financial Modeling Prep",
+      "source": "seed",
       "fetchedAt": "2025-08-13T21:05:00Z"
     },
     {
       "instrumentId": "spx",
       "date": "2025-12-31",
       "value": 5450,
-      "source": "Financial Modeling Prep",
+      "source": "seed",
       "fetchedAt": "2025-12-31T21:05:00Z"
     },
     {
       "instrumentId": "spx",
       "date": "2026-07-13",
       "value": 5850,
-      "source": "Financial Modeling Prep",
+      "source": "seed",
       "fetchedAt": "2026-07-13T21:05:00Z"
     },
     {
       "instrumentId": "spx",
       "date": "2026-07-27",
       "value": 5960,
-      "source": "Financial Modeling Prep",
+      "source": "seed",
       "fetchedAt": "2026-07-27T21:05:00Z"
     },
     {
       "instrumentId": "spx",
       "date": "2026-08-03",
       "value": 6010,
-      "source": "Financial Modeling Prep",
+      "source": "seed",
       "fetchedAt": "2026-08-03T21:05:00Z"
     },
     {
       "instrumentId": "spx",
       "date": "2026-08-10",
       "value": 5985,
-      "source": "Financial Modeling Prep",
+      "source": "seed",
       "fetchedAt": "2026-08-10T21:05:00Z"
     },
     {
       "instrumentId": "spx",
       "date": "2026-08-12",
       "value": 5965,
-      "source": "Financial Modeling Prep",
+      "source": "seed",
       "fetchedAt": "2026-08-12T21:05:00Z"
     },
     {
       "instrumentId": "spx",
       "date": "2026-08-13",
       "value": 5965.4,
-      "source": "Financial Modeling Prep",
+      "source": "seed",
       "fetchedAt": "2026-08-13T21:05:00Z"
     },
     {
       "instrumentId": "sx5e",
       "date": "2026-07-13",
       "value": 5300,
-      "source": "Financial Modeling Prep",
+      "source": "seed",
       "fetchedAt": "2026-07-13T21:05:00Z"
     },
     {
       "instrumentId": "sx5e",
       "date": "2026-07-27",
       "value": 5380,
-      "source": "Financial Modeling Prep",
+      "source": "seed",
       "fetchedAt": "2026-07-27T21:05:00Z"
     },
     {
       "instrumentId": "sx5e",
       "date": "2026-08-03",
       "value": 5410,
-      "source": "Financial Modeling Prep",
+      "source": "seed",
       "fetchedAt": "2026-08-03T21:05:00Z"
     },
     {
       "instrumentId": "sx5e",
       "date": "2026-08-10",
       "value": 5430,
-      "source": "Financial Modeling Prep",
+      "source": "seed",
       "fetchedAt": "2026-08-10T21:05:00Z"
     },
     {
       "instrumentId": "sx5e",
       "date": "2026-08-12",
       "value": 5432,
-      "source": "Financial Modeling Prep",
+      "source": "seed",
       "fetchedAt": "2026-08-12T20:05:00Z"
     },
     {
       "instrumentId": "ukx",
       "date": "2026-07-13",
       "value": 8780,
-      "source": "Twelve Data",
+      "source": "seed",
       "fetchedAt": "2026-07-13T21:05:00Z"
     },
     {
       "instrumentId": "ukx",
       "date": "2026-07-27",
       "value": 8850,
-      "source": "Twelve Data",
+      "source": "seed",
       "fetchedAt": "2026-07-27T21:05:00Z"
     },
     {
       "instrumentId": "ukx",
       "date": "2026-08-10",
       "value": 8865,
-      "source": "Twelve Data",
+      "source": "seed",
       "fetchedAt": "2026-08-10T21:05:00Z"
     },
     {
       "instrumentId": "ukx",
       "date": "2026-08-12",
       "value": 8862,
-      "source": "Twelve Data",
+      "source": "seed",
       "fetchedAt": "2026-08-12T17:35:00Z"
     },
     {
       "instrumentId": "cac",
       "date": "2026-07-13",
       "value": 8150,
-      "source": "Financial Modeling Prep",
+      "source": "seed",
       "fetchedAt": "2026-07-13T21:05:00Z"
     },
     {
       "instrumentId": "cac",
       "date": "2026-07-27",
       "value": 8210,
-      "source": "Financial Modeling Prep",
+      "source": "seed",
       "fetchedAt": "2026-07-27T21:05:00Z"
     },
     {
       "instrumentId": "cac",
       "date": "2026-08-06",
       "value": 8180,
-      "source": "Financial Modeling Prep",
+      "source": "seed",
       "fetchedAt": "2026-08-06T21:05:00Z"
     },
     {
       "instrumentId": "cac",
       "date": "2026-08-12",
       "value": 8195,
-      "source": "Financial Modeling Prep",
+      "source": "seed",
       "fetchedAt": "2026-08-12T16:35:00Z"
     },
     {
       "instrumentId": "nky",
       "date": "2026-07-13",
       "value": 50200,
-      "source": "Twelve Data",
+      "source": "seed",
       "fetchedAt": "2026-07-13T21:05:00Z"
     },
     {
       "instrumentId": "nky",
       "date": "2026-07-27",
       "value": 50900,
-      "source": "Twelve Data",
+      "source": "seed",
       "fetchedAt": "2026-07-27T21:05:00Z"
     },
     {
       "instrumentId": "nky",
       "date": "2026-08-06",
       "value": 51050,
-      "source": "Twelve Data",
+      "source": "seed",
       "fetchedAt": "2026-08-06T21:05:00Z"
     },
     {
       "instrumentId": "nky",
       "date": "2026-08-12",
       "value": 51020,
-      "source": "Twelve Data",
+      "source": "seed",
       "fetchedAt": "2026-08-12T06:10:00Z"
     },
     {
       "instrumentId": "hsi",
       "date": "2026-07-13",
       "value": 20250,
-      "source": "Twelve Data",
+      "source": "seed",
       "fetchedAt": "2026-07-13T21:05:00Z"
     },
     {
       "instrumentId": "hsi",
       "date": "2026-07-27",
       "value": 20300,
-      "source": "Twelve Data",
+      "source": "seed",
       "fetchedAt": "2026-07-27T21:05:00Z"
     },
     {
       "instrumentId": "hsi",
       "date": "2026-08-12",
       "value": 20280,
-      "source": "Twelve Data",
+      "source": "seed",
       "fetchedAt": "2026-08-12T08:10:00Z"
     },
     {
       "instrumentId": "csi300",
       "date": "2026-07-13",
       "value": 3610,
-      "source": "Twelve Data",
+      "source": "seed",
       "fetchedAt": "2026-07-13T21:05:00Z"
     },
     {
       "instrumentId": "csi300",
       "date": "2026-08-06",
       "value": 3618,
-      "source": "Twelve Data",
+      "source": "seed",
       "fetchedAt": "2026-08-06T21:05:00Z"
     },
     {
       "instrumentId": "csi300",
       "date": "2026-08-11",
       "value": 3616,
-      "source": "Twelve Data",
+      "source": "seed",
       "fetchedAt": "2026-08-11T07:10:00Z"
     },
     {
       "instrumentId": "nifty50",
       "date": "2026-07-13",
       "value": 22150,
-      "source": "Twelve Data",
+      "source": "seed",
       "fetchedAt": "2026-07-13T21:05:00Z"
     },
     {
       "instrumentId": "nifty50",
       "date": "2026-07-27",
       "value": 22050,
-      "source": "Twelve Data",
+      "source": "seed",
       "fetchedAt": "2026-07-27T21:05:00Z"
     },
     {
       "instrumentId": "nifty50",
       "date": "2026-08-06",
       "value": 22080,
-      "source": "Twelve Data",
+      "source": "seed",
       "fetchedAt": "2026-08-06T21:05:00Z"
     },
     {
       "instrumentId": "nifty50",
       "date": "2026-08-10",
       "value": 22070,
-      "source": "Twelve Data",
+      "source": "seed",
       "fetchedAt": "2026-08-10T11:40:00Z"
     },
     {
       "instrumentId": "us10y",
       "date": "2026-08-03",
       "value": 4.72,
-      "source": "FRED",
+      "source": "seed",
       "fetchedAt": "2026-08-03T21:05:00Z"
     },
     {
       "instrumentId": "us10y",
       "date": "2026-08-04",
       "value": 4.7,
-      "source": "FRED",
+      "source": "seed",
       "fetchedAt": "2026-08-04T21:05:00Z"
     },
     {
       "instrumentId": "us10y",
       "date": "2026-08-06",
       "value": 4.68,
-      "source": "FRED",
+      "source": "seed",
       "fetchedAt": "2026-08-06T21:05:00Z"
     },
     {
       "instrumentId": "us10y",
       "date": "2026-08-07",
       "value": 4.66,
-      "source": "FRED",
+      "source": "seed",
       "fetchedAt": "2026-08-07T21:05:00Z"
     },
     {
       "instrumentId": "us10y",
       "date": "2026-08-10",
       "value": 4.67,
-      "source": "FRED",
+      "source": "seed",
       "fetchedAt": "2026-08-10T21:05:00Z"
     },
     {
       "instrumentId": "us10y",
       "date": "2026-08-11",
       "value": 4.66,
-      "source": "FRED",
+      "source": "seed",
       "fetchedAt": "2026-08-11T21:05:00Z"
     },
     {
       "instrumentId": "us10y",
       "date": "2026-08-12",
       "value": 4.65,
-      "source": "FRED",
+      "source": "seed",
       "fetchedAt": "2026-08-12T21:05:00Z"
     },
     {
       "instrumentId": "us10y",
       "date": "2026-08-13",
       "value": 4.65,
-      "source": "FRED",
+      "source": "seed",
       "fetchedAt": "2026-08-13T20:05:00Z"
     },
     {
       "instrumentId": "de10y",
       "date": "2026-08-03",
       "value": 2.55,
-      "source": "Bundesbank",
+      "source": "seed",
       "fetchedAt": "2026-08-03T21:05:00Z"
     },
     {
       "instrumentId": "de10y",
       "date": "2026-08-04",
       "value": 2.56,
-      "source": "Bundesbank",
+      "source": "seed",
       "fetchedAt": "2026-08-04T21:05:00Z"
     },
     {
       "instrumentId": "de10y",
       "date": "2026-08-06",
       "value": 2.57,
-      "source": "Bundesbank",
+      "source": "seed",
       "fetchedAt": "2026-08-06T21:05:00Z"
     },
     {
       "instrumentId": "de10y",
       "date": "2026-08-07",
       "value": 2.58,
-      "source": "Bundesbank",
+      "source": "seed",
       "fetchedAt": "2026-08-07T21:05:00Z"
     },
     {
       "instrumentId": "de10y",
       "date": "2026-08-10",
       "value": 2.6,
-      "source": "Bundesbank",
+      "source": "seed",
       "fetchedAt": "2026-08-10T21:05:00Z"
     },
     {
       "instrumentId": "de10y",
       "date": "2026-08-11",
       "value": 2.59,
-      "source": "Bundesbank",
+      "source": "seed",
       "fetchedAt": "2026-08-11T21:05:00Z"
     },
     {
       "instrumentId": "de10y",
       "date": "2026-08-12",
       "value": 2.61,
-      "source": "Bundesbank",
+      "source": "seed",
       "fetchedAt": "2026-08-12T21:05:00Z"
     },
     {
       "instrumentId": "de10y",
       "date": "2026-08-13",
       "value": 2.6,
-      "source": "Bundesbank",
+      "source": "seed",
       "fetchedAt": "2026-08-13T18:05:00Z"
     },
     {
       "instrumentId": "fr10y",
       "date": "2026-08-03",
       "value": 3.3,
-      "source": "Banque de France",
+      "source": "seed",
       "fetchedAt": "2026-08-03T21:05:00Z"
     },
     {
       "instrumentId": "fr10y",
       "date": "2026-08-04",
       "value": 3.32,
-      "source": "Banque de France",
+      "source": "seed",
       "fetchedAt": "2026-08-04T21:05:00Z"
     },
     {
       "instrumentId": "fr10y",
       "date": "2026-08-06",
       "value": 3.55,
-      "source": "Banque de France",
+      "source": "seed",
       "fetchedAt": "2026-08-06T21:05:00Z"
     },
     {
       "instrumentId": "fr10y",
       "date": "2026-08-07",
       "value": 3.75,
-      "source": "Banque de France",
+      "source": "seed",
       "fetchedAt": "2026-08-07T21:05:00Z"
     },
     {
       "instrumentId": "fr10y",
       "date": "2026-08-10",
       "value": 3.7,
-      "source": "Banque de France",
+      "source": "seed",
       "fetchedAt": "2026-08-10T21:05:00Z"
     },
     {
       "instrumentId": "fr10y",
       "date": "2026-08-11",
       "value": 3.68,
-      "source": "Banque de France",
+      "source": "seed",
       "fetchedAt": "2026-08-11T21:05:00Z"
     },
     {
       "instrumentId": "fr10y",
       "date": "2026-08-12",
       "value": 3.66,
-      "source": "Banque de France",
+      "source": "seed",
       "fetchedAt": "2026-08-12T21:05:00Z"
     },
     {
       "instrumentId": "fr10y",
       "date": "2026-08-13",
       "value": 3.64,
-      "source": "Banque de France",
+      "source": "seed",
       "fetchedAt": "2026-08-13T18:05:00Z"
     },
     {
       "instrumentId": "spread-us10y-bund10y",
       "date": "2026-08-03",
       "value": 2.17,
-      "source": "FRED / Bundesbank",
+      "source": "seed",
       "fetchedAt": "2026-08-03T21:05:00Z"
     },
     {
       "instrumentId": "spread-us10y-bund10y",
       "date": "2026-08-04",
       "value": 2.14,
-      "source": "FRED / Bundesbank",
+      "source": "seed",
       "fetchedAt": "2026-08-04T21:05:00Z"
     },
     {
       "instrumentId": "spread-us10y-bund10y",
       "date": "2026-08-06",
       "value": 2.11,
-      "source": "FRED / Bundesbank",
+      "source": "seed",
       "fetchedAt": "2026-08-06T21:05:00Z"
     },
     {
       "instrumentId": "spread-us10y-bund10y",
       "date": "2026-08-07",
       "value": 2.08,
-      "source": "FRED / Bundesbank",
+      "source": "seed",
       "fetchedAt": "2026-08-07T21:05:00Z"
     },
     {
       "instrumentId": "spread-us10y-bund10y",
       "date": "2026-08-10",
       "value": 2.07,
-      "source": "FRED / Bundesbank",
+      "source": "seed",
       "fetchedAt": "2026-08-10T21:05:00Z"
     },
     {
       "instrumentId": "spread-us10y-bund10y",
       "date": "2026-08-11",
       "value": 2.07,
-      "source": "FRED / Bundesbank",
+      "source": "seed",
       "fetchedAt": "2026-08-11T21:05:00Z"
     },
     {
       "instrumentId": "spread-us10y-bund10y",
       "date": "2026-08-12",
       "value": 2.04,
-      "source": "FRED / Bundesbank",
+      "source": "seed",
       "fetchedAt": "2026-08-12T21:05:00Z"
     },
     {
       "instrumentId": "spread-us10y-bund10y",
       "date": "2026-08-13",
       "value": 2.05,
-      "source": "FRED / Bundesbank",
+      "source": "seed",
       "fetchedAt": "2026-08-13T20:05:00Z"
     },
     {
       "instrumentId": "spread-oat10y-bund10y",
       "date": "2026-08-03",
       "value": 0.75,
-      "source": "Banque de France / Bundesbank",
+      "source": "seed",
       "fetchedAt": "2026-08-03T21:05:00Z"
     },
     {
       "instrumentId": "spread-oat10y-bund10y",
       "date": "2026-08-04",
       "value": 0.76,
-      "source": "Banque de France / Bundesbank",
+      "source": "seed",
       "fetchedAt": "2026-08-04T21:05:00Z"
     },
     {
       "instrumentId": "spread-oat10y-bund10y",
       "date": "2026-08-06",
       "value": 0.98,
-      "source": "Banque de France / Bundesbank",
+      "source": "seed",
       "fetchedAt": "2026-08-06T21:05:00Z"
     },
     {
       "instrumentId": "spread-oat10y-bund10y",
       "date": "2026-08-07",
       "value": 1.17,
-      "source": "Banque de France / Bundesbank",
+      "source": "seed",
       "fetchedAt": "2026-08-07T21:05:00Z"
     },
     {
       "instrumentId": "spread-oat10y-bund10y",
       "date": "2026-08-10",
       "value": 1.1,
-      "source": "Banque de France / Bundesbank",
+      "source": "seed",
       "fetchedAt": "2026-08-10T21:05:00Z"
     },
     {
       "instrumentId": "spread-oat10y-bund10y",
       "date": "2026-08-11",
       "value": 1.09,
-      "source": "Banque de France / Bundesbank",
+      "source": "seed",
       "fetchedAt": "2026-08-11T21:05:00Z"
     },
     {
       "instrumentId": "spread-oat10y-bund10y",
       "date": "2026-08-12",
       "value": 1.05,
-      "source": "Banque de France / Bundesbank",
+      "source": "seed",
       "fetchedAt": "2026-08-12T21:05:00Z"
     },
     {
       "instrumentId": "spread-oat10y-bund10y",
       "date": "2026-08-13",
       "value": 1.04,
-      "source": "Banque de France / Bundesbank",
+      "source": "seed",
       "fetchedAt": "2026-08-13T18:05:00Z"
     },
     {
       "instrumentId": "brent",
       "date": "2025-08-13",
       "value": 66,
-      "source": "EIA",
+      "source": "seed",
       "fetchedAt": "2025-08-13T21:05:00Z"
     },
     {
       "instrumentId": "brent",
       "date": "2025-12-31",
       "value": 64.2,
-      "source": "EIA",
+      "source": "seed",
       "fetchedAt": "2025-12-31T21:05:00Z"
     },
     {
       "instrumentId": "brent",
       "date": "2026-07-13",
       "value": 91,
-      "source": "EIA",
+      "source": "seed",
       "fetchedAt": "2026-07-13T21:05:00Z"
     },
     {
       "instrumentId": "brent",
       "date": "2026-07-27",
       "value": 89.5,
-      "source": "EIA",
+      "source": "seed",
       "fetchedAt": "2026-07-27T21:05:00Z"
     },
     {
       "instrumentId": "brent",
       "date": "2026-08-06",
       "value": 87.8,
-      "source": "EIA",
+      "source": "seed",
       "fetchedAt": "2026-08-06T21:05:00Z"
     },
     {
       "instrumentId": "brent",
       "date": "2026-08-12",
       "value": 88.1,
-      "source": "EIA",
+      "source": "seed",
       "fetchedAt": "2026-08-12T21:05:00Z"
     },
     {
       "instrumentId": "brent",
       "date": "2026-08-13",
       "value": 88.3,
-      "source": "EIA",
+      "source": "seed",
       "fetchedAt": "2026-08-13T19:05:00Z"
     },
     {
       "instrumentId": "wti",
       "date": "2026-07-13",
       "value": 86,
-      "source": "EIA",
+      "source": "seed",
       "fetchedAt": "2026-07-13T21:05:00Z"
     },
     {
       "instrumentId": "wti",
       "date": "2026-07-27",
       "value": 84.5,
-      "source": "EIA",
+      "source": "seed",
       "fetchedAt": "2026-07-27T21:05:00Z"
     },
     {
       "instrumentId": "wti",
       "date": "2026-08-06",
       "value": 83.1,
-      "source": "EIA",
+      "source": "seed",
       "fetchedAt": "2026-08-06T21:05:00Z"
     },
     {
       "instrumentId": "wti",
       "date": "2026-08-12",
       "value": 83.4,
-      "source": "EIA",
+      "source": "seed",
       "fetchedAt": "2026-08-12T19:05:00Z"
     },
     {
       "instrumentId": "gold",
       "date": "2025-12-31",
       "value": 4320,
-      "source": "metals.dev",
+      "source": "seed",
       "fetchedAt": "2025-12-31T21:05:00Z"
     },
     {
       "instrumentId": "gold",
       "date": "2026-01-29",
       "value": 5405,
-      "source": "metals.dev",
+      "source": "seed",
       "fetchedAt": "2026-01-29T21:05:00Z"
     },
     {
       "instrumentId": "gold",
       "date": "2026-04-15",
       "value": 3950,
-      "source": "metals.dev",
+      "source": "seed",
       "fetchedAt": "2026-04-15T21:05:00Z"
     },
     {
       "instrumentId": "gold",
       "date": "2026-07-13",
       "value": 4250,
-      "source": "metals.dev",
+      "source": "seed",
       "fetchedAt": "2026-07-13T21:05:00Z"
     },
     {
       "instrumentId": "gold",
       "date": "2026-08-06",
       "value": 4380,
-      "source": "metals.dev",
+      "source": "seed",
       "fetchedAt": "2026-08-06T21:05:00Z"
     },
     {
       "instrumentId": "gold",
       "date": "2026-08-12",
       "value": 4402,
-      "source": "metals.dev",
+      "source": "seed",
       "fetchedAt": "2026-08-12T19:05:00Z"
     },
     {
       "instrumentId": "silver",
       "date": "2025-12-31",
       "value": 64.8,
-      "source": "metals.dev",
+      "source": "seed",
       "fetchedAt": "2025-12-31T21:05:00Z"
     },
     {
       "instrumentId": "silver",
       "date": "2026-07-13",
       "value": 60.5,
-      "source": "metals.dev",
+      "source": "seed",
       "fetchedAt": "2026-07-13T21:05:00Z"
     },
     {
       "instrumentId": "silver",
       "date": "2026-08-06",
       "value": 62.7,
-      "source": "metals.dev",
+      "source": "seed",
       "fetchedAt": "2026-08-06T21:05:00Z"
     },
     {
       "instrumentId": "silver",
       "date": "2026-08-12",
       "value": 63.1,
-      "source": "metals.dev",
+      "source": "seed",
       "fetchedAt": "2026-08-12T19:05:00Z"
     },
     {
       "instrumentId": "copper",
       "date": "2025-12-31",
       "value": 4.47,
-      "source": "Financial Modeling Prep",
+      "source": "seed",
       "fetchedAt": "2025-12-31T21:05:00Z"
     },
     {
       "instrumentId": "copper",
       "date": "2026-07-13",
       "value": 6.3,
-      "source": "Financial Modeling Prep",
+      "source": "seed",
       "fetchedAt": "2026-07-13T21:05:00Z"
     },
     {
       "instrumentId": "copper",
       "date": "2026-08-06",
       "value": 6.52,
-      "source": "Financial Modeling Prep",
+      "source": "seed",
       "fetchedAt": "2026-08-06T21:05:00Z"
     },
     {
       "instrumentId": "copper",
       "date": "2026-08-12",
       "value": 6.57,
-      "source": "Financial Modeling Prep",
+      "source": "seed",
       "fetchedAt": "2026-08-12T19:05:00Z"
     },
     {
       "instrumentId": "eurusd",
       "date": "2025-08-13",
       "value": 1.16,
-      "source": "Twelve Data",
+      "source": "seed",
       "fetchedAt": "2025-08-13T21:05:00Z"
     },
     {
       "instrumentId": "eurusd",
       "date": "2025-12-31",
       "value": 1.167,
-      "source": "Twelve Data",
+      "source": "seed",
       "fetchedAt": "2025-12-31T21:05:00Z"
     },
     {
       "instrumentId": "eurusd",
       "date": "2026-07-13",
       "value": 1.162,
-      "source": "Twelve Data",
+      "source": "seed",
       "fetchedAt": "2026-07-13T21:05:00Z"
     },
     {
       "instrumentId": "eurusd",
       "date": "2026-07-27",
       "value": 1.158,
-      "source": "Twelve Data",
+      "source": "seed",
       "fetchedAt": "2026-07-27T21:05:00Z"
     },
     {
       "instrumentId": "eurusd",
       "date": "2026-08-06",
       "value": 1.155,
-      "source": "Twelve Data",
+      "source": "seed",
       "fetchedAt": "2026-08-06T21:05:00Z"
     },
     {
       "instrumentId": "eurusd",
       "date": "2026-08-12",
       "value": 1.153,
-      "source": "Twelve Data",
+      "source": "seed",
       "fetchedAt": "2026-08-12T20:05:00Z"
     },
     {
       "instrumentId": "eurusd",
       "date": "2026-08-13",
       "value": 1.153,
-      "source": "Twelve Data",
+      "source": "seed",
       "fetchedAt": "2026-08-13T20:05:00Z"
     },
     {
       "instrumentId": "usdjpy",
       "date": "2026-07-13",
       "value": 156.8,
-      "source": "Twelve Data",
+      "source": "seed",
       "fetchedAt": "2026-07-13T21:05:00Z"
     },
     {
       "instrumentId": "usdjpy",
       "date": "2026-07-27",
       "value": 158.4,
-      "source": "Twelve Data",
+      "source": "seed",
       "fetchedAt": "2026-07-27T21:05:00Z"
     },
     {
       "instrumentId": "usdjpy",
       "date": "2026-08-06",
       "value": 159.1,
-      "source": "Twelve Data",
+      "source": "seed",
       "fetchedAt": "2026-08-06T21:05:00Z"
     },
     {
       "instrumentId": "usdjpy",
       "date": "2026-08-12",
       "value": 159.4,
-      "source": "Twelve Data",
+      "source": "seed",
       "fetchedAt": "2026-08-12T20:05:00Z"
     },
     {
       "instrumentId": "gbpusd",
       "date": "2026-07-13",
       "value": 1.352,
-      "source": "Twelve Data",
+      "source": "seed",
       "fetchedAt": "2026-07-13T21:05:00Z"
     },
     {
       "instrumentId": "gbpusd",
       "date": "2026-07-27",
       "value": 1.347,
-      "source": "Twelve Data",
+      "source": "seed",
       "fetchedAt": "2026-07-27T21:05:00Z"
     },
     {
       "instrumentId": "gbpusd",
       "date": "2026-08-12",
       "value": 1.349,
-      "source": "Twelve Data",
+      "source": "seed",
       "fetchedAt": "2026-08-12T20:05:00Z"
     },
     {
       "instrumentId": "dxy",
       "date": "2025-12-31",
       "value": 98.8,
-      "source": "Twelve Data",
+      "source": "seed",
       "fetchedAt": "2025-12-31T21:05:00Z"
     },
     {
       "instrumentId": "dxy",
       "date": "2026-01-29",
       "value": 96.2,
-      "source": "Twelve Data",
+      "source": "seed",
       "fetchedAt": "2026-01-29T21:05:00Z"
     },
     {
       "instrumentId": "dxy",
       "date": "2026-07-13",
       "value": 99.4,
-      "source": "Twelve Data",
+      "source": "seed",
       "fetchedAt": "2026-07-13T21:05:00Z"
     },
     {
       "instrumentId": "dxy",
       "date": "2026-08-12",
       "value": 100,
-      "source": "Twelve Data",
+      "source": "seed",
       "fetchedAt": "2026-08-12T20:05:00Z"
     },
     {
       "instrumentId": "us6m",
       "date": "2026-08-03",
       "value": 4.37,
-      "source": "FRED",
+      "source": "seed",
       "fetchedAt": "2026-08-03T21:05:00Z"
     },
     {
       "instrumentId": "us6m",
       "date": "2026-08-04",
       "value": 4.35,
-      "source": "FRED",
+      "source": "seed",
       "fetchedAt": "2026-08-04T21:05:00Z"
     },
     {
       "instrumentId": "us6m",
       "date": "2026-08-06",
       "value": 4.33,
-      "source": "FRED",
+      "source": "seed",
       "fetchedAt": "2026-08-06T21:05:00Z"
     },
     {
       "instrumentId": "us6m",
       "date": "2026-08-07",
       "value": 4.31,
-      "source": "FRED",
+      "source": "seed",
       "fetchedAt": "2026-08-07T21:05:00Z"
     },
     {
       "instrumentId": "us6m",
       "date": "2026-08-10",
       "value": 4.32,
-      "source": "FRED",
+      "source": "seed",
       "fetchedAt": "2026-08-10T21:05:00Z"
     },
     {
       "instrumentId": "us6m",
       "date": "2026-08-11",
       "value": 4.31,
-      "source": "FRED",
+      "source": "seed",
       "fetchedAt": "2026-08-11T21:05:00Z"
     },
     {
       "instrumentId": "us6m",
       "date": "2026-08-12",
       "value": 4.3,
-      "source": "FRED",
+      "source": "seed",
       "fetchedAt": "2026-08-12T21:05:00Z"
     },
     {
       "instrumentId": "us6m",
       "date": "2026-08-13",
       "value": 4.3,
-      "source": "FRED",
+      "source": "seed",
       "fetchedAt": "2026-08-13T21:05:00Z"
     },
     {
       "instrumentId": "us1y",
       "date": "2026-08-03",
       "value": 4.47,
-      "source": "FRED",
+      "source": "seed",
       "fetchedAt": "2026-08-03T21:05:00Z"
     },
     {
       "instrumentId": "us1y",
       "date": "2026-08-04",
       "value": 4.45,
-      "source": "FRED",
+      "source": "seed",
       "fetchedAt": "2026-08-04T21:05:00Z"
     },
     {
       "instrumentId": "us1y",
       "date": "2026-08-06",
       "value": 4.43,
-      "source": "FRED",
+      "source": "seed",
       "fetchedAt": "2026-08-06T21:05:00Z"
     },
     {
       "instrumentId": "us1y",
       "date": "2026-08-07",
       "value": 4.41,
-      "source": "FRED",
+      "source": "seed",
       "fetchedAt": "2026-08-07T21:05:00Z"
     },
     {
       "instrumentId": "us1y",
       "date": "2026-08-10",
       "value": 4.42,
-      "source": "FRED",
+      "source": "seed",
       "fetchedAt": "2026-08-10T21:05:00Z"
     },
     {
       "instrumentId": "us1y",
       "date": "2026-08-11",
       "value": 4.41,
-      "source": "FRED",
+      "source": "seed",
       "fetchedAt": "2026-08-11T21:05:00Z"
     },
     {
       "instrumentId": "us1y",
       "date": "2026-08-12",
       "value": 4.4,
-      "source": "FRED",
+      "source": "seed",
       "fetchedAt": "2026-08-12T21:05:00Z"
     },
     {
       "instrumentId": "us1y",
       "date": "2026-08-13",
       "value": 4.4,
-      "source": "FRED",
+      "source": "seed",
       "fetchedAt": "2026-08-13T21:05:00Z"
     },
     {
       "instrumentId": "us3y",
       "date": "2026-08-03",
       "value": 4.6,
-      "source": "FRED",
+      "source": "seed",
       "fetchedAt": "2026-08-03T21:05:00Z"
     },
     {
       "instrumentId": "us3y",
       "date": "2026-08-04",
       "value": 4.58,
-      "source": "FRED",
+      "source": "seed",
       "fetchedAt": "2026-08-04T21:05:00Z"
     },
     {
       "instrumentId": "us3y",
       "date": "2026-08-06",
       "value": 4.56,
-      "source": "FRED",
+      "source": "seed",
       "fetchedAt": "2026-08-06T21:05:00Z"
     },
     {
       "instrumentId": "us3y",
       "date": "2026-08-07",
       "value": 4.54,
-      "source": "FRED",
+      "source": "seed",
       "fetchedAt": "2026-08-07T21:05:00Z"
     },
     {
       "instrumentId": "us3y",
       "date": "2026-08-10",
       "value": 4.55,
-      "source": "FRED",
+      "source": "seed",
       "fetchedAt": "2026-08-10T21:05:00Z"
     },
     {
       "instrumentId": "us3y",
       "date": "2026-08-11",
       "value": 4.54,
-      "source": "FRED",
+      "source": "seed",
       "fetchedAt": "2026-08-11T21:05:00Z"
     },
     {
       "instrumentId": "us3y",
       "date": "2026-08-12",
       "value": 4.53,
-      "source": "FRED",
+      "source": "seed",
       "fetchedAt": "2026-08-12T21:05:00Z"
     },
     {
       "instrumentId": "us3y",
       "date": "2026-08-13",
       "value": 4.53,
-      "source": "FRED",
+      "source": "seed",
       "fetchedAt": "2026-08-13T21:05:00Z"
     },
     {
       "instrumentId": "us5y",
       "date": "2026-08-03",
       "value": 4.67,
-      "source": "FRED",
+      "source": "seed",
       "fetchedAt": "2026-08-03T21:05:00Z"
     },
     {
       "instrumentId": "us5y",
       "date": "2026-08-04",
       "value": 4.65,
-      "source": "FRED",
+      "source": "seed",
       "fetchedAt": "2026-08-04T21:05:00Z"
     },
     {
       "instrumentId": "us5y",
       "date": "2026-08-06",
       "value": 4.63,
-      "source": "FRED",
+      "source": "seed",
       "fetchedAt": "2026-08-06T21:05:00Z"
     },
     {
       "instrumentId": "us5y",
       "date": "2026-08-07",
       "value": 4.61,
-      "source": "FRED",
+      "source": "seed",
       "fetchedAt": "2026-08-07T21:05:00Z"
     },
     {
       "instrumentId": "us5y",
       "date": "2026-08-10",
       "value": 4.62,
-      "source": "FRED",
+      "source": "seed",
       "fetchedAt": "2026-08-10T21:05:00Z"
     },
     {
       "instrumentId": "us5y",
       "date": "2026-08-11",
       "value": 4.61,
-      "source": "FRED",
+      "source": "seed",
       "fetchedAt": "2026-08-11T21:05:00Z"
     },
     {
       "instrumentId": "us5y",
       "date": "2026-08-12",
       "value": 4.6,
-      "source": "FRED",
+      "source": "seed",
       "fetchedAt": "2026-08-12T21:05:00Z"
     },
     {
       "instrumentId": "us5y",
       "date": "2026-08-13",
       "value": 4.6,
-      "source": "FRED",
+      "source": "seed",
       "fetchedAt": "2026-08-13T21:05:00Z"
     },
     {
       "instrumentId": "us20y",
       "date": "2026-08-03",
       "value": 4.92,
-      "source": "FRED",
+      "source": "seed",
       "fetchedAt": "2026-08-03T21:05:00Z"
     },
     {
       "instrumentId": "us20y",
       "date": "2026-08-04",
       "value": 4.9,
-      "source": "FRED",
+      "source": "seed",
       "fetchedAt": "2026-08-04T21:05:00Z"
     },
     {
       "instrumentId": "us20y",
       "date": "2026-08-06",
       "value": 4.88,
-      "source": "FRED",
+      "source": "seed",
       "fetchedAt": "2026-08-06T21:05:00Z"
     },
     {
       "instrumentId": "us20y",
       "date": "2026-08-07",
       "value": 4.86,
-      "source": "FRED",
+      "source": "seed",
       "fetchedAt": "2026-08-07T21:05:00Z"
     },
     {
       "instrumentId": "us20y",
       "date": "2026-08-10",
       "value": 4.87,
-      "source": "FRED",
+      "source": "seed",
       "fetchedAt": "2026-08-10T21:05:00Z"
     },
     {
       "instrumentId": "us20y",
       "date": "2026-08-11",
       "value": 4.86,
-      "source": "FRED",
+      "source": "seed",
       "fetchedAt": "2026-08-11T21:05:00Z"
     },
     {
       "instrumentId": "us20y",
       "date": "2026-08-12",
       "value": 4.85,
-      "source": "FRED",
+      "source": "seed",
       "fetchedAt": "2026-08-12T21:05:00Z"
     },
     {
       "instrumentId": "us20y",
       "date": "2026-08-13",
       "value": 4.85,
-      "source": "FRED",
+      "source": "seed",
       "fetchedAt": "2026-08-13T21:05:00Z"
     },
     {
       "instrumentId": "fr6m",
       "date": "2026-08-03",
       "value": 2.95,
-      "source": "Banque de France",
+      "source": "seed",
       "fetchedAt": "2026-08-03T18:05:00Z"
     },
     {
       "instrumentId": "fr6m",
       "date": "2026-08-04",
       "value": 2.97,
-      "source": "Banque de France",
+      "source": "seed",
       "fetchedAt": "2026-08-04T18:05:00Z"
     },
     {
       "instrumentId": "fr6m",
       "date": "2026-08-06",
       "value": 3.2,
-      "source": "Banque de France",
+      "source": "seed",
       "fetchedAt": "2026-08-06T18:05:00Z"
     },
     {
       "instrumentId": "fr6m",
       "date": "2026-08-07",
       "value": 3.4,
-      "source": "Banque de France",
+      "source": "seed",
       "fetchedAt": "2026-08-07T18:05:00Z"
     },
     {
       "instrumentId": "fr6m",
       "date": "2026-08-10",
       "value": 3.35,
-      "source": "Banque de France",
+      "source": "seed",
       "fetchedAt": "2026-08-10T18:05:00Z"
     },
     {
       "instrumentId": "fr6m",
       "date": "2026-08-11",
       "value": 3.33,
-      "source": "Banque de France",
+      "source": "seed",
       "fetchedAt": "2026-08-11T18:05:00Z"
     },
     {
       "instrumentId": "fr6m",
       "date": "2026-08-12",
       "value": 3.31,
-      "source": "Banque de France",
+      "source": "seed",
       "fetchedAt": "2026-08-12T18:05:00Z"
     },
     {
       "instrumentId": "fr6m",
       "date": "2026-08-13",
       "value": 3.29,
-      "source": "Banque de France",
+      "source": "seed",
       "fetchedAt": "2026-08-13T18:05:00Z"
     },
     {
       "instrumentId": "fr1y",
       "date": "2026-08-03",
       "value": 3.05,
-      "source": "Banque de France",
+      "source": "seed",
       "fetchedAt": "2026-08-03T18:05:00Z"
     },
     {
       "instrumentId": "fr1y",
       "date": "2026-08-04",
       "value": 3.07,
-      "source": "Banque de France",
+      "source": "seed",
       "fetchedAt": "2026-08-04T18:05:00Z"
     },
     {
       "instrumentId": "fr1y",
       "date": "2026-08-06",
       "value": 3.3,
-      "source": "Banque de France",
+      "source": "seed",
       "fetchedAt": "2026-08-06T18:05:00Z"
     },
     {
       "instrumentId": "fr1y",
       "date": "2026-08-07",
       "value": 3.5,
-      "source": "Banque de France",
+      "source": "seed",
       "fetchedAt": "2026-08-07T18:05:00Z"
     },
     {
       "instrumentId": "fr1y",
       "date": "2026-08-10",
       "value": 3.45,
-      "source": "Banque de France",
+      "source": "seed",
       "fetchedAt": "2026-08-10T18:05:00Z"
     },
     {
       "instrumentId": "fr1y",
       "date": "2026-08-11",
       "value": 3.43,
-      "source": "Banque de France",
+      "source": "seed",
       "fetchedAt": "2026-08-11T18:05:00Z"
     },
     {
       "instrumentId": "fr1y",
       "date": "2026-08-12",
       "value": 3.41,
-      "source": "Banque de France",
+      "source": "seed",
       "fetchedAt": "2026-08-12T18:05:00Z"
     },
     {
       "instrumentId": "fr1y",
       "date": "2026-08-13",
       "value": 3.39,
-      "source": "Banque de France",
+      "source": "seed",
       "fetchedAt": "2026-08-13T18:05:00Z"
     },
     {
       "instrumentId": "fr3y",
       "date": "2026-08-03",
       "value": 3.18,
-      "source": "Banque de France",
+      "source": "seed",
       "fetchedAt": "2026-08-03T18:05:00Z"
     },
     {
       "instrumentId": "fr3y",
       "date": "2026-08-04",
       "value": 3.2,
-      "source": "Banque de France",
+      "source": "seed",
       "fetchedAt": "2026-08-04T18:05:00Z"
     },
     {
       "instrumentId": "fr3y",
       "date": "2026-08-06",
       "value": 3.43,
-      "source": "Banque de France",
+      "source": "seed",
       "fetchedAt": "2026-08-06T18:05:00Z"
     },
     {
       "instrumentId": "fr3y",
       "date": "2026-08-07",
       "value": 3.63,
-      "source": "Banque de France",
+      "source": "seed",
       "fetchedAt": "2026-08-07T18:05:00Z"
     },
     {
       "instrumentId": "fr3y",
       "date": "2026-08-10",
       "value": 3.58,
-      "source": "Banque de France",
+      "source": "seed",
       "fetchedAt": "2026-08-10T18:05:00Z"
     },
     {
       "instrumentId": "fr3y",
       "date": "2026-08-11",
       "value": 3.56,
-      "source": "Banque de France",
+      "source": "seed",
       "fetchedAt": "2026-08-11T18:05:00Z"
     },
     {
       "instrumentId": "fr3y",
       "date": "2026-08-12",
       "value": 3.54,
-      "source": "Banque de France",
+      "source": "seed",
       "fetchedAt": "2026-08-12T18:05:00Z"
     },
     {
       "instrumentId": "fr3y",
       "date": "2026-08-13",
       "value": 3.52,
-      "source": "Banque de France",
+      "source": "seed",
       "fetchedAt": "2026-08-13T18:05:00Z"
     },
     {
       "instrumentId": "fr5y",
       "date": "2026-08-03",
       "value": 3.25,
-      "source": "Banque de France",
+      "source": "seed",
       "fetchedAt": "2026-08-03T18:05:00Z"
     },
     {
       "instrumentId": "fr5y",
       "date": "2026-08-04",
       "value": 3.27,
-      "source": "Banque de France",
+      "source": "seed",
       "fetchedAt": "2026-08-04T18:05:00Z"
     },
     {
       "instrumentId": "fr5y",
       "date": "2026-08-06",
       "value": 3.5,
-      "source": "Banque de France",
+      "source": "seed",
       "fetchedAt": "2026-08-06T18:05:00Z"
     },
     {
       "instrumentId": "fr5y",
       "date": "2026-08-07",
       "value": 3.7,
-      "source": "Banque de France",
+      "source": "seed",
       "fetchedAt": "2026-08-07T18:05:00Z"
     },
     {
       "instrumentId": "fr5y",
       "date": "2026-08-10",
       "value": 3.65,
-      "source": "Banque de France",
+      "source": "seed",
       "fetchedAt": "2026-08-10T18:05:00Z"
     },
     {
       "instrumentId": "fr5y",
       "date": "2026-08-11",
       "value": 3.63,
-      "source": "Banque de France",
+      "source": "seed",
       "fetchedAt": "2026-08-11T18:05:00Z"
     },
     {
       "instrumentId": "fr5y",
       "date": "2026-08-12",
       "value": 3.61,
-      "source": "Banque de France",
+      "source": "seed",
       "fetchedAt": "2026-08-12T18:05:00Z"
     },
     {
       "instrumentId": "fr5y",
       "date": "2026-08-13",
       "value": 3.59,
-      "source": "Banque de France",
+      "source": "seed",
       "fetchedAt": "2026-08-13T18:05:00Z"
     },
     {
       "instrumentId": "fr15y",
       "date": "2026-08-03",
       "value": 3.42,
-      "source": "Banque de France",
+      "source": "seed",
       "fetchedAt": "2026-08-03T18:05:00Z"
     },
     {
       "instrumentId": "fr15y",
       "date": "2026-08-04",
       "value": 3.44,
-      "source": "Banque de France",
+      "source": "seed",
       "fetchedAt": "2026-08-04T18:05:00Z"
     },
     {
       "instrumentId": "fr15y",
       "date": "2026-08-06",
       "value": 3.67,
-      "source": "Banque de France",
+      "source": "seed",
       "fetchedAt": "2026-08-06T18:05:00Z"
     },
     {
       "instrumentId": "fr15y",
       "date": "2026-08-07",
       "value": 3.87,
-      "source": "Banque de France",
+      "source": "seed",
       "fetchedAt": "2026-08-07T18:05:00Z"
     },
     {
       "instrumentId": "fr15y",
       "date": "2026-08-10",
       "value": 3.82,
-      "source": "Banque de France",
+      "source": "seed",
       "fetchedAt": "2026-08-10T18:05:00Z"
     },
     {
       "instrumentId": "fr15y",
       "date": "2026-08-11",
       "value": 3.8,
-      "source": "Banque de France",
+      "source": "seed",
       "fetchedAt": "2026-08-11T18:05:00Z"
     },
     {
       "instrumentId": "fr15y",
       "date": "2026-08-12",
       "value": 3.78,
-      "source": "Banque de France",
+      "source": "seed",
       "fetchedAt": "2026-08-12T18:05:00Z"
     },
     {
       "instrumentId": "fr15y",
       "date": "2026-08-13",
       "value": 3.76,
-      "source": "Banque de France",
+      "source": "seed",
       "fetchedAt": "2026-08-13T18:05:00Z"
     },
     {
       "instrumentId": "fr20y",
       "date": "2026-08-03",
       "value": 3.5,
-      "source": "Banque de France",
+      "source": "seed",
       "fetchedAt": "2026-08-03T18:05:00Z"
     },
     {
       "instrumentId": "fr20y",
       "date": "2026-08-04",
       "value": 3.52,
-      "source": "Banque de France",
+      "source": "seed",
       "fetchedAt": "2026-08-04T18:05:00Z"
     },
     {
       "instrumentId": "fr20y",
       "date": "2026-08-06",
       "value": 3.75,
-      "source": "Banque de France",
+      "source": "seed",
       "fetchedAt": "2026-08-06T18:05:00Z"
     },
     {
       "instrumentId": "fr20y",
       "date": "2026-08-07",
       "value": 3.95,
-      "source": "Banque de France",
+      "source": "seed",
       "fetchedAt": "2026-08-07T18:05:00Z"
     },
     {
       "instrumentId": "fr20y",
       "date": "2026-08-10",
       "value": 3.9,
-      "source": "Banque de France",
+      "source": "seed",
       "fetchedAt": "2026-08-10T18:05:00Z"
     },
     {
       "instrumentId": "fr20y",
       "date": "2026-08-11",
       "value": 3.88,
-      "source": "Banque de France",
+      "source": "seed",
       "fetchedAt": "2026-08-11T18:05:00Z"
     },
     {
       "instrumentId": "fr20y",
       "date": "2026-08-12",
       "value": 3.86,
-      "source": "Banque de France",
+      "source": "seed",
       "fetchedAt": "2026-08-12T18:05:00Z"
     },
     {
       "instrumentId": "fr20y",
       "date": "2026-08-13",
       "value": 3.84,
-      "source": "Banque de France",
+      "source": "seed",
       "fetchedAt": "2026-08-13T18:05:00Z"
     },
     {
       "instrumentId": "de6m",
       "date": "2026-08-03",
       "value": 2.2,
-      "source": "Bundesbank",
+      "source": "seed",
       "fetchedAt": "2026-08-03T18:05:00Z"
     },
     {
       "instrumentId": "de6m",
       "date": "2026-08-04",
       "value": 2.21,
-      "source": "Bundesbank",
+      "source": "seed",
       "fetchedAt": "2026-08-04T18:05:00Z"
     },
     {
       "instrumentId": "de6m",
       "date": "2026-08-06",
       "value": 2.22,
-      "source": "Bundesbank",
+      "source": "seed",
       "fetchedAt": "2026-08-06T18:05:00Z"
     },
     {
       "instrumentId": "de6m",
       "date": "2026-08-07",
       "value": 2.23,
-      "source": "Bundesbank",
+      "source": "seed",
       "fetchedAt": "2026-08-07T18:05:00Z"
     },
     {
       "instrumentId": "de6m",
       "date": "2026-08-10",
       "value": 2.25,
-      "source": "Bundesbank",
+      "source": "seed",
       "fetchedAt": "2026-08-10T18:05:00Z"
     },
     {
       "instrumentId": "de6m",
       "date": "2026-08-11",
       "value": 2.24,
-      "source": "Bundesbank",
+      "source": "seed",
       "fetchedAt": "2026-08-11T18:05:00Z"
     },
     {
       "instrumentId": "de6m",
       "date": "2026-08-12",
       "value": 2.26,
-      "source": "Bundesbank",
+      "source": "seed",
       "fetchedAt": "2026-08-12T18:05:00Z"
     },
     {
       "instrumentId": "de6m",
       "date": "2026-08-13",
       "value": 2.25,
-      "source": "Bundesbank",
+      "source": "seed",
       "fetchedAt": "2026-08-13T18:05:00Z"
     },
     {
       "instrumentId": "de1y",
       "date": "2026-08-03",
       "value": 2.3,
-      "source": "Bundesbank",
+      "source": "seed",
       "fetchedAt": "2026-08-03T18:05:00Z"
     },
     {
       "instrumentId": "de1y",
       "date": "2026-08-04",
       "value": 2.31,
-      "source": "Bundesbank",
+      "source": "seed",
       "fetchedAt": "2026-08-04T18:05:00Z"
     },
     {
       "instrumentId": "de1y",
       "date": "2026-08-06",
       "value": 2.32,
-      "source": "Bundesbank",
+      "source": "seed",
       "fetchedAt": "2026-08-06T18:05:00Z"
     },
     {
       "instrumentId": "de1y",
       "date": "2026-08-07",
       "value": 2.33,
-      "source": "Bundesbank",
+      "source": "seed",
       "fetchedAt": "2026-08-07T18:05:00Z"
     },
     {
       "instrumentId": "de1y",
       "date": "2026-08-10",
       "value": 2.35,
-      "source": "Bundesbank",
+      "source": "seed",
       "fetchedAt": "2026-08-10T18:05:00Z"
     },
     {
       "instrumentId": "de1y",
       "date": "2026-08-11",
       "value": 2.34,
-      "source": "Bundesbank",
+      "source": "seed",
       "fetchedAt": "2026-08-11T18:05:00Z"
     },
     {
       "instrumentId": "de1y",
       "date": "2026-08-12",
       "value": 2.36,
-      "source": "Bundesbank",
+      "source": "seed",
       "fetchedAt": "2026-08-12T18:05:00Z"
     },
     {
       "instrumentId": "de1y",
       "date": "2026-08-13",
       "value": 2.35,
-      "source": "Bundesbank",
+      "source": "seed",
       "fetchedAt": "2026-08-13T18:05:00Z"
     },
     {
       "instrumentId": "de3y",
       "date": "2026-08-03",
       "value": 2.43,
-      "source": "Bundesbank",
+      "source": "seed",
       "fetchedAt": "2026-08-03T18:05:00Z"
     },
     {
       "instrumentId": "de3y",
       "date": "2026-08-04",
       "value": 2.44,
-      "source": "Bundesbank",
+      "source": "seed",
       "fetchedAt": "2026-08-04T18:05:00Z"
     },
     {
       "instrumentId": "de3y",
       "date": "2026-08-06",
       "value": 2.45,
-      "source": "Bundesbank",
+      "source": "seed",
       "fetchedAt": "2026-08-06T18:05:00Z"
     },
     {
       "instrumentId": "de3y",
       "date": "2026-08-07",
       "value": 2.46,
-      "source": "Bundesbank",
+      "source": "seed",
       "fetchedAt": "2026-08-07T18:05:00Z"
     },
     {
       "instrumentId": "de3y",
       "date": "2026-08-10",
       "value": 2.48,
-      "source": "Bundesbank",
+      "source": "seed",
       "fetchedAt": "2026-08-10T18:05:00Z"
     },
     {
       "instrumentId": "de3y",
       "date": "2026-08-11",
       "value": 2.47,
-      "source": "Bundesbank",
+      "source": "seed",
       "fetchedAt": "2026-08-11T18:05:00Z"
     },
     {
       "instrumentId": "de3y",
       "date": "2026-08-12",
       "value": 2.49,
-      "source": "Bundesbank",
+      "source": "seed",
       "fetchedAt": "2026-08-12T18:05:00Z"
     },
     {
       "instrumentId": "de3y",
       "date": "2026-08-13",
       "value": 2.48,
-      "source": "Bundesbank",
+      "source": "seed",
       "fetchedAt": "2026-08-13T18:05:00Z"
     },
     {
       "instrumentId": "de5y",
       "date": "2026-08-03",
       "value": 2.5,
-      "source": "Bundesbank",
+      "source": "seed",
       "fetchedAt": "2026-08-03T18:05:00Z"
     },
     {
       "instrumentId": "de5y",
       "date": "2026-08-04",
       "value": 2.51,
-      "source": "Bundesbank",
+      "source": "seed",
       "fetchedAt": "2026-08-04T18:05:00Z"
     },
     {
       "instrumentId": "de5y",
       "date": "2026-08-06",
       "value": 2.52,
-      "source": "Bundesbank",
+      "source": "seed",
       "fetchedAt": "2026-08-06T18:05:00Z"
     },
     {
       "instrumentId": "de5y",
       "date": "2026-08-07",
       "value": 2.53,
-      "source": "Bundesbank",
+      "source": "seed",
       "fetchedAt": "2026-08-07T18:05:00Z"
     },
     {
       "instrumentId": "de5y",
       "date": "2026-08-10",
       "value": 2.55,
-      "source": "Bundesbank",
+      "source": "seed",
       "fetchedAt": "2026-08-10T18:05:00Z"
     },
     {
       "instrumentId": "de5y",
       "date": "2026-08-11",
       "value": 2.54,
-      "source": "Bundesbank",
+      "source": "seed",
       "fetchedAt": "2026-08-11T18:05:00Z"
     },
     {
       "instrumentId": "de5y",
       "date": "2026-08-12",
       "value": 2.56,
-      "source": "Bundesbank",
+      "source": "seed",
       "fetchedAt": "2026-08-12T18:05:00Z"
     },
     {
       "instrumentId": "de5y",
       "date": "2026-08-13",
       "value": 2.55,
-      "source": "Bundesbank",
+      "source": "seed",
       "fetchedAt": "2026-08-13T18:05:00Z"
     },
     {
       "instrumentId": "de15y",
       "date": "2026-08-03",
       "value": 2.67,
-      "source": "Bundesbank",
+      "source": "seed",
       "fetchedAt": "2026-08-03T18:05:00Z"
     },
     {
       "instrumentId": "de15y",
       "date": "2026-08-04",
       "value": 2.68,
-      "source": "Bundesbank",
+      "source": "seed",
       "fetchedAt": "2026-08-04T18:05:00Z"
     },
     {
       "instrumentId": "de15y",
       "date": "2026-08-06",
       "value": 2.69,
-      "source": "Bundesbank",
+      "source": "seed",
       "fetchedAt": "2026-08-06T18:05:00Z"
     },
     {
       "instrumentId": "de15y",
       "date": "2026-08-07",
       "value": 2.7,
-      "source": "Bundesbank",
+      "source": "seed",
       "fetchedAt": "2026-08-07T18:05:00Z"
     },
     {
       "instrumentId": "de15y",
       "date": "2026-08-10",
       "value": 2.72,
-      "source": "Bundesbank",
+      "source": "seed",
       "fetchedAt": "2026-08-10T18:05:00Z"
     },
     {
       "instrumentId": "de15y",
       "date": "2026-08-11",
       "value": 2.71,
-      "source": "Bundesbank",
+      "source": "seed",
       "fetchedAt": "2026-08-11T18:05:00Z"
     },
     {
       "instrumentId": "de15y",
       "date": "2026-08-12",
       "value": 2.73,
-      "source": "Bundesbank",
+      "source": "seed",
       "fetchedAt": "2026-08-12T18:05:00Z"
     },
     {
       "instrumentId": "de15y",
       "date": "2026-08-13",
       "value": 2.72,
-      "source": "Bundesbank",
+      "source": "seed",
       "fetchedAt": "2026-08-13T18:05:00Z"
     },
     {
       "instrumentId": "de20y",
       "date": "2026-08-03",
       "value": 2.75,
-      "source": "Bundesbank",
+      "source": "seed",
       "fetchedAt": "2026-08-03T18:05:00Z"
     },
     {
       "instrumentId": "de20y",
       "date": "2026-08-04",
       "value": 2.76,
-      "source": "Bundesbank",
+      "source": "seed",
       "fetchedAt": "2026-08-04T18:05:00Z"
     },
     {
       "instrumentId": "de20y",
       "date": "2026-08-06",
       "value": 2.77,
-      "source": "Bundesbank",
+      "source": "seed",
       "fetchedAt": "2026-08-06T18:05:00Z"
     },
     {
       "instrumentId": "de20y",
       "date": "2026-08-07",
       "value": 2.78,
-      "source": "Bundesbank",
+      "source": "seed",
       "fetchedAt": "2026-08-07T18:05:00Z"
     },
     {
       "instrumentId": "de20y",
       "date": "2026-08-10",
       "value": 2.8,
-      "source": "Bundesbank",
+      "source": "seed",
       "fetchedAt": "2026-08-10T18:05:00Z"
     },
     {
       "instrumentId": "de20y",
       "date": "2026-08-11",
       "value": 2.79,
-      "source": "Bundesbank",
+      "source": "seed",
       "fetchedAt": "2026-08-11T18:05:00Z"
     },
     {
       "instrumentId": "de20y",
       "date": "2026-08-12",
       "value": 2.81,
-      "source": "Bundesbank",
+      "source": "seed",
       "fetchedAt": "2026-08-12T18:05:00Z"
     },
     {
       "instrumentId": "de20y",
       "date": "2026-08-13",
       "value": 2.8,
-      "source": "Bundesbank",
+      "source": "seed",
       "fetchedAt": "2026-08-13T18:05:00Z"
     },
     {
       "instrumentId": "es6m",
       "date": "2026-08-03",
       "value": 3.05,
-      "source": "Banco de España",
+      "source": "seed",
       "fetchedAt": "2026-08-03T18:05:00Z"
     },
     {
       "instrumentId": "es6m",
       "date": "2026-08-04",
       "value": 3.06,
-      "source": "Banco de España",
+      "source": "seed",
       "fetchedAt": "2026-08-04T18:05:00Z"
     },
     {
       "instrumentId": "es6m",
       "date": "2026-08-06",
       "value": 3.04,
-      "source": "Banco de España",
+      "source": "seed",
       "fetchedAt": "2026-08-06T18:05:00Z"
     },
     {
       "instrumentId": "es6m",
       "date": "2026-08-07",
       "value": 3.07,
-      "source": "Banco de España",
+      "source": "seed",
       "fetchedAt": "2026-08-07T18:05:00Z"
     },
     {
       "instrumentId": "es6m",
       "date": "2026-08-10",
       "value": 3.05,
-      "source": "Banco de España",
+      "source": "seed",
       "fetchedAt": "2026-08-10T18:05:00Z"
     },
     {
       "instrumentId": "es6m",
       "date": "2026-08-11",
       "value": 3.03,
-      "source": "Banco de España",
+      "source": "seed",
       "fetchedAt": "2026-08-11T18:05:00Z"
     },
     {
       "instrumentId": "es6m",
       "date": "2026-08-12",
       "value": 3.02,
-      "source": "Banco de España",
+      "source": "seed",
       "fetchedAt": "2026-08-12T18:05:00Z"
     },
     {
       "instrumentId": "es6m",
       "date": "2026-08-13",
       "value": 3.0,
-      "source": "Banco de España",
+      "source": "seed",
       "fetchedAt": "2026-08-13T18:05:00Z"
     },
     {
       "instrumentId": "es1y",
       "date": "2026-08-03",
       "value": 3.15,
-      "source": "Banco de España",
+      "source": "seed",
       "fetchedAt": "2026-08-03T18:05:00Z"
     },
     {
       "instrumentId": "es1y",
       "date": "2026-08-04",
       "value": 3.16,
-      "source": "Banco de España",
+      "source": "seed",
       "fetchedAt": "2026-08-04T18:05:00Z"
     },
     {
       "instrumentId": "es1y",
       "date": "2026-08-06",
       "value": 3.14,
-      "source": "Banco de España",
+      "source": "seed",
       "fetchedAt": "2026-08-06T18:05:00Z"
     },
     {
       "instrumentId": "es1y",
       "date": "2026-08-07",
       "value": 3.17,
-      "source": "Banco de España",
+      "source": "seed",
       "fetchedAt": "2026-08-07T18:05:00Z"
     },
     {
       "instrumentId": "es1y",
       "date": "2026-08-10",
       "value": 3.15,
-      "source": "Banco de España",
+      "source": "seed",
       "fetchedAt": "2026-08-10T18:05:00Z"
     },
     {
       "instrumentId": "es1y",
       "date": "2026-08-11",
       "value": 3.13,
-      "source": "Banco de España",
+      "source": "seed",
       "fetchedAt": "2026-08-11T18:05:00Z"
     },
     {
       "instrumentId": "es1y",
       "date": "2026-08-12",
       "value": 3.12,
-      "source": "Banco de España",
+      "source": "seed",
       "fetchedAt": "2026-08-12T18:05:00Z"
     },
     {
       "instrumentId": "es1y",
       "date": "2026-08-13",
       "value": 3.1,
-      "source": "Banco de España",
+      "source": "seed",
       "fetchedAt": "2026-08-13T18:05:00Z"
     },
     {
       "instrumentId": "es3y",
       "date": "2026-08-03",
       "value": 3.28,
-      "source": "Banco de España",
+      "source": "seed",
       "fetchedAt": "2026-08-03T18:05:00Z"
     },
     {
       "instrumentId": "es3y",
       "date": "2026-08-04",
       "value": 3.29,
-      "source": "Banco de España",
+      "source": "seed",
       "fetchedAt": "2026-08-04T18:05:00Z"
     },
     {
       "instrumentId": "es3y",
       "date": "2026-08-06",
       "value": 3.27,
-      "source": "Banco de España",
+      "source": "seed",
       "fetchedAt": "2026-08-06T18:05:00Z"
     },
     {
       "instrumentId": "es3y",
       "date": "2026-08-07",
       "value": 3.3,
-      "source": "Banco de España",
+      "source": "seed",
       "fetchedAt": "2026-08-07T18:05:00Z"
     },
     {
       "instrumentId": "es3y",
       "date": "2026-08-10",
       "value": 3.28,
-      "source": "Banco de España",
+      "source": "seed",
       "fetchedAt": "2026-08-10T18:05:00Z"
     },
     {
       "instrumentId": "es3y",
       "date": "2026-08-11",
       "value": 3.26,
-      "source": "Banco de España",
+      "source": "seed",
       "fetchedAt": "2026-08-11T18:05:00Z"
     },
     {
       "instrumentId": "es3y",
       "date": "2026-08-12",
       "value": 3.25,
-      "source": "Banco de España",
+      "source": "seed",
       "fetchedAt": "2026-08-12T18:05:00Z"
     },
     {
       "instrumentId": "es3y",
       "date": "2026-08-13",
       "value": 3.23,
-      "source": "Banco de España",
+      "source": "seed",
       "fetchedAt": "2026-08-13T18:05:00Z"
     },
     {
       "instrumentId": "es5y",
       "date": "2026-08-03",
       "value": 3.35,
-      "source": "Banco de España",
+      "source": "seed",
       "fetchedAt": "2026-08-03T18:05:00Z"
     },
     {
       "instrumentId": "es5y",
       "date": "2026-08-04",
       "value": 3.36,
-      "source": "Banco de España",
+      "source": "seed",
       "fetchedAt": "2026-08-04T18:05:00Z"
     },
     {
       "instrumentId": "es5y",
       "date": "2026-08-06",
       "value": 3.34,
-      "source": "Banco de España",
+      "source": "seed",
       "fetchedAt": "2026-08-06T18:05:00Z"
     },
     {
       "instrumentId": "es5y",
       "date": "2026-08-07",
       "value": 3.37,
-      "source": "Banco de España",
+      "source": "seed",
       "fetchedAt": "2026-08-07T18:05:00Z"
     },
     {
       "instrumentId": "es5y",
       "date": "2026-08-10",
       "value": 3.35,
-      "source": "Banco de España",
+      "source": "seed",
       "fetchedAt": "2026-08-10T18:05:00Z"
     },
     {
       "instrumentId": "es5y",
       "date": "2026-08-11",
       "value": 3.33,
-      "source": "Banco de España",
+      "source": "seed",
       "fetchedAt": "2026-08-11T18:05:00Z"
     },
     {
       "instrumentId": "es5y",
       "date": "2026-08-12",
       "value": 3.32,
-      "source": "Banco de España",
+      "source": "seed",
       "fetchedAt": "2026-08-12T18:05:00Z"
     },
     {
       "instrumentId": "es5y",
       "date": "2026-08-13",
       "value": 3.3,
-      "source": "Banco de España",
+      "source": "seed",
       "fetchedAt": "2026-08-13T18:05:00Z"
     },
     {
       "instrumentId": "es10y",
       "date": "2026-08-03",
       "value": 3.4,
-      "source": "Banco de España",
+      "source": "seed",
       "fetchedAt": "2026-08-03T18:05:00Z"
     },
     {
       "instrumentId": "es10y",
       "date": "2026-08-04",
       "value": 3.41,
-      "source": "Banco de España",
+      "source": "seed",
       "fetchedAt": "2026-08-04T18:05:00Z"
     },
     {
       "instrumentId": "es10y",
       "date": "2026-08-06",
       "value": 3.39,
-      "source": "Banco de España",
+      "source": "seed",
       "fetchedAt": "2026-08-06T18:05:00Z"
     },
     {
       "instrumentId": "es10y",
       "date": "2026-08-07",
       "value": 3.42,
-      "source": "Banco de España",
+      "source": "seed",
       "fetchedAt": "2026-08-07T18:05:00Z"
     },
     {
       "instrumentId": "es10y",
       "date": "2026-08-10",
       "value": 3.4,
-      "source": "Banco de España",
+      "source": "seed",
       "fetchedAt": "2026-08-10T18:05:00Z"
     },
     {
       "instrumentId": "es10y",
       "date": "2026-08-11",
       "value": 3.38,
-      "source": "Banco de España",
+      "source": "seed",
       "fetchedAt": "2026-08-11T18:05:00Z"
     },
     {
       "instrumentId": "es10y",
       "date": "2026-08-12",
       "value": 3.37,
-      "source": "Banco de España",
+      "source": "seed",
       "fetchedAt": "2026-08-12T18:05:00Z"
     },
     {
       "instrumentId": "es10y",
       "date": "2026-08-13",
       "value": 3.35,
-      "source": "Banco de España",
+      "source": "seed",
       "fetchedAt": "2026-08-13T18:05:00Z"
     },
     {
       "instrumentId": "es15y",
       "date": "2026-08-03",
       "value": 3.52,
-      "source": "Banco de España",
+      "source": "seed",
       "fetchedAt": "2026-08-03T18:05:00Z"
     },
     {
       "instrumentId": "es15y",
       "date": "2026-08-04",
       "value": 3.53,
-      "source": "Banco de España",
+      "source": "seed",
       "fetchedAt": "2026-08-04T18:05:00Z"
     },
     {
       "instrumentId": "es15y",
       "date": "2026-08-06",
       "value": 3.51,
-      "source": "Banco de España",
+      "source": "seed",
       "fetchedAt": "2026-08-06T18:05:00Z"
     },
     {
       "instrumentId": "es15y",
       "date": "2026-08-07",
       "value": 3.54,
-      "source": "Banco de España",
+      "source": "seed",
       "fetchedAt": "2026-08-07T18:05:00Z"
     },
     {
       "instrumentId": "es15y",
       "date": "2026-08-10",
       "value": 3.52,
-      "source": "Banco de España",
+      "source": "seed",
       "fetchedAt": "2026-08-10T18:05:00Z"
     },
     {
       "instrumentId": "es15y",
       "date": "2026-08-11",
       "value": 3.5,
-      "source": "Banco de España",
+      "source": "seed",
       "fetchedAt": "2026-08-11T18:05:00Z"
     },
     {
       "instrumentId": "es15y",
       "date": "2026-08-12",
       "value": 3.49,
-      "source": "Banco de España",
+      "source": "seed",
       "fetchedAt": "2026-08-12T18:05:00Z"
     },
     {
       "instrumentId": "es15y",
       "date": "2026-08-13",
       "value": 3.47,
-      "source": "Banco de España",
+      "source": "seed",
       "fetchedAt": "2026-08-13T18:05:00Z"
     },
     {
       "instrumentId": "es20y",
       "date": "2026-08-03",
       "value": 3.6,
-      "source": "Banco de España",
+      "source": "seed",
       "fetchedAt": "2026-08-03T18:05:00Z"
     },
     {
       "instrumentId": "es20y",
       "date": "2026-08-04",
       "value": 3.61,
-      "source": "Banco de España",
+      "source": "seed",
       "fetchedAt": "2026-08-04T18:05:00Z"
     },
     {
       "instrumentId": "es20y",
       "date": "2026-08-06",
       "value": 3.59,
-      "source": "Banco de España",
+      "source": "seed",
       "fetchedAt": "2026-08-06T18:05:00Z"
     },
     {
       "instrumentId": "es20y",
       "date": "2026-08-07",
       "value": 3.62,
-      "source": "Banco de España",
+      "source": "seed",
       "fetchedAt": "2026-08-07T18:05:00Z"
     },
     {
       "instrumentId": "es20y",
       "date": "2026-08-10",
       "value": 3.6,
-      "source": "Banco de España",
+      "source": "seed",
       "fetchedAt": "2026-08-10T18:05:00Z"
     },
     {
       "instrumentId": "es20y",
       "date": "2026-08-11",
       "value": 3.58,
-      "source": "Banco de España",
+      "source": "seed",
       "fetchedAt": "2026-08-11T18:05:00Z"
     },
     {
       "instrumentId": "es20y",
       "date": "2026-08-12",
       "value": 3.57,
-      "source": "Banco de España",
+      "source": "seed",
       "fetchedAt": "2026-08-12T18:05:00Z"
     },
     {
       "instrumentId": "es20y",
       "date": "2026-08-13",
       "value": 3.55,
-      "source": "Banco de España",
+      "source": "seed",
       "fetchedAt": "2026-08-13T18:05:00Z"
     },
     {
       "instrumentId": "it6m",
       "date": "2026-08-03",
       "value": 3.45,
-      "source": "Banca d'Italia",
+      "source": "seed",
       "fetchedAt": "2026-08-03T18:05:00Z"
     },
     {
       "instrumentId": "it6m",
       "date": "2026-08-04",
       "value": 3.47,
-      "source": "Banca d'Italia",
+      "source": "seed",
       "fetchedAt": "2026-08-04T18:05:00Z"
     },
     {
       "instrumentId": "it6m",
       "date": "2026-08-06",
       "value": 3.46,
-      "source": "Banca d'Italia",
+      "source": "seed",
       "fetchedAt": "2026-08-06T18:05:00Z"
     },
     {
       "instrumentId": "it6m",
       "date": "2026-08-07",
       "value": 3.49,
-      "source": "Banca d'Italia",
+      "source": "seed",
       "fetchedAt": "2026-08-07T18:05:00Z"
     },
     {
       "instrumentId": "it6m",
       "date": "2026-08-10",
       "value": 3.48,
-      "source": "Banca d'Italia",
+      "source": "seed",
       "fetchedAt": "2026-08-10T18:05:00Z"
     },
     {
       "instrumentId": "it6m",
       "date": "2026-08-11",
       "value": 3.45,
-      "source": "Banca d'Italia",
+      "source": "seed",
       "fetchedAt": "2026-08-11T18:05:00Z"
     },
     {
       "instrumentId": "it6m",
       "date": "2026-08-12",
       "value": 3.43,
-      "source": "Banca d'Italia",
+      "source": "seed",
       "fetchedAt": "2026-08-12T18:05:00Z"
     },
     {
       "instrumentId": "it6m",
       "date": "2026-08-13",
       "value": 3.4,
-      "source": "Banca d'Italia",
+      "source": "seed",
       "fetchedAt": "2026-08-13T18:05:00Z"
     },
     {
       "instrumentId": "it1y",
       "date": "2026-08-03",
       "value": 3.55,
-      "source": "Banca d'Italia",
+      "source": "seed",
       "fetchedAt": "2026-08-03T18:05:00Z"
     },
     {
       "instrumentId": "it1y",
       "date": "2026-08-04",
       "value": 3.57,
-      "source": "Banca d'Italia",
+      "source": "seed",
       "fetchedAt": "2026-08-04T18:05:00Z"
     },
     {
       "instrumentId": "it1y",
       "date": "2026-08-06",
       "value": 3.56,
-      "source": "Banca d'Italia",
+      "source": "seed",
       "fetchedAt": "2026-08-06T18:05:00Z"
     },
     {
       "instrumentId": "it1y",
       "date": "2026-08-07",
       "value": 3.59,
-      "source": "Banca d'Italia",
+      "source": "seed",
       "fetchedAt": "2026-08-07T18:05:00Z"
     },
     {
       "instrumentId": "it1y",
       "date": "2026-08-10",
       "value": 3.58,
-      "source": "Banca d'Italia",
+      "source": "seed",
       "fetchedAt": "2026-08-10T18:05:00Z"
     },
     {
       "instrumentId": "it1y",
       "date": "2026-08-11",
       "value": 3.55,
-      "source": "Banca d'Italia",
+      "source": "seed",
       "fetchedAt": "2026-08-11T18:05:00Z"
     },
     {
       "instrumentId": "it1y",
       "date": "2026-08-12",
       "value": 3.53,
-      "source": "Banca d'Italia",
+      "source": "seed",
       "fetchedAt": "2026-08-12T18:05:00Z"
     },
     {
       "instrumentId": "it1y",
       "date": "2026-08-13",
       "value": 3.5,
-      "source": "Banca d'Italia",
+      "source": "seed",
       "fetchedAt": "2026-08-13T18:05:00Z"
     },
     {
       "instrumentId": "it3y",
       "date": "2026-08-03",
       "value": 3.68,
-      "source": "Banca d'Italia",
+      "source": "seed",
       "fetchedAt": "2026-08-03T18:05:00Z"
     },
     {
       "instrumentId": "it3y",
       "date": "2026-08-04",
       "value": 3.7,
-      "source": "Banca d'Italia",
+      "source": "seed",
       "fetchedAt": "2026-08-04T18:05:00Z"
     },
     {
       "instrumentId": "it3y",
       "date": "2026-08-06",
       "value": 3.69,
-      "source": "Banca d'Italia",
+      "source": "seed",
       "fetchedAt": "2026-08-06T18:05:00Z"
     },
     {
       "instrumentId": "it3y",
       "date": "2026-08-07",
       "value": 3.72,
-      "source": "Banca d'Italia",
+      "source": "seed",
       "fetchedAt": "2026-08-07T18:05:00Z"
     },
     {
       "instrumentId": "it3y",
       "date": "2026-08-10",
       "value": 3.71,
-      "source": "Banca d'Italia",
+      "source": "seed",
       "fetchedAt": "2026-08-10T18:05:00Z"
     },
     {
       "instrumentId": "it3y",
       "date": "2026-08-11",
       "value": 3.68,
-      "source": "Banca d'Italia",
+      "source": "seed",
       "fetchedAt": "2026-08-11T18:05:00Z"
     },
     {
       "instrumentId": "it3y",
       "date": "2026-08-12",
       "value": 3.66,
-      "source": "Banca d'Italia",
+      "source": "seed",
       "fetchedAt": "2026-08-12T18:05:00Z"
     },
     {
       "instrumentId": "it3y",
       "date": "2026-08-13",
       "value": 3.63,
-      "source": "Banca d'Italia",
+      "source": "seed",
       "fetchedAt": "2026-08-13T18:05:00Z"
     },
     {
       "instrumentId": "it5y",
       "date": "2026-08-03",
       "value": 3.75,
-      "source": "Banca d'Italia",
+      "source": "seed",
       "fetchedAt": "2026-08-03T18:05:00Z"
     },
     {
       "instrumentId": "it5y",
       "date": "2026-08-04",
       "value": 3.77,
-      "source": "Banca d'Italia",
+      "source": "seed",
       "fetchedAt": "2026-08-04T18:05:00Z"
     },
     {
       "instrumentId": "it5y",
       "date": "2026-08-06",
       "value": 3.76,
-      "source": "Banca d'Italia",
+      "source": "seed",
       "fetchedAt": "2026-08-06T18:05:00Z"
     },
     {
       "instrumentId": "it5y",
       "date": "2026-08-07",
       "value": 3.79,
-      "source": "Banca d'Italia",
+      "source": "seed",
       "fetchedAt": "2026-08-07T18:05:00Z"
     },
     {
       "instrumentId": "it5y",
       "date": "2026-08-10",
       "value": 3.78,
-      "source": "Banca d'Italia",
+      "source": "seed",
       "fetchedAt": "2026-08-10T18:05:00Z"
     },
     {
       "instrumentId": "it5y",
       "date": "2026-08-11",
       "value": 3.75,
-      "source": "Banca d'Italia",
+      "source": "seed",
       "fetchedAt": "2026-08-11T18:05:00Z"
     },
     {
       "instrumentId": "it5y",
       "date": "2026-08-12",
       "value": 3.73,
-      "source": "Banca d'Italia",
+      "source": "seed",
       "fetchedAt": "2026-08-12T18:05:00Z"
     },
     {
       "instrumentId": "it5y",
       "date": "2026-08-13",
       "value": 3.7,
-      "source": "Banca d'Italia",
+      "source": "seed",
       "fetchedAt": "2026-08-13T18:05:00Z"
     },
     {
       "instrumentId": "it10y",
       "date": "2026-08-03",
       "value": 3.8,
-      "source": "Banca d'Italia",
+      "source": "seed",
       "fetchedAt": "2026-08-03T18:05:00Z"
     },
     {
       "instrumentId": "it10y",
       "date": "2026-08-04",
       "value": 3.82,
-      "source": "Banca d'Italia",
+      "source": "seed",
       "fetchedAt": "2026-08-04T18:05:00Z"
     },
     {
       "instrumentId": "it10y",
       "date": "2026-08-06",
       "value": 3.81,
-      "source": "Banca d'Italia",
+      "source": "seed",
       "fetchedAt": "2026-08-06T18:05:00Z"
     },
     {
       "instrumentId": "it10y",
       "date": "2026-08-07",
       "value": 3.84,
-      "source": "Banca d'Italia",
+      "source": "seed",
       "fetchedAt": "2026-08-07T18:05:00Z"
     },
     {
       "instrumentId": "it10y",
       "date": "2026-08-10",
       "value": 3.83,
-      "source": "Banca d'Italia",
+      "source": "seed",
       "fetchedAt": "2026-08-10T18:05:00Z"
     },
     {
       "instrumentId": "it10y",
       "date": "2026-08-11",
       "value": 3.8,
-      "source": "Banca d'Italia",
+      "source": "seed",
       "fetchedAt": "2026-08-11T18:05:00Z"
     },
     {
       "instrumentId": "it10y",
       "date": "2026-08-12",
       "value": 3.78,
-      "source": "Banca d'Italia",
+      "source": "seed",
       "fetchedAt": "2026-08-12T18:05:00Z"
     },
     {
       "instrumentId": "it10y",
       "date": "2026-08-13",
       "value": 3.75,
-      "source": "Banca d'Italia",
+      "source": "seed",
       "fetchedAt": "2026-08-13T18:05:00Z"
     },
     {
       "instrumentId": "it15y",
       "date": "2026-08-03",
       "value": 3.92,
-      "source": "Banca d'Italia",
+      "source": "seed",
       "fetchedAt": "2026-08-03T18:05:00Z"
     },
     {
       "instrumentId": "it15y",
       "date": "2026-08-04",
       "value": 3.94,
-      "source": "Banca d'Italia",
+      "source": "seed",
       "fetchedAt": "2026-08-04T18:05:00Z"
     },
     {
       "instrumentId": "it15y",
       "date": "2026-08-06",
       "value": 3.93,
-      "source": "Banca d'Italia",
+      "source": "seed",
       "fetchedAt": "2026-08-06T18:05:00Z"
     },
     {
       "instrumentId": "it15y",
       "date": "2026-08-07",
       "value": 3.96,
-      "source": "Banca d'Italia",
+      "source": "seed",
       "fetchedAt": "2026-08-07T18:05:00Z"
     },
     {
       "instrumentId": "it15y",
       "date": "2026-08-10",
       "value": 3.95,
-      "source": "Banca d'Italia",
+      "source": "seed",
       "fetchedAt": "2026-08-10T18:05:00Z"
     },
     {
       "instrumentId": "it15y",
       "date": "2026-08-11",
       "value": 3.92,
-      "source": "Banca d'Italia",
+      "source": "seed",
       "fetchedAt": "2026-08-11T18:05:00Z"
     },
     {
       "instrumentId": "it15y",
       "date": "2026-08-12",
       "value": 3.9,
-      "source": "Banca d'Italia",
+      "source": "seed",
       "fetchedAt": "2026-08-12T18:05:00Z"
     },
     {
       "instrumentId": "it15y",
       "date": "2026-08-13",
       "value": 3.87,
-      "source": "Banca d'Italia",
+      "source": "seed",
       "fetchedAt": "2026-08-13T18:05:00Z"
     },
     {
       "instrumentId": "it20y",
       "date": "2026-08-03",
       "value": 4.0,
-      "source": "Banca d'Italia",
+      "source": "seed",
       "fetchedAt": "2026-08-03T18:05:00Z"
     },
     {
       "instrumentId": "it20y",
       "date": "2026-08-04",
       "value": 4.02,
-      "source": "Banca d'Italia",
+      "source": "seed",
       "fetchedAt": "2026-08-04T18:05:00Z"
     },
     {
       "instrumentId": "it20y",
       "date": "2026-08-06",
       "value": 4.01,
-      "source": "Banca d'Italia",
+      "source": "seed",
       "fetchedAt": "2026-08-06T18:05:00Z"
     },
     {
       "instrumentId": "it20y",
       "date": "2026-08-07",
       "value": 4.04,
-      "source": "Banca d'Italia",
+      "source": "seed",
       "fetchedAt": "2026-08-07T18:05:00Z"
     },
     {
       "instrumentId": "it20y",
       "date": "2026-08-10",
       "value": 4.03,
-      "source": "Banca d'Italia",
+      "source": "seed",
       "fetchedAt": "2026-08-10T18:05:00Z"
     },
     {
       "instrumentId": "it20y",
       "date": "2026-08-11",
       "value": 4.0,
-      "source": "Banca d'Italia",
+      "source": "seed",
       "fetchedAt": "2026-08-11T18:05:00Z"
     },
     {
       "instrumentId": "it20y",
       "date": "2026-08-12",
       "value": 3.98,
-      "source": "Banca d'Italia",
+      "source": "seed",
       "fetchedAt": "2026-08-12T18:05:00Z"
     },
     {
       "instrumentId": "it20y",
       "date": "2026-08-13",
       "value": 3.95,
-      "source": "Banca d'Italia",
+      "source": "seed",
       "fetchedAt": "2026-08-13T18:05:00Z"
     },
     {
       "instrumentId": "uk6m",
       "date": "2026-08-03",
       "value": 4.23,
-      "source": "Bank of England",
+      "source": "seed",
       "fetchedAt": "2026-08-03T17:35:00Z"
     },
     {
       "instrumentId": "uk6m",
       "date": "2026-08-04",
       "value": 4.21,
-      "source": "Bank of England",
+      "source": "seed",
       "fetchedAt": "2026-08-04T17:35:00Z"
     },
     {
       "instrumentId": "uk6m",
       "date": "2026-08-06",
       "value": 4.2,
-      "source": "Bank of England",
+      "source": "seed",
       "fetchedAt": "2026-08-06T17:35:00Z"
     },
     {
       "instrumentId": "uk6m",
       "date": "2026-08-07",
       "value": 4.22,
-      "source": "Bank of England",
+      "source": "seed",
       "fetchedAt": "2026-08-07T17:35:00Z"
     },
     {
       "instrumentId": "uk6m",
       "date": "2026-08-10",
       "value": 4.2,
-      "source": "Bank of England",
+      "source": "seed",
       "fetchedAt": "2026-08-10T17:35:00Z"
     },
     {
       "instrumentId": "uk6m",
       "date": "2026-08-11",
       "value": 4.18,
-      "source": "Bank of England",
+      "source": "seed",
       "fetchedAt": "2026-08-11T17:35:00Z"
     },
     {
       "instrumentId": "uk6m",
       "date": "2026-08-12",
       "value": 4.17,
-      "source": "Bank of England",
+      "source": "seed",
       "fetchedAt": "2026-08-12T17:35:00Z"
     },
     {
       "instrumentId": "uk6m",
       "date": "2026-08-13",
       "value": 4.15,
-      "source": "Bank of England",
+      "source": "seed",
       "fetchedAt": "2026-08-13T17:35:00Z"
     },
     {
       "instrumentId": "uk1y",
       "date": "2026-08-03",
       "value": 4.33,
-      "source": "Bank of England",
+      "source": "seed",
       "fetchedAt": "2026-08-03T17:35:00Z"
     },
     {
       "instrumentId": "uk1y",
       "date": "2026-08-04",
       "value": 4.31,
-      "source": "Bank of England",
+      "source": "seed",
       "fetchedAt": "2026-08-04T17:35:00Z"
     },
     {
       "instrumentId": "uk1y",
       "date": "2026-08-06",
       "value": 4.3,
-      "source": "Bank of England",
+      "source": "seed",
       "fetchedAt": "2026-08-06T17:35:00Z"
     },
     {
       "instrumentId": "uk1y",
       "date": "2026-08-07",
       "value": 4.32,
-      "source": "Bank of England",
+      "source": "seed",
       "fetchedAt": "2026-08-07T17:35:00Z"
     },
     {
       "instrumentId": "uk1y",
       "date": "2026-08-10",
       "value": 4.3,
-      "source": "Bank of England",
+      "source": "seed",
       "fetchedAt": "2026-08-10T17:35:00Z"
     },
     {
       "instrumentId": "uk1y",
       "date": "2026-08-11",
       "value": 4.28,
-      "source": "Bank of England",
+      "source": "seed",
       "fetchedAt": "2026-08-11T17:35:00Z"
     },
     {
       "instrumentId": "uk1y",
       "date": "2026-08-12",
       "value": 4.27,
-      "source": "Bank of England",
+      "source": "seed",
       "fetchedAt": "2026-08-12T17:35:00Z"
     },
     {
       "instrumentId": "uk1y",
       "date": "2026-08-13",
       "value": 4.25,
-      "source": "Bank of England",
+      "source": "seed",
       "fetchedAt": "2026-08-13T17:35:00Z"
     },
     {
       "instrumentId": "uk3y",
       "date": "2026-08-03",
       "value": 4.46,
-      "source": "Bank of England",
+      "source": "seed",
       "fetchedAt": "2026-08-03T17:35:00Z"
     },
     {
       "instrumentId": "uk3y",
       "date": "2026-08-04",
       "value": 4.44,
-      "source": "Bank of England",
+      "source": "seed",
       "fetchedAt": "2026-08-04T17:35:00Z"
     },
     {
       "instrumentId": "uk3y",
       "date": "2026-08-06",
       "value": 4.43,
-      "source": "Bank of England",
+      "source": "seed",
       "fetchedAt": "2026-08-06T17:35:00Z"
     },
     {
       "instrumentId": "uk3y",
       "date": "2026-08-07",
       "value": 4.45,
-      "source": "Bank of England",
+      "source": "seed",
       "fetchedAt": "2026-08-07T17:35:00Z"
     },
     {
       "instrumentId": "uk3y",
       "date": "2026-08-10",
       "value": 4.43,
-      "source": "Bank of England",
+      "source": "seed",
       "fetchedAt": "2026-08-10T17:35:00Z"
     },
     {
       "instrumentId": "uk3y",
       "date": "2026-08-11",
       "value": 4.41,
-      "source": "Bank of England",
+      "source": "seed",
       "fetchedAt": "2026-08-11T17:35:00Z"
     },
     {
       "instrumentId": "uk3y",
       "date": "2026-08-12",
       "value": 4.4,
-      "source": "Bank of England",
+      "source": "seed",
       "fetchedAt": "2026-08-12T17:35:00Z"
     },
     {
       "instrumentId": "uk3y",
       "date": "2026-08-13",
       "value": 4.38,
-      "source": "Bank of England",
+      "source": "seed",
       "fetchedAt": "2026-08-13T17:35:00Z"
     },
     {
       "instrumentId": "uk5y",
       "date": "2026-08-03",
       "value": 4.53,
-      "source": "Bank of England",
+      "source": "seed",
       "fetchedAt": "2026-08-03T17:35:00Z"
     },
     {
       "instrumentId": "uk5y",
       "date": "2026-08-04",
       "value": 4.51,
-      "source": "Bank of England",
+      "source": "seed",
       "fetchedAt": "2026-08-04T17:35:00Z"
     },
     {
       "instrumentId": "uk5y",
       "date": "2026-08-06",
       "value": 4.5,
-      "source": "Bank of England",
+      "source": "seed",
       "fetchedAt": "2026-08-06T17:35:00Z"
     },
     {
       "instrumentId": "uk5y",
       "date": "2026-08-07",
       "value": 4.52,
-      "source": "Bank of England",
+      "source": "seed",
       "fetchedAt": "2026-08-07T17:35:00Z"
     },
     {
       "instrumentId": "uk5y",
       "date": "2026-08-10",
       "value": 4.5,
-      "source": "Bank of England",
+      "source": "seed",
       "fetchedAt": "2026-08-10T17:35:00Z"
     },
     {
       "instrumentId": "uk5y",
       "date": "2026-08-11",
       "value": 4.48,
-      "source": "Bank of England",
+      "source": "seed",
       "fetchedAt": "2026-08-11T17:35:00Z"
     },
     {
       "instrumentId": "uk5y",
       "date": "2026-08-12",
       "value": 4.47,
-      "source": "Bank of England",
+      "source": "seed",
       "fetchedAt": "2026-08-12T17:35:00Z"
     },
     {
       "instrumentId": "uk5y",
       "date": "2026-08-13",
       "value": 4.45,
-      "source": "Bank of England",
+      "source": "seed",
       "fetchedAt": "2026-08-13T17:35:00Z"
     },
     {
       "instrumentId": "uk10y",
       "date": "2026-08-03",
       "value": 4.58,
-      "source": "Bank of England",
+      "source": "seed",
       "fetchedAt": "2026-08-03T17:35:00Z"
     },
     {
       "instrumentId": "uk10y",
       "date": "2026-08-04",
       "value": 4.56,
-      "source": "Bank of England",
+      "source": "seed",
       "fetchedAt": "2026-08-04T17:35:00Z"
     },
     {
       "instrumentId": "uk10y",
       "date": "2026-08-06",
       "value": 4.55,
-      "source": "Bank of England",
+      "source": "seed",
       "fetchedAt": "2026-08-06T17:35:00Z"
     },
     {
       "instrumentId": "uk10y",
       "date": "2026-08-07",
       "value": 4.57,
-      "source": "Bank of England",
+      "source": "seed",
       "fetchedAt": "2026-08-07T17:35:00Z"
     },
     {
       "instrumentId": "uk10y",
       "date": "2026-08-10",
       "value": 4.55,
-      "source": "Bank of England",
+      "source": "seed",
       "fetchedAt": "2026-08-10T17:35:00Z"
     },
     {
       "instrumentId": "uk10y",
       "date": "2026-08-11",
       "value": 4.53,
-      "source": "Bank of England",
+      "source": "seed",
       "fetchedAt": "2026-08-11T17:35:00Z"
     },
     {
       "instrumentId": "uk10y",
       "date": "2026-08-12",
       "value": 4.52,
-      "source": "Bank of England",
+      "source": "seed",
       "fetchedAt": "2026-08-12T17:35:00Z"
     },
     {
       "instrumentId": "uk10y",
       "date": "2026-08-13",
       "value": 4.5,
-      "source": "Bank of England",
+      "source": "seed",
       "fetchedAt": "2026-08-13T17:35:00Z"
     },
     {
       "instrumentId": "uk15y",
       "date": "2026-08-03",
       "value": 4.7,
-      "source": "Bank of England",
+      "source": "seed",
       "fetchedAt": "2026-08-03T17:35:00Z"
     },
     {
       "instrumentId": "uk15y",
       "date": "2026-08-04",
       "value": 4.68,
-      "source": "Bank of England",
+      "source": "seed",
       "fetchedAt": "2026-08-04T17:35:00Z"
     },
     {
       "instrumentId": "uk15y",
       "date": "2026-08-06",
       "value": 4.67,
-      "source": "Bank of England",
+      "source": "seed",
       "fetchedAt": "2026-08-06T17:35:00Z"
     },
     {
       "instrumentId": "uk15y",
       "date": "2026-08-07",
       "value": 4.69,
-      "source": "Bank of England",
+      "source": "seed",
       "fetchedAt": "2026-08-07T17:35:00Z"
     },
     {
       "instrumentId": "uk15y",
       "date": "2026-08-10",
       "value": 4.67,
-      "source": "Bank of England",
+      "source": "seed",
       "fetchedAt": "2026-08-10T17:35:00Z"
     },
     {
       "instrumentId": "uk15y",
       "date": "2026-08-11",
       "value": 4.65,
-      "source": "Bank of England",
+      "source": "seed",
       "fetchedAt": "2026-08-11T17:35:00Z"
     },
     {
       "instrumentId": "uk15y",
       "date": "2026-08-12",
       "value": 4.64,
-      "source": "Bank of England",
+      "source": "seed",
       "fetchedAt": "2026-08-12T17:35:00Z"
     },
     {
       "instrumentId": "uk15y",
       "date": "2026-08-13",
       "value": 4.62,
-      "source": "Bank of England",
+      "source": "seed",
       "fetchedAt": "2026-08-13T17:35:00Z"
     },
     {
       "instrumentId": "uk20y",
       "date": "2026-08-03",
       "value": 4.78,
-      "source": "Bank of England",
+      "source": "seed",
       "fetchedAt": "2026-08-03T17:35:00Z"
     },
     {
       "instrumentId": "uk20y",
       "date": "2026-08-04",
       "value": 4.76,
-      "source": "Bank of England",
+      "source": "seed",
       "fetchedAt": "2026-08-04T17:35:00Z"
     },
     {
       "instrumentId": "uk20y",
       "date": "2026-08-06",
       "value": 4.75,
-      "source": "Bank of England",
+      "source": "seed",
       "fetchedAt": "2026-08-06T17:35:00Z"
     },
     {
       "instrumentId": "uk20y",
       "date": "2026-08-07",
       "value": 4.77,
-      "source": "Bank of England",
+      "source": "seed",
       "fetchedAt": "2026-08-07T17:35:00Z"
     },
     {
       "instrumentId": "uk20y",
       "date": "2026-08-10",
       "value": 4.75,
-      "source": "Bank of England",
+      "source": "seed",
       "fetchedAt": "2026-08-10T17:35:00Z"
     },
     {
       "instrumentId": "uk20y",
       "date": "2026-08-11",
       "value": 4.73,
-      "source": "Bank of England",
+      "source": "seed",
       "fetchedAt": "2026-08-11T17:35:00Z"
     },
     {
       "instrumentId": "uk20y",
       "date": "2026-08-12",
       "value": 4.72,
-      "source": "Bank of England",
+      "source": "seed",
       "fetchedAt": "2026-08-12T17:35:00Z"
     },
     {
       "instrumentId": "uk20y",
       "date": "2026-08-13",
       "value": 4.7,
-      "source": "Bank of England",
+      "source": "seed",
       "fetchedAt": "2026-08-13T17:35:00Z"
     },
     {
       "instrumentId": "jp6m",
       "date": "2026-08-03",
       "value": 1.37,
-      "source": "Bank of Japan",
+      "source": "seed",
       "fetchedAt": "2026-08-03T06:10:00Z"
     },
     {
       "instrumentId": "jp6m",
       "date": "2026-08-04",
       "value": 1.38,
-      "source": "Bank of Japan",
+      "source": "seed",
       "fetchedAt": "2026-08-04T06:10:00Z"
     },
     {
       "instrumentId": "jp6m",
       "date": "2026-08-06",
       "value": 1.4,
-      "source": "Bank of Japan",
+      "source": "seed",
       "fetchedAt": "2026-08-06T06:10:00Z"
     },
     {
       "instrumentId": "jp6m",
       "date": "2026-08-07",
       "value": 1.41,
-      "source": "Bank of Japan",
+      "source": "seed",
       "fetchedAt": "2026-08-07T06:10:00Z"
     },
     {
       "instrumentId": "jp6m",
       "date": "2026-08-10",
       "value": 1.43,
-      "source": "Bank of Japan",
+      "source": "seed",
       "fetchedAt": "2026-08-10T06:10:00Z"
     },
     {
       "instrumentId": "jp6m",
       "date": "2026-08-11",
       "value": 1.42,
-      "source": "Bank of Japan",
+      "source": "seed",
       "fetchedAt": "2026-08-11T06:10:00Z"
     },
     {
       "instrumentId": "jp6m",
       "date": "2026-08-12",
       "value": 1.44,
-      "source": "Bank of Japan",
+      "source": "seed",
       "fetchedAt": "2026-08-12T06:10:00Z"
     },
     {
       "instrumentId": "jp6m",
       "date": "2026-08-13",
       "value": 1.45,
-      "source": "Bank of Japan",
+      "source": "seed",
       "fetchedAt": "2026-08-13T06:10:00Z"
     },
     {
       "instrumentId": "jp1y",
       "date": "2026-08-03",
       "value": 1.47,
-      "source": "Bank of Japan",
+      "source": "seed",
       "fetchedAt": "2026-08-03T06:10:00Z"
     },
     {
       "instrumentId": "jp1y",
       "date": "2026-08-04",
       "value": 1.48,
-      "source": "Bank of Japan",
+      "source": "seed",
       "fetchedAt": "2026-08-04T06:10:00Z"
     },
     {
       "instrumentId": "jp1y",
       "date": "2026-08-06",
       "value": 1.5,
-      "source": "Bank of Japan",
+      "source": "seed",
       "fetchedAt": "2026-08-06T06:10:00Z"
     },
     {
       "instrumentId": "jp1y",
       "date": "2026-08-07",
       "value": 1.51,
-      "source": "Bank of Japan",
+      "source": "seed",
       "fetchedAt": "2026-08-07T06:10:00Z"
     },
     {
       "instrumentId": "jp1y",
       "date": "2026-08-10",
       "value": 1.53,
-      "source": "Bank of Japan",
+      "source": "seed",
       "fetchedAt": "2026-08-10T06:10:00Z"
     },
     {
       "instrumentId": "jp1y",
       "date": "2026-08-11",
       "value": 1.52,
-      "source": "Bank of Japan",
+      "source": "seed",
       "fetchedAt": "2026-08-11T06:10:00Z"
     },
     {
       "instrumentId": "jp1y",
       "date": "2026-08-12",
       "value": 1.54,
-      "source": "Bank of Japan",
+      "source": "seed",
       "fetchedAt": "2026-08-12T06:10:00Z"
     },
     {
       "instrumentId": "jp1y",
       "date": "2026-08-13",
       "value": 1.55,
-      "source": "Bank of Japan",
+      "source": "seed",
       "fetchedAt": "2026-08-13T06:10:00Z"
     },
     {
       "instrumentId": "jp3y",
       "date": "2026-08-03",
       "value": 1.6,
-      "source": "Bank of Japan",
+      "source": "seed",
       "fetchedAt": "2026-08-03T06:10:00Z"
     },
     {
       "instrumentId": "jp3y",
       "date": "2026-08-04",
       "value": 1.61,
-      "source": "Bank of Japan",
+      "source": "seed",
       "fetchedAt": "2026-08-04T06:10:00Z"
     },
     {
       "instrumentId": "jp3y",
       "date": "2026-08-06",
       "value": 1.63,
-      "source": "Bank of Japan",
+      "source": "seed",
       "fetchedAt": "2026-08-06T06:10:00Z"
     },
     {
       "instrumentId": "jp3y",
       "date": "2026-08-07",
       "value": 1.64,
-      "source": "Bank of Japan",
+      "source": "seed",
       "fetchedAt": "2026-08-07T06:10:00Z"
     },
     {
       "instrumentId": "jp3y",
       "date": "2026-08-10",
       "value": 1.66,
-      "source": "Bank of Japan",
+      "source": "seed",
       "fetchedAt": "2026-08-10T06:10:00Z"
     },
     {
       "instrumentId": "jp3y",
       "date": "2026-08-11",
       "value": 1.65,
-      "source": "Bank of Japan",
+      "source": "seed",
       "fetchedAt": "2026-08-11T06:10:00Z"
     },
     {
       "instrumentId": "jp3y",
       "date": "2026-08-12",
       "value": 1.67,
-      "source": "Bank of Japan",
+      "source": "seed",
       "fetchedAt": "2026-08-12T06:10:00Z"
     },
     {
       "instrumentId": "jp3y",
       "date": "2026-08-13",
       "value": 1.68,
-      "source": "Bank of Japan",
+      "source": "seed",
       "fetchedAt": "2026-08-13T06:10:00Z"
     },
     {
       "instrumentId": "jp5y",
       "date": "2026-08-03",
       "value": 1.67,
-      "source": "Bank of Japan",
+      "source": "seed",
       "fetchedAt": "2026-08-03T06:10:00Z"
     },
     {
       "instrumentId": "jp5y",
       "date": "2026-08-04",
       "value": 1.68,
-      "source": "Bank of Japan",
+      "source": "seed",
       "fetchedAt": "2026-08-04T06:10:00Z"
     },
     {
       "instrumentId": "jp5y",
       "date": "2026-08-06",
       "value": 1.7,
-      "source": "Bank of Japan",
+      "source": "seed",
       "fetchedAt": "2026-08-06T06:10:00Z"
     },
     {
       "instrumentId": "jp5y",
       "date": "2026-08-07",
       "value": 1.71,
-      "source": "Bank of Japan",
+      "source": "seed",
       "fetchedAt": "2026-08-07T06:10:00Z"
     },
     {
       "instrumentId": "jp5y",
       "date": "2026-08-10",
       "value": 1.73,
-      "source": "Bank of Japan",
+      "source": "seed",
       "fetchedAt": "2026-08-10T06:10:00Z"
     },
     {
       "instrumentId": "jp5y",
       "date": "2026-08-11",
       "value": 1.72,
-      "source": "Bank of Japan",
+      "source": "seed",
       "fetchedAt": "2026-08-11T06:10:00Z"
     },
     {
       "instrumentId": "jp5y",
       "date": "2026-08-12",
       "value": 1.74,
-      "source": "Bank of Japan",
+      "source": "seed",
       "fetchedAt": "2026-08-12T06:10:00Z"
     },
     {
       "instrumentId": "jp5y",
       "date": "2026-08-13",
       "value": 1.75,
-      "source": "Bank of Japan",
+      "source": "seed",
       "fetchedAt": "2026-08-13T06:10:00Z"
     },
     {
       "instrumentId": "jp10y",
       "date": "2026-08-03",
       "value": 1.72,
-      "source": "Bank of Japan",
+      "source": "seed",
       "fetchedAt": "2026-08-03T06:10:00Z"
     },
     {
       "instrumentId": "jp10y",
       "date": "2026-08-04",
       "value": 1.73,
-      "source": "Bank of Japan",
+      "source": "seed",
       "fetchedAt": "2026-08-04T06:10:00Z"
     },
     {
       "instrumentId": "jp10y",
       "date": "2026-08-06",
       "value": 1.75,
-      "source": "Bank of Japan",
+      "source": "seed",
       "fetchedAt": "2026-08-06T06:10:00Z"
     },
     {
       "instrumentId": "jp10y",
       "date": "2026-08-07",
       "value": 1.76,
-      "source": "Bank of Japan",
+      "source": "seed",
       "fetchedAt": "2026-08-07T06:10:00Z"
     },
     {
       "instrumentId": "jp10y",
       "date": "2026-08-10",
       "value": 1.78,
-      "source": "Bank of Japan",
+      "source": "seed",
       "fetchedAt": "2026-08-10T06:10:00Z"
     },
     {
       "instrumentId": "jp10y",
       "date": "2026-08-11",
       "value": 1.77,
-      "source": "Bank of Japan",
+      "source": "seed",
       "fetchedAt": "2026-08-11T06:10:00Z"
     },
     {
       "instrumentId": "jp10y",
       "date": "2026-08-12",
       "value": 1.79,
-      "source": "Bank of Japan",
+      "source": "seed",
       "fetchedAt": "2026-08-12T06:10:00Z"
     },
     {
       "instrumentId": "jp10y",
       "date": "2026-08-13",
       "value": 1.8,
-      "source": "Bank of Japan",
+      "source": "seed",
       "fetchedAt": "2026-08-13T06:10:00Z"
     },
     {
       "instrumentId": "jp15y",
       "date": "2026-08-03",
       "value": 1.84,
-      "source": "Bank of Japan",
+      "source": "seed",
       "fetchedAt": "2026-08-03T06:10:00Z"
     },
     {
       "instrumentId": "jp15y",
       "date": "2026-08-04",
       "value": 1.85,
-      "source": "Bank of Japan",
+      "source": "seed",
       "fetchedAt": "2026-08-04T06:10:00Z"
     },
     {
       "instrumentId": "jp15y",
       "date": "2026-08-06",
       "value": 1.87,
-      "source": "Bank of Japan",
+      "source": "seed",
       "fetchedAt": "2026-08-06T06:10:00Z"
     },
     {
       "instrumentId": "jp15y",
       "date": "2026-08-07",
       "value": 1.88,
-      "source": "Bank of Japan",
+      "source": "seed",
       "fetchedAt": "2026-08-07T06:10:00Z"
     },
     {
       "instrumentId": "jp15y",
       "date": "2026-08-10",
       "value": 1.9,
-      "source": "Bank of Japan",
+      "source": "seed",
       "fetchedAt": "2026-08-10T06:10:00Z"
     },
     {
       "instrumentId": "jp15y",
       "date": "2026-08-11",
       "value": 1.89,
-      "source": "Bank of Japan",
+      "source": "seed",
       "fetchedAt": "2026-08-11T06:10:00Z"
     },
     {
       "instrumentId": "jp15y",
       "date": "2026-08-12",
       "value": 1.91,
-      "source": "Bank of Japan",
+      "source": "seed",
       "fetchedAt": "2026-08-12T06:10:00Z"
     },
     {
       "instrumentId": "jp15y",
       "date": "2026-08-13",
       "value": 1.92,
-      "source": "Bank of Japan",
+      "source": "seed",
       "fetchedAt": "2026-08-13T06:10:00Z"
     },
     {
       "instrumentId": "jp20y",
       "date": "2026-08-03",
       "value": 1.92,
-      "source": "Bank of Japan",
+      "source": "seed",
       "fetchedAt": "2026-08-03T06:10:00Z"
     },
     {
       "instrumentId": "jp20y",
       "date": "2026-08-04",
       "value": 1.93,
-      "source": "Bank of Japan",
+      "source": "seed",
       "fetchedAt": "2026-08-04T06:10:00Z"
     },
     {
       "instrumentId": "jp20y",
       "date": "2026-08-06",
       "value": 1.95,
-      "source": "Bank of Japan",
+      "source": "seed",
       "fetchedAt": "2026-08-06T06:10:00Z"
     },
     {
       "instrumentId": "jp20y",
       "date": "2026-08-07",
       "value": 1.96,
-      "source": "Bank of Japan",
+      "source": "seed",
       "fetchedAt": "2026-08-07T06:10:00Z"
     },
     {
       "instrumentId": "jp20y",
       "date": "2026-08-10",
       "value": 1.98,
-      "source": "Bank of Japan",
+      "source": "seed",
       "fetchedAt": "2026-08-10T06:10:00Z"
     },
     {
       "instrumentId": "jp20y",
       "date": "2026-08-11",
       "value": 1.97,
-      "source": "Bank of Japan",
+      "source": "seed",
       "fetchedAt": "2026-08-11T06:10:00Z"
     },
     {
       "instrumentId": "jp20y",
       "date": "2026-08-12",
       "value": 1.99,
-      "source": "Bank of Japan",
+      "source": "seed",
       "fetchedAt": "2026-08-12T06:10:00Z"
     },
     {
       "instrumentId": "jp20y",
       "date": "2026-08-13",
       "value": 2.0,
-      "source": "Bank of Japan",
+      "source": "seed",
       "fetchedAt": "2026-08-13T06:10:00Z"
     },
     {
       "instrumentId": "cn6m",
       "date": "2026-08-03",
       "value": 1.77,
-      "source": "PBoC",
+      "source": "seed",
       "fetchedAt": "2026-08-03T08:10:00Z"
     },
     {
       "instrumentId": "cn6m",
       "date": "2026-08-04",
       "value": 1.78,
-      "source": "PBoC",
+      "source": "seed",
       "fetchedAt": "2026-08-04T08:10:00Z"
     },
     {
       "instrumentId": "cn6m",
       "date": "2026-08-06",
       "value": 1.77,
-      "source": "PBoC",
+      "source": "seed",
       "fetchedAt": "2026-08-06T08:10:00Z"
     },
     {
       "instrumentId": "cn6m",
       "date": "2026-08-07",
       "value": 1.79,
-      "source": "PBoC",
+      "source": "seed",
       "fetchedAt": "2026-08-07T08:10:00Z"
     },
     {
       "instrumentId": "cn6m",
       "date": "2026-08-10",
       "value": 1.78,
-      "source": "PBoC",
+      "source": "seed",
       "fetchedAt": "2026-08-10T08:10:00Z"
     },
     {
       "instrumentId": "cn6m",
       "date": "2026-08-11",
       "value": 1.77,
-      "source": "PBoC",
+      "source": "seed",
       "fetchedAt": "2026-08-11T08:10:00Z"
     },
     {
       "instrumentId": "cn6m",
       "date": "2026-08-12",
       "value": 1.76,
-      "source": "PBoC",
+      "source": "seed",
       "fetchedAt": "2026-08-12T08:10:00Z"
     },
     {
       "instrumentId": "cn6m",
       "date": "2026-08-13",
       "value": 1.75,
-      "source": "PBoC",
+      "source": "seed",
       "fetchedAt": "2026-08-13T08:10:00Z"
     },
     {
       "instrumentId": "cn1y",
       "date": "2026-08-03",
       "value": 1.87,
-      "source": "PBoC",
+      "source": "seed",
       "fetchedAt": "2026-08-03T08:10:00Z"
     },
     {
       "instrumentId": "cn1y",
       "date": "2026-08-04",
       "value": 1.88,
-      "source": "PBoC",
+      "source": "seed",
       "fetchedAt": "2026-08-04T08:10:00Z"
     },
     {
       "instrumentId": "cn1y",
       "date": "2026-08-06",
       "value": 1.87,
-      "source": "PBoC",
+      "source": "seed",
       "fetchedAt": "2026-08-06T08:10:00Z"
     },
     {
       "instrumentId": "cn1y",
       "date": "2026-08-07",
       "value": 1.89,
-      "source": "PBoC",
+      "source": "seed",
       "fetchedAt": "2026-08-07T08:10:00Z"
     },
     {
       "instrumentId": "cn1y",
       "date": "2026-08-10",
       "value": 1.88,
-      "source": "PBoC",
+      "source": "seed",
       "fetchedAt": "2026-08-10T08:10:00Z"
     },
     {
       "instrumentId": "cn1y",
       "date": "2026-08-11",
       "value": 1.87,
-      "source": "PBoC",
+      "source": "seed",
       "fetchedAt": "2026-08-11T08:10:00Z"
     },
     {
       "instrumentId": "cn1y",
       "date": "2026-08-12",
       "value": 1.86,
-      "source": "PBoC",
+      "source": "seed",
       "fetchedAt": "2026-08-12T08:10:00Z"
     },
     {
       "instrumentId": "cn1y",
       "date": "2026-08-13",
       "value": 1.85,
-      "source": "PBoC",
+      "source": "seed",
       "fetchedAt": "2026-08-13T08:10:00Z"
     },
     {
       "instrumentId": "cn3y",
       "date": "2026-08-03",
       "value": 2.0,
-      "source": "PBoC",
+      "source": "seed",
       "fetchedAt": "2026-08-03T08:10:00Z"
     },
     {
       "instrumentId": "cn3y",
       "date": "2026-08-04",
       "value": 2.01,
-      "source": "PBoC",
+      "source": "seed",
       "fetchedAt": "2026-08-04T08:10:00Z"
     },
     {
       "instrumentId": "cn3y",
       "date": "2026-08-06",
       "value": 2.0,
-      "source": "PBoC",
+      "source": "seed",
       "fetchedAt": "2026-08-06T08:10:00Z"
     },
     {
       "instrumentId": "cn3y",
       "date": "2026-08-07",
       "value": 2.02,
-      "source": "PBoC",
+      "source": "seed",
       "fetchedAt": "2026-08-07T08:10:00Z"
     },
     {
       "instrumentId": "cn3y",
       "date": "2026-08-10",
       "value": 2.01,
-      "source": "PBoC",
+      "source": "seed",
       "fetchedAt": "2026-08-10T08:10:00Z"
     },
     {
       "instrumentId": "cn3y",
       "date": "2026-08-11",
       "value": 2.0,
-      "source": "PBoC",
+      "source": "seed",
       "fetchedAt": "2026-08-11T08:10:00Z"
     },
     {
       "instrumentId": "cn3y",
       "date": "2026-08-12",
       "value": 1.99,
-      "source": "PBoC",
+      "source": "seed",
       "fetchedAt": "2026-08-12T08:10:00Z"
     },
     {
       "instrumentId": "cn3y",
       "date": "2026-08-13",
       "value": 1.98,
-      "source": "PBoC",
+      "source": "seed",
       "fetchedAt": "2026-08-13T08:10:00Z"
     },
     {
       "instrumentId": "cn5y",
       "date": "2026-08-03",
       "value": 2.07,
-      "source": "PBoC",
+      "source": "seed",
       "fetchedAt": "2026-08-03T08:10:00Z"
     },
     {
       "instrumentId": "cn5y",
       "date": "2026-08-04",
       "value": 2.08,
-      "source": "PBoC",
+      "source": "seed",
       "fetchedAt": "2026-08-04T08:10:00Z"
     },
     {
       "instrumentId": "cn5y",
       "date": "2026-08-06",
       "value": 2.07,
-      "source": "PBoC",
+      "source": "seed",
       "fetchedAt": "2026-08-06T08:10:00Z"
     },
     {
       "instrumentId": "cn5y",
       "date": "2026-08-07",
       "value": 2.09,
-      "source": "PBoC",
+      "source": "seed",
       "fetchedAt": "2026-08-07T08:10:00Z"
     },
     {
       "instrumentId": "cn5y",
       "date": "2026-08-10",
       "value": 2.08,
-      "source": "PBoC",
+      "source": "seed",
       "fetchedAt": "2026-08-10T08:10:00Z"
     },
     {
       "instrumentId": "cn5y",
       "date": "2026-08-11",
       "value": 2.07,
-      "source": "PBoC",
+      "source": "seed",
       "fetchedAt": "2026-08-11T08:10:00Z"
     },
     {
       "instrumentId": "cn5y",
       "date": "2026-08-12",
       "value": 2.06,
-      "source": "PBoC",
+      "source": "seed",
       "fetchedAt": "2026-08-12T08:10:00Z"
     },
     {
       "instrumentId": "cn5y",
       "date": "2026-08-13",
       "value": 2.05,
-      "source": "PBoC",
+      "source": "seed",
       "fetchedAt": "2026-08-13T08:10:00Z"
     },
     {
       "instrumentId": "cn10y",
       "date": "2026-08-03",
       "value": 2.12,
-      "source": "PBoC",
+      "source": "seed",
       "fetchedAt": "2026-08-03T08:10:00Z"
     },
     {
       "instrumentId": "cn10y",
       "date": "2026-08-04",
       "value": 2.13,
-      "source": "PBoC",
+      "source": "seed",
       "fetchedAt": "2026-08-04T08:10:00Z"
     },
     {
       "instrumentId": "cn10y",
       "date": "2026-08-06",
       "value": 2.12,
-      "source": "PBoC",
+      "source": "seed",
       "fetchedAt": "2026-08-06T08:10:00Z"
     },
     {
       "instrumentId": "cn10y",
       "date": "2026-08-07",
       "value": 2.14,
-      "source": "PBoC",
+      "source": "seed",
       "fetchedAt": "2026-08-07T08:10:00Z"
     },
     {
       "instrumentId": "cn10y",
       "date": "2026-08-10",
       "value": 2.13,
-      "source": "PBoC",
+      "source": "seed",
       "fetchedAt": "2026-08-10T08:10:00Z"
     },
     {
       "instrumentId": "cn10y",
       "date": "2026-08-11",
       "value": 2.12,
-      "source": "PBoC",
+      "source": "seed",
       "fetchedAt": "2026-08-11T08:10:00Z"
     },
     {
       "instrumentId": "cn10y",
       "date": "2026-08-12",
       "value": 2.11,
-      "source": "PBoC",
+      "source": "seed",
       "fetchedAt": "2026-08-12T08:10:00Z"
     },
     {
       "instrumentId": "cn10y",
       "date": "2026-08-13",
       "value": 2.1,
-      "source": "PBoC",
+      "source": "seed",
       "fetchedAt": "2026-08-13T08:10:00Z"
     },
     {
       "instrumentId": "cn15y",
       "date": "2026-08-03",
       "value": 2.24,
-      "source": "PBoC",
+      "source": "seed",
       "fetchedAt": "2026-08-03T08:10:00Z"
     },
     {
       "instrumentId": "cn15y",
       "date": "2026-08-04",
       "value": 2.25,
-      "source": "PBoC",
+      "source": "seed",
       "fetchedAt": "2026-08-04T08:10:00Z"
     },
     {
       "instrumentId": "cn15y",
       "date": "2026-08-06",
       "value": 2.24,
-      "source": "PBoC",
+      "source": "seed",
       "fetchedAt": "2026-08-06T08:10:00Z"
     },
     {
       "instrumentId": "cn15y",
       "date": "2026-08-07",
       "value": 2.26,
-      "source": "PBoC",
+      "source": "seed",
       "fetchedAt": "2026-08-07T08:10:00Z"
     },
     {
       "instrumentId": "cn15y",
       "date": "2026-08-10",
       "value": 2.25,
-      "source": "PBoC",
+      "source": "seed",
       "fetchedAt": "2026-08-10T08:10:00Z"
     },
     {
       "instrumentId": "cn15y",
       "date": "2026-08-11",
       "value": 2.24,
-      "source": "PBoC",
+      "source": "seed",
       "fetchedAt": "2026-08-11T08:10:00Z"
     },
     {
       "instrumentId": "cn15y",
       "date": "2026-08-12",
       "value": 2.23,
-      "source": "PBoC",
+      "source": "seed",
       "fetchedAt": "2026-08-12T08:10:00Z"
     },
     {
       "instrumentId": "cn15y",
       "date": "2026-08-13",
       "value": 2.22,
-      "source": "PBoC",
+      "source": "seed",
       "fetchedAt": "2026-08-13T08:10:00Z"
     },
     {
       "instrumentId": "cn20y",
       "date": "2026-08-03",
       "value": 2.32,
-      "source": "PBoC",
+      "source": "seed",
       "fetchedAt": "2026-08-03T08:10:00Z"
     },
     {
       "instrumentId": "cn20y",
       "date": "2026-08-04",
       "value": 2.33,
-      "source": "PBoC",
+      "source": "seed",
       "fetchedAt": "2026-08-04T08:10:00Z"
     },
     {
       "instrumentId": "cn20y",
       "date": "2026-08-06",
       "value": 2.32,
-      "source": "PBoC",
+      "source": "seed",
       "fetchedAt": "2026-08-06T08:10:00Z"
     },
     {
       "instrumentId": "cn20y",
       "date": "2026-08-07",
       "value": 2.34,
-      "source": "PBoC",
+      "source": "seed",
       "fetchedAt": "2026-08-07T08:10:00Z"
     },
     {
       "instrumentId": "cn20y",
       "date": "2026-08-10",
       "value": 2.33,
-      "source": "PBoC",
+      "source": "seed",
       "fetchedAt": "2026-08-10T08:10:00Z"
     },
     {
       "instrumentId": "cn20y",
       "date": "2026-08-11",
       "value": 2.32,
-      "source": "PBoC",
+      "source": "seed",
       "fetchedAt": "2026-08-11T08:10:00Z"
     },
     {
       "instrumentId": "cn20y",
       "date": "2026-08-12",
       "value": 2.31,
-      "source": "PBoC",
+      "source": "seed",
       "fetchedAt": "2026-08-12T08:10:00Z"
     },
     {
       "instrumentId": "cn20y",
       "date": "2026-08-13",
       "value": 2.3,
-      "source": "PBoC",
+      "source": "seed",
       "fetchedAt": "2026-08-13T08:10:00Z"
     },
     {
       "instrumentId": "in6m",
       "date": "2026-08-03",
       "value": 6.7,
-      "source": "RBI",
+      "source": "seed",
       "fetchedAt": "2026-08-03T11:40:00Z"
     },
     {
       "instrumentId": "in6m",
       "date": "2026-08-04",
       "value": 6.71,
-      "source": "RBI",
+      "source": "seed",
       "fetchedAt": "2026-08-04T11:40:00Z"
     },
     {
       "instrumentId": "in6m",
       "date": "2026-08-06",
       "value": 6.69,
-      "source": "RBI",
+      "source": "seed",
       "fetchedAt": "2026-08-06T11:40:00Z"
     },
     {
       "instrumentId": "in6m",
       "date": "2026-08-07",
       "value": 6.73,
-      "source": "RBI",
+      "source": "seed",
       "fetchedAt": "2026-08-07T11:40:00Z"
     },
     {
       "instrumentId": "in6m",
       "date": "2026-08-10",
       "value": 6.71,
-      "source": "RBI",
+      "source": "seed",
       "fetchedAt": "2026-08-10T11:40:00Z"
     },
     {
       "instrumentId": "in6m",
       "date": "2026-08-11",
       "value": 6.69,
-      "source": "RBI",
+      "source": "seed",
       "fetchedAt": "2026-08-11T11:40:00Z"
     },
     {
       "instrumentId": "in6m",
       "date": "2026-08-12",
       "value": 6.67,
-      "source": "RBI",
+      "source": "seed",
       "fetchedAt": "2026-08-12T11:40:00Z"
     },
     {
       "instrumentId": "in6m",
       "date": "2026-08-13",
       "value": 6.65,
-      "source": "RBI",
+      "source": "seed",
       "fetchedAt": "2026-08-13T11:40:00Z"
     },
     {
       "instrumentId": "in1y",
       "date": "2026-08-03",
       "value": 6.8,
-      "source": "RBI",
+      "source": "seed",
       "fetchedAt": "2026-08-03T11:40:00Z"
     },
     {
       "instrumentId": "in1y",
       "date": "2026-08-04",
       "value": 6.81,
-      "source": "RBI",
+      "source": "seed",
       "fetchedAt": "2026-08-04T11:40:00Z"
     },
     {
       "instrumentId": "in1y",
       "date": "2026-08-06",
       "value": 6.79,
-      "source": "RBI",
+      "source": "seed",
       "fetchedAt": "2026-08-06T11:40:00Z"
     },
     {
       "instrumentId": "in1y",
       "date": "2026-08-07",
       "value": 6.83,
-      "source": "RBI",
+      "source": "seed",
       "fetchedAt": "2026-08-07T11:40:00Z"
     },
     {
       "instrumentId": "in1y",
       "date": "2026-08-10",
       "value": 6.81,
-      "source": "RBI",
+      "source": "seed",
       "fetchedAt": "2026-08-10T11:40:00Z"
     },
     {
       "instrumentId": "in1y",
       "date": "2026-08-11",
       "value": 6.79,
-      "source": "RBI",
+      "source": "seed",
       "fetchedAt": "2026-08-11T11:40:00Z"
     },
     {
       "instrumentId": "in1y",
       "date": "2026-08-12",
       "value": 6.77,
-      "source": "RBI",
+      "source": "seed",
       "fetchedAt": "2026-08-12T11:40:00Z"
     },
     {
       "instrumentId": "in1y",
       "date": "2026-08-13",
       "value": 6.75,
-      "source": "RBI",
+      "source": "seed",
       "fetchedAt": "2026-08-13T11:40:00Z"
     },
     {
       "instrumentId": "in3y",
       "date": "2026-08-03",
       "value": 6.93,
-      "source": "RBI",
+      "source": "seed",
       "fetchedAt": "2026-08-03T11:40:00Z"
     },
     {
       "instrumentId": "in3y",
       "date": "2026-08-04",
       "value": 6.94,
-      "source": "RBI",
+      "source": "seed",
       "fetchedAt": "2026-08-04T11:40:00Z"
     },
     {
       "instrumentId": "in3y",
       "date": "2026-08-06",
       "value": 6.92,
-      "source": "RBI",
+      "source": "seed",
       "fetchedAt": "2026-08-06T11:40:00Z"
     },
     {
       "instrumentId": "in3y",
       "date": "2026-08-07",
       "value": 6.96,
-      "source": "RBI",
+      "source": "seed",
       "fetchedAt": "2026-08-07T11:40:00Z"
     },
     {
       "instrumentId": "in3y",
       "date": "2026-08-10",
       "value": 6.94,
-      "source": "RBI",
+      "source": "seed",
       "fetchedAt": "2026-08-10T11:40:00Z"
     },
     {
       "instrumentId": "in3y",
       "date": "2026-08-11",
       "value": 6.92,
-      "source": "RBI",
+      "source": "seed",
       "fetchedAt": "2026-08-11T11:40:00Z"
     },
     {
       "instrumentId": "in3y",
       "date": "2026-08-12",
       "value": 6.9,
-      "source": "RBI",
+      "source": "seed",
       "fetchedAt": "2026-08-12T11:40:00Z"
     },
     {
       "instrumentId": "in3y",
       "date": "2026-08-13",
       "value": 6.88,
-      "source": "RBI",
+      "source": "seed",
       "fetchedAt": "2026-08-13T11:40:00Z"
     },
     {
       "instrumentId": "in5y",
       "date": "2026-08-03",
       "value": 7.0,
-      "source": "RBI",
+      "source": "seed",
       "fetchedAt": "2026-08-03T11:40:00Z"
     },
     {
       "instrumentId": "in5y",
       "date": "2026-08-04",
       "value": 7.01,
-      "source": "RBI",
+      "source": "seed",
       "fetchedAt": "2026-08-04T11:40:00Z"
     },
     {
       "instrumentId": "in5y",
       "date": "2026-08-06",
       "value": 6.99,
-      "source": "RBI",
+      "source": "seed",
       "fetchedAt": "2026-08-06T11:40:00Z"
     },
     {
       "instrumentId": "in5y",
       "date": "2026-08-07",
       "value": 7.03,
-      "source": "RBI",
+      "source": "seed",
       "fetchedAt": "2026-08-07T11:40:00Z"
     },
     {
       "instrumentId": "in5y",
       "date": "2026-08-10",
       "value": 7.01,
-      "source": "RBI",
+      "source": "seed",
       "fetchedAt": "2026-08-10T11:40:00Z"
     },
     {
       "instrumentId": "in5y",
       "date": "2026-08-11",
       "value": 6.99,
-      "source": "RBI",
+      "source": "seed",
       "fetchedAt": "2026-08-11T11:40:00Z"
     },
     {
       "instrumentId": "in5y",
       "date": "2026-08-12",
       "value": 6.97,
-      "source": "RBI",
+      "source": "seed",
       "fetchedAt": "2026-08-12T11:40:00Z"
     },
     {
       "instrumentId": "in5y",
       "date": "2026-08-13",
       "value": 6.95,
-      "source": "RBI",
+      "source": "seed",
       "fetchedAt": "2026-08-13T11:40:00Z"
     },
     {
       "instrumentId": "in10y",
       "date": "2026-08-03",
       "value": 7.05,
-      "source": "RBI",
+      "source": "seed",
       "fetchedAt": "2026-08-03T11:40:00Z"
     },
     {
       "instrumentId": "in10y",
       "date": "2026-08-04",
       "value": 7.06,
-      "source": "RBI",
+      "source": "seed",
       "fetchedAt": "2026-08-04T11:40:00Z"
     },
     {
       "instrumentId": "in10y",
       "date": "2026-08-06",
       "value": 7.04,
-      "source": "RBI",
+      "source": "seed",
       "fetchedAt": "2026-08-06T11:40:00Z"
     },
     {
       "instrumentId": "in10y",
       "date": "2026-08-07",
       "value": 7.08,
-      "source": "RBI",
+      "source": "seed",
       "fetchedAt": "2026-08-07T11:40:00Z"
     },
     {
       "instrumentId": "in10y",
       "date": "2026-08-10",
       "value": 7.06,
-      "source": "RBI",
+      "source": "seed",
       "fetchedAt": "2026-08-10T11:40:00Z"
     },
     {
       "instrumentId": "in10y",
       "date": "2026-08-11",
       "value": 7.04,
-      "source": "RBI",
+      "source": "seed",
       "fetchedAt": "2026-08-11T11:40:00Z"
     },
     {
       "instrumentId": "in10y",
       "date": "2026-08-12",
       "value": 7.02,
-      "source": "RBI",
+      "source": "seed",
       "fetchedAt": "2026-08-12T11:40:00Z"
     },
     {
       "instrumentId": "in10y",
       "date": "2026-08-13",
       "value": 7.0,
-      "source": "RBI",
+      "source": "seed",
       "fetchedAt": "2026-08-13T11:40:00Z"
     },
     {
       "instrumentId": "in15y",
       "date": "2026-08-03",
       "value": 7.17,
-      "source": "RBI",
+      "source": "seed",
       "fetchedAt": "2026-08-03T11:40:00Z"
     },
     {
       "instrumentId": "in15y",
       "date": "2026-08-04",
       "value": 7.18,
-      "source": "RBI",
+      "source": "seed",
       "fetchedAt": "2026-08-04T11:40:00Z"
     },
     {
       "instrumentId": "in15y",
       "date": "2026-08-06",
       "value": 7.16,
-      "source": "RBI",
+      "source": "seed",
       "fetchedAt": "2026-08-06T11:40:00Z"
     },
     {
       "instrumentId": "in15y",
       "date": "2026-08-07",
       "value": 7.2,
-      "source": "RBI",
+      "source": "seed",
       "fetchedAt": "2026-08-07T11:40:00Z"
     },
     {
       "instrumentId": "in15y",
       "date": "2026-08-10",
       "value": 7.18,
-      "source": "RBI",
+      "source": "seed",
       "fetchedAt": "2026-08-10T11:40:00Z"
     },
     {
       "instrumentId": "in15y",
       "date": "2026-08-11",
       "value": 7.16,
-      "source": "RBI",
+      "source": "seed",
       "fetchedAt": "2026-08-11T11:40:00Z"
     },
     {
       "instrumentId": "in15y",
       "date": "2026-08-12",
       "value": 7.14,
-      "source": "RBI",
+      "source": "seed",
       "fetchedAt": "2026-08-12T11:40:00Z"
     },
     {
       "instrumentId": "in15y",
       "date": "2026-08-13",
       "value": 7.12,
-      "source": "RBI",
+      "source": "seed",
       "fetchedAt": "2026-08-13T11:40:00Z"
     },
     {
       "instrumentId": "in20y",
       "date": "2026-08-03",
       "value": 7.25,
-      "source": "RBI",
+      "source": "seed",
       "fetchedAt": "2026-08-03T11:40:00Z"
     },
     {
       "instrumentId": "in20y",
       "date": "2026-08-04",
       "value": 7.26,
-      "source": "RBI",
+      "source": "seed",
       "fetchedAt": "2026-08-04T11:40:00Z"
     },
     {
       "instrumentId": "in20y",
       "date": "2026-08-06",
       "value": 7.24,
-      "source": "RBI",
+      "source": "seed",
       "fetchedAt": "2026-08-06T11:40:00Z"
     },
     {
       "instrumentId": "in20y",
       "date": "2026-08-07",
       "value": 7.28,
-      "source": "RBI",
+      "source": "seed",
       "fetchedAt": "2026-08-07T11:40:00Z"
     },
     {
       "instrumentId": "in20y",
       "date": "2026-08-10",
       "value": 7.26,
-      "source": "RBI",
+      "source": "seed",
       "fetchedAt": "2026-08-10T11:40:00Z"
     },
     {
       "instrumentId": "in20y",
       "date": "2026-08-11",
       "value": 7.24,
-      "source": "RBI",
+      "source": "seed",
       "fetchedAt": "2026-08-11T11:40:00Z"
     },
     {
       "instrumentId": "in20y",
       "date": "2026-08-12",
       "value": 7.22,
-      "source": "RBI",
+      "source": "seed",
       "fetchedAt": "2026-08-12T11:40:00Z"
     },
     {
       "instrumentId": "in20y",
       "date": "2026-08-13",
       "value": 7.2,
-      "source": "RBI",
+      "source": "seed",
       "fetchedAt": "2026-08-13T11:40:00Z"
     },
     {
       "instrumentId": "acwi",
       "date": "2025-08-13",
       "value": 760,
-      "source": "Financial Modeling Prep",
+      "source": "seed",
       "fetchedAt": "2025-08-13T21:05:00Z"
     },
     {
       "instrumentId": "acwi",
       "date": "2025-12-31",
       "value": 780,
-      "source": "Financial Modeling Prep",
+      "source": "seed",
       "fetchedAt": "2025-12-31T21:05:00Z"
     },
     {
       "instrumentId": "acwi",
       "date": "2026-07-13",
       "value": 815,
-      "source": "Financial Modeling Prep",
+      "source": "seed",
       "fetchedAt": "2026-07-13T21:05:00Z"
     },
     {
       "instrumentId": "acwi",
       "date": "2026-07-27",
       "value": 822,
-      "source": "Financial Modeling Prep",
+      "source": "seed",
       "fetchedAt": "2026-07-27T21:05:00Z"
     },
     {
       "instrumentId": "acwi",
       "date": "2026-08-03",
       "value": 828,
-      "source": "Financial Modeling Prep",
+      "source": "seed",
       "fetchedAt": "2026-08-03T21:05:00Z"
     },
     {
       "instrumentId": "acwi",
       "date": "2026-08-10",
       "value": 833,
-      "source": "Financial Modeling Prep",
+      "source": "seed",
       "fetchedAt": "2026-08-10T21:05:00Z"
     },
     {
       "instrumentId": "acwi",
       "date": "2026-08-12",
       "value": 835,
-      "source": "Financial Modeling Prep",
+      "source": "seed",
       "fetchedAt": "2026-08-12T21:05:00Z"
     },
     {
       "instrumentId": "acwi",
       "date": "2026-08-13",
       "value": 836.5,
-      "source": "Financial Modeling Prep",
+      "source": "seed",
       "fetchedAt": "2026-08-13T21:05:00Z"
     }
   ],
@@ -5870,2254 +5870,2254 @@
       "instrumentId": "us-cpi",
       "date": "2025-08-13",
       "value": 2.9,
-      "source": "FRED",
+      "source": "seed",
       "fetchedAt": "2025-08-13T13:30:00Z"
     },
     {
       "instrumentId": "us-cpi",
       "date": "2025-11-13",
       "value": 3,
-      "source": "FRED",
+      "source": "seed",
       "fetchedAt": "2025-11-13T13:30:00Z"
     },
     {
       "instrumentId": "us-cpi",
       "date": "2026-02-12",
       "value": 3.1,
-      "source": "FRED",
+      "source": "seed",
       "fetchedAt": "2026-02-12T13:30:00Z"
     },
     {
       "instrumentId": "us-cpi",
       "date": "2026-04-10",
       "value": 3.2,
-      "source": "FRED",
+      "source": "seed",
       "fetchedAt": "2026-04-10T13:30:00Z"
     },
     {
       "instrumentId": "us-cpi",
       "date": "2026-05-13",
       "value": 3.2,
-      "source": "FRED",
+      "source": "seed",
       "fetchedAt": "2026-05-13T13:30:00Z"
     },
     {
       "instrumentId": "us-cpi",
       "date": "2026-06-11",
       "value": 3.3,
-      "source": "FRED",
+      "source": "seed",
       "fetchedAt": "2026-06-11T13:30:00Z"
     },
     {
       "instrumentId": "us-cpi",
       "date": "2026-07-15",
       "value": 3.4,
-      "source": "FRED",
+      "source": "seed",
       "fetchedAt": "2026-07-15T13:30:00Z"
     },
     {
       "instrumentId": "us-cpi",
       "date": "2026-08-12",
       "value": 3.4,
-      "source": "FRED",
+      "source": "seed",
       "fetchedAt": "2026-08-12T12:30:00Z"
     },
     {
       "instrumentId": "us-cpi-core",
       "date": "2025-08-13",
       "value": 3.2,
-      "source": "FRED",
+      "source": "seed",
       "fetchedAt": "2025-08-13T13:30:00Z"
     },
     {
       "instrumentId": "us-cpi-core",
       "date": "2025-11-13",
       "value": 3.1,
-      "source": "FRED",
+      "source": "seed",
       "fetchedAt": "2025-11-13T13:30:00Z"
     },
     {
       "instrumentId": "us-cpi-core",
       "date": "2026-02-12",
       "value": 3,
-      "source": "FRED",
+      "source": "seed",
       "fetchedAt": "2026-02-12T13:30:00Z"
     },
     {
       "instrumentId": "us-cpi-core",
       "date": "2026-04-10",
       "value": 2.9,
-      "source": "FRED",
+      "source": "seed",
       "fetchedAt": "2026-04-10T13:30:00Z"
     },
     {
       "instrumentId": "us-cpi-core",
       "date": "2026-05-13",
       "value": 2.8,
-      "source": "FRED",
+      "source": "seed",
       "fetchedAt": "2026-05-13T13:30:00Z"
     },
     {
       "instrumentId": "us-cpi-core",
       "date": "2026-06-11",
       "value": 2.6,
-      "source": "FRED",
+      "source": "seed",
       "fetchedAt": "2026-06-11T13:30:00Z"
     },
     {
       "instrumentId": "us-cpi-core",
       "date": "2026-07-15",
       "value": 2.5,
-      "source": "FRED",
+      "source": "seed",
       "fetchedAt": "2026-07-15T13:30:00Z"
     },
     {
       "instrumentId": "us-cpi-core",
       "date": "2026-08-12",
       "value": 2.5,
-      "source": "FRED",
+      "source": "seed",
       "fetchedAt": "2026-08-12T12:30:00Z"
     },
     {
       "instrumentId": "us-gdp",
       "date": "2025-01-30",
       "value": 2.3,
-      "source": "FRED",
+      "source": "seed",
       "fetchedAt": "2025-01-30T13:30:00Z"
     },
     {
       "instrumentId": "us-gdp",
       "date": "2025-04-30",
       "value": 2.1,
-      "source": "FRED",
+      "source": "seed",
       "fetchedAt": "2025-04-30T13:30:00Z"
     },
     {
       "instrumentId": "us-gdp",
       "date": "2025-07-30",
       "value": 1.8,
-      "source": "FRED",
+      "source": "seed",
       "fetchedAt": "2025-07-30T13:30:00Z"
     },
     {
       "instrumentId": "us-gdp",
       "date": "2025-10-30",
       "value": 1.6,
-      "source": "FRED",
+      "source": "seed",
       "fetchedAt": "2025-10-30T13:30:00Z"
     },
     {
       "instrumentId": "us-gdp",
       "date": "2026-01-29",
       "value": 1.4,
-      "source": "FRED",
+      "source": "seed",
       "fetchedAt": "2026-01-29T13:30:00Z"
     },
     {
       "instrumentId": "us-gdp",
       "date": "2026-04-30",
       "value": 1.3,
-      "source": "FRED",
+      "source": "seed",
       "fetchedAt": "2026-04-30T13:30:00Z"
     },
     {
       "instrumentId": "us-unemployment",
       "date": "2025-08-13",
       "value": 4.1,
-      "source": "FRED",
+      "source": "seed",
       "fetchedAt": "2025-08-13T13:30:00Z"
     },
     {
       "instrumentId": "us-unemployment",
       "date": "2025-11-13",
       "value": 4.2,
-      "source": "FRED",
+      "source": "seed",
       "fetchedAt": "2025-11-13T13:30:00Z"
     },
     {
       "instrumentId": "us-unemployment",
       "date": "2026-02-12",
       "value": 4.2,
-      "source": "FRED",
+      "source": "seed",
       "fetchedAt": "2026-02-12T13:30:00Z"
     },
     {
       "instrumentId": "us-unemployment",
       "date": "2026-04-10",
       "value": 4.3,
-      "source": "FRED",
+      "source": "seed",
       "fetchedAt": "2026-04-10T13:30:00Z"
     },
     {
       "instrumentId": "us-unemployment",
       "date": "2026-05-13",
       "value": 4.3,
-      "source": "FRED",
+      "source": "seed",
       "fetchedAt": "2026-05-13T13:30:00Z"
     },
     {
       "instrumentId": "us-unemployment",
       "date": "2026-06-11",
       "value": 4.4,
-      "source": "FRED",
+      "source": "seed",
       "fetchedAt": "2026-06-11T13:30:00Z"
     },
     {
       "instrumentId": "us-unemployment",
       "date": "2026-07-07",
       "value": 4.5,
-      "source": "FRED",
+      "source": "seed",
       "fetchedAt": "2026-07-07T13:30:00Z"
     },
     {
       "instrumentId": "us-unemployment",
       "date": "2026-08-07",
       "value": 4.6,
-      "source": "FRED",
+      "source": "seed",
       "fetchedAt": "2026-08-07T12:30:00Z"
     },
     {
       "instrumentId": "us-policy-rate",
       "date": "2025-08-13",
       "value": 3.75,
-      "source": "FRED",
+      "source": "seed",
       "fetchedAt": "2025-08-13T13:30:00Z"
     },
     {
       "instrumentId": "us-policy-rate",
       "date": "2025-12-10",
       "value": 3.75,
-      "source": "FRED",
+      "source": "seed",
       "fetchedAt": "2025-12-10T13:30:00Z"
     },
     {
       "instrumentId": "us-policy-rate",
       "date": "2026-03-18",
       "value": 3.75,
-      "source": "FRED",
+      "source": "seed",
       "fetchedAt": "2026-03-18T13:30:00Z"
     },
     {
       "instrumentId": "us-policy-rate",
       "date": "2026-06-10",
       "value": 3.75,
-      "source": "FRED",
+      "source": "seed",
       "fetchedAt": "2026-06-10T13:30:00Z"
     },
     {
       "instrumentId": "us-policy-rate",
       "date": "2026-07-29",
       "value": 3.75,
-      "source": "FRED",
+      "source": "seed",
       "fetchedAt": "2026-07-29T18:00:00Z"
     },
     {
       "instrumentId": "us-pmi",
       "date": "2025-08-13",
       "value": 52.1,
-      "source": "S&P Global",
+      "source": "seed",
       "fetchedAt": "2025-08-13T13:30:00Z"
     },
     {
       "instrumentId": "us-pmi",
       "date": "2025-11-13",
       "value": 51.4,
-      "source": "S&P Global",
+      "source": "seed",
       "fetchedAt": "2025-11-13T13:30:00Z"
     },
     {
       "instrumentId": "us-pmi",
       "date": "2026-02-12",
       "value": 51.8,
-      "source": "S&P Global",
+      "source": "seed",
       "fetchedAt": "2026-02-12T13:30:00Z"
     },
     {
       "instrumentId": "us-pmi",
       "date": "2026-04-10",
       "value": 51.2,
-      "source": "S&P Global",
+      "source": "seed",
       "fetchedAt": "2026-04-10T13:30:00Z"
     },
     {
       "instrumentId": "us-pmi",
       "date": "2026-06-11",
       "value": 50.9,
-      "source": "S&P Global",
+      "source": "seed",
       "fetchedAt": "2026-06-11T13:30:00Z"
     },
     {
       "instrumentId": "us-pmi",
       "date": "2026-07-24",
       "value": 51.6,
-      "source": "S&P Global",
+      "source": "seed",
       "fetchedAt": "2026-07-24T13:30:00Z"
     },
     {
       "instrumentId": "us-pmi",
       "date": "2026-08-01",
       "value": 51.9,
-      "source": "S&P Global",
+      "source": "seed",
       "fetchedAt": "2026-08-01T13:45:00Z"
     },
     {
       "instrumentId": "us-wages",
       "date": "2025-08-13",
       "value": 3.9,
-      "source": "BLS",
+      "source": "seed",
       "fetchedAt": "2025-08-13T13:30:00Z"
     },
     {
       "instrumentId": "us-wages",
       "date": "2025-11-13",
       "value": 3.8,
-      "source": "BLS",
+      "source": "seed",
       "fetchedAt": "2025-11-13T13:30:00Z"
     },
     {
       "instrumentId": "us-wages",
       "date": "2026-02-12",
       "value": 3.6,
-      "source": "BLS",
+      "source": "seed",
       "fetchedAt": "2026-02-12T13:30:00Z"
     },
     {
       "instrumentId": "us-wages",
       "date": "2026-04-10",
       "value": 3.5,
-      "source": "BLS",
+      "source": "seed",
       "fetchedAt": "2026-04-10T13:30:00Z"
     },
     {
       "instrumentId": "us-wages",
       "date": "2026-06-11",
       "value": 3.3,
-      "source": "BLS",
+      "source": "seed",
       "fetchedAt": "2026-06-11T13:30:00Z"
     },
     {
       "instrumentId": "us-wages",
       "date": "2026-07-07",
       "value": 3.2,
-      "source": "BLS",
+      "source": "seed",
       "fetchedAt": "2026-07-07T13:30:00Z"
     },
     {
       "instrumentId": "us-wages",
       "date": "2026-08-07",
       "value": 3.2,
-      "source": "BLS",
+      "source": "seed",
       "fetchedAt": "2026-08-07T12:30:00Z"
     },
     {
       "instrumentId": "us-budget-balance",
       "date": "2025-04-30",
       "value": -6.1,
-      "source": "FRED",
+      "source": "seed",
       "fetchedAt": "2025-04-30T13:30:00Z"
     },
     {
       "instrumentId": "us-budget-balance",
       "date": "2025-07-30",
       "value": -6.3,
-      "source": "FRED",
+      "source": "seed",
       "fetchedAt": "2025-07-30T13:30:00Z"
     },
     {
       "instrumentId": "us-budget-balance",
       "date": "2025-10-30",
       "value": -6.6,
-      "source": "FRED",
+      "source": "seed",
       "fetchedAt": "2025-10-30T13:30:00Z"
     },
     {
       "instrumentId": "us-budget-balance",
       "date": "2026-01-29",
       "value": -6.8,
-      "source": "FRED",
+      "source": "seed",
       "fetchedAt": "2026-01-29T13:30:00Z"
     },
     {
       "instrumentId": "us-budget-balance",
       "date": "2026-04-30",
       "value": -7,
-      "source": "FRED",
+      "source": "seed",
       "fetchedAt": "2026-04-30T13:30:00Z"
     },
     {
       "instrumentId": "us-debt-gdp",
       "date": "2025-04-30",
       "value": 121,
-      "source": "FRED",
+      "source": "seed",
       "fetchedAt": "2025-04-30T13:30:00Z"
     },
     {
       "instrumentId": "us-debt-gdp",
       "date": "2025-07-30",
       "value": 122,
-      "source": "FRED",
+      "source": "seed",
       "fetchedAt": "2025-07-30T13:30:00Z"
     },
     {
       "instrumentId": "us-debt-gdp",
       "date": "2025-10-30",
       "value": 123,
-      "source": "FRED",
+      "source": "seed",
       "fetchedAt": "2025-10-30T13:30:00Z"
     },
     {
       "instrumentId": "us-debt-gdp",
       "date": "2026-01-29",
       "value": 124,
-      "source": "FRED",
+      "source": "seed",
       "fetchedAt": "2026-01-29T13:30:00Z"
     },
     {
       "instrumentId": "us-debt-gdp",
       "date": "2026-04-30",
       "value": 125,
-      "source": "FRED",
+      "source": "seed",
       "fetchedAt": "2026-04-30T13:30:00Z"
     },
     {
       "instrumentId": "us-current-account",
       "date": "2025-04-30",
       "value": -3.4,
-      "source": "FRED",
+      "source": "seed",
       "fetchedAt": "2025-04-30T13:30:00Z"
     },
     {
       "instrumentId": "us-current-account",
       "date": "2025-07-30",
       "value": -3.6,
-      "source": "FRED",
+      "source": "seed",
       "fetchedAt": "2025-07-30T13:30:00Z"
     },
     {
       "instrumentId": "us-current-account",
       "date": "2025-10-30",
       "value": -3.7,
-      "source": "FRED",
+      "source": "seed",
       "fetchedAt": "2025-10-30T13:30:00Z"
     },
     {
       "instrumentId": "us-current-account",
       "date": "2026-01-29",
       "value": -3.9,
-      "source": "FRED",
+      "source": "seed",
       "fetchedAt": "2026-01-29T13:30:00Z"
     },
     {
       "instrumentId": "us-current-account",
       "date": "2026-04-30",
       "value": -4,
-      "source": "FRED",
+      "source": "seed",
       "fetchedAt": "2026-04-30T13:30:00Z"
     },
     {
       "instrumentId": "ez-cpi",
       "date": "2025-08-19",
       "value": 2.2,
-      "source": "Eurostat",
+      "source": "seed",
       "fetchedAt": "2025-08-19T13:30:00Z"
     },
     {
       "instrumentId": "ez-cpi",
       "date": "2025-11-18",
       "value": 2.3,
-      "source": "Eurostat",
+      "source": "seed",
       "fetchedAt": "2025-11-18T13:30:00Z"
     },
     {
       "instrumentId": "ez-cpi",
       "date": "2026-02-18",
       "value": 2.6,
-      "source": "Eurostat",
+      "source": "seed",
       "fetchedAt": "2026-02-18T13:30:00Z"
     },
     {
       "instrumentId": "ez-cpi",
       "date": "2026-04-17",
       "value": 2.9,
-      "source": "Eurostat",
+      "source": "seed",
       "fetchedAt": "2026-04-17T13:30:00Z"
     },
     {
       "instrumentId": "ez-cpi",
       "date": "2026-06-18",
       "value": 3,
-      "source": "Eurostat",
+      "source": "seed",
       "fetchedAt": "2026-06-18T13:30:00Z"
     },
     {
       "instrumentId": "ez-cpi",
       "date": "2026-07-17",
       "value": 3.2,
-      "source": "Eurostat",
+      "source": "seed",
       "fetchedAt": "2026-07-17T13:30:00Z"
     },
     {
       "instrumentId": "ez-cpi",
       "date": "2026-08-01",
       "value": 3.2,
-      "source": "Eurostat",
+      "source": "seed",
       "fetchedAt": "2026-08-01T09:00:00Z"
     },
     {
       "instrumentId": "ez-cpi-core",
       "date": "2025-08-19",
       "value": 2.3,
-      "source": "Eurostat",
+      "source": "seed",
       "fetchedAt": "2025-08-19T13:30:00Z"
     },
     {
       "instrumentId": "ez-cpi-core",
       "date": "2025-11-18",
       "value": 2.3,
-      "source": "Eurostat",
+      "source": "seed",
       "fetchedAt": "2025-11-18T13:30:00Z"
     },
     {
       "instrumentId": "ez-cpi-core",
       "date": "2026-02-18",
       "value": 2.4,
-      "source": "Eurostat",
+      "source": "seed",
       "fetchedAt": "2026-02-18T13:30:00Z"
     },
     {
       "instrumentId": "ez-cpi-core",
       "date": "2026-04-17",
       "value": 2.5,
-      "source": "Eurostat",
+      "source": "seed",
       "fetchedAt": "2026-04-17T13:30:00Z"
     },
     {
       "instrumentId": "ez-cpi-core",
       "date": "2026-06-18",
       "value": 2.6,
-      "source": "Eurostat",
+      "source": "seed",
       "fetchedAt": "2026-06-18T13:30:00Z"
     },
     {
       "instrumentId": "ez-cpi-core",
       "date": "2026-07-17",
       "value": 2.7,
-      "source": "Eurostat",
+      "source": "seed",
       "fetchedAt": "2026-07-17T13:30:00Z"
     },
     {
       "instrumentId": "ez-cpi-core",
       "date": "2026-08-01",
       "value": 2.7,
-      "source": "Eurostat",
+      "source": "seed",
       "fetchedAt": "2026-08-01T09:00:00Z"
     },
     {
       "instrumentId": "ez-gdp",
       "date": "2025-02-14",
       "value": 0.9,
-      "source": "Eurostat",
+      "source": "seed",
       "fetchedAt": "2025-02-14T13:30:00Z"
     },
     {
       "instrumentId": "ez-gdp",
       "date": "2025-05-15",
       "value": 0.7,
-      "source": "Eurostat",
+      "source": "seed",
       "fetchedAt": "2025-05-15T13:30:00Z"
     },
     {
       "instrumentId": "ez-gdp",
       "date": "2025-08-14",
       "value": 0.5,
-      "source": "Eurostat",
+      "source": "seed",
       "fetchedAt": "2025-08-14T13:30:00Z"
     },
     {
       "instrumentId": "ez-gdp",
       "date": "2025-11-14",
       "value": 0.3,
-      "source": "Eurostat",
+      "source": "seed",
       "fetchedAt": "2025-11-14T13:30:00Z"
     },
     {
       "instrumentId": "ez-gdp",
       "date": "2026-02-13",
       "value": 0.2,
-      "source": "Eurostat",
+      "source": "seed",
       "fetchedAt": "2026-02-13T13:30:00Z"
     },
     {
       "instrumentId": "ez-gdp",
       "date": "2026-05-15",
       "value": 0.1,
-      "source": "Eurostat",
+      "source": "seed",
       "fetchedAt": "2026-05-15T13:30:00Z"
     },
     {
       "instrumentId": "ez-unemployment",
       "date": "2025-08-13",
       "value": 6.2,
-      "source": "Eurostat",
+      "source": "seed",
       "fetchedAt": "2025-08-13T13:30:00Z"
     },
     {
       "instrumentId": "ez-unemployment",
       "date": "2025-11-13",
       "value": 6.3,
-      "source": "Eurostat",
+      "source": "seed",
       "fetchedAt": "2025-11-13T13:30:00Z"
     },
     {
       "instrumentId": "ez-unemployment",
       "date": "2026-02-12",
       "value": 6.3,
-      "source": "Eurostat",
+      "source": "seed",
       "fetchedAt": "2026-02-12T13:30:00Z"
     },
     {
       "instrumentId": "ez-unemployment",
       "date": "2026-04-10",
       "value": 6.4,
-      "source": "Eurostat",
+      "source": "seed",
       "fetchedAt": "2026-04-10T13:30:00Z"
     },
     {
       "instrumentId": "ez-unemployment",
       "date": "2026-06-11",
       "value": 6.4,
-      "source": "Eurostat",
+      "source": "seed",
       "fetchedAt": "2026-06-11T13:30:00Z"
     },
     {
       "instrumentId": "ez-unemployment",
       "date": "2026-08-01",
       "value": 6.5,
-      "source": "Eurostat",
+      "source": "seed",
       "fetchedAt": "2026-08-01T09:00:00Z"
     },
     {
       "instrumentId": "ez-policy-rate",
       "date": "2025-08-13",
       "value": 2,
-      "source": "BCE",
+      "source": "seed",
       "fetchedAt": "2025-08-13T13:30:00Z"
     },
     {
       "instrumentId": "ez-policy-rate",
       "date": "2025-12-10",
       "value": 2,
-      "source": "BCE",
+      "source": "seed",
       "fetchedAt": "2025-12-10T13:30:00Z"
     },
     {
       "instrumentId": "ez-policy-rate",
       "date": "2026-03-18",
       "value": 2,
-      "source": "BCE",
+      "source": "seed",
       "fetchedAt": "2026-03-18T13:30:00Z"
     },
     {
       "instrumentId": "ez-policy-rate",
       "date": "2026-06-05",
       "value": 2.25,
-      "source": "BCE",
+      "source": "seed",
       "fetchedAt": "2026-06-05T12:15:00Z"
     },
     {
       "instrumentId": "ez-policy-rate",
       "date": "2026-07-24",
       "value": 2.25,
-      "source": "BCE",
+      "source": "seed",
       "fetchedAt": "2026-07-24T13:30:00Z"
     },
     {
       "instrumentId": "ez-pmi",
       "date": "2025-08-13",
       "value": 50.2,
-      "source": "S&P Global",
+      "source": "seed",
       "fetchedAt": "2025-08-13T13:30:00Z"
     },
     {
       "instrumentId": "ez-pmi",
       "date": "2025-11-13",
       "value": 49.8,
-      "source": "S&P Global",
+      "source": "seed",
       "fetchedAt": "2025-11-13T13:30:00Z"
     },
     {
       "instrumentId": "ez-pmi",
       "date": "2026-02-12",
       "value": 50.6,
-      "source": "S&P Global",
+      "source": "seed",
       "fetchedAt": "2026-02-12T13:30:00Z"
     },
     {
       "instrumentId": "ez-pmi",
       "date": "2026-04-10",
       "value": 50.9,
-      "source": "S&P Global",
+      "source": "seed",
       "fetchedAt": "2026-04-10T13:30:00Z"
     },
     {
       "instrumentId": "ez-pmi",
       "date": "2026-06-11",
       "value": 51.4,
-      "source": "S&P Global",
+      "source": "seed",
       "fetchedAt": "2026-06-11T13:30:00Z"
     },
     {
       "instrumentId": "ez-pmi",
       "date": "2026-08-01",
       "value": 51.8,
-      "source": "S&P Global",
+      "source": "seed",
       "fetchedAt": "2026-08-01T09:00:00Z"
     },
     {
       "instrumentId": "ez-wages",
       "date": "2025-05-15",
       "value": 4.1,
-      "source": "Eurostat",
+      "source": "seed",
       "fetchedAt": "2025-05-15T13:30:00Z"
     },
     {
       "instrumentId": "ez-wages",
       "date": "2025-08-14",
       "value": 3.8,
-      "source": "Eurostat",
+      "source": "seed",
       "fetchedAt": "2025-08-14T13:30:00Z"
     },
     {
       "instrumentId": "ez-wages",
       "date": "2025-11-14",
       "value": 3.5,
-      "source": "Eurostat",
+      "source": "seed",
       "fetchedAt": "2025-11-14T13:30:00Z"
     },
     {
       "instrumentId": "ez-wages",
       "date": "2026-02-13",
       "value": 3.3,
-      "source": "Eurostat",
+      "source": "seed",
       "fetchedAt": "2026-02-13T13:30:00Z"
     },
     {
       "instrumentId": "ez-wages",
       "date": "2026-05-15",
       "value": 3.1,
-      "source": "Eurostat",
+      "source": "seed",
       "fetchedAt": "2026-05-15T13:30:00Z"
     },
     {
       "instrumentId": "ez-budget-balance",
       "date": "2025-04-22",
       "value": -3.1,
-      "source": "Eurostat",
+      "source": "seed",
       "fetchedAt": "2025-04-22T13:30:00Z"
     },
     {
       "instrumentId": "ez-budget-balance",
       "date": "2025-10-21",
       "value": -3.2,
-      "source": "Eurostat",
+      "source": "seed",
       "fetchedAt": "2025-10-21T13:30:00Z"
     },
     {
       "instrumentId": "ez-budget-balance",
       "date": "2026-04-22",
       "value": -3.3,
-      "source": "Eurostat",
+      "source": "seed",
       "fetchedAt": "2026-04-22T13:30:00Z"
     },
     {
       "instrumentId": "ez-debt-gdp",
       "date": "2025-04-22",
       "value": 87.9,
-      "source": "Eurostat",
+      "source": "seed",
       "fetchedAt": "2025-04-22T13:30:00Z"
     },
     {
       "instrumentId": "ez-debt-gdp",
       "date": "2025-10-21",
       "value": 88.4,
-      "source": "Eurostat",
+      "source": "seed",
       "fetchedAt": "2025-10-21T13:30:00Z"
     },
     {
       "instrumentId": "ez-debt-gdp",
       "date": "2026-04-22",
       "value": 89.1,
-      "source": "Eurostat",
+      "source": "seed",
       "fetchedAt": "2026-04-22T13:30:00Z"
     },
     {
       "instrumentId": "ez-current-account",
       "date": "2025-04-15",
       "value": 2.6,
-      "source": "BCE",
+      "source": "seed",
       "fetchedAt": "2025-04-15T13:30:00Z"
     },
     {
       "instrumentId": "ez-current-account",
       "date": "2025-07-15",
       "value": 2.3,
-      "source": "BCE",
+      "source": "seed",
       "fetchedAt": "2025-07-15T13:30:00Z"
     },
     {
       "instrumentId": "ez-current-account",
       "date": "2025-10-15",
       "value": 1.9,
-      "source": "BCE",
+      "source": "seed",
       "fetchedAt": "2025-10-15T13:30:00Z"
     },
     {
       "instrumentId": "ez-current-account",
       "date": "2026-01-15",
       "value": 1.5,
-      "source": "BCE",
+      "source": "seed",
       "fetchedAt": "2026-01-15T13:30:00Z"
     },
     {
       "instrumentId": "ez-current-account",
       "date": "2026-04-15",
       "value": 1.2,
-      "source": "BCE",
+      "source": "seed",
       "fetchedAt": "2026-04-15T13:30:00Z"
     },
     {
       "instrumentId": "fr-cpi",
       "date": "2025-08-13",
       "value": 1,
-      "source": "INSEE",
+      "source": "seed",
       "fetchedAt": "2025-08-13T13:30:00Z"
     },
     {
       "instrumentId": "fr-cpi",
       "date": "2025-11-13",
       "value": 1.2,
-      "source": "INSEE",
+      "source": "seed",
       "fetchedAt": "2025-11-13T13:30:00Z"
     },
     {
       "instrumentId": "fr-cpi",
       "date": "2026-02-12",
       "value": 1.5,
-      "source": "INSEE",
+      "source": "seed",
       "fetchedAt": "2026-02-12T13:30:00Z"
     },
     {
       "instrumentId": "fr-cpi",
       "date": "2026-04-10",
       "value": 1.7,
-      "source": "INSEE",
+      "source": "seed",
       "fetchedAt": "2026-04-10T13:30:00Z"
     },
     {
       "instrumentId": "fr-cpi",
       "date": "2026-06-11",
       "value": 1.9,
-      "source": "INSEE",
+      "source": "seed",
       "fetchedAt": "2026-06-11T13:30:00Z"
     },
     {
       "instrumentId": "fr-cpi",
       "date": "2026-07-15",
       "value": 2.1,
-      "source": "INSEE",
+      "source": "seed",
       "fetchedAt": "2026-07-15T13:30:00Z"
     },
     {
       "instrumentId": "fr-cpi",
       "date": "2026-08-13",
       "value": 2.1,
-      "source": "INSEE",
+      "source": "seed",
       "fetchedAt": "2026-08-13T07:45:00Z"
     },
     {
       "instrumentId": "fr-cpi-core",
       "date": "2025-08-13",
       "value": 1.3,
-      "source": "INSEE",
+      "source": "seed",
       "fetchedAt": "2025-08-13T13:30:00Z"
     },
     {
       "instrumentId": "fr-cpi-core",
       "date": "2025-11-13",
       "value": 1.4,
-      "source": "INSEE",
+      "source": "seed",
       "fetchedAt": "2025-11-13T13:30:00Z"
     },
     {
       "instrumentId": "fr-cpi-core",
       "date": "2026-02-12",
       "value": 1.5,
-      "source": "INSEE",
+      "source": "seed",
       "fetchedAt": "2026-02-12T13:30:00Z"
     },
     {
       "instrumentId": "fr-cpi-core",
       "date": "2026-04-10",
       "value": 1.6,
-      "source": "INSEE",
+      "source": "seed",
       "fetchedAt": "2026-04-10T13:30:00Z"
     },
     {
       "instrumentId": "fr-cpi-core",
       "date": "2026-06-11",
       "value": 1.7,
-      "source": "INSEE",
+      "source": "seed",
       "fetchedAt": "2026-06-11T13:30:00Z"
     },
     {
       "instrumentId": "fr-cpi-core",
       "date": "2026-07-15",
       "value": 1.8,
-      "source": "INSEE",
+      "source": "seed",
       "fetchedAt": "2026-07-15T13:30:00Z"
     },
     {
       "instrumentId": "fr-cpi-core",
       "date": "2026-08-13",
       "value": 1.8,
-      "source": "INSEE",
+      "source": "seed",
       "fetchedAt": "2026-08-13T07:45:00Z"
     },
     {
       "instrumentId": "fr-gdp",
       "date": "2025-02-27",
       "value": 0.7,
-      "source": "INSEE",
+      "source": "seed",
       "fetchedAt": "2025-02-27T13:30:00Z"
     },
     {
       "instrumentId": "fr-gdp",
       "date": "2025-05-30",
       "value": 0.5,
-      "source": "INSEE",
+      "source": "seed",
       "fetchedAt": "2025-05-30T13:30:00Z"
     },
     {
       "instrumentId": "fr-gdp",
       "date": "2025-08-28",
       "value": 0.4,
-      "source": "INSEE",
+      "source": "seed",
       "fetchedAt": "2025-08-28T13:30:00Z"
     },
     {
       "instrumentId": "fr-gdp",
       "date": "2025-10-29",
       "value": 0.3,
-      "source": "INSEE",
+      "source": "seed",
       "fetchedAt": "2025-10-29T13:30:00Z"
     },
     {
       "instrumentId": "fr-gdp",
       "date": "2026-02-27",
       "value": 0.2,
-      "source": "INSEE",
+      "source": "seed",
       "fetchedAt": "2026-02-27T13:30:00Z"
     },
     {
       "instrumentId": "fr-gdp",
       "date": "2026-05-29",
       "value": 0.1,
-      "source": "INSEE",
+      "source": "seed",
       "fetchedAt": "2026-05-29T13:30:00Z"
     },
     {
       "instrumentId": "fr-unemployment",
       "date": "2025-08-13",
       "value": 7.3,
-      "source": "INSEE",
+      "source": "seed",
       "fetchedAt": "2025-08-13T13:30:00Z"
     },
     {
       "instrumentId": "fr-unemployment",
       "date": "2025-11-13",
       "value": 7.4,
-      "source": "INSEE",
+      "source": "seed",
       "fetchedAt": "2025-11-13T13:30:00Z"
     },
     {
       "instrumentId": "fr-unemployment",
       "date": "2026-02-12",
       "value": 7.5,
-      "source": "INSEE",
+      "source": "seed",
       "fetchedAt": "2026-02-12T13:30:00Z"
     },
     {
       "instrumentId": "fr-unemployment",
       "date": "2026-04-10",
       "value": 7.6,
-      "source": "INSEE",
+      "source": "seed",
       "fetchedAt": "2026-04-10T13:30:00Z"
     },
     {
       "instrumentId": "fr-unemployment",
       "date": "2026-06-11",
       "value": 7.6,
-      "source": "INSEE",
+      "source": "seed",
       "fetchedAt": "2026-06-11T13:30:00Z"
     },
     {
       "instrumentId": "fr-unemployment",
       "date": "2026-08-11",
       "value": 7.7,
-      "source": "INSEE",
+      "source": "seed",
       "fetchedAt": "2026-08-11T07:45:00Z"
     },
     {
       "instrumentId": "fr-pmi",
       "date": "2025-08-13",
       "value": 48.9,
-      "source": "S&P Global",
+      "source": "seed",
       "fetchedAt": "2025-08-13T13:30:00Z"
     },
     {
       "instrumentId": "fr-pmi",
       "date": "2025-11-13",
       "value": 47.8,
-      "source": "S&P Global",
+      "source": "seed",
       "fetchedAt": "2025-11-13T13:30:00Z"
     },
     {
       "instrumentId": "fr-pmi",
       "date": "2026-02-12",
       "value": 48.3,
-      "source": "S&P Global",
+      "source": "seed",
       "fetchedAt": "2026-02-12T13:30:00Z"
     },
     {
       "instrumentId": "fr-pmi",
       "date": "2026-04-10",
       "value": 48.7,
-      "source": "S&P Global",
+      "source": "seed",
       "fetchedAt": "2026-04-10T13:30:00Z"
     },
     {
       "instrumentId": "fr-pmi",
       "date": "2026-06-11",
       "value": 49.1,
-      "source": "S&P Global",
+      "source": "seed",
       "fetchedAt": "2026-06-11T13:30:00Z"
     },
     {
       "instrumentId": "fr-pmi",
       "date": "2026-07-24",
       "value": 49.4,
-      "source": "S&P Global",
+      "source": "seed",
       "fetchedAt": "2026-07-24T13:30:00Z"
     },
     {
       "instrumentId": "fr-pmi",
       "date": "2026-08-01",
       "value": 49.6,
-      "source": "S&P Global",
+      "source": "seed",
       "fetchedAt": "2026-08-10T09:00:00Z"
     },
     {
       "instrumentId": "fr-wages",
       "date": "2025-06-18",
       "value": 2.9,
-      "source": "INSEE",
+      "source": "seed",
       "fetchedAt": "2025-06-18T13:30:00Z"
     },
     {
       "instrumentId": "fr-wages",
       "date": "2025-09-18",
       "value": 2.7,
-      "source": "INSEE",
+      "source": "seed",
       "fetchedAt": "2025-09-18T13:30:00Z"
     },
     {
       "instrumentId": "fr-wages",
       "date": "2025-12-18",
       "value": 2.5,
-      "source": "INSEE",
+      "source": "seed",
       "fetchedAt": "2025-12-18T13:30:00Z"
     },
     {
       "instrumentId": "fr-wages",
       "date": "2026-03-18",
       "value": 2.4,
-      "source": "INSEE",
+      "source": "seed",
       "fetchedAt": "2026-03-18T13:30:00Z"
     },
     {
       "instrumentId": "fr-wages",
       "date": "2026-06-18",
       "value": 2.3,
-      "source": "INSEE",
+      "source": "seed",
       "fetchedAt": "2026-06-18T13:30:00Z"
     },
     {
       "instrumentId": "fr-budget-balance",
       "date": "2025-04-22",
       "value": -5.5,
-      "source": "INSEE",
+      "source": "seed",
       "fetchedAt": "2025-04-22T13:30:00Z"
     },
     {
       "instrumentId": "fr-budget-balance",
       "date": "2025-10-21",
       "value": -5.7,
-      "source": "INSEE",
+      "source": "seed",
       "fetchedAt": "2025-10-21T13:30:00Z"
     },
     {
       "instrumentId": "fr-budget-balance",
       "date": "2026-04-22",
       "value": -5.9,
-      "source": "INSEE",
+      "source": "seed",
       "fetchedAt": "2026-04-22T13:30:00Z"
     },
     {
       "instrumentId": "fr-debt-gdp",
       "date": "2025-04-22",
       "value": 113.8,
-      "source": "INSEE",
+      "source": "seed",
       "fetchedAt": "2025-04-22T13:30:00Z"
     },
     {
       "instrumentId": "fr-debt-gdp",
       "date": "2025-10-21",
       "value": 115.1,
-      "source": "INSEE",
+      "source": "seed",
       "fetchedAt": "2025-10-21T13:30:00Z"
     },
     {
       "instrumentId": "fr-debt-gdp",
       "date": "2026-04-22",
       "value": 116.4,
-      "source": "INSEE",
+      "source": "seed",
       "fetchedAt": "2026-04-22T13:30:00Z"
     },
     {
       "instrumentId": "de-cpi",
       "date": "2025-08-13",
       "value": 2,
-      "source": "Destatis",
+      "source": "seed",
       "fetchedAt": "2025-08-13T13:30:00Z"
     },
     {
       "instrumentId": "de-cpi",
       "date": "2025-11-13",
       "value": 2.1,
-      "source": "Destatis",
+      "source": "seed",
       "fetchedAt": "2025-11-13T13:30:00Z"
     },
     {
       "instrumentId": "de-cpi",
       "date": "2026-02-12",
       "value": 2.4,
-      "source": "Destatis",
+      "source": "seed",
       "fetchedAt": "2026-02-12T13:30:00Z"
     },
     {
       "instrumentId": "de-cpi",
       "date": "2026-04-10",
       "value": 2.6,
-      "source": "Destatis",
+      "source": "seed",
       "fetchedAt": "2026-04-10T13:30:00Z"
     },
     {
       "instrumentId": "de-cpi",
       "date": "2026-06-11",
       "value": 2.8,
-      "source": "Destatis",
+      "source": "seed",
       "fetchedAt": "2026-06-11T13:30:00Z"
     },
     {
       "instrumentId": "de-cpi",
       "date": "2026-08-12",
       "value": 2.9,
-      "source": "Destatis",
+      "source": "seed",
       "fetchedAt": "2026-08-12T07:00:00Z"
     },
     {
       "instrumentId": "de-cpi-core",
       "date": "2025-08-13",
       "value": 2.2,
-      "source": "Destatis",
+      "source": "seed",
       "fetchedAt": "2025-08-13T13:30:00Z"
     },
     {
       "instrumentId": "de-cpi-core",
       "date": "2025-11-13",
       "value": 2.2,
-      "source": "Destatis",
+      "source": "seed",
       "fetchedAt": "2025-11-13T13:30:00Z"
     },
     {
       "instrumentId": "de-cpi-core",
       "date": "2026-02-12",
       "value": 2.3,
-      "source": "Destatis",
+      "source": "seed",
       "fetchedAt": "2026-02-12T13:30:00Z"
     },
     {
       "instrumentId": "de-cpi-core",
       "date": "2026-04-10",
       "value": 2.4,
-      "source": "Destatis",
+      "source": "seed",
       "fetchedAt": "2026-04-10T13:30:00Z"
     },
     {
       "instrumentId": "de-cpi-core",
       "date": "2026-06-11",
       "value": 2.5,
-      "source": "Destatis",
+      "source": "seed",
       "fetchedAt": "2026-06-11T13:30:00Z"
     },
     {
       "instrumentId": "de-cpi-core",
       "date": "2026-08-12",
       "value": 2.5,
-      "source": "Destatis",
+      "source": "seed",
       "fetchedAt": "2026-08-12T07:00:00Z"
     },
     {
       "instrumentId": "de-gdp",
       "date": "2025-02-25",
       "value": 0.1,
-      "source": "Destatis",
+      "source": "seed",
       "fetchedAt": "2025-02-25T13:30:00Z"
     },
     {
       "instrumentId": "de-gdp",
       "date": "2025-05-25",
       "value": -0.1,
-      "source": "Destatis",
+      "source": "seed",
       "fetchedAt": "2025-05-25T13:30:00Z"
     },
     {
       "instrumentId": "de-gdp",
       "date": "2025-08-22",
       "value": -0.2,
-      "source": "Destatis",
+      "source": "seed",
       "fetchedAt": "2025-08-22T13:30:00Z"
     },
     {
       "instrumentId": "de-gdp",
       "date": "2025-11-25",
       "value": -0.1,
-      "source": "Destatis",
+      "source": "seed",
       "fetchedAt": "2025-11-25T13:30:00Z"
     },
     {
       "instrumentId": "de-gdp",
       "date": "2026-02-25",
       "value": 0,
-      "source": "Destatis",
+      "source": "seed",
       "fetchedAt": "2026-02-25T13:30:00Z"
     },
     {
       "instrumentId": "de-gdp",
       "date": "2026-05-25",
       "value": 0.1,
-      "source": "Destatis",
+      "source": "seed",
       "fetchedAt": "2026-05-25T13:30:00Z"
     },
     {
       "instrumentId": "de-unemployment",
       "date": "2025-08-13",
       "value": 6,
-      "source": "Bundesagentur für Arbeit",
+      "source": "seed",
       "fetchedAt": "2025-08-13T13:30:00Z"
     },
     {
       "instrumentId": "de-unemployment",
       "date": "2025-11-13",
       "value": 6.2,
-      "source": "Bundesagentur für Arbeit",
+      "source": "seed",
       "fetchedAt": "2025-11-13T13:30:00Z"
     },
     {
       "instrumentId": "de-unemployment",
       "date": "2026-02-12",
       "value": 6.3,
-      "source": "Bundesagentur für Arbeit",
+      "source": "seed",
       "fetchedAt": "2026-02-12T13:30:00Z"
     },
     {
       "instrumentId": "de-unemployment",
       "date": "2026-04-10",
       "value": 6.4,
-      "source": "Bundesagentur für Arbeit",
+      "source": "seed",
       "fetchedAt": "2026-04-10T13:30:00Z"
     },
     {
       "instrumentId": "de-unemployment",
       "date": "2026-06-11",
       "value": 6.4,
-      "source": "Bundesagentur für Arbeit",
+      "source": "seed",
       "fetchedAt": "2026-06-11T13:30:00Z"
     },
     {
       "instrumentId": "de-unemployment",
       "date": "2026-08-01",
       "value": 6.5,
-      "source": "Bundesagentur für Arbeit",
+      "source": "seed",
       "fetchedAt": "2026-08-01T07:55:00Z"
     },
     {
       "instrumentId": "de-pmi",
       "date": "2025-08-13",
       "value": 49.1,
-      "source": "S&P Global",
+      "source": "seed",
       "fetchedAt": "2025-08-13T13:30:00Z"
     },
     {
       "instrumentId": "de-pmi",
       "date": "2025-11-13",
       "value": 48.4,
-      "source": "S&P Global",
+      "source": "seed",
       "fetchedAt": "2025-11-13T13:30:00Z"
     },
     {
       "instrumentId": "de-pmi",
       "date": "2026-02-12",
       "value": 49.6,
-      "source": "S&P Global",
+      "source": "seed",
       "fetchedAt": "2026-02-12T13:30:00Z"
     },
     {
       "instrumentId": "de-pmi",
       "date": "2026-04-10",
       "value": 50.2,
-      "source": "S&P Global",
+      "source": "seed",
       "fetchedAt": "2026-04-10T13:30:00Z"
     },
     {
       "instrumentId": "de-pmi",
       "date": "2026-06-11",
       "value": 50.8,
-      "source": "S&P Global",
+      "source": "seed",
       "fetchedAt": "2026-06-11T13:30:00Z"
     },
     {
       "instrumentId": "de-pmi",
       "date": "2026-08-01",
       "value": 51.1,
-      "source": "S&P Global",
+      "source": "seed",
       "fetchedAt": "2026-08-01T07:55:00Z"
     },
     {
       "instrumentId": "de-wages",
       "date": "2025-05-26",
       "value": 4.3,
-      "source": "Destatis",
+      "source": "seed",
       "fetchedAt": "2025-05-26T13:30:00Z"
     },
     {
       "instrumentId": "de-wages",
       "date": "2025-08-26",
       "value": 4,
-      "source": "Destatis",
+      "source": "seed",
       "fetchedAt": "2025-08-26T13:30:00Z"
     },
     {
       "instrumentId": "de-wages",
       "date": "2025-11-26",
       "value": 3.7,
-      "source": "Destatis",
+      "source": "seed",
       "fetchedAt": "2025-11-26T13:30:00Z"
     },
     {
       "instrumentId": "de-wages",
       "date": "2026-05-26",
       "value": 3.3,
-      "source": "Destatis",
+      "source": "seed",
       "fetchedAt": "2026-05-26T13:30:00Z"
     },
     {
       "instrumentId": "de-current-account",
       "date": "2025-04-09",
       "value": 6.8,
-      "source": "Bundesbank",
+      "source": "seed",
       "fetchedAt": "2025-04-09T13:30:00Z"
     },
     {
       "instrumentId": "de-current-account",
       "date": "2025-07-09",
       "value": 6.5,
-      "source": "Bundesbank",
+      "source": "seed",
       "fetchedAt": "2025-07-09T13:30:00Z"
     },
     {
       "instrumentId": "de-current-account",
       "date": "2025-10-09",
       "value": 6.3,
-      "source": "Bundesbank",
+      "source": "seed",
       "fetchedAt": "2025-10-09T13:30:00Z"
     },
     {
       "instrumentId": "de-current-account",
       "date": "2026-01-09",
       "value": 6.1,
-      "source": "Bundesbank",
+      "source": "seed",
       "fetchedAt": "2026-01-09T13:30:00Z"
     },
     {
       "instrumentId": "de-current-account",
       "date": "2026-04-09",
       "value": 5.9,
-      "source": "Bundesbank",
+      "source": "seed",
       "fetchedAt": "2026-04-09T13:30:00Z"
     },
     {
       "instrumentId": "uk-cpi",
       "date": "2025-08-13",
       "value": 2.5,
-      "source": "ONS",
+      "source": "seed",
       "fetchedAt": "2025-08-13T13:30:00Z"
     },
     {
       "instrumentId": "uk-cpi",
       "date": "2025-11-13",
       "value": 2.6,
-      "source": "ONS",
+      "source": "seed",
       "fetchedAt": "2025-11-13T13:30:00Z"
     },
     {
       "instrumentId": "uk-cpi",
       "date": "2026-02-12",
       "value": 2.9,
-      "source": "ONS",
+      "source": "seed",
       "fetchedAt": "2026-02-12T13:30:00Z"
     },
     {
       "instrumentId": "uk-cpi",
       "date": "2026-04-10",
       "value": 3.1,
-      "source": "ONS",
+      "source": "seed",
       "fetchedAt": "2026-04-10T13:30:00Z"
     },
     {
       "instrumentId": "uk-cpi",
       "date": "2026-06-11",
       "value": 3.3,
-      "source": "ONS",
+      "source": "seed",
       "fetchedAt": "2026-06-11T13:30:00Z"
     },
     {
       "instrumentId": "uk-cpi",
       "date": "2026-08-13",
       "value": 3.4,
-      "source": "ONS",
+      "source": "seed",
       "fetchedAt": "2026-08-13T06:00:00Z"
     },
     {
       "instrumentId": "uk-cpi-core",
       "date": "2025-08-13",
       "value": 2.9,
-      "source": "ONS",
+      "source": "seed",
       "fetchedAt": "2025-08-13T13:30:00Z"
     },
     {
       "instrumentId": "uk-cpi-core",
       "date": "2025-11-13",
       "value": 2.9,
-      "source": "ONS",
+      "source": "seed",
       "fetchedAt": "2025-11-13T13:30:00Z"
     },
     {
       "instrumentId": "uk-cpi-core",
       "date": "2026-02-12",
       "value": 3,
-      "source": "ONS",
+      "source": "seed",
       "fetchedAt": "2026-02-12T13:30:00Z"
     },
     {
       "instrumentId": "uk-cpi-core",
       "date": "2026-04-10",
       "value": 3.1,
-      "source": "ONS",
+      "source": "seed",
       "fetchedAt": "2026-04-10T13:30:00Z"
     },
     {
       "instrumentId": "uk-cpi-core",
       "date": "2026-06-11",
       "value": 3.2,
-      "source": "ONS",
+      "source": "seed",
       "fetchedAt": "2026-06-11T13:30:00Z"
     },
     {
       "instrumentId": "uk-cpi-core",
       "date": "2026-08-13",
       "value": 3.2,
-      "source": "ONS",
+      "source": "seed",
       "fetchedAt": "2026-08-13T06:00:00Z"
     },
     {
       "instrumentId": "uk-gdp",
       "date": "2025-02-13",
       "value": 1,
-      "source": "ONS",
+      "source": "seed",
       "fetchedAt": "2025-02-13T13:30:00Z"
     },
     {
       "instrumentId": "uk-gdp",
       "date": "2025-05-15",
       "value": 0.8,
-      "source": "ONS",
+      "source": "seed",
       "fetchedAt": "2025-05-15T13:30:00Z"
     },
     {
       "instrumentId": "uk-gdp",
       "date": "2025-08-14",
       "value": 0.6,
-      "source": "ONS",
+      "source": "seed",
       "fetchedAt": "2025-08-14T13:30:00Z"
     },
     {
       "instrumentId": "uk-gdp",
       "date": "2025-11-13",
       "value": 0.5,
-      "source": "ONS",
+      "source": "seed",
       "fetchedAt": "2025-11-13T13:30:00Z"
     },
     {
       "instrumentId": "uk-gdp",
       "date": "2026-02-13",
       "value": 0.4,
-      "source": "ONS",
+      "source": "seed",
       "fetchedAt": "2026-02-13T13:30:00Z"
     },
     {
       "instrumentId": "uk-gdp",
       "date": "2026-05-14",
       "value": 0.4,
-      "source": "ONS",
+      "source": "seed",
       "fetchedAt": "2026-05-14T13:30:00Z"
     },
     {
       "instrumentId": "uk-unemployment",
       "date": "2025-08-13",
       "value": 4.3,
-      "source": "ONS",
+      "source": "seed",
       "fetchedAt": "2025-08-13T13:30:00Z"
     },
     {
       "instrumentId": "uk-unemployment",
       "date": "2025-11-13",
       "value": 4.4,
-      "source": "ONS",
+      "source": "seed",
       "fetchedAt": "2025-11-13T13:30:00Z"
     },
     {
       "instrumentId": "uk-unemployment",
       "date": "2026-02-12",
       "value": 4.5,
-      "source": "ONS",
+      "source": "seed",
       "fetchedAt": "2026-02-12T13:30:00Z"
     },
     {
       "instrumentId": "uk-unemployment",
       "date": "2026-04-10",
       "value": 4.6,
-      "source": "ONS",
+      "source": "seed",
       "fetchedAt": "2026-04-10T13:30:00Z"
     },
     {
       "instrumentId": "uk-unemployment",
       "date": "2026-06-11",
       "value": 4.7,
-      "source": "ONS",
+      "source": "seed",
       "fetchedAt": "2026-06-11T13:30:00Z"
     },
     {
       "instrumentId": "uk-unemployment",
       "date": "2026-08-12",
       "value": 4.7,
-      "source": "ONS",
+      "source": "seed",
       "fetchedAt": "2026-08-12T06:00:00Z"
     },
     {
       "instrumentId": "uk-policy-rate",
       "date": "2025-08-13",
       "value": 4,
-      "source": "Bank of England",
+      "source": "seed",
       "fetchedAt": "2025-08-13T13:30:00Z"
     },
     {
       "instrumentId": "uk-policy-rate",
       "date": "2025-12-10",
       "value": 3.75,
-      "source": "Bank of England",
+      "source": "seed",
       "fetchedAt": "2025-12-10T13:30:00Z"
     },
     {
       "instrumentId": "uk-policy-rate",
       "date": "2026-03-18",
       "value": 3.75,
-      "source": "Bank of England",
+      "source": "seed",
       "fetchedAt": "2026-03-18T13:30:00Z"
     },
     {
       "instrumentId": "uk-policy-rate",
       "date": "2026-06-18",
       "value": 3.75,
-      "source": "Bank of England",
+      "source": "seed",
       "fetchedAt": "2026-06-18T13:30:00Z"
     },
     {
       "instrumentId": "uk-policy-rate",
       "date": "2026-08-06",
       "value": 3.75,
-      "source": "Bank of England",
+      "source": "seed",
       "fetchedAt": "2026-08-06T11:00:00Z"
     },
     {
       "instrumentId": "uk-pmi",
       "date": "2025-08-13",
       "value": 51,
-      "source": "S&P Global",
+      "source": "seed",
       "fetchedAt": "2025-08-13T13:30:00Z"
     },
     {
       "instrumentId": "uk-pmi",
       "date": "2025-11-13",
       "value": 50.2,
-      "source": "S&P Global",
+      "source": "seed",
       "fetchedAt": "2025-11-13T13:30:00Z"
     },
     {
       "instrumentId": "uk-pmi",
       "date": "2026-02-12",
       "value": 50.6,
-      "source": "S&P Global",
+      "source": "seed",
       "fetchedAt": "2026-02-12T13:30:00Z"
     },
     {
       "instrumentId": "uk-pmi",
       "date": "2026-04-10",
       "value": 51,
-      "source": "S&P Global",
+      "source": "seed",
       "fetchedAt": "2026-04-10T13:30:00Z"
     },
     {
       "instrumentId": "uk-pmi",
       "date": "2026-06-11",
       "value": 51.4,
-      "source": "S&P Global",
+      "source": "seed",
       "fetchedAt": "2026-06-11T13:30:00Z"
     },
     {
       "instrumentId": "uk-pmi",
       "date": "2026-08-01",
       "value": 51.7,
-      "source": "S&P Global",
+      "source": "seed",
       "fetchedAt": "2026-08-01T08:30:00Z"
     },
     {
       "instrumentId": "uk-wages",
       "date": "2025-08-13",
       "value": 5.1,
-      "source": "ONS",
+      "source": "seed",
       "fetchedAt": "2025-08-13T13:30:00Z"
     },
     {
       "instrumentId": "uk-wages",
       "date": "2025-11-13",
       "value": 4.8,
-      "source": "ONS",
+      "source": "seed",
       "fetchedAt": "2025-11-13T13:30:00Z"
     },
     {
       "instrumentId": "uk-wages",
       "date": "2026-02-12",
       "value": 4.5,
-      "source": "ONS",
+      "source": "seed",
       "fetchedAt": "2026-02-12T13:30:00Z"
     },
     {
       "instrumentId": "uk-wages",
       "date": "2026-04-10",
       "value": 4.3,
-      "source": "ONS",
+      "source": "seed",
       "fetchedAt": "2026-04-10T13:30:00Z"
     },
     {
       "instrumentId": "uk-wages",
       "date": "2026-06-11",
       "value": 4.1,
-      "source": "ONS",
+      "source": "seed",
       "fetchedAt": "2026-06-11T13:30:00Z"
     },
     {
       "instrumentId": "uk-wages",
       "date": "2026-08-12",
       "value": 4,
-      "source": "ONS",
+      "source": "seed",
       "fetchedAt": "2026-08-12T06:00:00Z"
     },
     {
       "instrumentId": "uk-budget-balance",
       "date": "2025-04-22",
       "value": -4.9,
-      "source": "ONS",
+      "source": "seed",
       "fetchedAt": "2025-04-22T13:30:00Z"
     },
     {
       "instrumentId": "uk-budget-balance",
       "date": "2025-10-22",
       "value": -5.1,
-      "source": "ONS",
+      "source": "seed",
       "fetchedAt": "2025-10-22T13:30:00Z"
     },
     {
       "instrumentId": "uk-budget-balance",
       "date": "2026-04-22",
       "value": -5.3,
-      "source": "ONS",
+      "source": "seed",
       "fetchedAt": "2026-04-22T13:30:00Z"
     },
     {
       "instrumentId": "jp-gdp",
       "date": "2025-02-17",
       "value": 0.6,
-      "source": "Cabinet Office Japan",
+      "source": "seed",
       "fetchedAt": "2025-02-17T13:30:00Z"
     },
     {
       "instrumentId": "jp-gdp",
       "date": "2025-05-16",
       "value": 0.5,
-      "source": "Cabinet Office Japan",
+      "source": "seed",
       "fetchedAt": "2025-05-16T13:30:00Z"
     },
     {
       "instrumentId": "jp-gdp",
       "date": "2025-08-15",
       "value": 0.4,
-      "source": "Cabinet Office Japan",
+      "source": "seed",
       "fetchedAt": "2025-08-15T13:30:00Z"
     },
     {
       "instrumentId": "jp-gdp",
       "date": "2025-11-17",
       "value": 0.5,
-      "source": "Cabinet Office Japan",
+      "source": "seed",
       "fetchedAt": "2025-11-17T13:30:00Z"
     },
     {
       "instrumentId": "jp-gdp",
       "date": "2026-05-18",
       "value": 0.6,
-      "source": "Cabinet Office Japan",
+      "source": "seed",
       "fetchedAt": "2026-05-18T13:30:00Z"
     },
     {
       "instrumentId": "jp-policy-rate",
       "date": "2025-08-13",
       "value": 0.5,
-      "source": "Bank of Japan",
+      "source": "seed",
       "fetchedAt": "2025-08-13T13:30:00Z"
     },
     {
       "instrumentId": "jp-policy-rate",
       "date": "2025-12-19",
       "value": 0.75,
-      "source": "Bank of Japan",
+      "source": "seed",
       "fetchedAt": "2025-12-19T13:30:00Z"
     },
     {
       "instrumentId": "jp-policy-rate",
       "date": "2026-03-19",
       "value": 0.75,
-      "source": "Bank of Japan",
+      "source": "seed",
       "fetchedAt": "2026-03-19T13:30:00Z"
     },
     {
       "instrumentId": "jp-policy-rate",
       "date": "2026-06-17",
       "value": 1,
-      "source": "Bank of Japan",
+      "source": "seed",
       "fetchedAt": "2026-06-17T13:30:00Z"
     },
     {
       "instrumentId": "jp-policy-rate",
       "date": "2026-07-31",
       "value": 1,
-      "source": "Bank of Japan",
+      "source": "seed",
       "fetchedAt": "2026-07-31T03:00:00Z"
     },
     {
       "instrumentId": "jp-debt-gdp",
       "date": "2025-06-25",
       "value": 249,
-      "source": "Ministry of Finance Japan",
+      "source": "seed",
       "fetchedAt": "2025-06-25T13:30:00Z"
     },
     {
       "instrumentId": "jp-debt-gdp",
       "date": "2025-09-25",
       "value": 251,
-      "source": "Ministry of Finance Japan",
+      "source": "seed",
       "fetchedAt": "2025-09-25T13:30:00Z"
     },
     {
       "instrumentId": "jp-debt-gdp",
       "date": "2025-12-25",
       "value": 253,
-      "source": "Ministry of Finance Japan",
+      "source": "seed",
       "fetchedAt": "2025-12-25T13:30:00Z"
     },
     {
       "instrumentId": "jp-debt-gdp",
       "date": "2026-03-25",
       "value": 255,
-      "source": "Ministry of Finance Japan",
+      "source": "seed",
       "fetchedAt": "2026-03-25T13:30:00Z"
     },
     {
       "instrumentId": "jp-debt-gdp",
       "date": "2026-06-25",
       "value": 257,
-      "source": "Ministry of Finance Japan",
+      "source": "seed",
       "fetchedAt": "2026-06-25T13:30:00Z"
     },
     {
       "instrumentId": "jp-current-account",
       "date": "2025-04-08",
       "value": 4.2,
-      "source": "Ministry of Finance Japan",
+      "source": "seed",
       "fetchedAt": "2025-04-08T13:30:00Z"
     },
     {
       "instrumentId": "jp-current-account",
       "date": "2025-07-08",
       "value": 4,
-      "source": "Ministry of Finance Japan",
+      "source": "seed",
       "fetchedAt": "2025-07-08T13:30:00Z"
     },
     {
       "instrumentId": "jp-current-account",
       "date": "2025-10-08",
       "value": 3.8,
-      "source": "Ministry of Finance Japan",
+      "source": "seed",
       "fetchedAt": "2025-10-08T13:30:00Z"
     },
     {
       "instrumentId": "jp-current-account",
       "date": "2026-01-08",
       "value": 3.6,
-      "source": "Ministry of Finance Japan",
+      "source": "seed",
       "fetchedAt": "2026-01-08T13:30:00Z"
     },
     {
       "instrumentId": "jp-current-account",
       "date": "2026-04-08",
       "value": 3.5,
-      "source": "Ministry of Finance Japan",
+      "source": "seed",
       "fetchedAt": "2026-04-08T13:30:00Z"
     },
     {
       "instrumentId": "cn-cpi",
       "date": "2025-08-13",
       "value": 0.2,
-      "source": "National Bureau of Statistics China",
+      "source": "seed",
       "fetchedAt": "2025-08-13T13:30:00Z"
     },
     {
       "instrumentId": "cn-cpi",
       "date": "2025-11-13",
       "value": 0,
-      "source": "National Bureau of Statistics China",
+      "source": "seed",
       "fetchedAt": "2025-11-13T13:30:00Z"
     },
     {
       "instrumentId": "cn-cpi",
       "date": "2026-02-12",
       "value": -0.3,
-      "source": "National Bureau of Statistics China",
+      "source": "seed",
       "fetchedAt": "2026-02-12T13:30:00Z"
     },
     {
       "instrumentId": "cn-cpi",
       "date": "2026-04-10",
       "value": -0.1,
-      "source": "National Bureau of Statistics China",
+      "source": "seed",
       "fetchedAt": "2026-04-10T13:30:00Z"
     },
     {
       "instrumentId": "cn-cpi",
       "date": "2026-06-11",
       "value": 0.1,
-      "source": "National Bureau of Statistics China",
+      "source": "seed",
       "fetchedAt": "2026-06-11T13:30:00Z"
     },
     {
       "instrumentId": "cn-cpi",
       "date": "2026-08-09",
       "value": 0.3,
-      "source": "National Bureau of Statistics China",
+      "source": "seed",
       "fetchedAt": "2026-08-09T01:30:00Z"
     },
     {
       "instrumentId": "cn-gdp",
       "date": "2025-04-16",
       "value": 5.3,
-      "source": "National Bureau of Statistics China",
+      "source": "seed",
       "fetchedAt": "2025-04-16T13:30:00Z"
     },
     {
       "instrumentId": "cn-gdp",
       "date": "2025-07-15",
       "value": 5,
-      "source": "National Bureau of Statistics China",
+      "source": "seed",
       "fetchedAt": "2025-07-15T13:30:00Z"
     },
     {
       "instrumentId": "cn-gdp",
       "date": "2025-10-18",
       "value": 4.8,
-      "source": "National Bureau of Statistics China",
+      "source": "seed",
       "fetchedAt": "2025-10-18T13:30:00Z"
     },
     {
       "instrumentId": "cn-gdp",
       "date": "2026-01-19",
       "value": 4.6,
-      "source": "National Bureau of Statistics China",
+      "source": "seed",
       "fetchedAt": "2026-01-19T13:30:00Z"
     },
     {
       "instrumentId": "cn-gdp",
       "date": "2026-04-16",
       "value": 4.5,
-      "source": "National Bureau of Statistics China",
+      "source": "seed",
       "fetchedAt": "2026-04-16T13:30:00Z"
     },
     {
       "instrumentId": "cn-pmi",
       "date": "2025-08-13",
       "value": 50.1,
-      "source": "National Bureau of Statistics China",
+      "source": "seed",
       "fetchedAt": "2025-08-13T13:30:00Z"
     },
     {
       "instrumentId": "cn-pmi",
       "date": "2025-11-13",
       "value": 49.8,
-      "source": "National Bureau of Statistics China",
+      "source": "seed",
       "fetchedAt": "2025-11-13T13:30:00Z"
     },
     {
       "instrumentId": "cn-pmi",
       "date": "2026-02-12",
       "value": 49.5,
-      "source": "National Bureau of Statistics China",
+      "source": "seed",
       "fetchedAt": "2026-02-12T13:30:00Z"
     },
     {
       "instrumentId": "cn-pmi",
       "date": "2026-04-10",
       "value": 49.9,
-      "source": "National Bureau of Statistics China",
+      "source": "seed",
       "fetchedAt": "2026-04-10T13:30:00Z"
     },
     {
       "instrumentId": "cn-pmi",
       "date": "2026-06-11",
       "value": 50.2,
-      "source": "National Bureau of Statistics China",
+      "source": "seed",
       "fetchedAt": "2026-06-11T13:30:00Z"
     },
     {
       "instrumentId": "cn-pmi",
       "date": "2026-08-01",
       "value": 50.3,
-      "source": "National Bureau of Statistics China",
+      "source": "seed",
       "fetchedAt": "2026-08-01T01:45:00Z"
     },
     {
       "instrumentId": "cn-policy-rate",
       "date": "2025-08-20",
       "value": 3,
-      "source": "PBOC",
+      "source": "seed",
       "fetchedAt": "2025-08-20T13:30:00Z"
     },
     {
       "instrumentId": "cn-policy-rate",
       "date": "2025-12-20",
       "value": 2.9,
-      "source": "PBOC",
+      "source": "seed",
       "fetchedAt": "2025-12-20T13:30:00Z"
     },
     {
       "instrumentId": "cn-policy-rate",
       "date": "2026-04-21",
       "value": 2.9,
-      "source": "PBOC",
+      "source": "seed",
       "fetchedAt": "2026-04-21T13:30:00Z"
     },
     {
       "instrumentId": "cn-policy-rate",
       "date": "2026-08-20",
       "value": 2.8,
-      "source": "PBOC",
+      "source": "seed",
       "fetchedAt": "2026-08-20T01:30:00Z"
     },
     {
       "instrumentId": "cn-current-account",
       "date": "2025-04-25",
       "value": 1.9,
-      "source": "State Administration of Foreign Exchange",
+      "source": "seed",
       "fetchedAt": "2025-04-25T13:30:00Z"
     },
     {
       "instrumentId": "cn-current-account",
       "date": "2025-07-25",
       "value": 1.7,
-      "source": "State Administration of Foreign Exchange",
+      "source": "seed",
       "fetchedAt": "2025-07-25T13:30:00Z"
     },
     {
       "instrumentId": "cn-current-account",
       "date": "2025-10-25",
       "value": 1.6,
-      "source": "State Administration of Foreign Exchange",
+      "source": "seed",
       "fetchedAt": "2025-10-25T13:30:00Z"
     },
     {
       "instrumentId": "cn-current-account",
       "date": "2026-01-25",
       "value": 1.5,
-      "source": "State Administration of Foreign Exchange",
+      "source": "seed",
       "fetchedAt": "2026-01-25T13:30:00Z"
     },
     {
       "instrumentId": "cn-current-account",
       "date": "2026-04-25",
       "value": 1.4,
-      "source": "State Administration of Foreign Exchange",
+      "source": "seed",
       "fetchedAt": "2026-04-25T13:30:00Z"
     },
     {
       "instrumentId": "es-cpi",
       "date": "2025-08-13",
       "value": 2.4,
-      "source": "INE",
+      "source": "seed",
       "fetchedAt": "2025-08-13T13:30:00Z"
     },
     {
       "instrumentId": "es-cpi",
       "date": "2026-02-12",
       "value": 2.7,
-      "source": "INE",
+      "source": "seed",
       "fetchedAt": "2026-02-12T13:30:00Z"
     },
     {
       "instrumentId": "es-cpi",
       "date": "2026-06-11",
       "value": 2.9,
-      "source": "INE",
+      "source": "seed",
       "fetchedAt": "2026-06-11T13:30:00Z"
     },
     {
       "instrumentId": "es-cpi",
       "date": "2026-08-12",
       "value": 3,
-      "source": "INE",
+      "source": "seed",
       "fetchedAt": "2026-08-12T07:00:00Z"
     },
     {
       "instrumentId": "es-gdp",
       "date": "2025-02-27",
       "value": 1.9,
-      "source": "INE",
+      "source": "seed",
       "fetchedAt": "2025-02-27T13:30:00Z"
     },
     {
       "instrumentId": "es-gdp",
       "date": "2025-08-28",
       "value": 1.6,
-      "source": "INE",
+      "source": "seed",
       "fetchedAt": "2025-08-28T13:30:00Z"
     },
     {
       "instrumentId": "es-gdp",
       "date": "2026-05-29",
       "value": 1.3,
-      "source": "INE",
+      "source": "seed",
       "fetchedAt": "2026-05-29T13:30:00Z"
     },
     {
       "instrumentId": "es-unemployment",
       "date": "2025-08-13",
       "value": 10.6,
-      "source": "INE",
+      "source": "seed",
       "fetchedAt": "2025-08-13T13:30:00Z"
     },
     {
       "instrumentId": "es-unemployment",
       "date": "2026-02-12",
       "value": 10.4,
-      "source": "INE",
+      "source": "seed",
       "fetchedAt": "2026-02-12T13:30:00Z"
     },
     {
       "instrumentId": "es-unemployment",
       "date": "2026-06-11",
       "value": 10.1,
-      "source": "INE",
+      "source": "seed",
       "fetchedAt": "2026-06-11T13:30:00Z"
     },
     {
       "instrumentId": "es-unemployment",
       "date": "2026-08-01",
       "value": 10,
-      "source": "INE",
+      "source": "seed",
       "fetchedAt": "2026-08-01T07:00:00Z"
     },
     {
       "instrumentId": "it-cpi",
       "date": "2025-08-13",
       "value": 1.6,
-      "source": "ISTAT",
+      "source": "seed",
       "fetchedAt": "2025-08-13T13:30:00Z"
     },
     {
       "instrumentId": "it-cpi",
       "date": "2026-02-12",
       "value": 1.9,
-      "source": "ISTAT",
+      "source": "seed",
       "fetchedAt": "2026-02-12T13:30:00Z"
     },
     {
       "instrumentId": "it-cpi",
       "date": "2026-06-11",
       "value": 2.1,
-      "source": "ISTAT",
+      "source": "seed",
       "fetchedAt": "2026-06-11T13:30:00Z"
     },
     {
       "instrumentId": "it-cpi",
       "date": "2026-08-12",
       "value": 2.2,
-      "source": "ISTAT",
+      "source": "seed",
       "fetchedAt": "2026-08-12T07:00:00Z"
     },
     {
       "instrumentId": "it-gdp",
       "date": "2025-02-27",
       "value": 0.6,
-      "source": "ISTAT",
+      "source": "seed",
       "fetchedAt": "2025-02-27T13:30:00Z"
     },
     {
       "instrumentId": "it-gdp",
       "date": "2025-08-28",
       "value": 0.5,
-      "source": "ISTAT",
+      "source": "seed",
       "fetchedAt": "2025-08-28T13:30:00Z"
     },
     {
       "instrumentId": "it-gdp",
       "date": "2026-05-29",
       "value": 0.4,
-      "source": "ISTAT",
+      "source": "seed",
       "fetchedAt": "2026-05-29T13:30:00Z"
     },
     {
       "instrumentId": "it-debt-gdp",
       "date": "2025-04-22",
       "value": 136.2,
-      "source": "ISTAT",
+      "source": "seed",
       "fetchedAt": "2025-04-22T13:30:00Z"
     },
     {
       "instrumentId": "it-debt-gdp",
       "date": "2025-10-21",
       "value": 137,
-      "source": "ISTAT",
+      "source": "seed",
       "fetchedAt": "2025-10-21T13:30:00Z"
     },
     {
       "instrumentId": "it-debt-gdp",
       "date": "2026-04-22",
       "value": 137.9,
-      "source": "ISTAT",
+      "source": "seed",
       "fetchedAt": "2026-04-22T13:30:00Z"
     },
     {
       "instrumentId": "in-cpi",
       "date": "2025-08-13",
       "value": 4.9,
-      "source": "MOSPI",
+      "source": "seed",
       "fetchedAt": "2025-08-13T13:30:00Z"
     },
     {
       "instrumentId": "in-cpi",
       "date": "2026-02-12",
       "value": 5.3,
-      "source": "MOSPI",
+      "source": "seed",
       "fetchedAt": "2026-02-12T13:30:00Z"
     },
     {
       "instrumentId": "in-cpi",
       "date": "2026-06-11",
       "value": 5.8,
-      "source": "MOSPI",
+      "source": "seed",
       "fetchedAt": "2026-06-11T13:30:00Z"
     },
     {
       "instrumentId": "in-cpi",
       "date": "2026-08-12",
       "value": 6.1,
-      "source": "MOSPI",
+      "source": "seed",
       "fetchedAt": "2026-08-12T12:30:00Z"
     },
     {
       "instrumentId": "in-gdp",
       "date": "2025-02-28",
       "value": 6.8,
-      "source": "MOSPI",
+      "source": "seed",
       "fetchedAt": "2025-02-28T13:30:00Z"
     },
     {
       "instrumentId": "in-gdp",
       "date": "2025-08-29",
       "value": 6.5,
-      "source": "MOSPI",
+      "source": "seed",
       "fetchedAt": "2025-08-29T13:30:00Z"
     },
     {
       "instrumentId": "in-gdp",
       "date": "2026-05-30",
       "value": 6.1,
-      "source": "MOSPI",
+      "source": "seed",
       "fetchedAt": "2026-05-30T13:30:00Z"
     },
     {
       "instrumentId": "in-policy-rate",
       "date": "2025-08-13",
       "value": 6,
-      "source": "Reserve Bank of India",
+      "source": "seed",
       "fetchedAt": "2025-08-13T13:30:00Z"
     },
     {
       "instrumentId": "in-policy-rate",
       "date": "2025-12-05",
       "value": 6.25,
-      "source": "Reserve Bank of India",
+      "source": "seed",
       "fetchedAt": "2025-12-05T13:30:00Z"
     },
     {
       "instrumentId": "in-policy-rate",
       "date": "2026-04-09",
       "value": 6.25,
-      "source": "Reserve Bank of India",
+      "source": "seed",
       "fetchedAt": "2026-04-09T13:30:00Z"
     },
     {
       "instrumentId": "in-policy-rate",
       "date": "2026-08-07",
       "value": 6.5,
-      "source": "Reserve Bank of India",
+      "source": "seed",
       "fetchedAt": "2026-08-07T09:00:00Z"
     }
   ],

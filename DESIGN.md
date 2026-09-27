@@ -235,6 +235,20 @@ L'**étiquette** de la carte de driver : fond `--repos`, rayon `--rp`, capitales
 gris. Sur la note publiée, tous passent en `--tenu` : le cahier demande un affichage discret,
 et le badge y est une mention de provenance, pas une consigne.
 
+### Étiquette « Non collecté »
+
+La même étiquette, appliquée à une valeur saisie à la main dans `data/seed.json` qu'aucune
+source ne collecte. Libellé « Non collecté », texte `--k-choc` : comme `ia`, c'est une valeur
+qu'aucune vérification n'a touchée. Toujours suivie de la date de la valeur.
+
+- Elle remplace le point de fraîcheur : une valeur du seed n'est pas une collecte en retard,
+  c'est une collecte qui n'existe pas.
+- Rien ne se calcule sur une valeur non collectée : ni pastille de variation, ni YTD, ni
+  variation colorée sur une carte d'indicateur — le vert et le rouge d'un mouvement inventé se
+  liraient comme un vrai.
+- Sur une fiche, une phrase sous la valeur étend l'étiquette au graphique, aux performances
+  et à l'historique.
+
 ### Portail de rédaction
 
 Reprend le **motif de validation de la liste d'archive**, que cette charte invite déjà à

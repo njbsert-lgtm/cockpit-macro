@@ -3,6 +3,7 @@ import { STALENESS_TOLERANCE } from "@/config/cadence";
 import { observationsOf, type ObservationsBySeries } from "@/lib/observations";
 import { dailyChange, latestObservation } from "@/lib/performance";
 import { publicationDelay } from "@/lib/staleness";
+import { estNonCollectee } from "@/lib/provenance";
 import type { ObservationContexte } from "./context";
 
 /**
@@ -51,7 +52,10 @@ export function construireObservationsDepuis(
   return entrees.flatMap((entree) => {
     if (!estCouvert(entree.id)) return [];
 
-    const obs = observationsOf(bySeries, entree.id);
+    // Couverte ne suffit pas : une série couverte dont la base ne répond pas retombe sur le
+    // seed (`lib/observations.ts`, cas 3). Sans ce filtre, le régime A jugerait la note contre
+    // des valeurs saisies à la main.
+    const obs = observationsOf(bySeries, entree.id).filter((o) => !estNonCollectee(o));
     if (obs.length === 0) return [];
 
     const derniere = latestObservation(obs);

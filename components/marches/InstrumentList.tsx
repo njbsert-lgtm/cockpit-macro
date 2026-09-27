@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { FreshnessDot } from "@/components/states/FreshnessDot";
+import { NonCollecteBadge } from "@/components/states/NonCollecteBadge";
 import { formatDateLong, formatDateShort } from "@/lib/format";
 import type { FreshnessTier } from "@/lib/freshness";
 
@@ -20,6 +21,8 @@ export type InstrumentRow = {
   ytd: string | null;
   ytdDirection: "up" | "down" | "flat" | null;
   zoneTag: string | null;
+  /** Valeur saisie à la main dans le seed : ni variation ni YTD, l'étiquette à la place. */
+  nonCollecte: boolean;
 };
 
 const DATE_TONE: Record<FreshnessTier, string> = {
@@ -101,7 +104,12 @@ export function InstrumentList({ rows }: { rows: InstrumentRow[] }) {
                   )}
 
                   <span className="mt-1 flex items-center justify-end gap-1.5">
-                    {row.change !== null && row.direction !== null ? (
+                    {row.nonCollecte ? (
+                      <span className="inline-flex items-center gap-1.5 text-10-5 text-tenu">
+                        <NonCollecteBadge />
+                        au {formatDateShort(row.date)}
+                      </span>
+                    ) : row.change !== null && row.direction !== null ? (
                       <>
                         <ChangePill change={row.change} direction={row.direction} />
                         <span
