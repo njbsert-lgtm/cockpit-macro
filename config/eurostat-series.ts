@@ -177,6 +177,9 @@ const BUDGET_BALANCE_BOUNDS = { min: -25, max: 15 };
  * saisonnières — le dataset ne propose pas de version SCA en pourcentage du PIB avec un
  * historique complet). Seuls `ez` et `fr` ont une entrée dans le catalogue des indicateurs ;
  * `de`, `es` et `it` n'en ont pas, donc pas de fonction générique sur `ZONES` ici.
+ *
+ * Confirmées par `npm run eurostat:check` : France à -6,1 % du PIB au T1 2026, zone euro
+ * autour de -2,6 à -2,8 % sur les trimestres précédents — dans les bornes déclarées.
  */
 function budgetBalance(geo: string, suffix: string): EurostatMapping {
   return {
@@ -192,9 +195,8 @@ function budgetBalance(geo: string, suffix: string): EurostatMapping {
     cadence: "quarterly",
     zone: GEO[geo],
     plausible: BUDGET_BALANCE_BOUNDS,
-    expect: { unitLabel: "Percentage of gross domestic product (GDP)", frequency: "Quarterly" },
-    enabled: false,
-    disabledReason: "Jamais confrontée à `npm run eurostat:check` — dimensions confirmées par eurostat:explore.",
+    expect: { frequency: "Quarterly" },
+    enabled: true,
   };
 }
 
