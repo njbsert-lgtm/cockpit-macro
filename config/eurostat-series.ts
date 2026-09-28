@@ -233,6 +233,51 @@ function debtGdp(geo: string, suffix: string): EurostatMapping {
   };
 }
 
+const WAGES_BOUNDS = { min: -15, max: 25 };
+
+/**
+ * Salaires, sur `lc_lci_r2_q` (« Labour cost index », trimestriel) — dataset déjà visé par le
+ * catalogue initial (`seriesKey: "LCI_LCI_R2_Q"` sur `ez-wages`, jamais branché jusqu'ici).
+ * Cinq dimensions à fixer, confirmées par `eurostat:explore` : `s_adj=NSA` (les trois codes
+ * disponibles sont non corrigé, corrigé du calendrier, corrigé des variations saisonnières —
+ * NSA pour rester cohérent avec un `unit` en glissement annuel, qui absorbe déjà la
+ * saisonnalité) ; `unit=PCH_SM` (glissement annuel — même convention que `us-wages` chez FRED
+ * et `uk-wages` chez ONS, contrairement à `PCH_PRE` qui serait un glissement trimestriel) ;
+ * `nace_r2=B-S` (l'ensemble de l'économie, hors ménages employeurs et extraterritorial — le
+ * plus proche d'un « tous secteurs ») ; `lcstruct=D11` (salaires et traitements, par
+ * opposition à `D1_D4_MD5`, le coût du travail complet charges comprises, une notion
+ * différente de ce que le cahier suit sous « Salaires » ailleurs).
+ *
+ * `geo` reste à vérifier par `npm run eurostat:check` avant activation : ce dataset porte à la
+ * fois `EA` (composition courante) et des codes à composition figée (`EA21`, `EA20`, `EA19`) —
+ * lequel sert réellement le dernier trimestre n'est confirmé que par un appel réel, comme pour
+ * `une_rt_m` avant lui.
+ */
+function wages(geo: string): EurostatMapping {
+  return {
+    target: { kind: "macro", id: idFor(geo, "wages") },
+    dataset: "lc_lci_r2_q",
+    dimensions: {
+      freq: "Q",
+      s_adj: "NSA",
+      unit: "PCH_SM",
+      nace_r2: "B-S",
+      lcstruct: "D11",
+      geo: geoFor(geo, "lc_lci_r2_q"),
+    },
+    cadence: "quarterly",
+    zone: GEO[geo],
+    plausible: WAGES_BOUNDS,
+    expect: { frequency: "Quarterly" },
+    enabled: false,
+    disabledReason:
+      "Dimensions posées à partir de eurostat:explore (s_adj, unit, nace_r2, lcstruct tous " +
+      "confirmés) mais jamais confrontées à un appel réel de données — geo (EA vs EA21) reste " +
+      "à trancher par npm run eurostat:check avant activation, même prudence que pour " +
+      "une_rt_m.",
+  };
+}
+
 export const EUROSTAT_SERIES: EurostatMapping[] = [
   // --- Inflation totale (IPCH, glissement annuel) --------------------------
   // `TOTAL` : l'ensemble des postes. En ECOICOP v2 il remplace `CP00`, qui n'existe plus —
@@ -259,6 +304,11 @@ export const EUROSTAT_SERIES: EurostatMapping[] = [
   debtGdp("EA", "debt-gdp"),
   debtGdp("FR", "debt-gdp"),
   debtGdp("IT", "debt-gdp"),
+
+  // --- Salaires (zone euro, France, Allemagne) — désactivées, geo non confirmé ----
+  wages("EA"),
+  wages("FR"),
+  wages("DE"),
 ];
 
 /**
