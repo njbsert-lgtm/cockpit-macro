@@ -84,7 +84,7 @@ const EURO_AREA_GEO: Record<string, string> = {
   une_rt_m: "EA21",
   teina205: "EA21",
   teina230: "EA21",
-  lc_lci_r2_q: "EA21",
+  lc_lci_r2_q: "EA20",
 };
 
 /** Traduit notre code de zone en code Eurostat pour un dataset donné. */
