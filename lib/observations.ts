@@ -28,9 +28,61 @@ type Row = {
   fetched_at: string;
 };
 
+/**
+ * Le plafond de lignes lues par série, dans un seul sens : le plus récent d'abord.
+ *
+ * PostgREST plafonne toute réponse (1000 lignes par défaut chez Supabase) sans le signaler
+ * comme une erreur — la requête réussit, simplement tronquée. Une requête `.in(idColumn, ids)`
+ * sur plusieurs identifiants à la fois partage ce plafond entre eux : ONS et e-Stat renvoient
+ * l'historique complet d'une série à chaque passage (parfois depuis 1989), donc dès qu'on
+ * demande plusieurs indicateurs macro d'une même zone en un coup, leurs lignes se mélangent
+ * avant troncature. Triées par date croissante, la coupe tombait alors sur les points les plus
+ * **anciens** qui survivent — desservant la carte, qui n'affiche que le dernier reçu, une
+ * valeur d'il y a vingt ans avec une date plausible mais fausse (bug réel constaté le 28/09 :
+ * l'inflation britannique affichée datait de 2004 quand la base contenait déjà 2026).
+ *
+ * La correction interroge chaque identifiant séparément, triée par date **décroissante** avec
+ * ce plafond : la troncature, si elle a lieu, perd les points les plus anciens plutôt que les
+ * plus récents — l'inverse de ce qu'un tableau de bord doit garantir. 3000 couvre largement un
+ * siècle d'historique mensuel ONS/e-Stat comme plusieurs années de clôtures quotidiennes.
+ */
+const MAX_ROWS_PER_SERIES = 3000;
+
 /** Journalise une fois par incident, pas une fois par instrument : sinon les logs sont illisibles. */
 function warnOnce(context: string, detail: string): void {
   console.warn(`[observations] ${context} — repli sur data/seed.json : ${detail}`);
+}
+
+async function loadOneFromDatabase(
+  table: "observations" | "macro_observations",
+  idColumn: "instrument_id" | "indicator_id",
+  id: string,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  client: any,
+): Promise<Observation[] | null> {
+  const { data, error } = await client
+    .from(table)
+    .select(`${idColumn}, date, value, source, fetched_at`)
+    .eq(idColumn, id)
+    .order("date", { ascending: false })
+    .limit(MAX_ROWS_PER_SERIES);
+
+  if (error) {
+    warnOnce(`${table} illisible pour ${id}`, error.message);
+    return null;
+  }
+
+  // Reçues du plus récent au plus ancien pour garantir que la troncature épargne le présent ;
+  // remises en ordre chronologique avant de rejoindre le reste du dépôt, qui l'attend ainsi.
+  return ((data ?? []) as Array<Row & Record<string, string>>)
+    .map((row) => ({
+      instrumentId: row[idColumn],
+      date: row.date,
+      value: row.value,
+      source: row.source,
+      fetchedAt: row.fetched_at,
+    }))
+    .reverse();
 }
 
 async function loadFromDatabase(
@@ -44,29 +96,17 @@ async function loadFromDatabase(
   if (!client) return null; // base non configurée : ce n'est pas une panne, c'est un mode de marche
 
   try {
-    const { data, error } = await client
-      .from(table)
-      .select(`${idColumn}, date, value, source, fetched_at`)
-      .in(idColumn, ids)
-      .order("date", { ascending: true });
+    const results = await Promise.all(
+      ids.map((id) => loadOneFromDatabase(table, idColumn, id, client)),
+    );
 
-    if (error) {
-      warnOnce(`${table} illisible`, error.message);
-      return null;
-    }
-
+    // Chaque identifiant a sa propre requête, donc son propre sort : celui qui échoue retombe
+    // seul sur le seed (via l'absence de clé dans la carte, lue par `load`), sans emporter les
+    // autres séries de la page avec lui.
     const bySeries: ObservationsBySeries = new Map();
-    for (const row of (data ?? []) as Array<Row & Record<string, string>>) {
-      const id = row[idColumn];
-      const list = bySeries.get(id) ?? [];
-      list.push({
-        instrumentId: id,
-        date: row.date,
-        value: row.value,
-        source: row.source,
-        fetchedAt: row.fetched_at,
-      });
-      bySeries.set(id, list);
+    for (let i = 0; i < ids.length; i++) {
+      const rows = results[i];
+      if (rows !== null) bySeries.set(ids[i], rows);
     }
     return bySeries;
   } catch (error) {

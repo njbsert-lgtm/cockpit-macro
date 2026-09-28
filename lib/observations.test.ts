@@ -9,12 +9,13 @@ const { loadObservations, loadMacroObservations, isMacroCovered, isInstrumentCov
   await import("./observations");
 const { getObservations, getMacroObservations, getMacroIndicators } = await import("./data");
 
-/** Un client dont la requête se termine comme demandé. */
+/** Un client dont la requête se termine comme demandé — une requête par identifiant. */
 function clientReturning(rows: unknown[] | null, error: { message: string } | null = null) {
   const chain = {
     select: () => chain,
-    in: () => chain,
-    order: () => Promise.resolve({ data: rows, error }),
+    eq: () => chain,
+    order: () => chain,
+    limit: () => Promise.resolve({ data: rows, error }),
   };
   return { from: () => chain };
 }
@@ -23,6 +24,28 @@ function clientThrowing(message: string) {
   return {
     from: () => {
       throw new Error(message);
+    },
+  };
+}
+
+/**
+ * Un client dont la réponse dépend de l'identifiant demandé (`.eq(idColumn, id)`) — pour
+ * éprouver que chaque série est bien requêtée séparément plutôt que mêlée aux autres.
+ */
+function clientPerId(rowsById: Record<string, unknown[]>) {
+  return {
+    from: () => {
+      let requestedId: string | undefined;
+      const chain = {
+        select: () => chain,
+        eq: (_column: string, id: string) => {
+          requestedId = id;
+          return chain;
+        },
+        order: () => chain,
+        limit: () => Promise.resolve({ data: rowsById[requestedId!] ?? [], error: null }),
+      };
+      return chain;
     },
   };
 }
@@ -211,5 +234,95 @@ describe("observations macro", () => {
     const result = await loadMacroObservations([nonCouvert!.id]);
     expect(result.get(nonCouvert!.id)).toEqual(getMacroObservations(nonCouvert!.id));
     expect(getReadClient).not.toHaveBeenCalled();
+  });
+});
+
+describe("une série longue ne doit pas en tronquer une autre", () => {
+  // Bug réel du 28/09 : une seule requête `.in(idColumn, ids)` partageait le plafond de lignes
+  // de PostgREST entre tous les indicateurs demandés. Triée par date croissante, la troncature
+  // faisait disparaître les points récents d'une série dès qu'une autre, plus volumineuse
+  // (l'historique complet renvoyé par ONS à chaque passage), saturait le plafond avant elle —
+  // l'inflation britannique s'affichait alors datée de 2004 alors que la base avait 2026.
+  it("interroge chaque identifiant séparément, sans laisser l'un tronquer l'autre", async () => {
+    getReadClient.mockReturnValue(
+      clientPerId({
+        "uk-cpi": [
+          {
+            indicator_id: "uk-cpi",
+            date: "2026-04-01",
+            value: 2.8,
+            source: "ONS",
+            fetched_at: "2026-09-28T04:45:33Z",
+          },
+          {
+            indicator_id: "uk-cpi",
+            date: "1989-05-01",
+            value: 5.3,
+            source: "ONS",
+            fetched_at: "2026-09-28T04:45:33Z",
+          },
+        ],
+        "uk-gdp": [
+          {
+            indicator_id: "uk-gdp",
+            date: "2026-01-01",
+            value: 0.5,
+            source: "ONS",
+            fetched_at: "2026-09-28T04:45:33Z",
+          },
+        ],
+      }),
+    );
+
+    const result = await loadMacroObservations(["uk-cpi", "uk-gdp"]);
+    const ukCpi = result.get("uk-cpi")!;
+    // Le point le plus récent doit survivre, et l'ordre reste chronologique croissant pour les
+    // consommateurs existants (sparkline, calcul de variation).
+    expect(ukCpi.at(-1)).toEqual({
+      instrumentId: "uk-cpi",
+      date: "2026-04-01",
+      value: 2.8,
+      source: "ONS",
+      fetchedAt: "2026-09-28T04:45:33Z",
+    });
+    expect(ukCpi[0].date).toBe("1989-05-01");
+    expect(result.get("uk-gdp")!.at(-1)?.date).toBe("2026-01-01");
+  });
+
+  it("un identifiant en erreur retombe seul sur le seed, sans emporter les autres", async () => {
+    getReadClient.mockReturnValue({
+      from: () => {
+        let requestedId: string | undefined;
+        const chain = {
+          select: () => chain,
+          eq: (_column: string, id: string) => {
+            requestedId = id;
+            return chain;
+          },
+          order: () => chain,
+          limit: () =>
+            requestedId === "brent"
+              ? Promise.resolve({ data: null, error: { message: "relation absente" } })
+              : Promise.resolve({
+                  data: [
+                    {
+                      instrument_id: "us10y",
+                      date: "2026-08-14",
+                      value: 4.61,
+                      source: "FRED",
+                      fetched_at: "2026-08-15T06:00:00Z",
+                    },
+                  ],
+                  error: null,
+                }),
+        };
+        return chain;
+      },
+    });
+    const result = await loadObservations(["us10y", "brent"]);
+    // us10y est servi par la base ; brent, dont la requête échoue, retombe sur le seed sans que
+    // la panne de l'un n'efface la donnée bien reçue de l'autre.
+    expect(result.get("us10y")!.every((o) => o.source === "FRED")).toBe(true);
+    expect(result.get("brent")).toEqual(getObservations("brent"));
   });
 });
