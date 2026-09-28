@@ -31,6 +31,7 @@ on:
           - sonder-supabase
           - sonder-twelvedata
           - twelve-data
+          - alphavantage
           - fred-observation
           - twelve-data-observation
           - explorer-estat
@@ -39,7 +40,7 @@ on:
           - sonder-alphavantage
           - sonder-alphavantage-ytd
       series:
-        description: "Séries à vérifier (vide = toutes). Explorer : « catalogue <terme> » ou « <dataset> <dimension> ». Sonder-hôte : l'hôte. Sonder-marché : rien. Sonder-page : une URL, ou « URL||motif-grep ». Sonder-twelvedata : rien (tous les candidats). Twelve-data : symbole(s), ex. XAU/USD. Fred-observation / twelve-data-observation : « ID(S)||AAAA-MM-JJ||AAAA-MM-JJ » (plusieurs séries séparées par une virgule, début||fin). Sonder-alphavantage : identifiants séparés par un espace (vide = tous les candidats — silver, sx5e, ukx, cac, hsi, csi300, nifty50, dxy). Sonder-alphavantage-ytd : identifiants séparés par un espace (vide = les sept confirmés — silver, sx5e, ukx, cac, csi300, nifty50, dxy)"
+        description: "Séries à vérifier (vide = toutes). Explorer : « catalogue <terme> » ou « <dataset> <dimension> ». Sonder-hôte : l'hôte. Sonder-marché : rien. Sonder-page : une URL, ou « URL||motif-grep ». Sonder-twelvedata : rien (tous les candidats). Twelve-data : symbole(s), ex. XAU/USD. Fred-observation / twelve-data-observation : « ID(S)||AAAA-MM-JJ||AAAA-MM-JJ » (plusieurs séries séparées par une virgule, début||fin). Sonder-alphavantage : identifiants séparés par un espace (vide = tous les candidats — silver, sx5e, ukx, cac, hsi, csi300, nifty50, dxy). Sonder-alphavantage-ytd : identifiants séparés par un espace (vide = les sept confirmés — silver, sx5e, ukx, cac, csi300, nifty50, dxy). Alphavantage : symbole(s) tels que déclarés dans la config, ex. C50.PAR (vide = les sept actifs)"
         type: string
         required: false
         default: ""
@@ -536,6 +537,32 @@ jobs:
             echo '```'
           } | tee -a "$GITHUB_STEP_SUMMARY"
           npm run twelve-data:check --silent -- $SERIES 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
+          code=$?
+          echo '```' | tee -a "$GITHUB_STEP_SUMMARY"
+          exit $code
+
+      - name: Alpha Vantage
+        # Exécute `npm run alphavantage:check`, le contrôle permanent — pas les sondes ad hoc
+        # (sonder-alphavantage, sonder-alphavantage-ytd), gardées pour découvrir de nouveaux
+        # tickers ou une base YTD. Même garde que Twelve Data : la clé est un secret du dépôt,
+        # son absence se dit au lieu d'échouer sur une erreur d'authentification. 13 s entre
+        # deux appels (palier à 5/minute) : un run complet sur les sept séries actives prend
+        # donc environ 1 min 30.
+        if: ${{ inputs.source == 'alphavantage' }}
+        env:
+          SERIES: ${{ inputs.series }}
+          ALPHA_VANTAGE_API: ${{ secrets.ALPHA_VANTAGE_API }}
+        run: |
+          set +e -o pipefail
+          if [ -z "$ALPHA_VANTAGE_API" ]; then
+            echo "ALPHA_VANTAGE_API absente des secrets du dépôt — étape sautée." | tee -a "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          {
+            echo '## Alpha Vantage'
+            echo '```'
+          } | tee -a "$GITHUB_STEP_SUMMARY"
+          npm run alphavantage:check --silent -- $SERIES 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
           code=$?
           echo '```' | tee -a "$GITHUB_STEP_SUMMARY"
           exit $code
