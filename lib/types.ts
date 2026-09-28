@@ -21,7 +21,10 @@ export type Instrument = {
   label: string;
   assetClass: AssetClass;
   zones: Zone[]; // pour le tri contextuel
-  unit: "index" | "percent" | "usd" | "ratio";
+  // 'eur' et 'gbx' s'ajoutent pour les ETF de repli (config/alpha-vantage-series.ts) : un
+  // instrument coté nativement en euros ou en pence sterling affiche sa vraie devise plutôt
+  // que d'emprunter le symbole $ de 'usd', qui mentirait sur ce que la source publie.
+  unit: "index" | "percent" | "usd" | "ratio" | "eur" | "gbx";
   ytdBasis: number | null; // clôture du 31 décembre, saisie à la main
   note: string;
 };

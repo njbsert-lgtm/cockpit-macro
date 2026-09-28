@@ -118,6 +118,12 @@ export function formatInstrumentValue(instrument: Instrument, value: number): st
       return `${value.toFixed(2).replace(".", ",")} %`;
     case "usd":
       return `${value.toLocaleString("fr-FR", { maximumFractionDigits: 2 })} $`;
+    case "eur":
+      return `${value.toLocaleString("fr-FR", { maximumFractionDigits: 2 })} €`;
+    case "gbx":
+      // Pence sterling, pas livres : ISF.LON (FTSE 100) est coté dans cette sous-unité chez
+      // Alpha Vantage — la convertir en livres serait un calcul qui n'est pas de notre ressort.
+      return `${value.toLocaleString("fr-FR", { maximumFractionDigits: 2 })} p`;
     case "ratio":
       return value.toLocaleString("fr-FR", { minimumFractionDigits: 3, maximumFractionDigits: 3 });
     case "index":

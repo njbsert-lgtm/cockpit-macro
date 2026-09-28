@@ -24,37 +24,37 @@
     },
     {
       "id": "sx5e",
-      "label": "Euro Stoxx 50",
+      "label": "ETF Euro Stoxx 50",
       "assetClass": "equity",
       "zones": [
         "ez"
       ],
-      "unit": "index",
-      "ytdBasis": 4950,
-      "note": "Records ; BPA Stoxx 600 ≈ +21 % a/a au T2, surpondération banques/énergie/défense."
+      "unit": "eur",
+      "ytdBasis": 152.52,
+      "note": "Collecté via Alpha Vantage sous le symbole C50.PAR (Amundi ETF Euro Stoxx 50 UCITS DR, place de Paris), qui réplique l'indice, pas l'indice lui-même — d'où le libellé « ETF » et l'unité en euros par part plutôt qu'en points, comme pour ETF MSCI ACWI."
     },
     {
       "id": "ukx",
-      "label": "FTSE 100",
+      "label": "ETF FTSE 100",
       "assetClass": "equity",
       "zones": [
         "uk"
       ],
-      "unit": "index",
-      "ytdBasis": 8100,
-      "note": "Défense, banques, peu de tech."
+      "unit": "gbx",
+      "ytdBasis": 966.7,
+      "note": "Collecté via Alpha Vantage sous le symbole ISF.LON (iShares Core FTSE 100 UCITS ETF, place de Londres), qui réplique l'indice, pas l'indice lui-même. Coté en pence sterling (GBX), pas en livres : la source publie cette sous-unité, elle n'est pas convertie."
     },
     {
       "id": "cac",
-      "label": "CAC 40",
+      "label": "ETF CAC 40",
       "assetClass": "equity",
       "zones": [
         "fr",
         "ez"
       ],
-      "unit": "index",
-      "ytdBasis": 7550,
-      "note": "Rotation vers banques et industrielles, sensible à la prime OAT."
+      "unit": "eur",
+      "ytdBasis": 80.37,
+      "note": "Collecté via Alpha Vantage sous le symbole CAC.PAR (Amundi CAC 40 UCITS ETF, place de Paris), qui réplique l'indice, pas l'indice lui-même — d'où le libellé « ETF » et l'unité en euros par part plutôt qu'en points."
     },
     {
       "id": "nky",
@@ -81,27 +81,27 @@
     },
     {
       "id": "csi300",
-      "label": "CSI 300",
+      "label": "ETF CSI 300",
       "assetClass": "equity",
       "zones": [
         "cn",
         "em"
       ],
-      "unit": "index",
-      "ytdBasis": 3650,
-      "note": "Immobilier, demande interne molle."
+      "unit": "usd",
+      "ytdBasis": 32.85,
+      "note": "Collecté via Alpha Vantage sous le symbole ASHR (Xtrackers Harvest CSI 300, coté à New York), qui réplique l'indice, pas l'indice lui-même — aucun tracker coté en yuans n'est reconnu par Alpha Vantage."
     },
     {
       "id": "nifty50",
-      "label": "Nifty 50",
+      "label": "ETF Nifty 50",
       "assetClass": "equity",
       "zones": [
         "in",
         "em"
       ],
-      "unit": "index",
-      "ytdBasis": 23650,
-      "note": "Plus de 29 Md$ de sorties au S1, facture pétrolière. Flux Twelve Data instable sur cette ligne."
+      "unit": "usd",
+      "ytdBasis": 49.29,
+      "note": "Collecté via Alpha Vantage sous le symbole INDY (iShares India 50, coté à New York), qui réplique l'indice, pas l'indice lui-même — aucun tracker coté en roupies n'est reconnu par Alpha Vantage."
     },
     {
       "id": "acwi",
@@ -208,14 +208,14 @@
     },
     {
       "id": "silver",
-      "label": "Argent",
+      "label": "ETF Argent",
       "assetClass": "commodity",
       "zones": [
         "global"
       ],
       "unit": "usd",
-      "ytdBasis": 64.8,
-      "note": "Négatif YTD après +137 % en 2025."
+      "ytdBasis": 64.42,
+      "note": "Collecté via Alpha Vantage sous le symbole SLV (iShares Silver Trust), une part de coffre-fort physique et non le spot lui-même — les deux divergent légèrement (frais, prime/décote). Négatif YTD après +137 % en 2025."
     },
     {
       "id": "copper",
@@ -266,14 +266,14 @@
     },
     {
       "id": "dxy",
-      "label": "Indice dollar (DXY)",
+      "label": "ETF Indice dollar (DXY)",
       "assetClass": "fx",
       "zones": [
         "us"
       ],
-      "unit": "index",
-      "ytdBasis": 98.8,
-      "note": "Plus bas à 96,2 le 29/01, puis reprise."
+      "unit": "usd",
+      "ytdBasis": 27.03,
+      "note": "Collecté via Alpha Vantage sous le symbole UUP (Invesco DB US Dollar Index Bullish Fund), qui suit un panier de devises proche du DXY sans en reproduire exactement la méthodologie ICE — d'où le libellé « ETF » et l'unité en dollars par part plutôt qu'en points d'indice."
     },
     {
       "id": "us6m",
@@ -1121,97 +1121,6 @@
       "fetchedAt": "2026-08-13T21:05:00Z"
     },
     {
-      "instrumentId": "sx5e",
-      "date": "2026-07-13",
-      "value": 5300,
-      "source": "seed",
-      "fetchedAt": "2026-07-13T21:05:00Z"
-    },
-    {
-      "instrumentId": "sx5e",
-      "date": "2026-07-27",
-      "value": 5380,
-      "source": "seed",
-      "fetchedAt": "2026-07-27T21:05:00Z"
-    },
-    {
-      "instrumentId": "sx5e",
-      "date": "2026-08-03",
-      "value": 5410,
-      "source": "seed",
-      "fetchedAt": "2026-08-03T21:05:00Z"
-    },
-    {
-      "instrumentId": "sx5e",
-      "date": "2026-08-10",
-      "value": 5430,
-      "source": "seed",
-      "fetchedAt": "2026-08-10T21:05:00Z"
-    },
-    {
-      "instrumentId": "sx5e",
-      "date": "2026-08-12",
-      "value": 5432,
-      "source": "seed",
-      "fetchedAt": "2026-08-12T20:05:00Z"
-    },
-    {
-      "instrumentId": "ukx",
-      "date": "2026-07-13",
-      "value": 8780,
-      "source": "seed",
-      "fetchedAt": "2026-07-13T21:05:00Z"
-    },
-    {
-      "instrumentId": "ukx",
-      "date": "2026-07-27",
-      "value": 8850,
-      "source": "seed",
-      "fetchedAt": "2026-07-27T21:05:00Z"
-    },
-    {
-      "instrumentId": "ukx",
-      "date": "2026-08-10",
-      "value": 8865,
-      "source": "seed",
-      "fetchedAt": "2026-08-10T21:05:00Z"
-    },
-    {
-      "instrumentId": "ukx",
-      "date": "2026-08-12",
-      "value": 8862,
-      "source": "seed",
-      "fetchedAt": "2026-08-12T17:35:00Z"
-    },
-    {
-      "instrumentId": "cac",
-      "date": "2026-07-13",
-      "value": 8150,
-      "source": "seed",
-      "fetchedAt": "2026-07-13T21:05:00Z"
-    },
-    {
-      "instrumentId": "cac",
-      "date": "2026-07-27",
-      "value": 8210,
-      "source": "seed",
-      "fetchedAt": "2026-07-27T21:05:00Z"
-    },
-    {
-      "instrumentId": "cac",
-      "date": "2026-08-06",
-      "value": 8180,
-      "source": "seed",
-      "fetchedAt": "2026-08-06T21:05:00Z"
-    },
-    {
-      "instrumentId": "cac",
-      "date": "2026-08-12",
-      "value": 8195,
-      "source": "seed",
-      "fetchedAt": "2026-08-12T16:35:00Z"
-    },
-    {
       "instrumentId": "nky",
       "date": "2026-07-13",
       "value": 50200,
@@ -1259,55 +1168,6 @@
       "value": 20280,
       "source": "seed",
       "fetchedAt": "2026-08-12T08:10:00Z"
-    },
-    {
-      "instrumentId": "csi300",
-      "date": "2026-07-13",
-      "value": 3610,
-      "source": "seed",
-      "fetchedAt": "2026-07-13T21:05:00Z"
-    },
-    {
-      "instrumentId": "csi300",
-      "date": "2026-08-06",
-      "value": 3618,
-      "source": "seed",
-      "fetchedAt": "2026-08-06T21:05:00Z"
-    },
-    {
-      "instrumentId": "csi300",
-      "date": "2026-08-11",
-      "value": 3616,
-      "source": "seed",
-      "fetchedAt": "2026-08-11T07:10:00Z"
-    },
-    {
-      "instrumentId": "nifty50",
-      "date": "2026-07-13",
-      "value": 22150,
-      "source": "seed",
-      "fetchedAt": "2026-07-13T21:05:00Z"
-    },
-    {
-      "instrumentId": "nifty50",
-      "date": "2026-07-27",
-      "value": 22050,
-      "source": "seed",
-      "fetchedAt": "2026-07-27T21:05:00Z"
-    },
-    {
-      "instrumentId": "nifty50",
-      "date": "2026-08-06",
-      "value": 22080,
-      "source": "seed",
-      "fetchedAt": "2026-08-06T21:05:00Z"
-    },
-    {
-      "instrumentId": "nifty50",
-      "date": "2026-08-10",
-      "value": 22070,
-      "source": "seed",
-      "fetchedAt": "2026-08-10T11:40:00Z"
     },
     {
       "instrumentId": "us10y",
@@ -1709,34 +1569,6 @@
       "fetchedAt": "2026-08-12T19:05:00Z"
     },
     {
-      "instrumentId": "silver",
-      "date": "2025-12-31",
-      "value": 64.8,
-      "source": "seed",
-      "fetchedAt": "2025-12-31T21:05:00Z"
-    },
-    {
-      "instrumentId": "silver",
-      "date": "2026-07-13",
-      "value": 60.5,
-      "source": "seed",
-      "fetchedAt": "2026-07-13T21:05:00Z"
-    },
-    {
-      "instrumentId": "silver",
-      "date": "2026-08-06",
-      "value": 62.7,
-      "source": "seed",
-      "fetchedAt": "2026-08-06T21:05:00Z"
-    },
-    {
-      "instrumentId": "silver",
-      "date": "2026-08-12",
-      "value": 63.1,
-      "source": "seed",
-      "fetchedAt": "2026-08-12T19:05:00Z"
-    },
-    {
       "instrumentId": "eurusd",
       "date": "2025-08-13",
       "value": 1.16,
@@ -1831,34 +1663,6 @@
       "instrumentId": "gbpusd",
       "date": "2026-08-12",
       "value": 1.349,
-      "source": "seed",
-      "fetchedAt": "2026-08-12T20:05:00Z"
-    },
-    {
-      "instrumentId": "dxy",
-      "date": "2025-12-31",
-      "value": 98.8,
-      "source": "seed",
-      "fetchedAt": "2025-12-31T21:05:00Z"
-    },
-    {
-      "instrumentId": "dxy",
-      "date": "2026-01-29",
-      "value": 96.2,
-      "source": "seed",
-      "fetchedAt": "2026-01-29T21:05:00Z"
-    },
-    {
-      "instrumentId": "dxy",
-      "date": "2026-07-13",
-      "value": 99.4,
-      "source": "seed",
-      "fetchedAt": "2026-07-13T21:05:00Z"
-    },
-    {
-      "instrumentId": "dxy",
-      "date": "2026-08-12",
-      "value": 100,
       "source": "seed",
       "fetchedAt": "2026-08-12T20:05:00Z"
     },
