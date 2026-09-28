@@ -1322,9 +1322,23 @@ catalogue à cette occasion mais reste désactivé, faute de données récentes 
 compté au dénominateur sans l'être au numérateur. L'activation d'ECBDFR (taux directeur BCE,
 dépôt) a porté le second chiffre à 32. Le cuivre via FRED (`PCOPPUSDM`) puis quatre points de
 courbe souveraine de plus (Royaume-Uni, Italie, Espagne, Japon, même repli OCDE que Bund et
-OAT — voir plus bas) ont porté le premier chiffre à 23. L'appliquer d'un coup viderait l'application. Chaque source branchée fait donc basculer son périmètre — les séries
-qu'elle couvre passent en collecté, leurs valeurs en dur sont retirées du seed. Les séries
-qu'aucune source ne couvre encore affichent l'état vide plutôt qu'un chiffre inventé.
+OAT — voir plus bas) ont porté le premier chiffre à 23.
+
+**Alpha Vantage a ensuite pris le relais de Twelve Data pour sept des instruments que celui-ci
+laissait au seed** — Euro Stoxx 50, FTSE 100, CAC 40, CSI 300, Nifty 50, DXY, argent, chacun via
+un ETF de repli plutôt que l'indice propriétaire visé (voir plus bas) — portant le premier
+chiffre à 30. **L'investigation reprise sur les salaires Eurostat** (`lc_lci_r2_q`) a activé
+`fr-wages` et `de-wages`, deux séries déjà présentes au catalogue ; `ez-wages` reste désactivée,
+faute d'agrégat zone euro publié sur ce dataset pour ce sous-composant (voir plus bas).
+
+Un comptage direct du catalogue et des fichiers de configuration, plutôt qu'un nouveau cumul
+d'incréments narrés, fait office de source de vérité à ce stade : au 28/09/2026, `data/seed.json`
+porte 83 instruments et 69 indicateurs — et non 70, le chiffre cité plus haut pour l'arrivée de
+`jp-wages` au catalogue était erroné —, dont **30 instruments et 46 indicateurs sont réellement
+collectés**. L'appliquer d'un coup viderait l'application. Chaque source branchée fait donc
+basculer son périmètre — les séries qu'elle couvre passent en collecté, leurs valeurs en dur sont
+retirées du seed. Les séries qu'aucune source ne couvre encore affichent l'état vide plutôt qu'un
+chiffre inventé.
 
 Corollaire déjà appliqué : **l'indicateur de fraîcheur ne liste que les sources collectées.**
 Une série servie par le seed n'a rien à dire sur la santé d'une collecte, et une source
