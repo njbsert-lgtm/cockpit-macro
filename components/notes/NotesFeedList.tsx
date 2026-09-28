@@ -37,16 +37,19 @@ function FilterButton({
 
 export type FeedDriverOption = { id: string; label: string };
 
-export type FeedListItem =
-  | { kind: "note"; note: Note; excerpt: string | null; blocks: BlockName[]; drivers: NoteCardDriver[] }
-  | { kind: "gap"; isoWeek: string };
+export type FeedListItem = {
+  kind: "note";
+  note: Note;
+  excerpt: string | null;
+  blocks: BlockName[];
+  drivers: NoteCardDriver[];
+};
 
 /**
  * L'archive de `/notes` : groupée par mois avec un intertitre en capitales, chaque entrée
  * dépliable pour montrer l'état de ses blocs obligatoires (DESIGN.md).
  *
- * Filtrable par type et par driver. Une semaine sans hebdo reste visible même sous un filtre :
- * la discipline rompue n'est pas quelque chose qu'un filtre doit pouvoir masquer.
+ * Filtrable par type et par driver.
  */
 export function NotesFeedList({
   items,
@@ -59,17 +62,14 @@ export function NotesFeedList({
   const [driverFilter, setDriverFilter] = useState<string>("tout");
 
   const visible = items.filter((item) => {
-    if (item.kind === "gap") return true;
     if (typeFilter !== "tout" && item.note.kind !== typeFilter) return false;
     if (driverFilter !== "tout" && !item.drivers.some((d) => d.id === driverFilter)) return false;
     return true;
   });
 
   const months = groupByMonth(
-    visible.map((item): Entry =>
-      item.kind === "gap"
-        ? item
-        : { kind: "note", note: item.note, excerpt: item.excerpt, blocks: item.blocks },
+    visible.map(
+      (item): Entry => ({ kind: "note", note: item.note, excerpt: item.excerpt, blocks: item.blocks }),
     ),
   );
 
@@ -124,30 +124,11 @@ export function NotesFeedList({
                 {month.label}
               </h2>
               <ol className="mt-2 flex flex-col gap-2">
-                {month.entries.map((entry) =>
-                  entry.kind === "gap" ? (
-                    <li
-                      key={`gap-${entry.isoWeek}`}
-                      className="grid grid-cols-[4px_1fr] overflow-hidden rounded-rc border border-dashed border-trait-f"
-                    >
-                      <span aria-hidden="true" className="bg-k-choc" />
-                      <p className="px-4 py-2.5 text-12-5 text-doux">
-                        <span className="font-semibold tabular-nums text-k-choc">
-                          {entry.isoWeek}
-                        </span>{" "}
-                        aucune hebdo publiée — discipline rompue
-                      </p>
-                    </li>
-                  ) : (
-                    <li key={entry.note.slug}>
-                      <ArchiveEntry
-                        note={entry.note}
-                        excerpt={entry.excerpt}
-                        blocks={entry.blocks}
-                      />
-                    </li>
-                  ),
-                )}
+                {month.entries.map((entry) => (
+                  <li key={entry.note.slug}>
+                    <ArchiveEntry note={entry.note} excerpt={entry.excerpt} blocks={entry.blocks} />
+                  </li>
+                ))}
               </ol>
             </section>
           ))}

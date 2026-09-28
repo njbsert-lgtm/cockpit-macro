@@ -48,16 +48,6 @@ describe("groupByMonth", () => {
     expect(months[0].label).toBe("août 2026");
   });
 
-  it("range une semaine sans hebdo dans le mois de la note qui la précède", () => {
-    const months = groupByMonth([
-      entry(note({ date: "2026-08-09" })),
-      { kind: "gap", isoWeek: "2026-S31" },
-      entry(note({ date: "2026-07-12" })),
-    ]);
-    expect(months).toHaveLength(2);
-    expect(months[0].entries.map((e) => e.kind)).toEqual(["note", "gap"]);
-  });
-
   it("renvoie un tableau vide pour une archive vide", () => {
     expect(groupByMonth([])).toEqual([]);
   });

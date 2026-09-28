@@ -126,9 +126,8 @@ article. La teinte du bandeau ne porte jamais l'information seule — le libell�
 Les mêmes cartes-articles, empilées en pleine largeur, de la plus récente à la plus ancienne.
 Pas d'arborescence par semaine : ni colonne vertébrale d'hebdos ni spéciales indentées, un
 seul fil chronologique plat. Filtrable par type et **par driver**, pas par zone — Notes n'a
-pas de notion de zone. Une semaine sans note hebdomadaire apparaît comme une ligne discrète
-dans le fil plutôt que de disparaître : un trou reste visible même sous un filtre, la
-discipline rompue n'est pas quelque chose qu'un filtre doit pouvoir masquer.
+pas de notion de zone. Une semaine sans note hebdomadaire ne produit aucune ligne : le fil ne
+montre que ce qui a été publié, jamais une ligne de trou.
 
 **Couche 3 — Les tendances de fond.**
 Index thématique, accessible depuis l'en-tête. Ce qu'on consulte une fois par mois, pas
@@ -786,8 +785,13 @@ spéciales de cette semaine. Le fil ne les groupe plus visuellement par semaine 
 est sa propre carte, à sa propre date — mais l'identifiant garde la trace du rattachement :
 c'est lui qui permet de détecter une semaine sans hebdo.
 
-Si une semaine n'a pas d'hebdo, le fil l'affiche explicitement comme un trou plutôt que de la
-faire disparaître. Une discipline rompue doit être visible.
+**Renversement assumé d'une décision antérieure.** Le cahier posait qu'une semaine sans hebdo
+devait rester visible dans le fil, comme une ligne de trou explicite. Ce n'est plus le cas : le
+fil ne montre que ce qui a été publié, sans ligne pour ce qui ne l'a pas été. Le calendrier
+éditorial (§ Cadence) reste inchangé — une hebdo paraît chaque samedi, même courte — mais son
+suivi n'est plus un affichage public ; l'identifiant par semaine ISO continue de permettre de
+détecter une semaine sans hebdo pour qui voudrait l'auditer, sans que l'interface l'impose au
+lecteur.
 
 
 
