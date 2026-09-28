@@ -84,6 +84,7 @@ const EURO_AREA_GEO: Record<string, string> = {
   une_rt_m: "EA21",
   teina205: "EA21",
   teina230: "EA21",
+  lc_lci_r2_q: "EA21",
 };
 
 /** Traduit notre code de zone en code Eurostat pour un dataset donné. */
@@ -248,10 +249,10 @@ const WAGES_BOUNDS = { min: -15, max: 25 };
  * opposition à `D1_D4_MD5`, le coût du travail complet charges comprises, une notion
  * différente de ce que le cahier suit sous « Salaires » ailleurs).
  *
- * `geo` reste à vérifier par `npm run eurostat:check` avant activation : ce dataset porte à la
- * fois `EA` (composition courante) et des codes à composition figée (`EA21`, `EA20`, `EA19`) —
- * lequel sert réellement le dernier trimestre n'est confirmé que par un appel réel, comme pour
- * `une_rt_m` avant lui.
+ * `geo` : `EA` ne sert aucune observation sur ce dataset, comme pour `une_rt_m` avant lui —
+ * `EA21` est la composition qui répond, ajoutée à `EURO_AREA_GEO`. Confirmé par
+ * `npm run eurostat:check` : France à 2,1 % au T1 2026, Allemagne à 2,9 %, toutes deux en
+ * glissement annuel — dans les bornes déclarées.
  */
 function wages(geo: string): EurostatMapping {
   return {
@@ -269,12 +270,7 @@ function wages(geo: string): EurostatMapping {
     zone: GEO[geo],
     plausible: WAGES_BOUNDS,
     expect: { frequency: "Quarterly" },
-    enabled: false,
-    disabledReason:
-      "Dimensions posées à partir de eurostat:explore (s_adj, unit, nace_r2, lcstruct tous " +
-      "confirmés) mais jamais confrontées à un appel réel de données — geo (EA vs EA21) reste " +
-      "à trancher par npm run eurostat:check avant activation, même prudence que pour " +
-      "une_rt_m.",
+    enabled: true,
   };
 }
 
