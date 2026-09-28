@@ -5,6 +5,7 @@ import { ALPHA_VANTAGE_SERIES } from "./alpha-vantage-series";
 import { EUROSTAT_SERIES } from "./eurostat-series";
 import { ONS_SERIES } from "./ons-series";
 import { ESTAT_SERIES } from "./estat-series";
+import { SPREAD_DEFINITIONS } from "./spreads";
 import {
   fournisseurInstrument,
   fournisseurMacro,
@@ -21,6 +22,7 @@ const instrumentIds = new Set([
   ...FRED_SERIES.filter((m) => m.target.kind === "instrument").map((m) => m.target.id),
   ...TWELVE_DATA_SERIES.map((m) => m.target.id),
   ...ALPHA_VANTAGE_SERIES.map((m) => m.target.id),
+  ...SPREAD_DEFINITIONS.map((d) => d.target.id),
 ]);
 
 const macroIds = new Set([
@@ -52,6 +54,7 @@ describe("la chaîne de fournisseurs — jamais de fusion, contre la configurati
     expect(fournisseurMacro("fr-cpi")).toBe("eurostat");
     expect(fournisseurMacro("uk-cpi")).toBe("ons");
     expect(fournisseurMacro("jp-cpi")).toBe("estat");
+    expect(fournisseurInstrument("spread-us10y-bund10y")).toBe("spread");
   });
 
   it("rend null pour un identifiant qu'aucune source n'a encore activé", () => {

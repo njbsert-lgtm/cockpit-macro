@@ -4,6 +4,7 @@ import { alphaVantageMappingForInstrument } from "./alpha-vantage-series";
 import { eurostatMappingFor } from "./eurostat-series";
 import { onsMappingFor } from "./ons-series";
 import { estatMappingFor } from "./estat-series";
+import { spreadDefinitionFor } from "./spreads";
 
 /**
  * La chaîne de fournisseurs, par instrument et par indicateur macro.
@@ -24,17 +25,26 @@ import { estatMappingFor } from "./estat-series";
  * (`enabled: true`) : rien ici n'a besoin de changer. Ce fichier ne change que le jour où une
  * *nouvelle* source rejoint la chaîne d'un identifiant déjà couvert.
  */
-export type Provider = "fred" | "twelve-data" | "alpha-vantage" | "eurostat" | "ons" | "estat";
+export type Provider =
+  | "fred"
+  | "twelve-data"
+  | "alpha-vantage"
+  | "eurostat"
+  | "ons"
+  | "estat"
+  | "spread";
 
 type Maillon = { source: Provider; actif: (id: string) => boolean };
 
 const CHAINE_INSTRUMENT: Maillon[] = [
   { source: "fred", actif: (id) => mappingForInstrument(id) !== null },
   { source: "twelve-data", actif: (id) => twelveDataMappingForInstrument(id) !== null },
-  // Toutes les entrées d'ALPHA_VANTAGE_SERIES restent désactivées (voir ce fichier) : ce
-  // maillon n'active encore rien, mais sa présence permet de l'activer sans toucher à la chaîne
-  // le jour où les ytdBasis du seed auront été recalibrés sur l'échelle des ETF trouvés.
+  // Sept des huit entrées d'ALPHA_VANTAGE_SERIES sont actives (voir ce fichier) : seul `hsi`
+  // reste au seed, faute de ticker trouvé.
   { source: "alpha-vantage", actif: (id) => alphaVantageMappingForInstrument(id) !== null },
+  // Les deux spreads — jamais collectés, toujours calculés depuis des jambes déjà couvertes
+  // ailleurs dans cette chaîne (`config/spreads.ts`, `lib/ingest.ts`).
+  { source: "spread", actif: (id) => spreadDefinitionFor(id) !== null },
 ];
 
 const CHAINE_MACRO: Maillon[] = [

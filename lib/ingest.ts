@@ -15,6 +15,7 @@ import {
 } from "@/config/alpha-vantage-series";
 import { ENABLED_ONS_SERIES, ONS_SOURCE, type OnsMapping } from "@/config/ons-series";
 import { ENABLED_ESTAT_SERIES, ESTAT_SOURCE, type EstatMapping } from "@/config/estat-series";
+import { SPREAD_DEFINITIONS, SPREAD_SOURCE } from "@/config/spreads";
 import { fournisseurInstrument, fournisseurMacro } from "@/config/providers";
 import { fetchFredSeries, FRED_SOURCE, type FredFetchResult } from "./fred";
 import { fetchEurostatSeries } from "./eurostat";
@@ -22,7 +23,9 @@ import { fetchTwelveDataSeries, TWELVE_DATA_SOURCE } from "./twelve-data";
 import { fetchAlphaVantageSeries, ALPHA_VANTAGE_SOURCE } from "./alpha-vantage";
 import { fetchOnsSeries } from "./ons";
 import { fetchEstatSeries } from "./estat";
+import { computeSpread } from "./spreads";
 import { getMacroIndicators } from "./data";
+import type { Observation } from "./types";
 
 export type SeriesOutcome = {
   seriesId: string;
@@ -523,6 +526,121 @@ async function ingestAlphaVantageOne(
     now,
   });
   return { seriesId: mapping.symbol, targetId, ok: true, written: rows.length };
+}
+
+// ---------------------------------------------------------------------------
+// Spreads — pas une source externe, un calcul sur deux jambes déjà en base
+// ---------------------------------------------------------------------------
+
+type LegReader = (client: SupabaseClient, instrumentId: string) => Promise<Observation[]>;
+
+/**
+ * Lit l'historique d'une jambe directement en base, sans repli sur le seed : un spread calculé
+ * à partir d'une valeur de démonstration ne serait ni réel ni signalé comme tel. Même garde-fou
+ * de troncature que `lib/observations.ts` — descendant, plafonné, puis remis en ordre — même si
+ * l'historique de `us10y`/`de10y`/`fr10y` est encore loin d'atteindre ce plafond.
+ */
+async function readLegFromDatabase(
+  client: SupabaseClient,
+  instrumentId: string,
+): Promise<Observation[]> {
+  const { data, error } = await client
+    .from("observations")
+    .select("instrument_id, date, value, source, fetched_at")
+    .eq("instrument_id", instrumentId)
+    .order("date", { ascending: false })
+    .limit(3000);
+
+  if (error || !data) return [];
+
+  return (
+    data as Array<{
+      instrument_id: string;
+      date: string;
+      value: number;
+      source: string;
+      fetched_at: string;
+    }>
+  )
+    .map((row) => ({
+      instrumentId: row.instrument_id,
+      date: row.date,
+      value: row.value,
+      source: row.source,
+      fetchedAt: row.fetched_at,
+    }))
+    .reverse();
+}
+
+/**
+ * Un passage de calcul des deux spreads. Ni appel réseau ni clé : les deux jambes de chacun sont
+ * déjà collectées par FRED (`us10y`, `de10y`, `fr10y` — voir `config/spreads.ts`). Séquentiel et
+ * tolérant à l'échec de l'un comme les autres modules, mais sans table de santé propre : la
+ * fraîcheur d'un spread est entièrement celle de ses deux jambes, déjà journalisées sous `FRED` —
+ * lui en ajouter une ferait apparaître un « incident de collecte » qu'aucun appel externe n'a
+ * jamais pu produire.
+ */
+export async function runSpreadIngest(
+  client: SupabaseClient,
+  options: {
+    now?: Date;
+    definitions?: typeof SPREAD_DEFINITIONS;
+    readLeg?: LegReader;
+    deadline?: number;
+  } = {},
+): Promise<IngestReport> {
+  const now = options.now ?? new Date();
+  const startedAt = now.toISOString();
+  const readLeg = options.readLeg ?? readLegFromDatabase;
+  const definitions = options.definitions ?? SPREAD_DEFINITIONS;
+  const outcomes: SeriesOutcome[] = [];
+
+  for (const definition of definitions) {
+    if (outOfTime(options.deadline)) break;
+    outcomes.push(await ingestSpreadOne(client, definition, now, readLeg));
+  }
+
+  return report(SPREAD_SOURCE, startedAt, outcomes, definitions.length);
+}
+
+async function ingestSpreadOne(
+  client: SupabaseClient,
+  definition: (typeof SPREAD_DEFINITIONS)[number],
+  now: Date,
+  readLeg: LegReader,
+): Promise<SeriesOutcome> {
+  const targetId = definition.target.id;
+  const seriesId = `${definition.longLegId}-${definition.shortLegId}`;
+
+  const [longLeg, shortLeg] = await Promise.all([
+    readLeg(client, definition.longLegId),
+    readLeg(client, definition.shortLegId),
+  ]);
+
+  const points = computeSpread(longLeg, shortLeg, definition, now);
+
+  // Aucune des deux jambes n'a encore de valeur en base, ou leurs dates ne se recoupent pas
+  // encore — un succès à vide, pas un échec : rien n'a été tenté qui aurait pu se tromper.
+  if (points.length === 0) {
+    return { seriesId, targetId, ok: true, written: 0 };
+  }
+
+  const rows = points.map((p) => ({
+    instrument_id: p.instrumentId,
+    date: p.date,
+    value: p.value,
+    source: p.source,
+    fetched_at: p.fetchedAt,
+  }));
+
+  const { error } = await client
+    .from("observations")
+    .upsert(rows, { onConflict: "instrument_id,date" });
+  if (error) {
+    return { seriesId, targetId, ok: false, written: 0, error: error.message };
+  }
+
+  return { seriesId, targetId, ok: true, written: rows.length };
 }
 
 /** L'identifiant lisible d'une série Eurostat : le dataset et ses dimensions fixées. */

@@ -1334,11 +1334,17 @@ faute d'agrégat zone euro publié sur ce dataset pour ce sous-composant (voir p
 Un comptage direct du catalogue et des fichiers de configuration, plutôt qu'un nouveau cumul
 d'incréments narrés, fait office de source de vérité à ce stade : au 28/09/2026, `data/seed.json`
 porte 83 instruments et 69 indicateurs — et non 70, le chiffre cité plus haut pour l'arrivée de
-`jp-wages` au catalogue était erroné —, dont **30 instruments et 46 indicateurs sont réellement
-collectés**. L'appliquer d'un coup viderait l'application. Chaque source branchée fait donc
-basculer son périmètre — les séries qu'elle couvre passent en collecté, leurs valeurs en dur sont
-retirées du seed. Les séries qu'aucune source ne couvre encore affichent l'état vide plutôt qu'un
-chiffre inventé.
+`jp-wages` au catalogue était erroné —, dont 30 instruments et 46 indicateurs sont réellement
+collectés.
+
+**Les deux spreads (US10Y/Bund, OAT/Bund) ont ensuite été calculés et stockés** — pas collectés
+au sens d'une nouvelle source, mais dérivés à l'insertion de `us10y`, `de10y` et `fr10y`, tous
+trois déjà en base (`config/spreads.ts`, `lib/spreads.ts`) : le cahier le promettait dès que les
+trois jambes seraient en place côté Étape 3, et c'est chose faite. Cela porte le premier chiffre
+à **32 instruments et 46 indicateurs réellement collectés**. L'appliquer d'un coup viderait
+l'application. Chaque source branchée fait donc basculer son périmètre — les séries qu'elle
+couvre passent en collecté, leurs valeurs en dur sont retirées du seed. Les séries qu'aucune
+source ne couvre encore affichent l'état vide plutôt qu'un chiffre inventé.
 
 Corollaire déjà appliqué : **l'indicateur de fraîcheur ne liste que les sources collectées.**
 Une série servie par le seed n'a rien à dire sur la santé d'une collecte, et une source
@@ -1492,7 +1498,8 @@ Les deux spreads sont calculés et stockés dès que le Bund, l'OAT et le 10 ans
 ils ont besoin de trois clôtures d'historique avant que leurs alertes puissent s'évaluer. Bund
 et OAT n'étant collectés que mensuellement (voir plus bas pourquoi), les deux spreads héritent
 de cette cadence — leurs règles d'alerte doivent s'évaluer sur trois points mensuels, pas trois
-séances.
+séances. **Fait le 28/09/2026** (`config/spreads.ts`, `lib/spreads.ts`, module dédié dans
+l'orchestrateur du cron) — le moteur d'alertes lui-même reste de l'Étape 4, non commencé.
 
 Périmètre FRED : la courbe souveraine US (6 mois à 20 ans, sans le 15 ans), l'inflation
 totale et sous-jacente, le chômage, les salaires, le taux directeur, la croissance, la dette
