@@ -496,22 +496,21 @@ jobs:
               curl -sS -m 20 -G --data-urlencode "function=TIME_SERIES_MONTHLY" \
                 --data-urlencode "symbol=$SYM" --data-urlencode "apikey=$APIKEY" \
                 "https://www.alphavantage.co/query" > /tmp/av-monthly.json
-              python3 -c "
-              import json
-              with open('/tmp/av-monthly.json') as f:
-                  d = json.load(f)
-              ts_key = next((k for k in d if 'Time Series' in k or 'Monthly' in k), None)
-              if ts_key is None:
-                  print('Pas de série reconnue — réponse brute :')
-                  print(json.dumps(d, ensure_ascii=False, indent=2)[:1500])
-              else:
-                  dec = {date: v for date, v in d[ts_key].items() if date.startswith('2025-12')}
-                  if not dec:
-                      print('Aucune entrée « 2025-12 » — clés les plus proches :')
-                      print(sorted(d[ts_key].keys(), reverse=True)[:5])
-                  else:
-                      print(json.dumps(dec, ensure_ascii=False, indent=2))
-              "
+              jq -r '
+                ( [keys[] | select(test("Time Series|Monthly"))] | .[0] ) as $k
+                | if $k == null then
+                    "Pas de série reconnue — réponse brute : " + (. | tostring)
+                  else
+                    .[$k] as $serie
+                    | ( $serie | to_entries | map(select(.key | startswith("2025-12"))) ) as $dec
+                    | if ($dec | length) == 0 then
+                        "Aucune entrée « 2025-12 » — clés les plus proches : "
+                          + ( $serie | keys | sort | reverse | .[0:5] | join(", ") )
+                      else
+                        ( $dec | map("\(.key) : " + .value["4. close"]) | join("\n") )
+                      end
+                  end
+              ' /tmp/av-monthly.json
               echo
               sleep 15
             done
