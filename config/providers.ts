@@ -4,6 +4,8 @@ import { alphaVantageMappingForInstrument } from "./alpha-vantage-series";
 import { eurostatMappingFor } from "./eurostat-series";
 import { onsMappingFor } from "./ons-series";
 import { estatMappingFor } from "./estat-series";
+import { boeMappingFor } from "./boe-series";
+import { bojMappingFor } from "./boj-series";
 import { spreadDefinitionFor } from "./spreads";
 
 /**
@@ -32,6 +34,8 @@ export type Provider =
   | "eurostat"
   | "ons"
   | "estat"
+  | "boe"
+  | "boj"
   | "spread";
 
 type Maillon = { source: Provider; actif: (id: string) => boolean };
@@ -52,6 +56,10 @@ const CHAINE_MACRO: Maillon[] = [
   { source: "eurostat", actif: (id) => eurostatMappingFor(id) !== null },
   { source: "ons", actif: (id) => onsMappingFor(id) !== null },
   { source: "estat", actif: (id) => estatMappingFor(id) !== null },
+  // Les taux directeurs UK et JP ne sont jamais des séries ONS/e-Stat — voir les commentaires de
+  // tête de `config/boe-series.ts` et `config/boj-series.ts`.
+  { source: "boe", actif: (id) => boeMappingFor(id) !== null },
+  { source: "boj", actif: (id) => bojMappingFor(id) !== null },
 ];
 
 /** Le fournisseur qui fait foi pour cet instrument, ou `null` si aucun n'est actif. */

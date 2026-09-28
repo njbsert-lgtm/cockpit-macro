@@ -16,8 +16,9 @@ import type { Zone } from "@/lib/types";
  *
  * Le taux directeur (`uk-policy-rate`) n'est **pas** une série ONS — c'est la Banque
  * d'Angleterre qui le publie, sur une base de données distincte (IADB). Il reste hors de ce
- * fichier ; le brancher est un chantier séparé. Le PMI composite (`uk-pmi`) reste au seed pour
- * la même raison qu'ailleurs : indice propriétaire S&P Global, absent de l'API ONS.
+ * fichier : voir `config/boe-series.ts`, branché le 28/09/2026. Le PMI composite (`uk-pmi`)
+ * reste au seed pour la même raison qu'ailleurs : indice propriétaire S&P Global, absent de
+ * l'API ONS.
  *
  * **Mise à jour — l'ancienne API a été retirée le 25/11/2024.** `api.ons.gov.uk/timeseries/
  * {id}/dataset/{ds}/data` répond « This API has been decommissioned ». Confirmé par appel

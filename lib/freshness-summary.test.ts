@@ -53,12 +53,18 @@ describe("getFreshnessSummary — aucune donnée en dur ne s'y affiche", () => {
       expect(sources).not.toContain(seedOnly);
     }
     // Il ne reste que ce qui est réellement branché : FRED, Twelve Data, Alpha Vantage,
-    // Eurostat, ONS et e-Stat au moment d'écrire ce test. Le plafond suit les sources
+    // Eurostat, ONS, e-Stat, BoE et BoJ au moment d'écrire ce test. Le plafond suit les sources
     // réellement branchées, pas un compte figé — une source de plus qui l'atteint est
     // exactement le signe que ce test doit protéger : jamais un nom de source qui vient du
     // seed (BLS, BCE, Destatis, S&P Global…), déjà vérifié plus haut.
     expect(sources).toContain(FRED_SOURCE);
-    expect(sources.length).toBeLessThanOrEqual(6);
+    expect(sources.length).toBeLessThanOrEqual(8);
+  });
+
+  it("liste BoE et BoJ — les deux taux directeurs branchés hors ONS et e-Stat", async () => {
+    const summary = await getFreshnessSummary(NOW);
+    expect(summary.map((s) => s.source)).toContain("Bank of England");
+    expect(summary.map((s) => s.source)).toContain("Bank of Japan");
   });
 
   it("liste ONS — cinq séries y sont réellement actives depuis la bascule d'ONS_VERIFIED", async () => {

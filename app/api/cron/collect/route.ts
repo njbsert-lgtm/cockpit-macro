@@ -3,6 +3,8 @@ import { revalidatePath } from "next/cache";
 import { getWriteClient, missingSupabaseConfig } from "@/lib/supabase";
 import {
   runAlphaVantageIngest,
+  runBoeIngest,
+  runBojIngest,
   runEstatIngest,
   runEurostatIngest,
   runIngest,
@@ -19,23 +21,25 @@ import { collectGdelt } from "@/lib/veille/sources/gdelt";
 /**
  * L'orchestrateur de la collecte quotidienne. Déclenché par le cron Vercel à 6 h UTC, jamais à
  * la demande. Le plan Hobby n'autorise qu'un déclenchement quotidien : cette route exécute donc
- * huit modules indépendants l'un après l'autre plutôt que d'ajouter un second cron.
+ * dix modules indépendants l'un après l'autre plutôt que d'ajouter un second cron.
  *
  * L'ordre n'est pas négociable : FRED d'abord, et durablement écrit, avant que les spreads, puis
- * Twelve Data, puis Alpha Vantage, puis Eurostat, puis ONS, puis e-Stat, puis la veille ne
- * démarrent. Si l'un des modules suivants échoue — y compris une exception non rattrapée — FRED
- * est déjà en base ; c'est pour ça que son résultat ne dépend de rien de ce qui suit. Le statut
- * HTTP de la réponse ne reflète que FRED : ce sont ses données qui priment. Les spreads passent
- * juste après FRED parce qu'ils dépendent de ce qu'il vient d'écrire (`us10y`, `de10y`, `fr10y`),
- * puis Twelve Data et Alpha Vantage : ce sont aussi des données de marché quotidiennes, avant
- * Eurostat, ONS et e-Stat, tous mensuels ou trimestriels.
+ * Twelve Data, puis Alpha Vantage, puis Eurostat, puis ONS, puis e-Stat, puis BoE, puis BoJ, puis
+ * la veille ne démarrent. Si l'un des modules suivants échoue — y compris une exception non
+ * rattrapée — FRED est déjà en base ; c'est pour ça que son résultat ne dépend de rien de ce qui
+ * suit. Le statut HTTP de la réponse ne reflète que FRED : ce sont ses données qui priment. Les
+ * spreads passent juste après FRED parce qu'ils dépendent de ce qu'il vient d'écrire (`us10y`,
+ * `de10y`, `fr10y`), puis Twelve Data et Alpha Vantage : ce sont aussi des données de marché
+ * quotidiennes, avant Eurostat, ONS, e-Stat, BoE et BoJ, tous mensuels ou trimestriels sauf les
+ * deux derniers — business-daily, mais de faible volume (une série chacun).
  *
- * Chaque module journalise pour son compte. FRED, Twelve Data, Alpha Vantage, Eurostat, ONS et
- * e-Stat écrivent tous dans `series_health`, mais sous une colonne `source` distincte, si bien
- * que l'indicateur de fraîcheur les présente séparément : un échec de l'un ne peut jamais se lire
- * comme un échec d'un autre. Les spreads n'y écrivent rien — voir le commentaire sur
- * `runSpreadIngest` dans `lib/ingest.ts`, leur fraîcheur est entièrement celle de leurs jambes. La
- * veille garde sa propre table, `veille_health`, qui n'alimente pas cet indicateur.
+ * Chaque module journalise pour son compte. FRED, Twelve Data, Alpha Vantage, Eurostat, ONS,
+ * e-Stat, BoE et BoJ écrivent tous dans `series_health`, mais sous une colonne `source`
+ * distincte, si bien que l'indicateur de fraîcheur les présente séparément : un échec de l'un ne
+ * peut jamais se lire comme un échec d'un autre. Les spreads n'y écrivent rien — voir le
+ * commentaire sur `runSpreadIngest` dans `lib/ingest.ts`, leur fraîcheur est entièrement celle de
+ * leurs jambes. La veille garde sa propre table, `veille_health`, qui n'alimente pas cet
+ * indicateur.
  */
 export const dynamic = "force-dynamic";
 export const maxDuration = 60;
@@ -85,15 +89,21 @@ const TWELVE_DATA_BUDGET_MS = 3_000;
 // (état 5 du cahier), pas comme une panne de collecte.
 const ALPHA_VANTAGE_BUDGET_MS = 6_000;
 // Vingt-huit séries depuis l'ajout des salaires (vingt-cinq avec le solde budgétaire et la
-// dette publique, vingt avant elles) : relevé en proportion à chaque palier. Resserré de 15 à
-// 14 s le 28/09 pour faire de la place au module des spreads sans dépasser TOTAL_BUDGET_MS.
-const EUROSTAT_BUDGET_MS = 14_000;
-// Cinq séries actives : une fraction du budget Eurostat suffit largement. Resserré de 6 à
-// 4,5 s le 28/09, même raison que Twelve Data.
-const ONS_BUDGET_MS = 4_500;
-// Trois séries actives, toutes mensuelles : un budget court suffit, comme pour ONS. Resserré de
-// 4 à 2,5 s le 28/09, même raison que Twelve Data et ONS.
-const ESTAT_BUDGET_MS = 2_500;
+// dette publique, vingt avant elles) : relevé en proportion à chaque palier. Resserré à 13 s le
+// 28/09 (15 puis 14) pour faire de la place aux spreads puis à BoE/BoJ sans dépasser
+// TOTAL_BUDGET_MS.
+const EUROSTAT_BUDGET_MS = 13_000;
+// Cinq séries actives : une fraction du budget Eurostat suffit largement. Resserré à 4 s le
+// 28/09 (6 puis 4,5), même raison que Twelve Data.
+const ONS_BUDGET_MS = 4_000;
+// Trois séries actives, toutes mensuelles : un budget court suffit, comme pour ONS. Resserré à
+// 2 s le 28/09 (4 puis 2,5), même raison que Twelve Data et ONS.
+const ESTAT_BUDGET_MS = 2_000;
+// Une seule série chacune, sans clé, un appel réseau simple (CSV pour l'une, JSON pour l'autre) :
+// même budget minimal que les spreads, pour la même raison — s'arrêter proprement, pas parce que
+// l'appel est coûteux.
+const BOE_BUDGET_MS = 1_000;
+const BOJ_BUDGET_MS = 1_000;
 
 // Les flux institutionnels et EDGAR d'abord : peu de requêtes, rapides, de haute autorité.
 // GDELT en dernier — c'est le seul dont la collecte se découpe sur plusieurs passages via un
@@ -278,7 +288,54 @@ export async function GET(request: Request) {
   }
   revalidatePath("/macro");
 
-  // Module 6 — la veille. Enveloppée dans son propre try/catch : même une exception qui
+  // Module 6 — Bank of England (taux directeur britannique). Dans son propre try/catch, même
+  // raisonnement qu'Eurostat, ONS et e-Stat. Sans clé — jamais un module en erreur pour absence
+  // de variable d'environnement, contrairement à Twelve Data, Alpha Vantage et e-Stat.
+  let boe: IngestReport | { error: string };
+  try {
+    boe = await runBoeIngest(client, {
+      deadline: Math.min(
+        Date.now() + BOE_BUDGET_MS,
+        routeStartedAt +
+          FRED_BUDGET_MS +
+          SPREAD_BUDGET_MS +
+          TWELVE_DATA_BUDGET_MS +
+          ALPHA_VANTAGE_BUDGET_MS +
+          EUROSTAT_BUDGET_MS +
+          ONS_BUDGET_MS +
+          ESTAT_BUDGET_MS +
+          BOE_BUDGET_MS,
+      ),
+    });
+  } catch (err) {
+    boe = { error: err instanceof Error ? err.message : String(err) };
+  }
+  revalidatePath("/macro");
+
+  // Module 7 — Bank of Japan (taux directeur japonais). Même raisonnement, sans clé non plus.
+  let boj: IngestReport | { error: string };
+  try {
+    boj = await runBojIngest(client, {
+      deadline: Math.min(
+        Date.now() + BOJ_BUDGET_MS,
+        routeStartedAt +
+          FRED_BUDGET_MS +
+          SPREAD_BUDGET_MS +
+          TWELVE_DATA_BUDGET_MS +
+          ALPHA_VANTAGE_BUDGET_MS +
+          EUROSTAT_BUDGET_MS +
+          ONS_BUDGET_MS +
+          ESTAT_BUDGET_MS +
+          BOE_BUDGET_MS +
+          BOJ_BUDGET_MS,
+      ),
+    });
+  } catch (err) {
+    boj = { error: err instanceof Error ? err.message : String(err) };
+  }
+  revalidatePath("/macro");
+
+  // Module 8 — la veille. Enveloppée dans son propre try/catch : même une exception qui
   // échapperait à `runVeilleCollect` ne doit jamais faire échouer la route après que FRED a
   // déjà écrit. Elle passe en dernier parce qu'elle est la seule à savoir reprendre où elle
   // s'est arrêtée : si les modules de données ont mangé le budget, son curseur reprendra demain
@@ -292,11 +349,11 @@ export async function GET(request: Request) {
   }
 
   // 200 même en cas d'échec partiel : le passage a bien eu lieu, et le détail est dans le
-  // rapport. Un 500 ferait croire à un cron qui n'a pas tourné. Aucun des sept modules suivants
+  // rapport. Un 500 ferait croire à un cron qui n'a pas tourné. Aucun des neuf modules suivants
   // ne pèse sur ce statut — chacun porte le sien, séparément (sauf les spreads, voir plus haut).
   const status = fred.failed > 0 && fred.ok === 0 ? 502 : 200;
   return NextResponse.json(
-    { fred, spreads, twelveData, alphaVantage, eurostat, ons, estat, veille },
+    { fred, spreads, twelveData, alphaVantage, eurostat, ons, estat, boe, boj, veille },
     { status },
   );
 }

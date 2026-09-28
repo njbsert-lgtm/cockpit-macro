@@ -1217,8 +1217,10 @@ Gratuites, en accès programmatique. Clés en variables d'environnement, jamais 
 | Macro US, taux, inflation | **FRED API** | Gratuit, très fiable, couvre aussi de l'international |
 | Macro zone euro et pays | **ECB Data Portal**, **Eurostat** | APIs publiques sans clé. Eurostat branché : IPCH total et sous-jacent, PIB, chômage, pour `ez` `fr` `de` `es` `it`. **Le taux directeur BCE n'est pas une série Eurostat** — c'est un instrument de la BCE, pas une statistique harmonisée : `ez-policy-rate` n'a donc jamais eu de source et s'affiche « non suivi ». Entrée FRED `ECBDFR` préparée dans `config/fred-series.ts`, désactivée tant que `npm run fred:check` ne l'a pas vue verte ; repli documenté sur le portail BCE |
 | Macro France | **INSEE** (API BDM) | Gratuit, inscription requise |
-| Macro UK | **ONS API** (contenu du site, `api.ons.gov.uk/v1/data?uri=…`) | Gratuit, sans clé. Branchée : IPCH total et sous-jacent, PIB (croissance trimestre sur trimestre, `IHYQ`), chômage et salaires. Le solde budgétaire reste désactivé — chemin non localisé sur la nouvelle API, voir `config/ons-series.ts`. Le taux directeur n'est pas une série ONS — c'est la Banque d'Angleterre qui le publie, chantier séparé ; le PMI composite reste au seed, propriétaire S&P Global comme ailleurs |
+| Macro UK | **ONS API** (contenu du site, `api.ons.gov.uk/v1/data?uri=…`) | Gratuit, sans clé. Branchée : IPCH total et sous-jacent, PIB (croissance trimestre sur trimestre, `IHYQ`), chômage et salaires. Le solde budgétaire reste désactivé — chemin non localisé sur la nouvelle API, voir `config/ons-series.ts`. Le PMI composite reste au seed, propriétaire S&P Global comme ailleurs |
 | Macro Japon | **e-Stat API** | Gratuit, clé d'application requise (`ESTAT_APP_ID`). Branchée : IPC total et sous-jacent, chômage. Les salaires répondent mais sont désactivés — données interrompues depuis 2015 sur la seule combinaison de dimensions disponible. La croissance du PIB reste au seed — pas de table longue série stable, voir `config/estat-series.ts` |
+| Taux directeur UK | **Bank of England** (IADB, `_iadb-fromshowcolumns.asp`) | Gratuit, sans clé. Pas une série ONS — la BoE la publie elle-même sur sa base interactive. `IUDBEDR`, quotidienne, en palier. Voir `config/boe-series.ts` |
+| Taux directeur Japon | **Bank of Japan** (API « Time-Series Data Search ») | Gratuit, sans clé, lancée en 2026. Pas une série e-Stat. Proxy retenu : le taux au jour le jour sans garantie (`STRDCLUCON`, base FM01) — la BoJ ne publie pas sa cible sous forme de série numérique. Voir `config/boj-series.ts` |
 | Énergie | **EIA API** | Gratuit, données officielles |
 | Indices actions, FX | **FRED** (huit séries) et **Twelve Data** | FRED : S&P 500, Nasdaq 100, Nikkei 225, EUR/USD, GBP/USD, USD/JPY, Brent, WTI. Twelve Data branché pour l'or (`XAU/USD`) et MSCI ACWI (ETF iShares `ACWI`) ; le reste des indices propriétaires visés (Euro Stoxx 50, FTSE 100, CSI 300, Nifty 50, Hang Seng, CAC 40), l'argent et le DXY restent au seed — verrouillés au palier payant ou absents du catalogue sous les codes usuels, voir `config/twelve-data-series.ts`. Palier gratuit à 8 appels par minute. |
 | Bund, OAT et quatre autres points à 10 ans | **FRED** (taux longs mensuels de l'OCDE) | Gratuit, sans clé — voir plus bas pourquoi le quotidien reste hors de portée |
@@ -1229,12 +1231,15 @@ Contraintes dans le code :
 - **Un appel par instrument par jour.** Cron à 4 h UTC (6 h heure française, sous réserve du
   changement d'heure), jamais à la demande. Le plan Hobby
   n'autorise qu'un seul déclenchement quotidien : la route du cron est un **orchestrateur** qui
-  exécute FRED, puis Twelve Data, puis Eurostat, puis la veille, en quatre modules indépendants
-  — jamais un second cron. FRED s'exécute et écrit en premier, sans exception ; les trois
-  suivants sont chacun enveloppés dans leur propre `try`/`catch` pour qu'une panne ou une
-  exception là-bas n'efface rien de ce que FRED a déjà produit. Chaque module journalise son
-  résultat dans sa propre table de santé (`series_health` pour FRED, Twelve Data et Eurostat,
-  sous une colonne `source` distincte ; `veille_health` pour la veille), et seul `series_health`
+  exécute FRED, puis les spreads, puis Twelve Data, puis Alpha Vantage, puis Eurostat, puis ONS,
+  puis e-Stat, puis BoE, puis BoJ, puis la veille, en dix modules indépendants — jamais un second
+  cron (détail à jour dans le commentaire de tête d'`app/api/cron/collect/route.ts`). FRED
+  s'exécute et écrit en premier, sans exception ; les modules suivants sont chacun enveloppés
+  dans leur propre `try`/`catch` pour qu'une panne ou une exception là-bas n'efface rien de ce
+  que FRED a déjà produit. Chaque module journalise son résultat dans sa propre table de santé
+  (`series_health` pour toutes les sources externes, sous une colonne `source` distincte — les
+  spreads n'y écrivent rien, calculés et non collectés ; `veille_health` pour la veille), et seul
+  `series_health`
   alimente l'indicateur de fraîcheur de la barre persistante — un incident de veille ne peut
   donc jamais s'y lire comme un incident de données, et un incident d'une source jamais comme
   un incident d'une autre.
@@ -1341,7 +1346,15 @@ collectés.
 au sens d'une nouvelle source, mais dérivés à l'insertion de `us10y`, `de10y` et `fr10y`, tous
 trois déjà en base (`config/spreads.ts`, `lib/spreads.ts`) : le cahier le promettait dès que les
 trois jambes seraient en place côté Étape 3, et c'est chose faite. Cela porte le premier chiffre
-à **32 instruments et 46 indicateurs réellement collectés**. L'appliquer d'un coup viderait
+à 32 instruments.
+
+**Bank of England et Bank of Japan ont ensuite branché les deux taux directeurs restés hors
+ONS et e-Stat** (`uk-policy-rate`, `jp-policy-rate`) — chacun sur une base distincte de celle qui
+sert le reste de la macro de son pays, sans clé (`config/boe-series.ts`, `config/boj-series.ts`).
+Confirmés par appel réel le 28/09/2026 : la Bank Rate britannique en palier à 3,75 % sur tout
+septembre 2026, le taux au jour le jour japonais autour de 0,977 % avec un saut isolé à 1,227 %
+cohérent avec un relevé de comité de politique monétaire. Cela porte le second chiffre à
+**48 indicateurs réellement collectés, sur 32 instruments**. L'appliquer d'un coup viderait
 l'application. Chaque source branchée fait donc basculer son périmètre — les séries qu'elle
 couvre passent en collecté, leurs valeurs en dur sont retirées du seed. Les séries qu'aucune
 source ne couvre encore affichent l'état vide plutôt qu'un chiffre inventé.
@@ -1598,10 +1611,10 @@ comparaison. Le solde budgétaire reste désactivé (`enabled: false` sur `uk-bu
 raison consignée dans `config/ons-series.ts`) : ni
 `governmentpublicsectorandtaxes/publicsectorfinance` ni `.../publicspending`, avec `PSA` ou
 `PUSF` comme dataset, ne répondent sur la nouvelle API — à relocaliser avant d'activer plutôt
-que de deviner un chemin de plus. Le taux directeur (Banque d'Angleterre) reste hors de ce
-fichier : ce n'est pas une série ONS, elle vient d'une base de données distincte, et le brancher
-est un chantier séparé. `ONS_VERIFIED` est à `true` depuis que `npm run ons:check` est sorti
-vert sur les cinq séries actives.
+que de deviner un chemin de plus. Le taux directeur reste hors de ce fichier : ce n'est pas une
+série ONS, elle vient d'une base de données distincte, la Bank of England (voir plus bas).
+`ONS_VERIFIED` est à `true` depuis que `npm run ons:check` est sorti vert sur les cinq séries
+actives.
 
 **e-Stat (Japon) — branchée, trois séries sur quatre.** Seule source, avec FRED, à exiger une
 clé (`appId`, gratuite sur inscription, dans `ESTAT_APP_ID`) : `lib/estat.ts` la porte en
@@ -1642,13 +1655,34 @@ que `npm run estat:check` est sorti vert sur les trois séries actives (IPC tota
 sous-jacent, chômage) ; `jp-wages` y sort vert aussi (réponse conforme), mais reste `enabled:
 false` pour la raison ci-dessus.
 
+**Bank of England — branchée, une série.** Le taux directeur (`uk-policy-rate`) n'est jamais une
+série ONS : c'est la Bank Rate, publiée par la BoE elle-même sur sa base interactive (IADB,
+`_iadb-fromshowcolumns.asp`), en CSV, sans clé. Série `IUDBEDR`, confirmée par appel réel le
+28/09/2026 : 3,75 % sur tout septembre 2026, en palier — exactement le comportement attendu
+d'un taux directeur (voir Onglet 2). `BOE_VERIFIED` est à `true` depuis que `npm run boe:check`
+est sorti vert.
+
+**Bank of Japan — branchée, une série.** Même situation : `jp-policy-rate` n'est pas une série
+e-Stat, et la BoJ ne publie d'ailleurs sa cible que sous forme de fourchette en prose dans ses
+communiqués, jamais comme série numérique. Le proxy retenu — la seule série numérique
+pertinente que la BoJ publie à cette fréquence — est le taux au jour le jour sans garantie
+réellement constaté (« Uncollateralized Overnight Call Rate », `STRDCLUCON`, base `FM01`), via
+l'API « Time-Series Data Search » lancée par la BoJ en 2026, sans clé. Confirmée par deux appels
+réels le 28/09/2026 : `getMetadata` liste le code, `getDataCode` répond un taux autour de
+0,977 % sur août-septembre 2026, avec un saut isolé à 1,227 % cohérent avec un relevé de comité
+de politique monétaire. **Piège de format découvert par appel réel** : `startDate`/`endDate` se
+donnent en `AAAAMM` (année-mois), jamais en date complète — une date complète est rejetée avec
+`STATUS: 400`, y compris pour une série quotidienne ; la réponse elle-même date chaque point en
+`AAAAMMJJ` numérique. `BOJ_VERIFIED` est à `true` depuis que `npm run boj:check` est sorti vert.
+
 Mise en service, dans l'ordre : exécuter `supabase/schema.sql`, renseigner les variables de
 `.env.example`, lancer `npm run fred:check` et n'activer que les séries sorties vertes, faire
 de même avec `npm run twelve-data:check`, `npm run eurostat:check` (ce dernier avant de
-basculer `EUROSTAT_VERIFIED`), `npm run ons:check` (avant de basculer `ONS_VERIFIED`) et
-`npm run estat:check` (avant de basculer `ESTAT_VERIFIED`), puis laisser le cron tourner. Le
-site fonctionne à chaque étape de cette séquence, y compris avant la première — c'est ce que
-garantit le repli sur le seed.
+basculer `EUROSTAT_VERIFIED`), `npm run ons:check` (avant de basculer `ONS_VERIFIED`),
+`npm run estat:check` (avant de basculer `ESTAT_VERIFIED`), `npm run boe:check` et
+`npm run boj:check` (avant de basculer `BOE_VERIFIED`/`BOJ_VERIFIED`), puis laisser le cron
+tourner. Le site fonctionne à chaque étape de cette séquence, y compris avant la première —
+c'est ce que garantit le repli sur le seed.
 
 **Étape 4 — Confort.**
 Mode comparaison de l'onglet Macro, graphiques de séries, recherche dans les notes,

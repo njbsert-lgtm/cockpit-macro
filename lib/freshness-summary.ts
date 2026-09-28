@@ -6,6 +6,8 @@ import { ENABLED_TWELVE_DATA_SERIES } from "@/config/twelve-data-series";
 import { ENABLED_ALPHA_VANTAGE_SERIES } from "@/config/alpha-vantage-series";
 import { ENABLED_ONS_SERIES, ONS_SOURCE } from "@/config/ons-series";
 import { ENABLED_ESTAT_SERIES, ESTAT_SOURCE } from "@/config/estat-series";
+import { ENABLED_BOE_SERIES, BOE_SOURCE } from "@/config/boe-series";
+import { ENABLED_BOJ_SERIES, BOJ_SOURCE } from "@/config/boj-series";
 import { FRED_SOURCE } from "./fred";
 import { TWELVE_DATA_SOURCE } from "./twelve-data";
 import { ALPHA_VANTAGE_SOURCE } from "./alpha-vantage";
@@ -79,6 +81,8 @@ function configuredSources(): string[] {
   // que « jamais collectée » — corrigé au passage, même bug que celui déjà attrapé pour Twelve
   // Data (acwi, gold) et ONS/e-Stat eux-mêmes en leur temps.
   if (ENABLED_ESTAT_SERIES.length > 0) sources.add(ESTAT_SOURCE);
+  if (ENABLED_BOE_SERIES.length > 0) sources.add(BOE_SOURCE);
+  if (ENABLED_BOJ_SERIES.length > 0) sources.add(BOJ_SOURCE);
   return [...sources];
 }
 

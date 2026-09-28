@@ -15,6 +15,8 @@ import {
 } from "@/config/alpha-vantage-series";
 import { ENABLED_ONS_SERIES, ONS_SOURCE, type OnsMapping } from "@/config/ons-series";
 import { ENABLED_ESTAT_SERIES, ESTAT_SOURCE, type EstatMapping } from "@/config/estat-series";
+import { ENABLED_BOE_SERIES, BOE_SOURCE, type BoeMapping } from "@/config/boe-series";
+import { ENABLED_BOJ_SERIES, BOJ_SOURCE, type BojMapping } from "@/config/boj-series";
 import { SPREAD_DEFINITIONS, SPREAD_SOURCE } from "@/config/spreads";
 import { fournisseurInstrument, fournisseurMacro } from "@/config/providers";
 import { fetchFredSeries, FRED_SOURCE, type FredFetchResult } from "./fred";
@@ -23,6 +25,8 @@ import { fetchTwelveDataSeries, TWELVE_DATA_SOURCE } from "./twelve-data";
 import { fetchAlphaVantageSeries, ALPHA_VANTAGE_SOURCE } from "./alpha-vantage";
 import { fetchOnsSeries } from "./ons";
 import { fetchEstatSeries } from "./estat";
+import { fetchBoeSeries } from "./boe";
+import { fetchBojSeries } from "./boj";
 import { computeSpread } from "./spreads";
 import { getMacroIndicators } from "./data";
 import type { Observation } from "./types";
@@ -774,6 +778,188 @@ async function ingestOnsOne(
     now,
   });
   return { seriesId: seriesKey, targetId, ok: true, written: rows.length };
+}
+
+// ---------------------------------------------------------------------------
+// Bank of England — le taux directeur britannique, hors ONS (voir config/boe-series.ts)
+// ---------------------------------------------------------------------------
+
+type BoeFetcher = (mapping: BoeMapping, now: Date) => ReturnType<typeof fetchBoeSeries>;
+
+/**
+ * Un passage de collecte BoE. Une seule série (`uk-policy-rate`) aujourd'hui, mais même
+ * mécanique que les autres sources macro : idempotent par upsert sur (indicateur, date), santé
+ * journalisée sous `source: 'Bank of England'`.
+ */
+export async function runBoeIngest(
+  client: SupabaseClient,
+  options: {
+    now?: Date;
+    fetcher?: BoeFetcher;
+    series?: BoeMapping[];
+    deadline?: number;
+  } = {},
+): Promise<IngestReport> {
+  const now = options.now ?? new Date();
+  const fetcher = options.fetcher ?? fetchBoeSeries;
+  const startedAt = now.toISOString();
+  const outcomes: SeriesOutcome[] = [];
+  const series =
+    options.series ?? ENABLED_BOE_SERIES.filter((m) => fournisseurMacro(m.target.id) === "boe");
+
+  for (const mapping of series) {
+    if (outOfTime(options.deadline)) break;
+    outcomes.push(await ingestBoeOne(client, mapping, now, fetcher));
+  }
+
+  return report(BOE_SOURCE, startedAt, outcomes, series.length);
+}
+
+async function ingestBoeOne(
+  client: SupabaseClient,
+  mapping: BoeMapping,
+  now: Date,
+  fetcher: BoeFetcher,
+): Promise<SeriesOutcome> {
+  const targetId = mapping.target.id;
+  const result = await fetcher(mapping, now);
+
+  if (!result.ok) {
+    await recordHealthFailure(client, {
+      seriesKey: mapping.seriesCode,
+      source: BOE_SOURCE,
+      targetKind: "macro",
+      targetId,
+      error: result.error,
+      now,
+    });
+    return { seriesId: mapping.seriesCode, targetId, ok: false, written: 0, error: result.error };
+  }
+
+  const fetchedAt = now.toISOString();
+  const rows = result.points.map((p) => ({
+    indicator_id: targetId,
+    date: p.date,
+    value: p.value,
+    source: BOE_SOURCE,
+    fetched_at: fetchedAt,
+  }));
+
+  if (rows.length > 0) {
+    const { error } = await client
+      .from("macro_observations")
+      .upsert(rows, { onConflict: "indicator_id,date" });
+    if (error) {
+      await recordHealthFailure(client, {
+        seriesKey: mapping.seriesCode,
+        source: BOE_SOURCE,
+        targetKind: "macro",
+        targetId,
+        error: `écriture refusée — ${error.message}`,
+        now,
+      });
+      return { seriesId: mapping.seriesCode, targetId, ok: false, written: 0, error: error.message };
+    }
+  }
+
+  await recordHealthSuccess(client, {
+    seriesKey: mapping.seriesCode,
+    source: BOE_SOURCE,
+    targetKind: "macro",
+    targetId,
+    latestObservation: result.points.at(-1)?.date ?? null,
+    now,
+  });
+  return { seriesId: mapping.seriesCode, targetId, ok: true, written: rows.length };
+}
+
+// ---------------------------------------------------------------------------
+// Bank of Japan — le taux directeur japonais, hors e-Stat (voir config/boj-series.ts)
+// ---------------------------------------------------------------------------
+
+type BojFetcher = (mapping: BojMapping, now: Date) => ReturnType<typeof fetchBojSeries>;
+
+/** Un passage de collecte BoJ. Même mécanique que BoE : une seule série, même discipline. */
+export async function runBojIngest(
+  client: SupabaseClient,
+  options: {
+    now?: Date;
+    fetcher?: BojFetcher;
+    series?: BojMapping[];
+    deadline?: number;
+  } = {},
+): Promise<IngestReport> {
+  const now = options.now ?? new Date();
+  const fetcher = options.fetcher ?? fetchBojSeries;
+  const startedAt = now.toISOString();
+  const outcomes: SeriesOutcome[] = [];
+  const series =
+    options.series ?? ENABLED_BOJ_SERIES.filter((m) => fournisseurMacro(m.target.id) === "boj");
+
+  for (const mapping of series) {
+    if (outOfTime(options.deadline)) break;
+    outcomes.push(await ingestBojOne(client, mapping, now, fetcher));
+  }
+
+  return report(BOJ_SOURCE, startedAt, outcomes, series.length);
+}
+
+async function ingestBojOne(
+  client: SupabaseClient,
+  mapping: BojMapping,
+  now: Date,
+  fetcher: BojFetcher,
+): Promise<SeriesOutcome> {
+  const targetId = mapping.target.id;
+  const result = await fetcher(mapping, now);
+
+  if (!result.ok) {
+    await recordHealthFailure(client, {
+      seriesKey: mapping.code,
+      source: BOJ_SOURCE,
+      targetKind: "macro",
+      targetId,
+      error: result.error,
+      now,
+    });
+    return { seriesId: mapping.code, targetId, ok: false, written: 0, error: result.error };
+  }
+
+  const fetchedAt = now.toISOString();
+  const rows = result.points.map((p) => ({
+    indicator_id: targetId,
+    date: p.date,
+    value: p.value,
+    source: BOJ_SOURCE,
+    fetched_at: fetchedAt,
+  }));
+
+  if (rows.length > 0) {
+    const { error } = await client
+      .from("macro_observations")
+      .upsert(rows, { onConflict: "indicator_id,date" });
+    if (error) {
+      await recordHealthFailure(client, {
+        seriesKey: mapping.code,
+        source: BOJ_SOURCE,
+        targetKind: "macro",
+        targetId,
+        error: `écriture refusée — ${error.message}`,
+        now,
+      });
+      return { seriesId: mapping.code, targetId, ok: false, written: 0, error: error.message };
+    }
+  }
+
+  await recordHealthSuccess(client, {
+    seriesKey: mapping.code,
+    source: BOJ_SOURCE,
+    targetKind: "macro",
+    targetId,
+    latestObservation: result.points.at(-1)?.date ?? null,
+    now,
+  });
+  return { seriesId: mapping.code, targetId, ok: true, written: rows.length };
 }
 
 async function ingestOne(
