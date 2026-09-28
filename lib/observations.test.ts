@@ -7,7 +7,8 @@ vi.mock("./supabase", () => ({ getReadClient: () => getReadClient() }));
 
 const { loadObservations, loadMacroObservations, isMacroCovered, isInstrumentCovered } =
   await import("./observations");
-const { getObservations, getMacroObservations, getMacroIndicators } = await import("./data");
+const { getObservations, getMacroObservations, getMacroIndicators, getInstruments } =
+  await import("./data");
 
 /** Un client dont la requête se termine comme demandé — une requête par identifiant. */
 function clientReturning(rows: unknown[] | null, error: { message: string } | null = null) {
@@ -55,22 +56,27 @@ beforeEach(() => {
   vi.spyOn(console, "warn").mockImplementation(() => {});
 });
 
-describe("instruments non couverts par FRED", () => {
+describe("instruments non couverts par aucune source active", () => {
   it("lisent le seed sans jamais toucher la base", async () => {
     getReadClient.mockReturnValue(clientReturning([]));
-    // 'dxy' n'est dans aucun mapping, structurellement : FRED publie un indice du dollar, mais
-    // ce n'est pas celui d'ICE. Choisi plutôt qu'une matière première ou une devise au hasard,
-    // qui pourraient rejoindre FRED demain et faire échouer ce test pour la mauvaise raison.
-    const result = await loadObservations(["dxy"]);
-    expect(result.get("dxy")).toEqual(getObservations("dxy"));
+    // Choisi à l'exécution plutôt que nommé en dur : la première version de ce test citait
+    // 'dxy', qu'Alpha Vantage a depuis pris en charge, et il échouait pour la seule raison
+    // qu'une source de plus avait été branchée. Ce qui doit être vérifié, c'est la règle.
+    const nonCouvert = getInstruments().find((i) => !isInstrumentCovered(i.id));
+    expect(nonCouvert, "plus aucun instrument au seed — la règle n'a plus de cas à couvrir")
+      .toBeDefined();
+
+    const result = await loadObservations([nonCouvert!.id]);
+    expect(result.get(nonCouvert!.id)).toEqual(getObservations(nonCouvert!.id));
     expect(getReadClient).not.toHaveBeenCalled();
   });
 
   it("continuent de fonctionner quand la base n'est pas configurée du tout", async () => {
     getReadClient.mockReturnValue(null);
-    const result = await loadObservations(["us10y", "dxy"]);
+    const nonCouvert = getInstruments().find((i) => !isInstrumentCovered(i.id))!;
+    const result = await loadObservations(["us10y", nonCouvert.id]);
     expect(result.get("us10y")).toEqual(getObservations("us10y"));
-    expect(result.get("dxy")).toEqual(getObservations("dxy"));
+    expect(result.get(nonCouvert.id)).toEqual(getObservations(nonCouvert.id));
   });
 });
 

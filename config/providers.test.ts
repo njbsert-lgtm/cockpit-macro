@@ -55,8 +55,9 @@ describe("la chaîne de fournisseurs — jamais de fusion, contre la configurati
   });
 
   it("rend null pour un identifiant qu'aucune source n'a encore activé", () => {
-    // Verrouillé au palier payant chez Twelve Data — voir config/twelve-data-series.ts.
-    expect(fournisseurInstrument("silver")).toBeNull();
+    // Aucun ticker retenu chez Twelve Data (verrouillé) ni chez Alpha Vantage (introuvable) —
+    // voir HK_NOT_FOUND dans config/alpha-vantage-series.ts.
+    expect(fournisseurInstrument("hsi")).toBeNull();
     // Désactivée — donnée interrompue depuis 2015, voir config/estat-series.ts.
     expect(fournisseurMacro("jp-wages")).toBeNull();
   });
