@@ -129,6 +129,16 @@ export function parseFredObservations(mapping: FredMapping, payload: unknown): F
   return { ok: true, points };
 }
 
+// FRED répond normalement en 150-400 ms. Le délai par défaut (8 s, `lib/http.ts`) est pensé
+// pour des sources plus lentes ; le laisser tel quel ici coûte cher au budget du module : deux
+// ou trois appels qui traînent suffisent à épuiser les 20-30 s dont dispose tout le passage
+// quotidien, et tout ce qui suit dans la liste est alors sauté en silence — jamais journalisé
+// comme un échec, puisque rien n'a été tenté. C'est exactement ce qui a bloqué `wti`
+// (DCOILWTICO) à sa dernière confirmation du 22/09 pendant six jours : ni série retirée ni
+// panne FRED, juste des appels lents ailleurs dans une liste qui a grossi (25 puis 32 séries)
+// sans que ce délai ne soit resserré en conséquence.
+const FRED_CALL_TIMEOUT_MS = 5_000;
+
 /** Appelle FRED pour une série. Ne lève jamais : toute panne devient un échec typé. */
 export async function fetchFredSeries(
   mapping: FredMapping,
@@ -140,6 +150,7 @@ export async function fetchFredSeries(
     response = await fetchWithTimeout(buildObservationsUrl(mapping, apiKey, now), {
       headers: { Accept: "application/json" },
       cache: "no-store",
+      timeoutMs: FRED_CALL_TIMEOUT_MS,
     });
   } catch (error) {
     return { ok: false, error: `appel impossible — ${describeFetchError(error)}` };

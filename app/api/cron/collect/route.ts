@@ -41,28 +41,36 @@ export const maxDuration = 60;
  * alors ni ce qui a été écrit, ni pourquoi ça a calé. La marge existe pour que la réponse
  * parte toujours, même quand chaque module a consommé son budget jusqu'au bout.
  */
-const TOTAL_BUDGET_MS = 52_000;
+const TOTAL_BUDGET_MS = 57_000;
 
 /**
  * Le partage du temps entre modules, dans l'ordre de priorité du cahier.
  *
  * FRED d'abord et servi le plus largement : ce sont les données de marché, elles priment.
- * Twelve Data ensuite — seulement deux symboles actifs pour l'instant, un budget court suffit.
- * Eurostat, ONS et e-Stat ensuite, mensuels et trimestriels, donc sans urgence à la journée. La
- * veille en dernier avec ce qui reste, parce qu'elle est la seule à savoir reprendre où elle
- * s'est arrêtée grâce à son curseur.
+ * Twelve Data ensuite — deux symboles actifs, un budget court suffit. Eurostat, ONS et e-Stat
+ * ensuite, mensuels et trimestriels, donc sans urgence à la journée. La veille en dernier avec
+ * ce qui reste, parce qu'elle est la seule à savoir reprendre où elle s'est arrêtée grâce à son
+ * curseur.
+ *
+ * **FRED et Eurostat relevés le 28/09** : la liste FRED est passée de 25 à 32 séries (Bund/OAT
+ * élargi à quatre pays de plus, cuivre, taux directeur BCE, PIB indien) et Eurostat de 20 à 25
+ * (solde budgétaire, dette publique) sans que leur budget ne suive. Conséquence réelle,
+ * constatée en production : `wti` (DCOILWTICO), en fin de liste FRED, n'a plus été confirmée
+ * depuis six jours — deux ou trois appels lents ailleurs dans la liste suffisaient à épuiser les
+ * 20 s d'origine avant de l'atteindre, sans qu'aucune erreur ne soit jamais journalisée (rien
+ * n'était tenté, ce n'est pas un échec). Le délai par appel de FRED est resserré à 5 s
+ * (`lib/fred.ts`) en plus de ce relèvement, pour qu'un seul appel lent ne puisse plus à lui seul
+ * coûter le quart du budget du module.
  */
-const FRED_BUDGET_MS = 20_000;
-// Deux symboles seulement : largement le temps de les servir même en cas de latence, sans
-// grever le budget des deux sources suivantes.
-const TWELVE_DATA_BUDGET_MS = 8_000;
-// Vingt séries, mesurées à une dizaine de secondes lors des contrôles à blanc : douze ne
-// laissaient aucune marge, et les dernières zones auraient été sautées un jour sur deux.
-const EUROSTAT_BUDGET_MS = 14_000;
-// Six séries seulement pour l'instant (ONS_VERIFIED reste à false tant que ons:check n'est pas
-// vert) : une fraction du budget Eurostat suffit largement.
+const FRED_BUDGET_MS = 27_000;
+// Deux symboles actifs : largement le temps de les servir même en cas de latence.
+const TWELVE_DATA_BUDGET_MS = 5_000;
+// Vingt-cinq séries depuis l'ajout du solde budgétaire et de la dette publique (vingt
+// auparavant, quatorze secondes s'étaient révélées justes) : relevé en proportion.
+const EUROSTAT_BUDGET_MS = 15_000;
+// Cinq séries actives : une fraction du budget Eurostat suffit largement.
 const ONS_BUDGET_MS = 6_000;
-// Quatre séries, toutes mensuelles : un budget court suffit, comme pour ONS.
+// Trois séries actives, toutes mensuelles : un budget court suffit, comme pour ONS.
 const ESTAT_BUDGET_MS = 4_000;
 
 // Les flux institutionnels et EDGAR d'abord : peu de requêtes, rapides, de haute autorité.
