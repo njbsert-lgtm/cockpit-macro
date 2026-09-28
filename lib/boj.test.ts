@@ -47,6 +47,24 @@ describe("parseBojResponse", () => {
     });
   });
 
+  it("ne prend pas un succès pour une erreur — un succès porte aussi STATUS: 200 et MESSAGE", () => {
+    // Bug réel constaté le 28/09/2026 (workflow_dispatch) : la réponse de succès porte, en plus
+    // de RESULTSET, { STATUS: 200, MESSAGE: "Successfully completed" } — un schéma d'erreur qui
+    // ne teste que la présence de STATUS la confondait avec une erreur applicative.
+    const payload = {
+      STATUS: 200,
+      MESSAGE: "Successfully completed",
+      RESULTSET: [
+        {
+          SERIES_CODE: "STRDCLUCON",
+          VALUES: { SURVEY_DATES: [20260901], VALUES: [0.977] },
+        },
+      ],
+    };
+    const result = parseBojResponse(MAPPING, payload);
+    expect(result).toEqual({ ok: true, points: [{ date: "2026-09-01", value: 0.977 }] });
+  });
+
   it("reconnaît une erreur applicative BoJ (STATUS 400) plutôt que de tenter le schéma de succès", () => {
     const payload = {
       STATUS: 400,

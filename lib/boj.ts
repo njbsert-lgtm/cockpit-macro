@@ -44,9 +44,13 @@ const successSchema = z.object({
   ),
 });
 
-// Confirmé par appel réel : `{ STATUS: 400, MESSAGEID: "...", MESSAGE: "...", DATE: "..." }`.
+// Confirmé par appel réel : une erreur porte `{ STATUS: 400, MESSAGEID: "...", MESSAGE: "...",
+// DATE: "..." }` — mais **un succès porte aussi `STATUS: 200` et `MESSAGE: "Successfully
+// completed"` à côté de `RESULTSET`** (découvert par appel réel après un premier faux positif :
+// un schéma qui ne testait que la présence de `STATUS` prenait un succès pour une erreur). Le
+// discriminant est la valeur de `STATUS`, jamais sa seule présence.
 const errorSchema = z.object({
-  STATUS: z.number(),
+  STATUS: z.number().refine((s) => s !== 200, "200 est un succès, pas une erreur applicative"),
   MESSAGE: z.string().optional(),
 });
 
