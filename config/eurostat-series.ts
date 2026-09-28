@@ -84,7 +84,6 @@ const EURO_AREA_GEO: Record<string, string> = {
   une_rt_m: "EA21",
   teina205: "EA21",
   teina230: "EA21",
-  lc_lci_r2_q: "EA20",
 };
 
 /** Traduit notre code de zone en code Eurostat pour un dataset donné. */
@@ -249,10 +248,8 @@ const WAGES_BOUNDS = { min: -15, max: 25 };
  * opposition à `D1_D4_MD5`, le coût du travail complet charges comprises, une notion
  * différente de ce que le cahier suit sous « Salaires » ailleurs).
  *
- * `geo` : `EA` ne sert aucune observation sur ce dataset, comme pour `une_rt_m` avant lui —
- * `EA21` est la composition qui répond, ajoutée à `EURO_AREA_GEO`. Confirmé par
- * `npm run eurostat:check` : France à 2,1 % au T1 2026, Allemagne à 2,9 %, toutes deux en
- * glissement annuel — dans les bornes déclarées.
+ * Confirmé par `npm run eurostat:check` : France à 2,1 % au T1 2026, Allemagne à 2,9 %, toutes
+ * deux en glissement annuel — dans les bornes déclarées.
  */
 function wages(geo: string): EurostatMapping {
   return {
@@ -273,6 +270,23 @@ function wages(geo: string): EurostatMapping {
     enabled: true,
   };
 }
+
+/**
+ * `ez-wages` reste désactivée : contrairement à `une_rt_m`, `teina205` et `teina230`, aucune
+ * composition de zone euro ne porte de valeur sur `lc_lci_r2_q` pour ces dimensions — ni `EA`,
+ * ni `EA21`, ni `EA20`, ni `EA19`, ni même `EU`/`EU27_2020`. Confirmé en retirant le filtre
+ * `geo` de la requête (`lastTimePeriod=1`, sonder-brut) : la réponse ne porte de valeur que
+ * pour des codes pays individuels (AT, BE, DE, FR, IT…), aucun agrégat. Ce n'est pas un code
+ * mal deviné à corriger, mais une donnée qu'Eurostat ne calcule tout simplement pas pour le
+ * sous-composant « salaires et traitements » (`D11`) du coût du travail, à la différence du
+ * coût du travail complet (`D1_D4_MD5`), qui pourrait porter un agrégat sous une autre
+ * combinaison — non exploré, l'objectif du cahier étant les salaires, pas le coût du travail.
+ */
+const EZ_WAGES_NO_AGGREGATE =
+  "Aucune composition de zone euro (EA, EA21, EA20, EA19) ni européenne (EU, EU27_2020) ne " +
+  "porte de valeur sur lc_lci_r2_q pour le sous-composant « salaires et traitements » (D11) — " +
+  "confirmé en retirant le filtre geo et en observant la réponse complète : seuls des codes " +
+  "pays individuels ont une valeur. Pas un code à deviner autrement, une donnée non publiée.";
 
 export const EUROSTAT_SERIES: EurostatMapping[] = [
   // --- Inflation totale (IPCH, glissement annuel) --------------------------
@@ -301,8 +315,8 @@ export const EUROSTAT_SERIES: EurostatMapping[] = [
   debtGdp("FR", "debt-gdp"),
   debtGdp("IT", "debt-gdp"),
 
-  // --- Salaires (zone euro, France, Allemagne) — désactivées, geo non confirmé ----
-  wages("EA"),
+  // --- Salaires (France et Allemagne — pas de zone euro, voir EZ_WAGES_NO_AGGREGATE) ----
+  { ...wages("EA"), enabled: false, disabledReason: EZ_WAGES_NO_AGGREGATE },
   wages("FR"),
   wages("DE"),
 ];
