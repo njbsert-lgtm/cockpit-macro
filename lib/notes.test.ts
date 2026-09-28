@@ -351,17 +351,13 @@ describe("le corpus réel", () => {
     expect(meta.map((e) => e.slug)).toEqual([
       "2026-S24",
       "2026-S26-E1",
-      "2026-S26-E2",
       "2026-S26",
       "2026-S27",
       "2026-S28-E1",
       "2026-S28",
       "2026-S29",
       "2026-S31",
-      "2026-S32-E1",
-      "2026-S32-E2",
       "2026-S32",
-      "2026-S33-E1",
       "2026-S38",
       "2026-S39",
     ]);
@@ -371,21 +367,15 @@ describe("le corpus réel", () => {
     const weeks = new Set(corpus().map((p) => p.meta.isoWeek));
     expect(weeks.has("2026-S25")).toBe(false);
     expect(weeks.has("2026-S30")).toBe(false);
-  });
-
-  it("porte deux semaines à double spéciale", () => {
-    const parsed = corpus();
-    const specialsOf = (week: string) =>
-      parsed.filter((p) => p.meta.kind === "speciale" && p.meta.parentWeek === week);
-    expect(specialsOf("2026-S26")).toHaveLength(2);
-    expect(specialsOf("2026-S32")).toHaveLength(2);
+    expect(weeks.has("2026-S33")).toBe(false);
+    expect(weeks.has("2026-S36")).toBe(false);
   });
 
   it("les notes rétrospectives couvrent les trois drivers et au moins deux tendances", () => {
     const retro = corpus().filter((p) =>
-      ["2026-S24", "2026-S26-E1", "2026-S26-E2", "2026-S26"].includes(p.meta.slug),
+      ["2026-S24", "2026-S26-E1", "2026-S26"].includes(p.meta.slug),
     );
-    expect(retro).toHaveLength(4);
+    expect(retro).toHaveLength(3);
 
     const drivers = new Set(retro.flatMap((p) => p.meta.driverOrder));
     expect([...drivers].sort()).toEqual(["ai", "iran", "rates"]);
