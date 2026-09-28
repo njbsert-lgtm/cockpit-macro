@@ -3,9 +3,12 @@ import { getReadClient, missingSupabaseConfig } from "./supabase";
 import { ENABLED_SERIES } from "@/config/fred-series";
 import { ENABLED_EUROSTAT_SERIES, EUROSTAT_SOURCE } from "@/config/eurostat-series";
 import { ENABLED_TWELVE_DATA_SERIES } from "@/config/twelve-data-series";
+import { ENABLED_ALPHA_VANTAGE_SERIES } from "@/config/alpha-vantage-series";
 import { ENABLED_ONS_SERIES, ONS_SOURCE } from "@/config/ons-series";
+import { ENABLED_ESTAT_SERIES, ESTAT_SOURCE } from "@/config/estat-series";
 import { FRED_SOURCE } from "./fred";
 import { TWELVE_DATA_SOURCE } from "./twelve-data";
+import { ALPHA_VANTAGE_SOURCE } from "./alpha-vantage";
 
 export type SourceFreshness = {
   source: string;
@@ -69,7 +72,13 @@ function configuredSources(): string[] {
   if (ENABLED_SERIES.length > 0) sources.add(FRED_SOURCE);
   if (ENABLED_EUROSTAT_SERIES.length > 0) sources.add(EUROSTAT_SOURCE);
   if (ENABLED_TWELVE_DATA_SERIES.length > 0) sources.add(TWELVE_DATA_SOURCE);
+  if (ENABLED_ALPHA_VANTAGE_SERIES.length > 0) sources.add(ALPHA_VANTAGE_SOURCE);
   if (ENABLED_ONS_SERIES.length > 0) sources.add(ONS_SOURCE);
+  // e-Stat manquait ici depuis son activation : sans relevé de santé encore écrit (premier
+  // déploiement, base réinitialisée), la source n'aurait affiché aucune ligne du tout plutôt
+  // que « jamais collectée » — corrigé au passage, même bug que celui déjà attrapé pour Twelve
+  // Data (acwi, gold) et ONS/e-Stat eux-mêmes en leur temps.
+  if (ENABLED_ESTAT_SERIES.length > 0) sources.add(ESTAT_SOURCE);
   return [...sources];
 }
 

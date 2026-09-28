@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
 import { getWriteClient, missingSupabaseConfig } from "@/lib/supabase";
 import {
+  runAlphaVantageIngest,
   runEstatIngest,
   runEurostatIngest,
   runIngest,
@@ -17,19 +18,21 @@ import { collectGdelt } from "@/lib/veille/sources/gdelt";
 /**
  * L'orchestrateur de la collecte quotidienne. Déclenché par le cron Vercel à 6 h UTC, jamais à
  * la demande. Le plan Hobby n'autorise qu'un déclenchement quotidien : cette route exécute donc
- * six modules indépendants l'un après l'autre plutôt que d'ajouter un second cron.
+ * sept modules indépendants l'un après l'autre plutôt que d'ajouter un second cron.
  *
  * L'ordre n'est pas négociable : FRED d'abord, et durablement écrit, avant que Twelve Data, puis
- * Eurostat, puis ONS, puis e-Stat, puis la veille ne démarrent. Si l'un des modules suivants
- * échoue — y compris une exception non rattrapée — FRED est déjà en base ; c'est pour ça que son
- * résultat ne dépend de rien de ce qui suit. Le statut HTTP de la réponse ne reflète que FRED :
- * ce sont ses données qui priment. Twelve Data passe juste après : ce sont aussi des données de
- * marché quotidiennes, avant Eurostat, ONS et e-Stat, tous mensuels ou trimestriels.
+ * Alpha Vantage, puis Eurostat, puis ONS, puis e-Stat, puis la veille ne démarrent. Si l'un des
+ * modules suivants échoue — y compris une exception non rattrapée — FRED est déjà en base ; c'est
+ * pour ça que son résultat ne dépend de rien de ce qui suit. Le statut HTTP de la réponse ne
+ * reflète que FRED : ce sont ses données qui priment. Twelve Data et Alpha Vantage passent juste
+ * après : ce sont aussi des données de marché quotidiennes, avant Eurostat, ONS et e-Stat, tous
+ * mensuels ou trimestriels.
  *
- * Chaque module journalise pour son compte. FRED, Twelve Data, Eurostat, ONS et e-Stat écrivent
- * tous dans `series_health`, mais sous une colonne `source` distincte, si bien que l'indicateur
- * de fraîcheur les présente séparément : un échec de l'un ne peut jamais se lire comme un échec
- * d'un autre. La veille garde sa propre table, `veille_health`, qui n'alimente pas cet indicateur.
+ * Chaque module journalise pour son compte. FRED, Twelve Data, Alpha Vantage, Eurostat, ONS et
+ * e-Stat écrivent tous dans `series_health`, mais sous une colonne `source` distincte, si bien
+ * que l'indicateur de fraîcheur les présente séparément : un échec de l'un ne peut jamais se lire
+ * comme un échec d'un autre. La veille garde sa propre table, `veille_health`, qui n'alimente pas
+ * cet indicateur.
  */
 export const dynamic = "force-dynamic";
 export const maxDuration = 60;
@@ -41,7 +44,7 @@ export const maxDuration = 60;
  * alors ni ce qui a été écrit, ni pourquoi ça a calé. La marge existe pour que la réponse
  * parte toujours, même quand chaque module a consommé son budget jusqu'au bout.
  */
-const TOTAL_BUDGET_MS = 57_000;
+const TOTAL_BUDGET_MS = 58_000;
 
 /**
  * Le partage du temps entre modules, dans l'ordre de priorité du cahier.
@@ -63,15 +66,26 @@ const TOTAL_BUDGET_MS = 57_000;
  * coûter le quart du budget du module.
  */
 const FRED_BUDGET_MS = 27_000;
-// Deux symboles actifs : largement le temps de les servir même en cas de latence.
-const TWELVE_DATA_BUDGET_MS = 5_000;
-// Vingt-cinq séries depuis l'ajout du solde budgétaire et de la dette publique (vingt
-// auparavant, quatorze secondes s'étaient révélées justes) : relevé en proportion.
+// Deux symboles actifs : largement le temps de les servir même en cas de latence. Resserré de
+// 5 à 3 s le 28/09 pour faire de la place à Alpha Vantage sans dépasser TOTAL_BUDGET_MS — deux
+// appels tiennent largement dedans.
+const TWELVE_DATA_BUDGET_MS = 3_000;
+// Sept symboles, tous quotidiens — voir le commentaire sur ALPHA_VANTAGE_CALL_TIMEOUT_MS dans
+// lib/alpha-vantage.ts : le palier gratuit d'Alpha Vantage (5 appels/minute) est plus serré que
+// celui de Twelve Data, et les espacer correctement pour le respecter prendrait à lui seul plus
+// de temps que tout le budget de la route. Choix assumé : les appeler à la suite sans délai, un
+// refus occasionnel au-delà du cinquième appel de la minute se lit comme un échec ordinaire
+// (état 5 du cahier), pas comme une panne de collecte.
+const ALPHA_VANTAGE_BUDGET_MS = 6_000;
+// Vingt-huit séries depuis l'ajout des salaires (vingt-cinq avec le solde budgétaire et la
+// dette publique, vingt avant elles) : relevé en proportion à chaque palier.
 const EUROSTAT_BUDGET_MS = 15_000;
-// Cinq séries actives : une fraction du budget Eurostat suffit largement.
-const ONS_BUDGET_MS = 6_000;
-// Trois séries actives, toutes mensuelles : un budget court suffit, comme pour ONS.
-const ESTAT_BUDGET_MS = 4_000;
+// Cinq séries actives : une fraction du budget Eurostat suffit largement. Resserré de 6 à
+// 4,5 s le 28/09, même raison que Twelve Data.
+const ONS_BUDGET_MS = 4_500;
+// Trois séries actives, toutes mensuelles : un budget court suffit, comme pour ONS. Resserré de
+// 4 à 2,5 s le 28/09, même raison que Twelve Data et ONS.
+const ESTAT_BUDGET_MS = 2_500;
 
 // Les flux institutionnels et EDGAR d'abord : peu de requêtes, rapides, de haute autorité.
 // GDELT en dernier — c'est le seul dont la collecte se découpe sur plusieurs passages via un
@@ -145,6 +159,27 @@ export async function GET(request: Request) {
   }
   revalidatePath("/marches");
 
+  // Module 2bis — Alpha Vantage. Dans son propre try/catch, même raisonnement que Twelve Data :
+  // sept ETF de repli (voir config/alpha-vantage-series.ts), tous quotidiens. La clé est
+  // optionnelle au sens de la route, comme celle de Twelve Data et d'e-Stat.
+  const alphaVantageApiKey = process.env.ALPHA_VANTAGE_API;
+  let alphaVantage: IngestReport | { error: string };
+  if (!alphaVantageApiKey) {
+    alphaVantage = { error: "ALPHA_VANTAGE_API n'est pas configurée" };
+  } else {
+    try {
+      alphaVantage = await runAlphaVantageIngest(client, alphaVantageApiKey, {
+        deadline: Math.min(
+          Date.now() + ALPHA_VANTAGE_BUDGET_MS,
+          routeStartedAt + FRED_BUDGET_MS + TWELVE_DATA_BUDGET_MS + ALPHA_VANTAGE_BUDGET_MS,
+        ),
+      });
+    } catch (err) {
+      alphaVantage = { error: err instanceof Error ? err.message : String(err) };
+    }
+  }
+  revalidatePath("/marches");
+
   // Module 3 — Eurostat. Dans son propre try/catch : ses séries sont mensuelles ou
   // trimestrielles, donc un passage manqué se rattrape le lendemain sans rien perdre, alors
   // qu'une exception ici ne doit surtout pas empêcher la route de rendre le rapport FRED.
@@ -153,7 +188,11 @@ export async function GET(request: Request) {
     eurostat = await runEurostatIngest(client, {
       deadline: Math.min(
         Date.now() + EUROSTAT_BUDGET_MS,
-        routeStartedAt + FRED_BUDGET_MS + TWELVE_DATA_BUDGET_MS + EUROSTAT_BUDGET_MS,
+        routeStartedAt +
+          FRED_BUDGET_MS +
+          TWELVE_DATA_BUDGET_MS +
+          ALPHA_VANTAGE_BUDGET_MS +
+          EUROSTAT_BUDGET_MS,
       ),
     });
   } catch (err) {
@@ -170,7 +209,12 @@ export async function GET(request: Request) {
     ons = await runOnsIngest(client, {
       deadline: Math.min(
         Date.now() + ONS_BUDGET_MS,
-        routeStartedAt + FRED_BUDGET_MS + TWELVE_DATA_BUDGET_MS + EUROSTAT_BUDGET_MS + ONS_BUDGET_MS,
+        routeStartedAt +
+          FRED_BUDGET_MS +
+          TWELVE_DATA_BUDGET_MS +
+          ALPHA_VANTAGE_BUDGET_MS +
+          EUROSTAT_BUDGET_MS +
+          ONS_BUDGET_MS,
       ),
     });
   } catch (err) {
@@ -193,6 +237,7 @@ export async function GET(request: Request) {
           routeStartedAt +
             FRED_BUDGET_MS +
             TWELVE_DATA_BUDGET_MS +
+            ALPHA_VANTAGE_BUDGET_MS +
             EUROSTAT_BUDGET_MS +
             ONS_BUDGET_MS +
             ESTAT_BUDGET_MS,
@@ -218,8 +263,11 @@ export async function GET(request: Request) {
   }
 
   // 200 même en cas d'échec partiel : le passage a bien eu lieu, et le détail est dans le
-  // rapport. Un 500 ferait croire à un cron qui n'a pas tourné. Aucun des cinq modules suivants
+  // rapport. Un 500 ferait croire à un cron qui n'a pas tourné. Aucun des six modules suivants
   // ne pèse sur ce statut — chacun porte le sien, séparément, dans sa table de santé.
   const status = fred.failed > 0 && fred.ok === 0 ? 502 : 200;
-  return NextResponse.json({ fred, twelveData, eurostat, ons, estat, veille }, { status });
+  return NextResponse.json(
+    { fred, twelveData, alphaVantage, eurostat, ons, estat, veille },
+    { status },
+  );
 }

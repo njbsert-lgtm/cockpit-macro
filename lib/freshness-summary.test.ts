@@ -52,9 +52,13 @@ describe("getFreshnessSummary — aucune donnée en dur ne s'y affiche", () => {
     for (const seedOnly of ["BLS", "BCE", "Destatis", "S&P Global"]) {
       expect(sources).not.toContain(seedOnly);
     }
-    // Il ne reste que ce qui est réellement branché.
+    // Il ne reste que ce qui est réellement branché : FRED, Twelve Data, Alpha Vantage,
+    // Eurostat, ONS et e-Stat au moment d'écrire ce test. Le plafond suit les sources
+    // réellement branchées, pas un compte figé — une source de plus qui l'atteint est
+    // exactement le signe que ce test doit protéger : jamais un nom de source qui vient du
+    // seed (BLS, BCE, Destatis, S&P Global…), déjà vérifié plus haut.
     expect(sources).toContain(FRED_SOURCE);
-    expect(sources.length).toBeLessThanOrEqual(4);
+    expect(sources.length).toBeLessThanOrEqual(6);
   });
 
   it("liste ONS — cinq séries y sont réellement actives depuis la bascule d'ONS_VERIFIED", async () => {
@@ -69,6 +73,20 @@ describe("getFreshnessSummary — aucune donnée en dur ne s'y affiche", () => {
     // jamais dans ce panneau, contrairement à ce que le module promet lui-même.
     const summary = await getFreshnessSummary(NOW);
     expect(summary.map((s) => s.source)).toContain("Twelve Data");
+  });
+
+  it("liste e-Stat — oubliée du panneau depuis son activation, malgré trois séries actives", async () => {
+    // Même bug que Twelve Data en son temps : ESTAT_SOURCE n'était jamais ajoutée à
+    // configuredSources(), donc une base tout juste réinitialisée (aucun relevé de santé
+    // encore écrit) aurait fait disparaître e-Stat du panneau plutôt que d'afficher « jamais
+    // collectée ».
+    const summary = await getFreshnessSummary(NOW);
+    expect(summary.map((s) => s.source)).toContain("e-Stat");
+  });
+
+  it("liste Alpha Vantage — sept ETF de repli réellement actifs", async () => {
+    const summary = await getFreshnessSummary(NOW);
+    expect(summary.map((s) => s.source)).toContain("Alpha Vantage");
   });
 });
 

@@ -62,6 +62,17 @@ export type AlphaVantageFetchResult =
 // Collecte
 // ---------------------------------------------------------------------------
 
+// Palier gratuit à 5 appels par minute — le plus serré des quatre sources, plus contraignant
+// que Twelve Data (8/min, mais seulement deux symboles actifs). Avec sept symboles et un cron
+// borné à 60 s au total (plan Hobby), les espacer correctement pour rester sous 5/min prendrait
+// à lui seul plus de temps que tout le budget disponible : le choix assumé est de les appeler
+// à la suite, sans délai, et de laisser le contrôle de plausibilité/erreur absorber un éventuel
+// refus « Note » les jours où l'un des sept tombe après le cinquième appel de la minute — l'état
+// 5 du cahier (dernière valeur connue, datée) plutôt qu'un blocage. Le délai resserré ci-dessous
+// (même correction que celle qui a réglé la famine de `wti` sur FRED) garantit au moins qu'un
+// seul appel lent ne peut pas à lui seul épuiser le budget du module.
+const ALPHA_VANTAGE_CALL_TIMEOUT_MS = 5_000;
+
 /**
  * Un appel, un symbole, une fois par jour — même contrainte que FRED, Twelve Data et Eurostat.
  * `outputsize=compact` sert les cent derniers points, largement assez pour re-confirmer le
@@ -136,6 +147,7 @@ export async function fetchAlphaVantageSeries(
     response = await fetchWithTimeout(buildDailySeriesUrl(mapping, apiKey), {
       headers: { Accept: "application/json" },
       cache: "no-store",
+      timeoutMs: ALPHA_VANTAGE_CALL_TIMEOUT_MS,
     });
   } catch (error) {
     return { ok: false, error: `appel impossible — ${describeFetchError(error)}` };

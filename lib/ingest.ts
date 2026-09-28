@@ -9,12 +9,17 @@ import {
   ENABLED_TWELVE_DATA_SERIES,
   type TwelveDataMapping,
 } from "@/config/twelve-data-series";
+import {
+  ENABLED_ALPHA_VANTAGE_SERIES,
+  type AlphaVantageMapping,
+} from "@/config/alpha-vantage-series";
 import { ENABLED_ONS_SERIES, ONS_SOURCE, type OnsMapping } from "@/config/ons-series";
 import { ENABLED_ESTAT_SERIES, ESTAT_SOURCE, type EstatMapping } from "@/config/estat-series";
 import { fournisseurInstrument, fournisseurMacro } from "@/config/providers";
 import { fetchFredSeries, FRED_SOURCE, type FredFetchResult } from "./fred";
 import { fetchEurostatSeries } from "./eurostat";
 import { fetchTwelveDataSeries, TWELVE_DATA_SOURCE } from "./twelve-data";
+import { fetchAlphaVantageSeries, ALPHA_VANTAGE_SOURCE } from "./alpha-vantage";
 import { fetchOnsSeries } from "./ons";
 import { fetchEstatSeries } from "./estat";
 import { getMacroIndicators } from "./data";
@@ -408,6 +413,110 @@ async function ingestTwelveDataOne(
   await recordHealthSuccess(client, {
     seriesKey: mapping.symbol,
     source: TWELVE_DATA_SOURCE,
+    targetKind: "instrument",
+    targetId,
+    latestObservation: result.points.at(-1)?.date ?? null,
+    now,
+  });
+  return { seriesId: mapping.symbol, targetId, ok: true, written: rows.length };
+}
+
+// ---------------------------------------------------------------------------
+
+type AlphaVantageFetcher = (
+  mapping: AlphaVantageMapping,
+  apiKey: string,
+) => Promise<
+  { ok: true; points: Array<{ date: string; value: number }> } | { ok: false; error: string }
+>;
+
+/**
+ * Un passage de collecte Alpha Vantage. Même mécanique que Twelve Data : séquentiel, tolérant
+ * à l'échec d'un symbole, idempotent par upsert sur (instrument, date). Ne sert que des
+ * instruments — les sept ETF de repli n'ont jamais de cible `macro`.
+ *
+ * La santé s'écrit dans `series_health` avec `source: 'Alpha Vantage'` : un échec ici ne peut
+ * jamais se lire comme un échec d'une autre source, même règle qui les isole déjà toutes.
+ */
+export async function runAlphaVantageIngest(
+  client: SupabaseClient,
+  apiKey: string,
+  options: {
+    now?: Date;
+    fetcher?: AlphaVantageFetcher;
+    series?: AlphaVantageMapping[];
+    deadline?: number;
+  } = {},
+): Promise<IngestReport> {
+  const now = options.now ?? new Date();
+  const fetcher = options.fetcher ?? fetchAlphaVantageSeries;
+  const startedAt = now.toISOString();
+  const outcomes: SeriesOutcome[] = [];
+  const series =
+    options.series ??
+    ENABLED_ALPHA_VANTAGE_SERIES.filter(
+      (m) => fournisseurInstrument(m.target.id) === "alpha-vantage",
+    );
+
+  for (const mapping of series) {
+    if (outOfTime(options.deadline)) break;
+    outcomes.push(await ingestAlphaVantageOne(client, mapping, apiKey, now, fetcher));
+  }
+
+  return report(ALPHA_VANTAGE_SOURCE, startedAt, outcomes, series.length);
+}
+
+async function ingestAlphaVantageOne(
+  client: SupabaseClient,
+  mapping: AlphaVantageMapping,
+  apiKey: string,
+  now: Date,
+  fetcher: AlphaVantageFetcher,
+): Promise<SeriesOutcome> {
+  const targetId = mapping.target.id;
+  const result = await fetcher(mapping, apiKey);
+
+  if (!result.ok) {
+    await recordHealthFailure(client, {
+      seriesKey: mapping.symbol,
+      source: ALPHA_VANTAGE_SOURCE,
+      targetKind: "instrument",
+      targetId,
+      error: result.error,
+      now,
+    });
+    return { seriesId: mapping.symbol, targetId, ok: false, written: 0, error: result.error };
+  }
+
+  const fetchedAt = now.toISOString();
+  const rows = result.points.map((p) => ({
+    instrument_id: targetId,
+    date: p.date,
+    value: p.value,
+    source: ALPHA_VANTAGE_SOURCE,
+    fetched_at: fetchedAt,
+  }));
+
+  if (rows.length > 0) {
+    const { error } = await client
+      .from("observations")
+      .upsert(rows, { onConflict: "instrument_id,date" });
+    if (error) {
+      await recordHealthFailure(client, {
+        seriesKey: mapping.symbol,
+        source: ALPHA_VANTAGE_SOURCE,
+        targetKind: "instrument",
+        targetId,
+        error: `écriture refusée — ${error.message}`,
+        now,
+      });
+      return { seriesId: mapping.symbol, targetId, ok: false, written: 0, error: error.message };
+    }
+  }
+
+  await recordHealthSuccess(client, {
+    seriesKey: mapping.symbol,
+    source: ALPHA_VANTAGE_SOURCE,
     targetKind: "instrument",
     targetId,
     latestObservation: result.points.at(-1)?.date ?? null,
