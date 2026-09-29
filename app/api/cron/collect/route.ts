@@ -81,18 +81,23 @@ const SPREAD_BUDGET_MS = 1_000;
 // 5 à 3 s le 28/09 pour faire de la place à Alpha Vantage sans dépasser TOTAL_BUDGET_MS — deux
 // appels tiennent largement dedans.
 const TWELVE_DATA_BUDGET_MS = 3_000;
-// Sept symboles, tous quotidiens — voir le commentaire sur ALPHA_VANTAGE_CALL_TIMEOUT_MS dans
-// lib/alpha-vantage.ts : le palier gratuit d'Alpha Vantage (5 appels/minute) est plus serré que
-// celui de Twelve Data, et les espacer correctement pour le respecter prendrait à lui seul plus
-// de temps que tout le budget de la route. Choix assumé : les appeler à la suite sans délai, un
-// refus occasionnel au-delà du cinquième appel de la minute se lit comme un échec ordinaire
-// (état 5 du cahier), pas comme une panne de collecte.
-const ALPHA_VANTAGE_BUDGET_MS = 6_000;
+// Sept symboles, tous quotidiens. **Renversement assumé le 29/09** : le choix initial (aucun
+// espacement, « un refus occasionnel se lit comme un échec ordinaire ») donnait en production
+// 4 échecs sur 7 chaque jour, pas « occasionnellement » — le message d'erreur d'Alpha Vantage
+// nomme une limite à la seconde (« 1 request per second »), que sept appels tirés en quelques
+// dizaines de millisecondes violent presque à coup sûr. `runAlphaVantageIngest` espace
+// désormais chaque appel de 1,1 s (`ALPHA_VANTAGE_CALL_SPACING_MS`, `lib/ingest.ts`) : six
+// intervalles, ~6,6 s, plus la latence réelle des sept appels — 10 s couvre confortablement le
+// cas courant, un jour anormalement lent voit `outOfTime` sauter les derniers symboles plutôt
+// que les faire échouer, repris le lendemain (aucune donnée n'est perdue, jamais un échec écrit
+// pour un appel jamais tenté).
+const ALPHA_VANTAGE_BUDGET_MS = 10_000;
 // Vingt-huit séries depuis l'ajout des salaires (vingt-cinq avec le solde budgétaire et la
-// dette publique, vingt avant elles) : relevé en proportion à chaque palier. Resserré à 13 s le
-// 28/09 (15 puis 14) pour faire de la place aux spreads puis à BoE/BoJ sans dépasser
-// TOTAL_BUDGET_MS.
-const EUROSTAT_BUDGET_MS = 13_000;
+// dette publique, vingt avant elles) : relevé en proportion à chaque palier. Resserré à 9 s le
+// 29/09 (15 puis 14 puis 13) pour faire de la place à l'espacement d'Alpha Vantage sans dépasser
+// TOTAL_BUDGET_MS — mensuel/trimestriel, un jour manqué se rattrape sans urgence, contrairement
+// à Alpha Vantage qui est quotidien.
+const EUROSTAT_BUDGET_MS = 9_000;
 // Cinq séries actives : une fraction du budget Eurostat suffit largement. Resserré à 4 s le
 // 28/09 (6 puis 4,5), même raison que Twelve Data.
 const ONS_BUDGET_MS = 4_000;

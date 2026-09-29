@@ -437,6 +437,20 @@ type AlphaVantageFetcher = (
   { ok: true; points: Array<{ date: string; value: number }> } | { ok: false; error: string }
 >;
 
+function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+/**
+ * L'espacement minimal entre deux appels. Constaté en production le 29/09 : le choix initial
+ * (aucun espacement, « un refus occasionnel se lit comme un échec ordinaire ») donnait en
+ * réalité 4 échecs sur 7 chaque jour, pas 1 ou 2 — le message d'erreur d'Alpha Vantage nomme
+ * explicitement une limite à la seconde (« 1 request per second »), que sept appels tirés à la
+ * suite en quelques dizaines de millisecondes violent presque à coup sûr, pas occasionnellement.
+ * 1,1 s passe cette limite avec une marge sur l'arrondi.
+ */
+const ALPHA_VANTAGE_CALL_SPACING_MS = 1_100;
+
 /**
  * Un passage de collecte Alpha Vantage. Même mécanique que Twelve Data : séquentiel, tolérant
  * à l'échec d'un symbole, idempotent par upsert sur (instrument, date). Ne sert que des
@@ -453,20 +467,23 @@ export async function runAlphaVantageIngest(
     fetcher?: AlphaVantageFetcher;
     series?: AlphaVantageMapping[];
     deadline?: number;
+    spacingMs?: number;
   } = {},
 ): Promise<IngestReport> {
   const now = options.now ?? new Date();
   const fetcher = options.fetcher ?? fetchAlphaVantageSeries;
   const startedAt = now.toISOString();
   const outcomes: SeriesOutcome[] = [];
+  const spacingMs = options.spacingMs ?? ALPHA_VANTAGE_CALL_SPACING_MS;
   const series =
     options.series ??
     ENABLED_ALPHA_VANTAGE_SERIES.filter(
       (m) => fournisseurInstrument(m.target.id) === "alpha-vantage",
     );
 
-  for (const mapping of series) {
+  for (const [index, mapping] of series.entries()) {
     if (outOfTime(options.deadline)) break;
+    if (index > 0 && spacingMs > 0) await sleep(spacingMs);
     outcomes.push(await ingestAlphaVantageOne(client, mapping, apiKey, now, fetcher));
   }
 

@@ -92,6 +92,7 @@ describe("runAlphaVantageIngest — fraîcheur et journalisation séparée", () 
       now: NOW,
       fetcher,
       series: [SX5E, SILVER],
+      spacingMs: 0,
     });
 
     expect(report.ok).toBe(2);
@@ -132,6 +133,7 @@ describe("runAlphaVantageIngest — résilience et limite d'appels", () => {
       now: NOW,
       fetcher,
       series: [SX5E, SILVER],
+      spacingMs: 0,
     });
 
     expect(report.ok).toBe(1);
@@ -143,8 +145,47 @@ describe("runAlphaVantageIngest — résilience et limite d'appels", () => {
     const { client } = fakeClient();
     const fetcher = vi.fn(async () => ({ ok: true as const, points: [] }));
 
-    await runAlphaVantageIngest(client, "clé", { now: NOW, fetcher, series: [SX5E, SILVER] });
+    await runAlphaVantageIngest(client, "clé", {
+      now: NOW,
+      fetcher,
+      series: [SX5E, SILVER],
+      spacingMs: 0,
+    });
 
     expect(fetcher).toHaveBeenCalledTimes(2);
+  });
+
+  it("espace les appels — constaté en production le 29/09 : sans espacement, 4 échecs sur 7 par manque d'1 s entre appels", async () => {
+    const { client } = fakeClient();
+    const calledAt: number[] = [];
+    const fetcher = vi.fn(async () => {
+      calledAt.push(Date.now());
+      return { ok: true as const, points: [] };
+    });
+
+    await runAlphaVantageIngest(client, "clé", {
+      now: NOW,
+      fetcher,
+      series: [SX5E, SILVER],
+      spacingMs: 30,
+    });
+
+    expect(calledAt).toHaveLength(2);
+    expect(calledAt[1] - calledAt[0]).toBeGreaterThanOrEqual(30);
+  });
+
+  it("n'attend pas avant le premier appel ni après le dernier", async () => {
+    const { client } = fakeClient();
+    const fetcher = vi.fn(async () => ({ ok: true as const, points: [] }));
+    const startedAt = Date.now();
+
+    await runAlphaVantageIngest(client, "clé", {
+      now: NOW,
+      fetcher,
+      series: [SX5E],
+      spacingMs: 5_000,
+    });
+
+    expect(Date.now() - startedAt).toBeLessThan(500);
   });
 });
