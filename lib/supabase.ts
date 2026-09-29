@@ -23,6 +23,36 @@ const options = {
 } as const;
 
 /**
+ * Même client de lecture, mais dont chaque appel porte `cache: "no-store"` — donc jamais
+ * intercepté par le cache de `fetch` de Next.js, celui que pilote `export const revalidate` sur
+ * les pages statiques.
+ *
+ * Pourquoi ce deuxième client plutôt que d'ajouter l'option au premier : `getReadClient` sert
+ * les écrans de données (instruments, indicateurs), pour qui l'heure de fraîcheur du cahier est
+ * un choix délibéré, pas un oubli. L'indicateur de fraîcheur de la barre persistante est d'une
+ * autre nature — sa seule raison d'être est de dire si la collecte tourne, et un indicateur qui
+ * ment par péremption dément son propre objet. Deux bugs réels et distincts l'ont mis en
+ * évidence : `revalidatePath` dans la route de cron ne couvre que `/`, `/marches` et `/macro` —
+ * toute autre page (une fiche de driver, `/triage`, `/redaction`…) garde son propre exemplaire
+ * mis en cache de la barre, indépendant de ces appels ; et même sur une page couverte, le
+ * rafraîchissement en arrière-plan qu'`export const revalidate` promet ne se déclenche que sur
+ * une visite après expiration — une page consultée une fois par semaine peut donc servir une
+ * capture vieille d'une semaine avant de se corriger, bien au-delà des paliers de 26 h et 50 h
+ * que le cahier prescrit pour cet indicateur précisément.
+ */
+const noStoreOptions = {
+  auth: { persistSession: false },
+  global: {
+    fetch: (url: RequestInfo | URL, init?: RequestInit) =>
+      fetchWithTimeout(String(url), {
+        ...init,
+        cache: "no-store",
+        timeoutMs: SUPABASE_TIMEOUT_MS,
+      }),
+  },
+} as const;
+
+/**
  * Deux clients, deux droits.
  *
  * - Lecture : clé publique, bornée par les politiques RLS de `supabase/schema.sql`.
@@ -41,6 +71,7 @@ const options = {
  */
 
 let readClient: SupabaseClient | null | undefined;
+let freshReadClient: SupabaseClient | null | undefined;
 let writeClient: SupabaseClient | null | undefined;
 
 /**
@@ -77,9 +108,8 @@ export function normalizedSupabaseUrl(): string | undefined {
   return raw.replace(/\/+$/, "").replace(/\/rest\/v1$/, "");
 }
 
-export function getReadClient(): SupabaseClient | null {
-  if (readClient !== undefined) return readClient;
-
+/** Les identifiants de lecture, partagés par `getReadClient` et `getFreshReadClient`. */
+function readClientCredentials(): { url: string; key: string } | null {
   const url = normalizedSupabaseUrl();
   // `SUPABASE_PUBLISHABLE_KEY` : le nom que Supabase donne désormais à la clé anonyme sur les
   // projets récents. Les deux désignent la même chose, une clé de lecture bornée par RLS.
@@ -88,11 +118,30 @@ export function getReadClient(): SupabaseClient | null {
     "SUPABASE_PUBLISHABLE_KEY",
     "NEXT_PUBLIC_SUPABASE_ANON_KEY",
   );
-  readClient =
-    url && key
-      ? createClient(url, key, options)
-      : null;
+  return url && key ? { url, key } : null;
+}
+
+export function getReadClient(): SupabaseClient | null {
+  if (readClient !== undefined) return readClient;
+
+  const credentials = readClientCredentials();
+  readClient = credentials ? createClient(credentials.url, credentials.key, options) : null;
   return readClient;
+}
+
+/**
+ * Le client de lecture pour l'indicateur de fraîcheur — voir le commentaire sur
+ * `noStoreOptions` pour la raison d'être de ce second client plutôt qu'une option en plus sur
+ * le premier.
+ */
+export function getFreshReadClient(): SupabaseClient | null {
+  if (freshReadClient !== undefined) return freshReadClient;
+
+  const credentials = readClientCredentials();
+  freshReadClient = credentials
+    ? createClient(credentials.url, credentials.key, noStoreOptions)
+    : null;
+  return freshReadClient;
 }
 
 export function getWriteClient(): SupabaseClient | null {
@@ -127,5 +176,6 @@ export function isDatabaseConfigured(): boolean {
 /** Remise à zéro des clients mémoïsés — pour les tests, qui changent l'environnement. */
 export function resetClientsForTests(): void {
   readClient = undefined;
+  freshReadClient = undefined;
   writeClient = undefined;
 }

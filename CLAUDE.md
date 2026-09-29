@@ -1287,6 +1287,24 @@ tarder d'une heure, donc deux passages sains peuvent être espacés de près de 
 marge, un tuyau qui fonctionne passerait régulièrement en ambre — et un indicateur qui crie
 sans raison finit par ne plus être lu.
 
+**Ces paliers supposent une lecture toujours fraîche — un bug réel, corrigé le 29/09, les
+rendait illusoires.** `FreshnessIndicator` lisait `series_health` via le même client Supabase
+que les écrans de données, dont les requêtes sont de simples `fetch` : interceptées par le
+cache de Next.js sur toute page rendue statiquement (`export const revalidate` du layout
+racine, une heure). `revalidatePath` dans la route de cron ne couvre que `/`, `/marches` et
+`/macro` — toute autre page (une fiche de driver, `/triage`, `/redaction`…) gardait donc sa
+propre capture de la barre, jamais purgée par le cron. Et même sur une page couverte, le
+rafraîchissement en arrière-plan que promet `revalidate` ne se déclenche que sur une visite
+après expiration : une page consultée une fois par semaine pouvait servir une capture vieille
+d'une semaine avant de se corriger au visiteur suivant — bien au-delà des 26 h et 50 h
+ci-dessus, qui n'ont de sens que si la lecture elle-même est à jour. `lib/supabase.ts` porte
+désormais `getFreshReadClient()`, un second client dont chaque requête force `cache: "no-store"`
+— jamais intercepté par le cache de page, quelle que soit la page et quelle que soit la
+fréquence de visite. Les écrans de données gardent `getReadClient()` et son heure de
+revalidation : c'est un choix délibéré pour eux, pas un oubli ; seul l'indicateur de fraîcheur,
+dont la seule raison d'être est de dire si la collecte tourne, ne peut pas se permettre de
+mentir par péremption.
+
 **Le retard de publication** répond à une autre question : « la source a-t-elle cessé de
 publier ? ». Il se calcule sur la date de l'observation, et il existe parce que la fraîcheur
 ne le verrait pas — si FRED répond bien mais que le BLS saute une publication, notre copie

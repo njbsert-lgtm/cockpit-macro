@@ -1,5 +1,5 @@
 import { freshnessTier, type FreshnessTier, worstTier } from "./freshness";
-import { getReadClient, missingSupabaseConfig } from "./supabase";
+import { getFreshReadClient, missingSupabaseConfig } from "./supabase";
 import { ENABLED_SERIES } from "@/config/fred-series";
 import { ENABLED_EUROSTAT_SERIES, EUROSTAT_SOURCE } from "@/config/eurostat-series";
 import { ENABLED_TWELVE_DATA_SERIES } from "@/config/twelve-data-series";
@@ -93,7 +93,7 @@ type HealthRead = {
 };
 
 async function readSeriesHealth(now: Date): Promise<HealthRead> {
-  const client = getReadClient();
+  const client = getFreshReadClient();
   if (!client) {
     const manquantes = missingSupabaseConfig().join(", ");
     return {
