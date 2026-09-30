@@ -199,6 +199,9 @@ export function parseEstatResponse(mapping: EstatMapping, payload: unknown): Est
   return { ok: true, points };
 }
 
+/** Borne par appel : trois séries en parallèle tiennent ainsi dans le budget du module. */
+const ESTAT_CALL_TIMEOUT_MS = 3_000;
+
 /** Appelle e-Stat pour une série. Ne lève jamais : toute panne devient un échec typé. */
 export async function fetchEstatSeries(
   mapping: EstatMapping,
@@ -210,6 +213,7 @@ export async function fetchEstatSeries(
     response = await fetchWithTimeout(buildEstatUrl(mapping, appId, now), {
       headers: { Accept: "application/json" },
       cache: "no-store",
+      timeoutMs: ESTAT_CALL_TIMEOUT_MS,
     });
   } catch (error) {
     return { ok: false, error: `appel impossible — ${describeFetchError(error)}` };

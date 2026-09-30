@@ -195,6 +195,9 @@ export function parseEurostatResponse(
   return { ok: true, points, unitLabel };
 }
 
+/** Un appel lent ne doit pas coûter le quart du budget du module (même logique que FRED). */
+const EUROSTAT_CALL_TIMEOUT_MS = 5_000;
+
 /** Appelle Eurostat pour une série. Ne lève jamais : toute panne devient un échec typé. */
 export async function fetchEurostatSeries(
   mapping: EurostatMapping,
@@ -204,6 +207,7 @@ export async function fetchEurostatSeries(
     response = await fetchWithTimeout(buildEurostatUrl(mapping), {
       headers: { Accept: "application/json" },
       cache: "no-store",
+      timeoutMs: EUROSTAT_CALL_TIMEOUT_MS,
     });
   } catch (error) {
     return { ok: false, error: `appel impossible — ${describeFetchError(error)}` };

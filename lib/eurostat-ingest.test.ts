@@ -191,6 +191,39 @@ describe("runEurostatIngest — résilience", () => {
 
     expect(fetcher).toHaveBeenCalledTimes(2);
   });
+
+  it("couvre toute la liste sous un budget qui n'en laisse que la moitié en séquence", async () => {
+    // Régression du 30/09 : 9 s en séquence ne servaient qu'une quinzaine de séries sur 27, les
+    // dernières n'étaient ni collectées ni signalées. Quatre appels à la fois les couvrent.
+    const { client } = fakeClient();
+    const tout = EUROSTAT_SERIES.filter((m) => m.enabled !== false);
+    const fetcher = async () => {
+      await new Promise((r) => setTimeout(r, 20));
+      return { ok: true as const, points: [{ date: "2026-04-01", value: 0.3 }] };
+    };
+
+    // 20 ms par appel : en séquence, 100 ms n'en servent que 5 ; à quatre de front, tous passent.
+    const deadline = Date.now() + 100 * Math.ceil(tout.length / 20);
+    const report = await runEurostatIngest(client, { now: NOW, fetcher, series: tout, deadline });
+
+    expect(report.skipped).toBe(0);
+    expect(report.ok).toBe(tout.length);
+  });
+
+  it("ne démarre plus rien une fois le délai dépassé, et le compte comme sauté", async () => {
+    const { client } = fakeClient();
+    const fetcher = vi.fn(async () => ({ ok: true as const, points: [] }));
+
+    const report = await runEurostatIngest(client, {
+      now: NOW,
+      fetcher,
+      series: [CPI, GDP],
+      deadline: Date.now() - 1,
+    });
+
+    expect(fetcher).not.toHaveBeenCalled();
+    expect(report.skipped).toBe(2);
+  });
 });
 
 describe("cohérence de la configuration Eurostat avec le reste du dispositif", () => {

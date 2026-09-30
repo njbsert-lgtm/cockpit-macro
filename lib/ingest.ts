@@ -81,6 +81,43 @@ function report(
   };
 }
 
+
+/**
+ * Traite des éléments avec au plus `concurrency` appels simultanés, en s'arrêtant de démarrer
+ * dès que le délai est dépassé. Les résultats reviennent dans l'ordre d'entrée ; un élément
+ * jamais démarré est simplement absent (comptable comme « sauté » par `report`).
+ *
+ * Pourquoi : les modules mensuels (Eurostat, ONS, e-Stat) tenaient en séquence dans un budget
+ * qu'on a dû réduire — ils ne parvenaient plus au bout de leur liste, et les séries de fin
+ * n'étaient jamais ni collectées ni signalées en échec. Quelques appels en parallèle
+ * suffisent à les faire tenir sans dépasser les limites de débit de ces sources publiques.
+ */
+async function mapBounded<T, R>(
+  items: T[],
+  concurrency: number,
+  deadline: number | undefined,
+  task: (item: T) => Promise<R>,
+): Promise<R[]> {
+  const results: Array<R | undefined> = new Array(items.length).fill(undefined);
+  const done: boolean[] = new Array(items.length).fill(false);
+  let next = 0;
+  const worker = async () => {
+    while (next < items.length) {
+      if (outOfTime(deadline)) return;
+      const index = next++;
+      results[index] = await task(items[index]);
+      done[index] = true;
+    }
+  };
+  await Promise.all(Array.from({ length: Math.min(concurrency, items.length) }, worker));
+  return results.filter((_, i) => done[i]) as R[];
+}
+
+/** Appels simultanés par module mensuel/trimestriel. */
+const EUROSTAT_CONCURRENCY = 4;
+const ONS_CONCURRENCY = 5;
+const ESTAT_CONCURRENCY = 3;
+
 type Fetcher = (mapping: FredMapping, apiKey: string, now: Date) => Promise<FredFetchResult>;
 
 /**
@@ -163,10 +200,11 @@ export async function runEurostatIngest(
   const series =
     options.series ?? ENABLED_EUROSTAT_SERIES.filter((m) => fournisseurMacro(m.target.id) === "eurostat");
 
-  for (const mapping of series) {
-    if (outOfTime(options.deadline)) break;
-    outcomes.push(await ingestEurostatOne(client, mapping, now, fetcher));
-  }
+  outcomes.push(
+    ...(await mapBounded(series, EUROSTAT_CONCURRENCY, options.deadline, (mapping) =>
+      ingestEurostatOne(client, mapping, now, fetcher),
+    )),
+  );
 
   return report(EUROSTAT_SOURCE, startedAt, outcomes, series.length);
 }
@@ -202,10 +240,11 @@ export async function runOnsIngest(
   const series =
     options.series ?? ENABLED_ONS_SERIES.filter((m) => fournisseurMacro(m.target.id) === "ons");
 
-  for (const mapping of series) {
-    if (outOfTime(options.deadline)) break;
-    outcomes.push(await ingestOnsOne(client, mapping, now, fetcher));
-  }
+  outcomes.push(
+    ...(await mapBounded(series, ONS_CONCURRENCY, options.deadline, (mapping) =>
+      ingestOnsOne(client, mapping, now, fetcher),
+    )),
+  );
 
   return report(ONS_SOURCE, startedAt, outcomes, series.length);
 }
@@ -247,10 +286,11 @@ export async function runEstatIngest(
   const series =
     options.series ?? ENABLED_ESTAT_SERIES.filter((m) => fournisseurMacro(m.target.id) === "estat");
 
-  for (const mapping of series) {
-    if (outOfTime(options.deadline)) break;
-    outcomes.push(await ingestEstatOne(client, mapping, apiKey, now, fetcher));
-  }
+  outcomes.push(
+    ...(await mapBounded(series, ESTAT_CONCURRENCY, options.deadline, (mapping) =>
+      ingestEstatOne(client, mapping, apiKey, now, fetcher),
+    )),
+  );
 
   return report(ESTAT_SOURCE, startedAt, outcomes, series.length);
 }

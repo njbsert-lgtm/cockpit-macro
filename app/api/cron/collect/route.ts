@@ -96,14 +96,18 @@ const ALPHA_VANTAGE_BUDGET_MS = 10_000;
 // dette publique, vingt avant elles) : relevé en proportion à chaque palier. Resserré à 9 s le
 // 29/09 (15 puis 14 puis 13) pour faire de la place à l'espacement d'Alpha Vantage sans dépasser
 // TOTAL_BUDGET_MS — mensuel/trimestriel, un jour manqué se rattrape sans urgence, contrairement
-// à Alpha Vantage qui est quotidien.
+// à Alpha Vantage qui est quotidien. **Régression corrigée le 30/09** : en séquence, 9 s ne
+// couvraient que ~14 des 27 séries ; les appels se font maintenant quatre à la fois
+// (`EUROSTAT_CONCURRENCY`, `lib/ingest.ts`), avec 5 s maximum par appel.
 const EUROSTAT_BUDGET_MS = 9_000;
 // Cinq séries actives : une fraction du budget Eurostat suffit largement. Resserré à 4 s le
 // 28/09 (6 puis 4,5), même raison que Twelve Data.
-const ONS_BUDGET_MS = 4_000;
+const ONS_BUDGET_MS = 3_000;
 // Trois séries actives, toutes mensuelles : un budget court suffit, comme pour ONS. Resserré à
-// 2 s le 28/09 (4 puis 2,5), même raison que Twelve Data et ONS.
-const ESTAT_BUDGET_MS = 2_000;
+// 2 s le 28/09 (4 puis 2,5), même raison que Twelve Data et ONS. **Corrigé le 30/09** : à 2 s,
+// `jp-unemployment` était sautée chaque jour (rien tenté, donc aucun échec écrit) ; relevé à 3 s,
+// pris sur ONS, avec les appels en parallèle.
+const ESTAT_BUDGET_MS = 3_000;
 // Une seule série chacune, sans clé, un appel réseau simple (CSV pour l'une, JSON pour l'autre) :
 // même budget minimal que les spreads, pour la même raison — s'arrêter proprement, pas parce que
 // l'appel est coûteux.
