@@ -8,6 +8,7 @@ import { ENABLED_ONS_SERIES, ONS_SOURCE } from "@/config/ons-series";
 import { ENABLED_ESTAT_SERIES, ESTAT_SOURCE } from "@/config/estat-series";
 import { ENABLED_BOE_SERIES, BOE_SOURCE } from "@/config/boe-series";
 import { ENABLED_BOJ_SERIES, BOJ_SOURCE } from "@/config/boj-series";
+import { fournisseurInstrument, fournisseurMacro, type Provider } from "@/config/providers";
 import { FRED_SOURCE } from "./fred";
 import { TWELVE_DATA_SOURCE } from "./twelve-data";
 import { ALPHA_VANTAGE_SOURCE } from "./alpha-vantage";
@@ -49,6 +50,24 @@ export async function getFreshnessSummary(now: Date = new Date()): Promise<Sourc
   const health = await readSeriesHealth(now);
   for (const entry of health.entries) record(entry);
 
+  // Une série active qu'aucun passage n'a jamais servie (ou plus servie faute de temps) n'écrit
+  // ni succès ni échec : la source paraissait verte alors qu'une partie de sa liste ne
+  // remontait pas — constaté le 30/09 sur Eurostat et e-Stat. On la compte ici.
+  if (!health.failure) {
+    for (const [source, expected] of expectedTargets()) {
+      const current = bySource.get(source);
+      if (!current || current.tier !== "frais") continue;
+      const covered = health.covered.get(source) ?? new Set<string>();
+      const missing = expected.filter((id) => !covered.has(id));
+      if (missing.length === 0) continue;
+      bySource.set(source, {
+        ...current,
+        tier: "perime",
+        error: `${missing.length} série(s) active(s) jamais collectée(s) : ${missing.slice(0, 5).join(", ")}${missing.length > 5 ? "…" : ""}`,
+      });
+    }
+  }
+
   // Une source configurée dont rien n'est remonté : elle doit se voir, et se lire comme
   // « jamais collectée » plutôt que de disparaître du panneau. Un tuyau qu'on a branché mais
   // qui n'a jamais coulé est une information ; une ligne absente n'en est pas une.
@@ -86,7 +105,36 @@ function configuredSources(): string[] {
   return [...sources];
 }
 
+/** Les cibles actives de chaque source, telles que le cron les traite. */
+function expectedTargets(): Map<string, string[]> {
+  const bySrc: Array<[string, Array<{ target: { kind: string; id: string } }>, Provider]> = [
+    [FRED_SOURCE, ENABLED_SERIES, "fred"],
+    [EUROSTAT_SOURCE, ENABLED_EUROSTAT_SERIES, "eurostat"],
+    [TWELVE_DATA_SOURCE, ENABLED_TWELVE_DATA_SERIES, "twelve-data"],
+    [ALPHA_VANTAGE_SOURCE, ENABLED_ALPHA_VANTAGE_SERIES, "alpha-vantage"],
+    [ONS_SOURCE, ENABLED_ONS_SERIES, "ons"],
+    [ESTAT_SOURCE, ENABLED_ESTAT_SERIES, "estat"],
+    [BOE_SOURCE, ENABLED_BOE_SERIES, "boe"],
+    [BOJ_SOURCE, ENABLED_BOJ_SERIES, "boj"],
+  ];
+  const out = new Map<string, string[]>();
+  for (const [source, series, provider] of bySrc) {
+    const ids = series
+      .filter(
+        (m) =>
+          (m.target.kind === "instrument" ? fournisseurInstrument : fournisseurMacro)(
+            m.target.id,
+          ) === provider,
+      )
+      .map((m) => m.target.id);
+    if (ids.length > 0) out.set(source, [...new Set(ids)]);
+  }
+  return out;
+}
+
 type HealthRead = {
+  /** Par source, les cibles dont au moins un succès est enregistré. */
+  covered: Map<string, Set<string>>;
   entries: SourceFreshness[];
   /** Renseigné quand c'est la lecture qui a échoué, pas la collecte. */
   failure?: string;
@@ -97,6 +145,7 @@ async function readSeriesHealth(now: Date): Promise<HealthRead> {
   if (!client) {
     const manquantes = missingSupabaseConfig().join(", ");
     return {
+      covered: new Map(),
       entries: [],
       failure: `Base non configurée en lecture — ${manquantes} absente(s) des variables d'environnement.`,
     };
@@ -105,13 +154,27 @@ async function readSeriesHealth(now: Date): Promise<HealthRead> {
   try {
     const { data, error } = await client
       .from("series_health")
-      .select("source, last_success_at, last_error, consecutive_failures");
+      .select("source, target_id, last_success_at, last_error, consecutive_failures");
     // Une requête refusée — table absente, politique RLS, droits — n'est pas une collecte qui
     // n'a rien produit. Les confondre envoie chercher la panne du mauvais côté.
-    if (error) return { entries: [], failure: `series_health illisible — ${error.message}` };
-    if (!data) return { entries: [], failure: "series_health n'a rien renvoyé du tout." };
+    if (error) return { covered: new Map(), entries: [], failure: `series_health illisible — ${error.message}` };
+    if (!data) return { covered: new Map(), entries: [], failure: "series_health n'a rien renvoyé du tout." };
 
+    const rows = data as Array<{
+          source: string;
+          target_id: string;
+          last_success_at: string | null;
+          last_error: string | null;
+          consecutive_failures: number;
+        }>;
+    const covered = new Map<string, Set<string>>();
+    for (const row of rows) {
+      if (row.last_success_at === null) continue;
+      if (!covered.has(row.source)) covered.set(row.source, new Set());
+      covered.get(row.source)!.add(row.target_id);
+    }
     return {
+      covered,
       entries: (
         data as Array<{
           source: string;
@@ -130,6 +193,7 @@ async function readSeriesHealth(now: Date): Promise<HealthRead> {
     };
   } catch (err) {
     return {
+      covered: new Map(),
       entries: [],
       failure: `Base injoignable — ${err instanceof Error ? err.message : String(err)}`,
     };
