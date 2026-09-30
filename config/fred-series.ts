@@ -467,6 +467,14 @@ export const FRED_SERIES: FredMapping[] = [
     // de l'OCDE : `JPNB6BLTT02STSAQ` (Japon, 5,3 % du PIB au T4 2024) et `CHNB6BLTT02STSAQ`
     // (Chine, 2,7 %) s'arrêtent au même trimestre. Elles n'ont donc pas d'entrée — `jp-current-
     // account` et `cn-current-account` restent « non suivis », faute d'une autre source libre.
+    // Sondage du même jour sur les candidats FRED pour la Chine, l'Inde et la dette japonaise,
+    // tous écartés : `GGGDTAJPA188N` (dette japonaise, annuelle) et `INTDSRINM193N` (taux indien)
+    // ne renvoient rien depuis 2024 ; `CHNCPIALLMINMEI` (IPC chinois, indice et non taux)
+    // s'arrête en avril 2025, `INDCPIALLMINMEI` (IPC indien) en mars 2025 ; `INTDSRCNM193N` est le
+    // taux d'escompte chinois — une constante à 2,9 jusqu'en juin 2025, pas le LPR que vise
+    // `cn-policy-rate` ; `CHNGDPNQDSMEI` (PIB chinois) est vide depuis 2024. Une source autre que
+    // FRED (FMI, Banque mondiale, PBOC, RBI) reste à explorer avant de déclarer ces six
+    // indicateurs définitivement hors de portée.
     target: { kind: "macro", id: "us-current-account" },
     seriesId: "IEABC",
     units: "lin",
