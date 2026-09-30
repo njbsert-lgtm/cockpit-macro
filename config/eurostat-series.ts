@@ -212,8 +212,9 @@ const CURRENT_ACCOUNT_BOUNDS = { min: -20, max: 25 };
  * `s_adj=NSA` (non corrigé, comme `teina205`). La zone euro est `EA21`, seule composition
  * servie avec `EA20`/`EA19` pour des périodes antérieures.
  *
- * Jamais collectée tant que `npm run eurostat:check` ne l'a pas vue verte : les deux séries sont
- * donc déclarées `enabled: false` dans ce commit et activées au suivant, sur le constat.
+ * Allemagne confirmée par `npm run eurostat:check` le 30/09 : 5,4 % du PIB au T1 2026, 23 points.
+ * Zone euro : `partner=EXT_EA21` confirmé par sondage brut (cinq trimestres, T1 2025 à T1 2026),
+ * contrôle complet à refaire après ce changement.
  */
 function currentAccount(geo: string): EurostatMapping {
   return {
@@ -225,15 +226,17 @@ function currentAccount(geo: string): EurostatMapping {
       s_adj: "NSA",
       bop_item: "CA",
       stk_flow: "BAL",
-      partner: "WRL_REST",
+      // Un pays : ses échanges avec le reste du monde. La zone euro : ses échanges avec
+      // l'extérieur de la zone — `WRL_REST` ne renvoie rien pour elle (constaté par
+      // eurostat:check le 30/09), `EXT_EA21` oui, et c'est la définition de sa balance courante.
+      partner: geo === "EA" ? "EXT_EA21" : "WRL_REST",
       geo: geoFor(geo, "bop_gdp6_q"),
     },
     cadence: "quarterly",
     zone: GEO[geo],
     plausible: CURRENT_ACCOUNT_BOUNDS,
     expect: { frequency: "Quarterly" },
-    enabled: false,
-    disabledReason: "En attente de npm run eurostat:check.",
+    enabled: true,
   };
 }
 
