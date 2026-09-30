@@ -463,6 +463,10 @@ export const FRED_SERIES: FredMapping[] = [
     // demandée allait jusqu'à aujourd'hui. Un écart de deux ans n'est pas un retard de
     // publication normal, c'est une série que l'OCDE a cessé d'alimenter sous cet identifiant.
     // La retenir produirait un indicateur éternellement périmé plutôt qu'un trou honnête.
+    // Même verdict, confirmé par appel réel le 30/09/2026, pour les deux autres balances courantes
+    // de l'OCDE : `JPNB6BLTT02STSAQ` (Japon, 5,3 % du PIB au T4 2024) et `CHNB6BLTT02STSAQ`
+    // (Chine, 2,7 %) s'arrêtent au même trimestre. Elles n'ont donc pas d'entrée — `jp-current-
+    // account` et `cn-current-account` restent « non suivis », faute d'une autre source libre.
     target: { kind: "macro", id: "us-current-account" },
     seriesId: "IEABC",
     units: "lin",
