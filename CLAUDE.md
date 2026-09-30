@@ -1358,7 +1358,13 @@ Un comptage direct du catalogue et des fichiers de configuration, plutôt qu'un 
 d'incréments narrés, fait office de source de vérité à ce stade : au 28/09/2026, `data/seed.json`
 porte 83 instruments et 69 indicateurs — et non 70, le chiffre cité plus haut pour l'arrivée de
 `jp-wages` au catalogue était erroné —, dont 30 instruments et 46 indicateurs sont réellement
-collectés.
+collectés. **Recompté le 30/09/2026** par `fournisseurInstrument`/`fournisseurMacro` : 32
+instruments (spreads compris) et 50 indicateurs sur 83 et 69 — la balance courante zone euro et
+Allemagne (`bop_gdp6_q`, Eurostat) est venue s'ajouter. Les balances courantes américaine,
+japonaise et chinoise (OCDE via FRED) s'arrêtent au T4 2024 et restent écartées, de même que
+les six candidats FRED sondés pour la Chine, l'Inde et la dette japonaise (voir
+`config/fred-series.ts`). Le seed ne porte plus d'observations que pour les séries qu'un
+fournisseur couvre, en repli quand la base est vide.
 
 **Les deux spreads (US10Y/Bund, OAT/Bund) ont ensuite été calculés et stockés** — pas collectés
 au sens d'une nouvelle source, mais dérivés à l'insertion de `us10y`, `de10y` et `fr10y`, tous
