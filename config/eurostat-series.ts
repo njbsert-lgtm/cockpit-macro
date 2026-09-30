@@ -84,6 +84,7 @@ const EURO_AREA_GEO: Record<string, string> = {
   une_rt_m: "EA21",
   teina205: "EA21",
   teina230: "EA21",
+  bop_gdp6_q: "EA21",
 };
 
 /** Traduit notre code de zone en code Eurostat pour un dataset donné. */
@@ -201,6 +202,41 @@ function budgetBalance(geo: string, suffix: string): EurostatMapping {
   };
 }
 
+const CURRENT_ACCOUNT_BOUNDS = { min: -20, max: 25 };
+
+/**
+ * Balance courante en pourcentage du PIB, sur `bop_gdp6_q` (balance des paiements, trimestriel).
+ * Dimensions confirmées par `eurostat:explore` : `bop_item=CA` (compte courant), `stk_flow=BAL`
+ * (solde), `unit=PC_GDP`, `partner=WRL_REST` (reste du monde — la balance d'un pays avec tous
+ * les autres ; pour la zone euro, les partenaires « extra-zone » sont un autre périmètre),
+ * `s_adj=NSA` (non corrigé, comme `teina205`). La zone euro est `EA21`, seule composition
+ * servie avec `EA20`/`EA19` pour des périodes antérieures.
+ *
+ * Jamais collectée tant que `npm run eurostat:check` ne l'a pas vue verte : les deux séries sont
+ * donc déclarées `enabled: false` dans ce commit et activées au suivant, sur le constat.
+ */
+function currentAccount(geo: string): EurostatMapping {
+  return {
+    target: { kind: "macro", id: idFor(geo, "current-account") },
+    dataset: "bop_gdp6_q",
+    dimensions: {
+      freq: "Q",
+      unit: "PC_GDP",
+      s_adj: "NSA",
+      bop_item: "CA",
+      stk_flow: "BAL",
+      partner: "WRL_REST",
+      geo: geoFor(geo, "bop_gdp6_q"),
+    },
+    cadence: "quarterly",
+    zone: GEO[geo],
+    plausible: CURRENT_ACCOUNT_BOUNDS,
+    expect: { frequency: "Quarterly" },
+    enabled: false,
+    disabledReason: "En attente de npm run eurostat:check.",
+  };
+}
+
 const DEBT_GDP_BOUNDS = { min: 0, max: 250 };
 
 /**
@@ -309,6 +345,10 @@ export const EUROSTAT_SERIES: EurostatMapping[] = [
   // --- Solde budgétaire (zone euro et France uniquement) --------------------
   budgetBalance("EA", "budget-balance"),
   budgetBalance("FR", "budget-balance"),
+
+  // --- Balance courante (zone euro et Allemagne) ------------------------------
+  currentAccount("EA"),
+  currentAccount("DE"),
 
   // --- Dette publique / PIB (zone euro, France, Italie) ----------------------
   debtGdp("EA", "debt-gdp"),
