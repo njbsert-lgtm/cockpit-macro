@@ -208,5 +208,107 @@ export const GENERATED_SCENARIO_VERSIONS: ScenarioVersion[] = [
       }
     },
     "watchSignals": "Une frappe confirmée sur une infrastructure d'exportation saoudienne, ou une riposte américaine documentée."
+  },
+  {
+    "driverId": "rates",
+    "branchId": "rates-statu-quo",
+    "version": 6,
+    "date": "2026-10-03",
+    "noteSlug": "2026-S40",
+    "likelihood": "central",
+    "likelihoodChangedFrom": "moderee",
+    "why": "Williams et Jefferson écartent l'urgence de resserrer, l'emploi de septembre déçoit, la révision méthodologique du PCE abaisse la prévision de Goldman Sachs sous la médiane du FOMC, et Goldman Sachs repousse sa deuxième hausse 2026 à décembre en jugeant qu'elle pourrait ne jamais survenir.",
+    "thesis": "La Fed marque une pause prolongée ; la hausse de septembre pourrait être la dernière du cycle, sauf nouvelle surprise inflationniste.",
+    "impacts": {
+      "eq": {
+        "direction": "up",
+        "label": "Actions",
+        "text": "Une pause Fed soutient la poursuite du rallye actions US, concentré sur les méga-caps IA."
+      },
+      "fi": {
+        "direction": "down",
+        "label": "Taux",
+        "text": "Les rendements longs ont du mal à reprendre leur ascension si le marché acte un plafond atteint sur les Fed funds."
+      },
+      "fx": {
+        "direction": "down",
+        "label": "Change",
+        "text": "Le dollar perd du terrain sur l'anticipation d'un cycle de hausses achevé."
+      },
+      "cm": {
+        "direction": "flat",
+        "label": "Matières premières",
+        "text": "Le pétrole reste porté par les tensions d'offre sur le diesel malgré le recul du Brent en fin de semaine, dépendant de la décision américaine sur les exportations."
+      }
+    },
+    "watchSignals": "Minutes de la Fed du 07/10 ; rapport sur l'emploi de septembre ; confirmation ou démenti d'un déblocage de réserves stratégiques."
+  },
+  {
+    "driverId": "rates",
+    "branchId": "rates-hausse",
+    "version": 6,
+    "date": "2026-10-03",
+    "noteSlug": "2026-S40",
+    "likelihood": "moderee",
+    "likelihoodChangedFrom": "central",
+    "why": "Torsten Slok (Apollo) documente un effondrement du seuil d'équilibre de créations d'emplois, transformant un chiffre d'emploi jugé faible en signal de marché du travail solide — mais ce n'est plus la lecture qui domine le pricing de marché.",
+    "thesis": "Avec une inflation encore significativement au-dessus de la cible et un marché du travail jugé solide par ce nouveau dénominateur, la Fed pourrait justifier un resserrement supplémentaire.",
+    "impacts": {
+      "eq": {
+        "direction": "down",
+        "label": "Actions",
+        "text": "Un risque de taux terminal plus élevé pèserait sur les multiples, en particulier hors mégacaps IA."
+      },
+      "fi": {
+        "direction": "up",
+        "label": "Taux",
+        "text": "Les rendements longs reprendraient leur hausse si cette lecture redevenait consensuelle."
+      },
+      "fx": {
+        "direction": "up",
+        "label": "Change",
+        "text": "Le dollar se raffermirait sur un scénario de resserrement prolongé."
+      },
+      "cm": {
+        "direction": "up",
+        "label": "Matières premières",
+        "text": "La persistance d'une inflation élevée entretiendrait la prime sur l'énergie."
+      }
+    },
+    "watchSignals": "Nouvelle lecture du seuil d'équilibre de l'emploi par Apollo ; réaction du FOMC aux minutes du 07/10."
+  },
+  {
+    "driverId": "rates",
+    "branchId": "rates-baisses",
+    "version": 6,
+    "date": "2026-10-03",
+    "noteSlug": "2026-S40",
+    "likelihood": "faible",
+    "likelihoodChangedFrom": null,
+    "why": "Aucun choc de demande ni dégradation franche du marché du travail n'est documenté cette semaine ; la pause envisagée est un plafond, pas un pivot vers l'assouplissement.",
+    "thesis": "Un retour aux baisses resterait conditionné à une détérioration nette de l'emploi ou un reflux net de l'inflation — aucun des deux n'est engagé.",
+    "impacts": {
+      "eq": {
+        "direction": "up",
+        "label": "Actions",
+        "text": "Ce scénario resterait le plus favorable aux actifs risqués, mais rien ne l'appelle actuellement."
+      },
+      "fi": {
+        "direction": "down",
+        "label": "Taux",
+        "text": "Les rendements longs reculeraient nettement si ce scénario se matérialisait."
+      },
+      "fx": {
+        "direction": "down",
+        "label": "Change",
+        "text": "Le dollar s'affaiblirait sur un repricing de baisses effectives."
+      },
+      "cm": {
+        "direction": "down",
+        "label": "Matières premières",
+        "text": "Un choc de demande ferait reculer l'ensemble du complexe énergétique."
+      }
+    },
+    "watchSignals": "Dégradation marquée du rapport sur l'emploi ; signal de ralentissement net de la consommation américaine."
   }
 ];
