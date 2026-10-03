@@ -1,5 +1,6 @@
 import type { VeilleItem, VeilleChannel, Zone } from "@/lib/types";
 import { getReadClient } from "@/lib/supabase";
+import { isMinorEdgarItem } from "./sources/edgar";
 
 /**
  * La lecture de `/triage`. Pas d'équivalent seed pour la veille — c'est une file, pas une
@@ -53,7 +54,9 @@ export async function getPendingVeilleItems(): Promise<VeilleItem[]> {
       .eq("status", "nouveau")
       .order("published_at", { ascending: false });
     if (error || !data) return [];
-    return (data as Row[]).map(fromRow);
+    // Les dépôts mineurs ne sont plus collectés mais vieillissent jusqu'à la purge : on les
+    // masque de la file plutôt que de les laisser encombrer le tri pendant quinze jours.
+    return (data as Row[]).map(fromRow).filter((i) => !isMinorEdgarItem(i.source, i.title));
   } catch {
     return [];
   }
@@ -79,18 +82,24 @@ export async function getVeilleItemsByIds(ids: string[]): Promise<VeilleItem[]> 
   }
 }
 
-/** Le compteur affiché sur le bouton de l'onglet Notes — une requête `count` seule, sans corps. */
+/**
+ * Le compteur affiché sur le bouton de l'onglet Notes. Il lit source et titre plutôt qu'un
+ * `count` seul : il doit ignorer les dépôts mineurs masqués de la file, et un compteur qui
+ * compterait ce que la file ne montre pas mentirait.
+ */
 export async function getPendingVeilleCount(): Promise<number> {
   const client = getReadClient();
   if (!client) return 0;
 
   try {
-    const { count, error } = await client
+    const { data, error } = await client
       .from("veille_items")
-      .select("id", { count: "exact", head: true })
+      .select("source, title")
       .eq("status", "nouveau");
-    if (error || count === null) return 0;
-    return count;
+    if (error || !data) return 0;
+    return (data as Array<{ source: string; title: string }>).filter(
+      (r) => !isMinorEdgarItem(r.source, r.title),
+    ).length;
   } catch {
     return 0;
   }

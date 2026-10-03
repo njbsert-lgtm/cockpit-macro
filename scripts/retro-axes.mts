@@ -18,6 +18,7 @@ import { getReadClient, getWriteClient } from "../lib/supabase";
 import { getActiveDrivers, getLatestNote } from "../lib/content";
 import { AXES } from "../content/axes";
 import { CLASSIFICATION_MODEL } from "../config/ai-models";
+import { isMinorEdgarItem } from "../lib/veille/sources/edgar";
 
 const caller = getAnthropicCaller();
 if (!caller) {
@@ -50,7 +51,7 @@ if (error) {
   process.exit(1);
 }
 const toutes = (data ?? []) as Row[];
-const items = toutes.filter((r) => r.is_signal);
+const items = toutes.filter((r) => r.is_signal && !isMinorEdgarItem(r.source, r.title));
 console.log(
   `${toutes.length} item(s) classé(s) par la passe 2 en base, dont ${items.length} retenu(s) comme signal — ce sont ces derniers qu'on reclasse.`,
 );

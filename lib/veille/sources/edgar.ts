@@ -17,6 +17,34 @@ const RECENT_FILINGS_LOOKBACK_DAYS = 7;
 // avec une adresse de contact réelle avant mise en service.
 const USER_AGENT = process.env.SEC_EDGAR_USER_AGENT ?? "Marguerite (contact non renseigné)";
 
+/**
+ * Les seuls formulaires collectés : ceux qui portent de l'information pour un cockpit macro —
+ * résultats (10-Q, 10-K), événements significatifs (8-K), introductions en bourse (S-1) et
+ * l'équivalent des émetteurs étrangers (20-F), amendements compris.
+ *
+ * Tout le reste est écarté **à la collecte**, pas au tri : transactions d'initiés (3, 4, 5), ventes
+ * projetées (144), participations (13D, 13G)… Un titre de ces dépôts ne dit rien de leur contenu,
+ * et la passe 2, qui ne voit que le titre, les rattachait pourtant à un axe — constaté sur le
+ * classement rétrospectif du 03/10/2026 : cinq des neuf rattachements étaient des dépôts 4.
+ */
+export const MAJOR_EDGAR_FORMS: readonly string[] = ["8-K", "10-K", "10-Q", "S-1", "20-F"];
+
+export function isMajorEdgarForm(form: string): boolean {
+  const base = form.trim().toUpperCase().replace(/\/A$/, "");
+  return MAJOR_EDGAR_FORMS.includes(base);
+}
+
+/**
+ * Reconnaît un dépôt mineur déjà écrit en base, à son titre (« Meta — dépôt 4 du 2026-09-21 »).
+ * Ces lignes ne seront plus collectées mais vieillissent jusqu'à la purge de quinze jours : on
+ * les exclut du classement en attendant.
+ */
+export function isMinorEdgarItem(source: string, title: string): boolean {
+  if (source !== EDGAR_SOURCE) return false;
+  const match = /— dépôt (\S+) du /.exec(title);
+  return match !== null && !isMajorEdgarForm(match[1]);
+}
+
 const submissionsSchema = z.object({
   filings: z.object({
     recent: z.object({
@@ -51,6 +79,7 @@ export function parseEdgarSubmissions(
   for (let i = 0; i < form.length; i += 1) {
     const date = filingDate[i];
     if (!date || new Date(date) < cutoff) continue;
+    if (!isMajorEdgarForm(form[i])) continue;
 
     candidates.push({
       title: `${issuer.name} — dépôt ${form[i]} du ${date}`,
