@@ -249,6 +249,50 @@ qu'aucune vérification n'a touchée. Toujours suivie de la date de la valeur.
 - Sur une fiche, une phrase sous la valeur étend l'étiquette au graphique, aux performances
   et à l'historique.
 
+### Compteur d'angles morts
+
+Deux compteurs, **jamais fondus en un seul** : « avec driver, sans axe » dit qu'il manque une
+dimension à un driver existant, « sans driver » dit que le marché suit une force absente de la
+grille. Ils ne se lisent pas de la même façon et n'ont pas le même seuil. Aucun composant nouveau :
+tout est emprunté à des motifs déjà posés.
+
+**Sur l'accueil** — sous les cartes de driver, une **en-tête de section** (« Angles morts »,
+compteur discret « 91 jours », ligne de note de 12.5px `--doux`), puis la **grille des indicateurs
+clés** de l'en-tête : deux colonnes, rayon `--rc`, bordure et séparateur `--trait`. Chaque cellule
+porte son libellé en 9.5px capitales `--tenu`, la valeur en 13px poids 600 `--encre`, puis une ligne
+de 11px `--tenu` (« seuil : trois sur un même driver »). Les cellules ne sont pas des liens : aucun
+écran ne leur correspond, l'accès au détail se fait par la page du driver.
+
+**Sur la page d'un driver** — en dernière section, titre 17px et compteur discret à droite
+(« 2 en 91 jours », motif de l'en-tête de section). La liste reprend le **rappel de calendrier** :
+panneau `--repos`, une ligne par événement — date en 10.5px `--tenu`, titre en lien souligné vers
+la source, puis « Axe manquant : » et le libellé proposé en 12px `--tenu`. Une phrase de 12px
+`--tenu` en pied donne le second compteur (« Sans driver sur le trimestre : 1 »), avec un lien vers
+l'accueil.
+
+**Seuil** — la **pastille de statut du guet** : fond à 11 % d'opacité de la couleur, texte à la
+couleur pleine, libellé toujours écrit. « Seuil atteint » en `bg-k-choc/11 text-k-choc`, le même
+ocre que « expiré » : une discipline rompue, ici une grille qui a un trou. Sous le seuil, aucune
+pastille — un compteur qui crie sans raison finit par ne plus être lu. Quand le seuil est atteint,
+la cellule ou la liste nomme le driver ou le sujet concerné.
+
+**Chromatique** — ce sont des décomptes, ni des performances ni des contenus : le vert et le rouge
+leur sont interdits, la valeur reste en `--encre`. La couleur de canal ne sert qu'à la pastille de
+seuil, et le libellé ne dépend jamais d'elle.
+
+**Les états** :
+1. *Normal* — les deux valeurs, la pastille si un seuil est atteint.
+2. *Chargement* — deux cellules `--repos` à la forme de la grille ; jamais un spinner.
+3. *Vide* — la table est lisible et ne contient rien : « Aucun angle mort sur les 91 derniers
+   jours — tout ce qui a été jugé de matérialité haute s'est rattaché à un axe. » C'est un vrai
+   zéro, et la phrase dit ce qu'il signifie.
+4. *Périmé* — sans objet : le compteur se recalcule à chaque lecture depuis la table. La fraîcheur
+   de la passe 2 est un autre signal, déjà porté par le point de la barre.
+5. *Erreur* — table illisible (migration non appliquée, base injoignable) : l'**étiquette** « Non
+   mesuré » (fond `--repos`, rayon `--rp`, capitales 9.5px, texte `--k-choc`, comme « Non
+   collecté ») à la place de la valeur, avec une phrase qui nomme la cause. **Jamais un 0** : il
+   affirmerait que la grille tient alors qu'on n'en sait rien.
+
 ### Portail de rédaction
 
 Reprend le **motif de validation de la liste d'archive**, que cette charte invite déjà à
