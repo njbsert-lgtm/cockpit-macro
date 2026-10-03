@@ -132,6 +132,7 @@ veilleItemRefs: []
 - \`channels\` : de un à trois, le premier étant le canal dominant — il donne sa couleur à la carte de la note. Parmi \`taux-reel\`, \`nature-choc\`, \`fonction-reaction\`, \`dollar\`, \`positionnement\`.
 - \`driverOrder\` : une permutation exacte des drivers actifs, du plus explicatif des mouvements récents au moins — jamais un sous-ensemble ni un doublon.
 - \`trendRefs\`, \`instrumentRefs\`, \`veilleItemRefs\` : uniquement des identifiants présents dans le contexte. Une référence inconnue bloque le run.
+- \`instrumentRefs\` n'accepte **que des instruments de marché** (\`brent\`, \`us10y\`, \`spx\`, \`eurusd\`…), jamais un indicateur macro. \`us-policy-rate\`, \`us-unemployment\`, \`fr-cpi\`, \`ez-cpi\` et tous les identifiants du type \`zone-indicateur\` figurent bien dans le contexte, mais ils ne sont pas des instruments : ils se citent **en prose seulement**, avec leur émetteur et leur date, et ne vont jamais dans le frontmatter. Une liste vide est une réponse valide.
 
 ## Le corps
 
