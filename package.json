@@ -18,6 +18,7 @@
     "twelve-data:check": "tsx --env-file-if-exists=.env.local scripts/twelve-data-check.mts",
     "alphavantage:check": "tsx --env-file-if-exists=.env.local scripts/alpha-vantage-check.mts",
     "veille:classer": "tsx --env-file-if-exists=.env.local scripts/classer-veille.mts",
+    "veille:retro-axes": "tsx --env-file-if-exists=.env.local scripts/retro-axes.mts",
     "veille:ajouter": "tsx --env-file-if-exists=.env.local scripts/ajouter-veille-item.mts",
     "notion:check": "tsx --env-file-if-exists=.env.local scripts/notion-check.mts",
     "note:draft": "tsx --env-file-if-exists=.env.local scripts/rediger-note.mts",

@@ -1,0 +1,40 @@
+# Classement rétrospectif des items de veille contre les axes des drivers — lecture seule.
+#
+# Raison d'être : mesurer l'écart entre les axes posés a priori (`content/axes.ts`) et ce qui
+# remonte réellement de la veille, avant qu'un compteur d'angles morts ne l'agrège. Ne commit
+# rien et n'écrit rien en base ; lancé à la main, il consomme du crédit API (Haiku, par lots).
+
+name: Veille — classement rétrospectif par axe
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  retro:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Classer les items contre les axes
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+        run: |
+          set +e -o pipefail
+          {
+            echo '## Classement rétrospectif par axe'
+            echo '```'
+          } | tee -a "$GITHUB_STEP_SUMMARY"
+          npm run veille:retro-axes --silent 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
+          code=$?
+          echo '```' | tee -a "$GITHUB_STEP_SUMMARY"
+          exit $code
