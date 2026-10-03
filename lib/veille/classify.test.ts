@@ -8,7 +8,7 @@ import { CLASSIFICATION_MODEL } from "@/config/ai-models";
 type Write = { table: string; id: string; patch: Record<string, unknown> };
 
 /** Un faux client Supabase qui enregistre chaque `update().eq()` sans jamais lire `status`. */
-function fakeClient() {
+function fakeClient(options: { refuseEtape4?: boolean } = {}) {
   const writes: Write[] = [];
   const client = {
     from(table: string) {
@@ -17,7 +17,11 @@ function fakeClient() {
           return {
             eq(_column: string, id: string) {
               writes.push({ table, id, patch });
-              return Promise.resolve({ error: null });
+              // Une base dont la migration de l'étape 4 n'est pas appliquée refuse ces colonnes.
+              const refus = options.refuseEtape4 && "axe_id" in patch;
+              return Promise.resolve({
+                error: refus ? { message: 'column "axe_id" of relation "veille_items" does not exist' } : null,
+              });
             },
           };
         },
@@ -73,7 +77,8 @@ describe("classifyVeilleItems — écriture", () => {
 
     expect(report.ok).toBe(1);
     expect(report.failed).toBe(0);
-    expect(writes).toHaveLength(1);
+    // Deux écritures : la classification d'origine, puis les champs de l'étape 4 à part.
+    expect(writes).toHaveLength(2);
     expect(writes[0].table).toBe("veille_items");
     expect(writes[0].id).toBe("abc123");
     expect(writes[0].patch).toMatchObject({
@@ -244,5 +249,126 @@ describe("classifyVeilleItems — découpage en lots", () => {
     await classifyVeilleItems(client, items, CONTEXT, caller, { batchSize: 10 });
 
     expect(caller).toHaveBeenCalledTimes(3); // 10 + 10 + 5
+  });
+});
+
+describe("classifyVeilleItems — axes, matérialité et guets (étape 4)", () => {
+  const AXES = [
+    {
+      id: "inflation-sous-jacente",
+      driverId: "rates",
+      libelle: "Inflation sous-jacente",
+      mecanisme: "m",
+      instruments: ["us1y"],
+      macros: [],
+      lisibilite: "directe" as const,
+      limite: "",
+    },
+    {
+      id: "monetisation",
+      driverId: "ai",
+      libelle: "Monétisation",
+      mecanisme: "m",
+      instruments: ["ndx"],
+      macros: [],
+      lisibilite: "indirecte" as const,
+      limite: "x",
+    },
+  ];
+  const CTX = { ...CONTEXT, axes: AXES, guets: [] };
+
+  function appeler(value: Record<string, unknown>) {
+    return vi.fn(async () => ({
+      value: { items: [classification(value)] },
+      usage: { input: 1, output: 1 },
+    })) as unknown as StructuredCaller;
+  }
+
+  it("écrit l'axe, la matérialité et le guet dans une écriture séparée", async () => {
+    const { client, writes } = fakeClient();
+    const report = await classifyVeilleItems(
+      client,
+      [item()],
+      CTX,
+      appeler({ axeId: "inflation-sous-jacente", materialite: "haute", resoutGuet: null, axeManquantPropose: null }),
+    );
+
+    expect(writes[1].patch).toEqual({
+      axe_id: "inflation-sous-jacente",
+      materialite: "haute",
+      resout_guet: null,
+      axe_manquant_propose: null,
+    });
+    expect(report.outcomes[0]).toMatchObject({ ok: true, axeId: "inflation-sous-jacente", materialite: "haute" });
+  });
+
+  it("une base sans les colonnes de l'étape 4 ne casse jamais la classification d'origine", async () => {
+    const { client } = fakeClient({ refuseEtape4: true });
+    const report = await classifyVeilleItems(
+      client,
+      [item()],
+      CTX,
+      appeler({ axeId: null, materialite: "faible", resoutGuet: null, axeManquantPropose: null }),
+    );
+
+    expect(report.ok).toBe(1);
+    expect(report.failed).toBe(0);
+    expect(report.outcomes[0].etape4NonEcrite).toBe(true);
+  });
+
+  it("écarte un axe qui n'appartient à aucun driver de l'item, et le signale", async () => {
+    const { client, writes } = fakeClient();
+    // L'item est rattaché au seul driver `rates` ; l'axe cité appartient à `ai`.
+    const report = await classifyVeilleItems(
+      client,
+      [item()],
+      CTX,
+      appeler({ axeId: "monetisation", materialite: "moyenne", resoutGuet: null, axeManquantPropose: null }),
+    );
+
+    expect(writes[1].patch.axe_id).toBeNull();
+    expect(report.outcomes[0]).toMatchObject({ axeId: null, axeIncoherent: true });
+  });
+
+  it("garde « aucun axe » : un item avec driver, sans axe, reste visible comme tel", async () => {
+    const { client } = fakeClient();
+    const report = await classifyVeilleItems(
+      client,
+      [item()],
+      CTX,
+      appeler({ axeId: null, materialite: "haute", resoutGuet: null, axeManquantPropose: "Canal du Fed souverain" }),
+    );
+
+    expect(report.outcomes[0]).toMatchObject({
+      axeId: null,
+      materialite: "haute",
+      axeManquantPropose: "Canal du Fed souverain",
+    });
+  });
+
+  it("montre les axes et les guets au modèle, et ne lui laisse citer que ceux-là", async () => {
+    const { client } = fakeClient();
+    const caller = appeler({ axeId: null, materialite: "faible", resoutGuet: null, axeManquantPropose: null });
+    await classifyVeilleItems(client, [item()], { ...CTX, guets: [{ id: "g1", driverId: "rates", libelle: "FOMC", attendu: "a", confirmeSi: "b", infirmeSi: "c" }] }, caller);
+
+    const appel = (caller as unknown as { mock: { calls: Array<[{ user: string; schema: { safeParse: (v: unknown) => { success: boolean } } }]> } }).mock.calls[0][0];
+    expect(appel.user).toContain("inflation-sous-jacente");
+    expect(appel.user).toContain("g1 | driver rates | FOMC");
+    const base = { id: "abc123", isSignal: true, nature: "flux", driverRefs: ["rates"], channels: [], zones: ["us"], horizon: "immediat", materialite: "faible", axeManquantPropose: null, reasoning: "r" };
+    // Un axe ou un guet inconnu est refusé par le schéma, jamais écrit.
+    expect(appel.schema.safeParse({ items: [{ ...base, axeId: "inventé", resoutGuet: null }] }).success).toBe(false);
+    expect(appel.schema.safeParse({ items: [{ ...base, axeId: null, resoutGuet: "inventé" }] }).success).toBe(false);
+    expect(appel.schema.safeParse({ items: [{ ...base, axeId: "monetisation", resoutGuet: "g1" }] }).success).toBe(true);
+  });
+
+  it("sans grille fournie, aucun axe ni guet n'est acceptable : seul null passe", async () => {
+    const { client } = fakeClient();
+    const caller = appeler({ axeId: null, materialite: "faible", resoutGuet: null, axeManquantPropose: null });
+    await classifyVeilleItems(client, [item()], CONTEXT, caller);
+
+    const appel = (caller as unknown as { mock: { calls: Array<[{ schema: { safeParse: (v: unknown) => { success: boolean } } }]> } }).mock.calls[0][0];
+    const base = { id: "abc123", isSignal: true, nature: "flux", driverRefs: ["rates"], channels: [], zones: ["us"], horizon: "immediat", materialite: "faible", axeManquantPropose: null, resoutGuet: null, reasoning: "r" };
+    expect(appel.schema.safeParse({ items: [{ ...base, axeId: "monetisation" }] }).success).toBe(false);
+    expect(appel.schema.safeParse({ items: [{ ...base, axeId: null }] }).success).toBe(true);
   });
 });

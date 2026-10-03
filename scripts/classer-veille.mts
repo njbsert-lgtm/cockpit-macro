@@ -15,7 +15,8 @@ import { getAnthropicCaller } from "../lib/anthropic";
 import { getWriteClient, missingSupabaseConfig } from "../lib/supabase";
 import { getPendingVeilleItems } from "../lib/veille/queries";
 import { classifyVeilleItems } from "../lib/veille/classify";
-import { getActiveDrivers } from "../lib/content";
+import { getActiveDrivers, getLatestNote } from "../lib/content";
+import { AXES } from "../content/axes";
 import { CLASSIFICATION_MODEL } from "../config/ai-models";
 
 const caller = getAnthropicCaller();
@@ -42,7 +43,12 @@ const drivers = getActiveDrivers().map((d) => ({ id: d.id, label: d.label, quest
 
 console.log(`${items.length} item(s) en attente, ${drivers.length} driver(s) actif(s).`);
 
-const report = await classifyVeilleItems(client, items, { drivers }, caller);
+// Les guets ouverts de la dernière note publiée : ce sont ceux qu'un item peut résoudre.
+const guets = (getLatestNote()?.guets ?? []).filter((g) => g.statut === "ouvert");
+
+console.log(`${AXES.length} axe(s) et ${guets.length} guet(s) ouvert(s) montrés au modèle.`);
+
+const report = await classifyVeilleItems(client, items, { drivers, axes: AXES, guets }, caller);
 
 console.log(`\n${report.ok}/${items.length} classé(s), ${report.failed} en échec, ${report.skipped} omis.`);
 for (const outcome of report.outcomes.filter((o) => !o.ok)) {
@@ -50,6 +56,18 @@ for (const outcome of report.outcomes.filter((o) => !o.ok)) {
 }
 
 const classes = report.outcomes.filter((o) => o.ok);
+
+// La migration de l'étape 4 n'est pas appliquée : la passe fonctionne, mais rien n'est écrit
+// des axes. Dit une fois, clairement, plutôt que de laisser croire que tout est enregistré.
+if (classes.some((o) => o.etape4NonEcrite)) {
+  console.log(
+    "\n⚠ Colonnes de l'étape 4 absentes (axe_id, materialite, resout_guet, axe_manquant_propose) : " +
+      "appliquer la migration de supabase/schema.sql. La classification d'origine est écrite ; " +
+      "axes, matérialité et guets ne le sont pas.",
+  );
+}
+const incoherents = classes.filter((o) => o.axeIncoherent).length;
+if (incoherents > 0) console.log(`${incoherents} rattachement(s) à un axe étranger au driver de l'item, écarté(s).`);
 const signal = classes.filter((o) => o.isSignal === true);
 
 console.log(`\n${signal.length}/${classes.length} retenu(s) comme signal.`);

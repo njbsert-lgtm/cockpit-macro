@@ -32,9 +32,24 @@ const ZONES = [
   "global",
 ] as const satisfies readonly Zone[];
 
-export function buildClassificationSchema(itemIds: readonly [string, ...string[]], driverIds: string[]) {
+export const MATERIALITES = ["haute", "moyenne", "faible"] as const;
+
+/**
+ * Ce que la passe 2 sait de la grille au-delà des drivers : les axes (chemins de transmission,
+ * `content/axes.ts`) et les guets ouverts. Absents, les champs correspondants n'acceptent que
+ * `null` — une réponse ne peut jamais citer un axe ou un guet qu'on ne lui a pas montré.
+ */
+export type ClassificationGrille = { axeIds?: string[]; guetIds?: string[] };
+
+export function buildClassificationSchema(
+  itemIds: readonly [string, ...string[]],
+  driverIds: string[],
+  grille: ClassificationGrille = {},
+) {
   const driverEnum =
     driverIds.length > 0 ? z.enum(driverIds as [string, ...string[]]) : z.never();
+  const axeIds = grille.axeIds ?? [];
+  const guetIds = grille.guetIds ?? [];
 
   const itemSchema = z.object({
     id: z.enum(itemIds),
@@ -44,6 +59,12 @@ export function buildClassificationSchema(itemIds: readonly [string, ...string[]
     channels: z.array(z.enum(CHANNELS)),
     zones: z.array(z.enum(ZONES)).min(1),
     horizon: z.enum(["immediat", "semaine", "trimestre", "structurel"]),
+    // Étape 4 — « aucun » est une réponse légitime : un item rattaché à un driver mais à aucun
+    // de ses axes est précisément ce que le compteur d'angles morts doit voir.
+    axeId: axeIds.length > 0 ? z.enum(axeIds as [string, ...string[]]).nullable() : z.null(),
+    materialite: z.enum(MATERIALITES),
+    resoutGuet: guetIds.length > 0 ? z.enum(guetIds as [string, ...string[]]).nullable() : z.null(),
+    axeManquantPropose: z.string().max(140).nullable(),
     // Traçabilité de l'appel, jamais écrite en base — c'est ce qu'un humain relirait dans les
     // journaux du run s'il voulait comprendre un classement contestable.
     reasoning: z.string().max(300),

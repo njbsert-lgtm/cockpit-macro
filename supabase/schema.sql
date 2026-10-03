@@ -121,6 +121,15 @@ alter table veille_items add column if not exists horizon text
   check (horizon in ('immediat', 'semaine', 'trimestre', 'structurel'));
 alter table veille_items add column if not exists classified_at timestamptz;
 
+-- Étape 4 — le classement par axe (`content/axes.ts`), la matérialité et le guet résolu, posés par
+-- la passe 2. Écrits dans une mise à jour séparée : tant que cette migration n'est pas appliquée,
+-- la passe quotidienne continue de classer, sans enregistrer ces quatre champs.
+alter table veille_items add column if not exists axe_id text;
+alter table veille_items add column if not exists materialite text
+  check (materialite in ('haute', 'moyenne', 'faible'));
+alter table veille_items add column if not exists resout_guet text;
+alter table veille_items add column if not exists axe_manquant_propose text;
+
 -- L'état d'avancement d'une collecte qui déborde le budget de temps d'un seul passage — GDELT
 -- interroge (thème × pays) une combinaison à la fois ; si le passage du jour s'arrête à mi-
 -- parcours, celui de demain reprend à la combinaison suivante plutôt que de tout refaire ou de
