@@ -372,3 +372,44 @@ describe("classifyVeilleItems — axes, matérialité et guets (étape 4)", () =
     expect(appel.schema.safeParse({ items: [{ ...base, axeId: null }] }).success).toBe(true);
   });
 });
+
+describe("classifyVeilleItems — un item fautif ne fait pas perdre tout son lot", () => {
+  it("rejoue un lot rejeté item par item, et ne fait échouer que l'item fautif", async () => {
+    const { client, writes } = fakeClient();
+    let appels = 0;
+    const caller = vi.fn(async (req: { user: string }) => {
+      appels += 1;
+      // Le lot de trois est rejeté ; rejoué seul, « def456 » échoue encore, pas les deux autres.
+      if (req.user.includes("def456")) throw new Error("canal invalide");
+      const ids = [...req.user.matchAll(/id=(\w+)/g)].map((m) => m[1]);
+      return { value: { items: ids.map((id) => classification({ id })) }, usage: { input: 1, output: 1 } };
+    }) as unknown as StructuredCaller;
+
+    const report = await classifyVeilleItems(
+      client,
+      [item({ id: "abc123" }), item({ id: "def456" }), item({ id: "ghi789" })],
+      CONTEXT,
+      caller,
+    );
+
+    expect(report.ok).toBe(2);
+    expect(report.failed).toBe(1);
+    expect(report.outcomes.find((o) => !o.ok)).toMatchObject({ id: "def456", error: "canal invalide" });
+    // Un appel pour le lot, puis un par item.
+    expect(appels).toBe(4);
+    // Rien n'a été écrit pour l'item fautif.
+    expect(writes.some((w) => w.id === "def456")).toBe(false);
+  });
+
+  it("n'isole qu'une fois : un item seul qui échoue n'est pas rejoué", async () => {
+    const { client } = fakeClient();
+    const caller = vi.fn(async () => {
+      throw new Error("réponse malformée");
+    }) as unknown as StructuredCaller;
+
+    const report = await classifyVeilleItems(client, [item()], CONTEXT, caller);
+
+    expect(report.failed).toBe(1);
+    expect(caller).toHaveBeenCalledTimes(1);
+  });
+});

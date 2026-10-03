@@ -42,6 +42,8 @@ Ce qui suit s'applique quand une grille d'axes et des guets vous sont fournis.
 
 materialite : haute si l'événement, à supposer qu'il se confirme, déplace à lui seul la vraisemblance d'une branche d'un driver ; moyenne s'il informe un axe sans le déplacer ; faible s'il ne fait que donner du contexte. Vous ne voyez que le titre : un titre qui ne dit pas ce qui s'est produit — par exemple « dépôt 8-K du 2026-09-21 » — ne justifie jamais une matérialité haute.
 
+ATTENTION — ne confondez pas les deux grilles. Les CANAUX (taux-reel, nature-choc, fonction-reaction, dollar, positionnement) vont dans « channels », et dans « channels » seulement. Les AXES (fournis plus bas, propres à chaque driver) vont dans « axeId », et dans « axeId » seulement. Un axe n'est jamais un canal : « fonction-reaction » est un canal, pas l'axe d'un driver.
+
 axeId : chaque driver a des axes, c'est-à-dire des chemins précis par lesquels son incertitude atteint les prix. Rattachez l'item à un axe SEULEMENT si le mécanisme décrit est bien celui par lequel l'événement atteint les prix — une proximité de thème ne suffit pas. « Aucun axe » (null) est une réponse légitime et attendue, jamais un échec : ne forcez jamais un rattachement. Un item qui touche un driver sans entrer dans aucun de ses axes montre que la grille n'a pas de case pour lui, et c'est une information précieuse. L'axe choisi doit appartenir à l'un des drivers de l'item.
 
 axeManquantPropose : seulement quand axeId est null et que la matérialité est haute ou moyenne — en une courte expression, le chemin de transmission qui manque, pas un résumé de l'item. Sinon null.
@@ -204,7 +206,14 @@ export async function classifyVeilleItems(
   let usageInput = 0;
   let usageOutput = 0;
 
-  for (const batch of batches) {
+  // Un seul item mal formé fait rejeter tout son lot : la validation du schéma est atomique.
+  // Plutôt que de perdre dix classements pour un seul, un lot rejeté est rejoué item par item ;
+  // seul l'item fautif échoue alors réellement.
+  const aClasser: VeilleItem[][] = [...batches];
+  const dejaIsoles = new Set<VeilleItem[]>();
+
+  for (let b = 0; b < aClasser.length; b += 1) {
+    const batch = aClasser[b];
     if (batch.length === 0) continue;
     const itemIds = batch.map((i) => i.id) as [string, ...string[]];
     const axes = context.axes ?? [];
@@ -235,8 +244,15 @@ export async function classifyVeilleItems(
         thinking: false,
       });
     } catch (err) {
-      // Un lot entier en échec : rien n'est écrit pour ce lot, journalisé une fois par item
-      // plutôt que silencieusement — « rejet d'une réponse malformée sans écriture ».
+      // Rien n'est écrit pour un lot rejeté — « rejet d'une réponse malformée sans écriture ».
+      // Avec plusieurs items et un rejet, on le rejoue item par item (une seule fois) avant de
+      // conclure ; avec un seul item, ou après isolement, l'échec est journalisé tel quel.
+      if (batch.length > 1 && !dejaIsoles.has(batch)) {
+        const isoles = batch.map((item) => [item]);
+        for (const lot of isoles) dejaIsoles.add(lot);
+        aClasser.splice(b + 1, 0, ...isoles);
+        continue;
+      }
       const message = err instanceof Error ? err.message : String(err);
       for (const item of batch) outcomes.push({ id: item.id, ok: false, error: message });
       continue;
