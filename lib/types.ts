@@ -83,6 +83,32 @@ export type DriverInput = {
  * confondre avec une tendance de fond, qui est une direction déjà établie. C'est le point
  * d'entrée de la navigation des Notes.
  */
+/**
+ * Un axe : un chemin par lequel l'incertitude d'un driver peut atteindre les prix. Posé a priori,
+ * depuis la logique du driver — jamais ajusté sur les événements observés, sans quoi le compteur
+ * d'angles morts ne mesurerait plus rien (voir `content/axes.ts`).
+ */
+export type AxeLisibilite = "directe" | "indirecte" | "aucune";
+
+export type Axe = {
+  id: string;
+  driverId: string;
+  libelle: string;
+  /** Comment l'incertitude de cet axe atteint les prix. */
+  mecanisme: string;
+  /** Les instruments collectés où l'axe se lirait. */
+  instruments: string[];
+  /** Les indicateurs macro collectés où il se lirait. */
+  macros: string[];
+  /**
+   * `aucune` : rien de ce qu'on collecte ne révèle l'activation de l'axe. Un axe ainsi marqué
+   * n'est pas retiré — c'est une lacune de collecte à nommer, pas un défaut de grille.
+   */
+  lisibilite: AxeLisibilite;
+  /** Pourquoi la lisibilité n'est pas `directe` — vide quand elle l'est. */
+  limite: string;
+};
+
 export type Driver = DriverInput & {
   dominantBranchId: string; // dérivé : la branche dont la version courante est 'central'
   intensityRank: number; // dérivé : position dans le driverOrder de la dernière note
