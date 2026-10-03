@@ -171,7 +171,10 @@ describe("runAlphaVantageIngest — résilience et limite d'appels", () => {
     });
 
     expect(calledAt).toHaveLength(2);
-    expect(calledAt[1] - calledAt[0]).toBeGreaterThanOrEqual(30);
+    // `setTimeout(30)` peut se déclencher une milliseconde avant les 30 ms mesurées par `Date.now()`
+    // (granularité du minuteur) : exiger 30 pile rendait ce test instable, 3 fois sur 8. Sans
+    // espacement, l'écart serait d'environ zéro — 25 ms suffit à prouver qu'il existe.
+    expect(calledAt[1] - calledAt[0]).toBeGreaterThanOrEqual(25);
   });
 
   it("n'attend pas avant le premier appel ni après le dernier", async () => {
