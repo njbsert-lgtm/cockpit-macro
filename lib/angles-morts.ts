@@ -122,6 +122,70 @@ export function compterAnglesMorts(angles: AngleMort[], now: Date): CompteursAng
 }
 
 // ---------------------------------------------------------------------------
+// Ce que les pages affichent — les états du cahier, décidés ici et testés
+// ---------------------------------------------------------------------------
+
+export type AlerteAngles = { libelle: string; n: number };
+
+export type VueAccueil =
+  /** Table illisible : « Non mesuré », jamais zéro. */
+  | { etat: "illisible" }
+  /** Table lisible, rien sur la fenêtre : un vrai zéro, que la page doit expliquer. */
+  | { etat: "vide" }
+  | {
+      etat: "normal";
+      avecDriverSansAxe: { total: number; alerte: AlerteAngles | null };
+      sansDriver: { total: number; alerte: AlerteAngles | null };
+    };
+
+/** `etiquettes` : id de driver → libellé, pour nommer le driver dont le seuil est atteint. */
+export function vueAccueil(
+  angles: AngleMort[] | null,
+  now: Date,
+  etiquettes: Record<string, string> = {},
+): VueAccueil {
+  if (angles === null) return { etat: "illisible" };
+  const c = compterAnglesMorts(angles, now);
+  if (c.avecDriverSansAxe.total === 0 && c.sansDriver.total === 0) return { etat: "vide" };
+
+  const plusGrosse = (groupes: GroupeAnglesMorts[], nom: (g: GroupeAnglesMorts) => string) => {
+    const alertes = groupes.filter((g) => g.alerte).sort((a, b) => b.n - a.n);
+    return alertes.length > 0 ? { libelle: nom(alertes[0]), n: alertes[0].n } : null;
+  };
+
+  return {
+    etat: "normal",
+    avecDriverSansAxe: {
+      total: c.avecDriverSansAxe.total,
+      alerte: plusGrosse([...c.avecDriverSansAxe.parDriver.values()], (g) => etiquettes[g.libelle] ?? g.libelle),
+    },
+    sansDriver: {
+      total: c.sansDriver.total,
+      alerte: plusGrosse(c.sansDriver.parSujet, (g) => g.libelle),
+    },
+  };
+}
+
+export type VueDriver =
+  | { etat: "illisible" }
+  | { etat: "vide"; sansDriver: number }
+  | { etat: "normal"; n: number; alerte: boolean; angles: AngleMort[]; sansDriver: number };
+
+export function vueDriver(angles: AngleMort[] | null, driverId: string, now: Date): VueDriver {
+  if (angles === null) return { etat: "illisible" };
+  const c = compterAnglesMorts(angles, now);
+  const groupe = c.avecDriverSansAxe.parDriver.get(driverId);
+  if (!groupe) return { etat: "vide", sansDriver: c.sansDriver.total };
+  return {
+    etat: "normal",
+    n: groupe.n,
+    alerte: groupe.alerte,
+    angles: groupe.angles,
+    sansDriver: c.sansDriver.total,
+  };
+}
+
+// ---------------------------------------------------------------------------
 // Persistance — écriture (passe 2) et lecture (pages)
 // ---------------------------------------------------------------------------
 

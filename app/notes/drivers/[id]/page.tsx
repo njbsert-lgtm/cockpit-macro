@@ -11,6 +11,9 @@ import {
 import { getInstrument } from "@/lib/data";
 import { loadObservations, observationsOf } from "@/lib/observations";
 import { getAlertsForInstrument } from "@/lib/alerts";
+import { getReadClient } from "@/lib/supabase";
+import { lireAnglesMorts, vueDriver } from "@/lib/angles-morts";
+import { AnglesMortsDriver } from "@/components/notes/AnglesMortsDriver";
 import { formatInstrumentValue } from "@/lib/marches";
 import { formatDateLong, formatSignedPct } from "@/lib/format";
 import { BRANCH_LABELS, BRANCH_ORDER, LIKELIHOOD_LABELS } from "@/lib/scenario-labels";
@@ -58,6 +61,7 @@ export default async function DriverPage({ params }: { params: Promise<{ id: str
   // Chargé avant le rendu : la liste des instruments pilotés est construite dans le JSX, où
   // l'on ne peut pas attendre une promesse par ligne.
   const bySeries = await loadObservations(driver.instrumentRefs);
+  const anglesMorts = vueDriver(await lireAnglesMorts(getReadClient()), driver.id, new Date());
 
   return (
     <div className="mx-auto max-w-colonne md:max-w-content px-4.5 py-7 md:px-6">
@@ -249,6 +253,9 @@ export default async function DriverPage({ params }: { params: Promise<{ id: str
           );
         })}
       </ol>
+
+      {/* 7 — Les angles morts : ce que ce driver n'a pas su accueillir */}
+      <AnglesMortsDriver vue={anglesMorts} />
     </div>
   );
 }

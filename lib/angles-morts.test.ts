@@ -9,6 +9,8 @@ import {
   estAngleMort,
   lireAnglesMorts,
   normaliserSujet,
+  vueAccueil,
+  vueDriver,
 } from "./angles-morts";
 
 const NOW = new Date("2026-10-03T12:00:00Z");
@@ -241,5 +243,74 @@ describe("lireAnglesMorts — jamais un zéro quand la lecture échoue", () => {
       from: () => ({ select: () => ({ order: () => Promise.resolve({ data: [], error: null }) }) }),
     } as unknown as SupabaseClient;
     expect(await lireAnglesMorts(client)).toEqual([]);
+  });
+});
+
+describe("vueAccueil — les états du cahier", () => {
+  it("illisible : jamais un zéro", () => {
+    expect(vueAccueil(null, NOW)).toEqual({ etat: "illisible" });
+  });
+
+  it("vide : une table lisible sans rien sur la fenêtre", () => {
+    expect(vueAccueil([], NOW)).toEqual({ etat: "vide" });
+    // Un angle trop ancien ou résolu laisse la fenêtre vide.
+    expect(vueAccueil([angle({ date: "2026-01-01" }), angle({ id: "2", statut: "resolu" })], NOW)).toEqual({ etat: "vide" });
+  });
+
+  it("normal sous le seuil : les totaux, aucune alerte", () => {
+    const v = vueAccueil([angle({ id: "1" }), angle({ id: "2", driverId: "rates" })], NOW);
+    expect(v).toMatchObject({
+      etat: "normal",
+      avecDriverSansAxe: { total: 2, alerte: null },
+      sansDriver: { total: 0, alerte: null },
+    });
+  });
+
+  it("nomme le driver dont le seuil est atteint, par son libellé", () => {
+    const v = vueAccueil([1, 2, 3].map((i) => angle({ id: `${i}` })), NOW, { iran: "Conflit iranien" });
+    expect(v).toMatchObject({ avecDriverSansAxe: { total: 3, alerte: { libelle: "Conflit iranien", n: 3 } } });
+  });
+
+  it("retient le driver le plus touché quand plusieurs atteignent le seuil", () => {
+    const angles = [
+      ...[1, 2, 3].map((i) => angle({ id: `i${i}`, driverId: "iran" })),
+      ...[1, 2, 3, 4].map((i) => angle({ id: `r${i}`, driverId: "rates" })),
+    ];
+    const v = vueAccueil(angles, NOW);
+    expect(v).toMatchObject({ avecDriverSansAxe: { alerte: { libelle: "rates", n: 4 } } });
+  });
+
+  it("nomme le sujet sans driver dont le seuil est atteint", () => {
+    const v = vueAccueil(
+      [
+        angle({ id: "1", driverId: null, axeManquantPropose: "Risque souverain français" }),
+        angle({ id: "2", driverId: null, axeManquantPropose: "risque souverain francais" }),
+      ],
+      NOW,
+    );
+    expect(v).toMatchObject({ sansDriver: { total: 2, alerte: { libelle: "Risque souverain français", n: 2 } } });
+  });
+});
+
+describe("vueDriver", () => {
+  it("illisible : jamais un zéro", () => {
+    expect(vueDriver(null, "iran", NOW)).toEqual({ etat: "illisible" });
+  });
+
+  it("vide pour ce driver, tout en rapportant les angles sans driver", () => {
+    const v = vueDriver([angle({ driverId: "rates" }), angle({ id: "2", driverId: null, axeManquantPropose: "X" })], "iran", NOW);
+    expect(v).toEqual({ etat: "vide", sansDriver: 1 });
+  });
+
+  it("normal : ses angles, et l'alerte seulement au seuil", () => {
+    const deux = vueDriver([angle({ id: "1" }), angle({ id: "2" })], "iran", NOW);
+    expect(deux).toMatchObject({ etat: "normal", n: 2, alerte: false });
+    const trois = vueDriver([1, 2, 3].map((i) => angle({ id: `${i}` })), "iran", NOW);
+    expect(trois).toMatchObject({ etat: "normal", n: 3, alerte: true });
+  });
+
+  it("ne mélange pas les drivers", () => {
+    const v = vueDriver([angle({ id: "1", driverId: "rates" }), angle({ id: "2", driverId: "iran" })], "iran", NOW);
+    expect(v).toMatchObject({ etat: "normal", n: 1 });
   });
 });
