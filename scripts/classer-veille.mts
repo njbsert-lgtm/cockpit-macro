@@ -17,6 +17,7 @@ import { getPendingVeilleItems } from "../lib/veille/queries";
 import { classifyVeilleItems } from "../lib/veille/classify";
 import { getActiveDrivers, getLatestNote } from "../lib/content";
 import { AXES } from "../content/axes";
+import { enregistrerAnglesMorts } from "../lib/angles-morts";
 import { CLASSIFICATION_MODEL } from "../config/ai-models";
 
 const caller = getAnthropicCaller();
@@ -65,6 +66,18 @@ if (classes.some((o) => o.etape4NonEcrite)) {
       "appliquer la migration de supabase/schema.sql. La classification d'origine est écrite ; " +
       "axes, matérialité et guets ne le sont pas.",
   );
+}
+// Les angles morts : matérialité haute, aucun axe. Persistés à part, puisque l'item de veille est
+// purgé à quinze jours et que les seuils se comptent sur un trimestre.
+const angles = await enregistrerAnglesMorts(client, report.outcomes);
+if (angles.tableAbsente) {
+  console.log(
+    "\n⚠ Table angles_morts absente : appliquer la migration de supabase/schema.sql. Aucun angle mort enregistré.",
+  );
+} else if (angles.erreur) {
+  console.log(`\n⚠ Angles morts non enregistrés : ${angles.erreur}`);
+} else {
+  console.log(`\nAngles morts : ${angles.enregistres} enregistré(s), ${angles.retires} retiré(s) après reclassement.`);
 }
 const incoherents = classes.filter((o) => o.axeIncoherent).length;
 if (incoherents > 0) console.log(`${incoherents} rattachement(s) à un axe étranger au driver de l'item, écarté(s).`);

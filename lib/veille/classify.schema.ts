@@ -67,7 +67,7 @@ export function buildClassificationSchema(
     axeManquantPropose: z.string().max(140).nullable(),
     // Traçabilité de l'appel, jamais écrite en base — c'est ce qu'un humain relirait dans les
     // journaux du run s'il voulait comprendre un classement contestable.
-    // Jamais lu ni écrit : une plafond serré ne fait que rejeter un item pour une phrase un peu
+    // Jamais lu ni écrit : un plafond serré ne fait que rejeter un item pour une phrase un peu
     // longue — constaté sur un run réel (« Too big: expected string to have <=300 characters »).
     reasoning: z.string().max(1500),
   });

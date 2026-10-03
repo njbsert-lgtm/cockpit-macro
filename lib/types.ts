@@ -109,6 +109,24 @@ export type Axe = {
   limite: string;
 };
 
+/**
+ * Un événement de matérialité haute que la grille n'a pas su accueillir. `driverId: null` : aucun
+ * driver ne convient, le marché suit une force absente de la grille ; sinon, il manque un axe à
+ * un driver existant. Persisté — contrairement à l'item de veille, purgé à quinze jours — parce
+ * que les seuils d'alerte se comptent sur un trimestre.
+ */
+export type AngleMort = {
+  id: string; // l'identifiant de l'item de veille qui l'a révélé
+  date: string;
+  driverId: string | null;
+  axeManquantPropose: string | null;
+  titre: string;
+  source: string;
+  url: string;
+  statut: "ouvert" | "resolu"; // résolu = un axe ou un driver a été créé
+  resoluPar: string | null;
+};
+
 export type Driver = DriverInput & {
   dominantBranchId: string; // dérivé : la branche dont la version courante est 'central'
   intensityRank: number; // dérivé : position dans le driverOrder de la dernière note

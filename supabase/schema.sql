@@ -130,6 +130,29 @@ alter table veille_items add column if not exists materialite text
 alter table veille_items add column if not exists resout_guet text;
 alter table veille_items add column if not exists axe_manquant_propose text;
 
+-- Étape 4 — le compteur d'angles morts. Table à part : un item de veille est purgé à quinze jours,
+-- alors que les seuils (trois sur un driver, deux sur un sujet) se comptent sur un trimestre.
+-- `item_id` en clé primaire rend l'écriture idempotente ; `statut` et `resolu_par` ne sont jamais
+-- touchés par la passe 2, seul un humain clôt un angle mort (un axe ou un driver a été créé).
+create table if not exists angles_morts (
+  item_id              text primary key,
+  date                 date not null,
+  driver_id            text,                -- null = aucun driver ne convient
+  axe_manquant_propose text,
+  titre                text not null,
+  source               text not null,
+  url                  text not null,
+  statut               text not null default 'ouvert' check (statut in ('ouvert', 'resolu')),
+  resolu_par           text,
+  created_at           timestamptz not null default now()
+);
+
+create index if not exists angles_morts_date_idx on angles_morts (date desc);
+
+alter table angles_morts enable row level security;
+drop policy if exists angles_morts_read on angles_morts;
+create policy angles_morts_read on angles_morts for select using (true);
+
 -- L'état d'avancement d'une collecte qui déborde le budget de temps d'un seul passage — GDELT
 -- interroge (thème × pays) une combinaison à la fois ; si le passage du jour s'arrête à mi-
 -- parcours, celui de demain reprend à la combinaison suivante plutôt que de tout refaire ou de
