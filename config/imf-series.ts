@@ -23,6 +23,18 @@ import type { Zone } from "@/lib/types";
  * (`StructureSpecificData`) quel que soit le `format` demandé — `lib/imf.ts` le lit sans
  * dépendance, attribut par attribut. Et les périodes sont de la forme `2026-M06`, pas `2026-06`.
  *
+ * **Le PIB chinois et japonais n'est pas branché, et la raison est écrite ici.** Le dataflow des
+ * comptes nationaux trimestriels (`IMF.STA/QNEA`, `DSD_QNEA` 7.0.0, dimensions `COUNTRY.INDICATOR.
+ * PRICE_TYPE.S_ADJUSTMENT.TYPE_OF_TRANSFORMATION.FREQUENCY`) répond bien — sondé le 04/10/2026 pour
+ * `CHN.B1GQ....Q` et `JPN.B1GQ....Q` — mais il ne publie que des **niveaux** : dollars (`USD`),
+ * monnaie locale (`XDC`), indice de prix (`IX`). Aucune transformation en taux de croissance, là où
+ * le dataflow CPI offre `YOY_PCH_PA_PT`. Tirer une croissance de deux niveaux, ce serait la
+ * calculer chez nous : CLAUDE.md demande la transformation à la source, jamais un recalcul. Le
+ * résultat serait de surcroît ambigu — la note méthodologique de l'IMF pour le Japon précise que
+ * les données trimestrielles sont désaisonnalisées « à taux annuel », donc une base de comparaison
+ * différente de la croissance sur un an qu'Eurostat publie pour la zone euro. Pour la Chine, seule la
+ * série en monnaie locale non désaisonnalisée porte une valeur récente (T2 2026).
+ *
  * La mise à jour de l'IMF suit celle des instituts nationaux : l'Inde a deux mois de retard sur
  * la Chine (juillet contre août).
  */

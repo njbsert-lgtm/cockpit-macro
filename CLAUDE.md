@@ -2045,7 +2045,11 @@ appel réel** : l'API répond du XML SDMX quel que soit le `format` demandé, et
 La source publie son taux avec ses décimales de calcul (« 1.000065040145302 ») : arrondi à
 deux décimales à la lecture, c'est de la présentation, pas un recalcul. Le pays et la
 transformation de la réponse sont vérifiés : une série en niveau d'indice serait une série
-entière fausse. `IMF_VERIFIED` est à `true`.
+entière fausse. `IMF_VERIFIED` est à `true`. **Le PIB chinois et japonais n'est pas branché** : le
+dataflow des comptes trimestriels (`IMF.STA/QNEA`) répond, mais ne publie que des niveaux (dollars,
+monnaie locale, indice de prix), aucune transformation en taux — en tirer une croissance, ce serait
+la calculer chez nous, ce que la règle « une transformation se demande à la source » interdit (voir
+`config/imf-series.ts`).
 
 Mise en service, dans l'ordre : exécuter `supabase/schema.sql`, renseigner les variables de
 `.env.example`, lancer `npm run fred:check` et n'activer que les séries sorties vertes, faire
