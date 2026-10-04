@@ -321,6 +321,36 @@ lecture.
 Entrée : un bouton compteur discret sur l'accueil de Notes quand un brouillon existe, comme
 celui de `/triage`. Aucune notification.
 
+#### Choix de la phrase de régime, et signalements de style
+
+Deux éléments du portail, sans composant nouveau.
+
+**Choix de la phrase de régime** — une **entrée dépliante** au motif des blocs : pastille de
+validation de 17px, titre « Phrase de régime », étiquette à droite (fond `--repos`, rayon `--rp`,
+capitales 9.5px) qui dit « À choisir » ou « Retenue · » suivie de l'angle. Elle est **ouverte tant
+que rien n'est retenu** — c'est un geste qu'on doit obtenir, pas une option qu'on peut laisser
+dormir —, repliée ensuite. Elle se place juste sous le rapport des chiffres, avant les blocs, et
+compte comme un bloc dans le compteur de validation.
+
+Le contenu est un panneau `--repos`. Chaque proposition est une **carte** : bordure `--trait`,
+rayon `--rb`, fond `--page`, qui prend la bordure `--encre` une fois choisie. Dedans, le libellé
+d'angle (« Le fait dominant », « Le mécanisme sous-jacent », « La contradiction de la semaine ») en
+9.5px capitales `--tenu`, la phrase en 14.5px poids 600, puis la justification en 12px `--tenu`. Un
+bouton radio natif de 16px, `accent-color: --encre`, dans une zone de 44px de haut au moins. Une
+quatrième carte, « Écrire la mienne », porte un champ de saisie de 13px. Le bouton primaire
+« Retenir cette phrase » en pied, au motif des boutons du portail.
+
+**Aucune carte n'est sélectionnée par défaut** : aucun radio n'est coché tant qu'aucune décision
+n'est enregistrée, et une décision enregistrée se relit, jamais ne se présume. C'est le seul état
+qu'il faut vérifier à l'œil — une proposition cochée d'avance se publierait sans être lue.
+
+**Signalements de style** — au-dessus du texte éditable d'un bloc, une liste reprenant la **ligne
+d'alerte** de la fiche d'un driver : bordure gauche de 3px `--k-choc`, fond `--k-choc` à 11 %,
+13px `--doux`, précédée du libellé « Signalement » en 10.5px capitales `--k-choc`. Ils portent sur
+un paragraphe de plus de six phrases ou, dans les deux premiers blocs, sans affirmation en gras en
+tête. **Jamais bloquants** : ils ne changent ni le compteur ni la condition de publication. Le
+libellé est toujours écrit, la couleur ne porte jamais seule l'information.
+
 ### Barre d'onglets
 
 `position:fixed` en bas, fond blanc à 95 % avec `blur(16px)`, bordure haute `--trait`,
