@@ -911,8 +911,9 @@ type ThemeObserve = {
   temoinsHorsCatalogue: string[];  // libellés des instruments que le catalogue n'a même pas
   confirmeSi: string;              // seuil chiffré, pas une impression
   infirmeSi: string;
-  delaiJours: number;              // durée d'observation, qui court à partir du premier jour où
-                                   // tous les témoins sont collectés
+  delaiJours: number;              // durée d'observation, qui court à partir de debutObservation
+  debutObservation: string | null; // posé à la main, dans AJUSTEMENTS_THEMES, le jour où le dernier
+                                   // témoin est collecté ; null tant que l'un manque
 
   statut: 'observe' | 'observe-sans-temoin' | 'confirme' | 'infirme' | 'expire';
   mentions: Array<{ date: string; source: string; emetteur: string }>;
@@ -941,8 +942,10 @@ risque souverain français est en attente de verdict depuis six semaines, faute 
 OAT-Bund ». C'est un meilleur argument de priorisation qu'une liste d'instruments à connecter.
 
 - L'échéance d'un thème sans témoin est **suspendue** : elle ne court qu'à partir du jour où
-  l'instrument est collecté (le plus ancien relevé de collecte du dernier témoin à arriver).
-  Sinon il expirerait sans avoir jamais pu être testé.
+  l'instrument est collecté. Ce jour-là se **saisit à la main** (`debutObservation`, dans
+  `AJUSTEMENTS_THEMES` de `content/themes.ts`) : le cron réécrit la fenêtre de chaque série à
+  chaque passage, la base ne sait donc plus dater la première collecte. Sinon le thème
+  expirerait sans avoir jamais pu être testé.
 - La page d'un thème sans témoin affiche depuis combien de temps il attend, et quel instrument
   le débloquerait.
 - Ces thèmes **ne comptent pas** dans le plafond de cinq thèmes observés : ils n'occupent aucune

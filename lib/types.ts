@@ -127,6 +127,43 @@ export type AngleMort = {
   resoluPar: string | null;
 };
 
+/**
+ * Un thème sous observation : une thèse d'auteur qu'on ne tranche pas sur le nombre de gens qui la
+ * portent, mais sur ce que font les instruments. La logique des guets, un cran au-dessus.
+ *
+ * `observe` et `observe-sans-temoin` ne se stockent pas comme des faits : ils se **calculent** à la
+ * lecture (`lib/themes.ts`), selon que tous les témoins sont collectés. Seuls `confirme`, `infirme`
+ * et `expire` sont posés par un humain.
+ */
+export type ThemeStatut = "observe" | "observe-sans-temoin" | "confirme" | "infirme" | "expire";
+
+export type ThemeObserve = {
+  id: string;
+  libelle: string;
+  origine: "notion" | "outlook" | "note";
+  emetteur: string; // qui l'avance, nommément
+  these: string; // ce qu'il affirme, en une phrase
+  dateOrigine: string;
+  /** Identifiants du catalogue des instruments — collectés ou non. */
+  instrumentsTemoins: string[];
+  /** Libellés d'instruments que le catalogue n'a même pas : ils attendent d'être déclarés. */
+  temoinsHorsCatalogue: string[];
+  confirmeSi: string; // seuil chiffré, pas une impression
+  infirmeSi: string;
+  /** Durée d'observation, qui ne court qu'à partir de `debutObservation`. */
+  delaiJours: number;
+  /**
+   * Le jour où le dernier témoin est devenu collecté — saisi à la main, `null` tant qu'un témoin
+   * manque. Il n'est pas déductible de la base : le cron réécrit chaque jour toute sa fenêtre
+   * d'historique, donc aucune date de relevé ne dit quand une série a commencé d'être collectée.
+   */
+  debutObservation: string | null;
+  statut: ThemeStatut;
+  mentions: Array<{ date: string; source: string; emetteur: string }>;
+  verdictLe: string | null;
+  verdictPar: string | null; // slug de la note qui a tranché
+};
+
 export type Driver = DriverInput & {
   dominantBranchId: string; // dérivé : la branche dont la version courante est 'central'
   intensityRank: number; // dérivé : position dans le driverOrder de la dernière note
