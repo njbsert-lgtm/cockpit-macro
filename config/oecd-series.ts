@@ -27,6 +27,12 @@ import type { Zone } from "@/lib/types";
  * trimestre (Chine : 0,9 % au T2) : non retenue, pour cette raison. Les valeurs japonaises
  * portent beaucoup de décimales (« 0.726654038 ») : arrondies à deux à la lecture.
  *
+ * **Deuxième piège, trouvé au contrôle : l'en-tête `Accept`.** L'API répond « Internal server error »
+ * (500) quand la requête porte `Accept: text/csv`, et **la même URL réussit sans cet en-tête**
+ * (`curl`, vérifié le 04/10/2026 : seize trimestres chinois, de 3,0 % au T3 2022 à 4,3 % au T2
+ * 2026). Le format se demande dans l'URL (`format=csv`), jamais par l'en-tête. Deux échecs
+ * identiques du contrôle l'ont établi : ce n'était pas une panne passagère.
+ *
  * Le flux est choisi par appartenance : le Japon est membre de l'OCDE, la Chine non — chacun a
  * son flux, et la même clé n'aurait pas de réponse dans l'autre.
  */

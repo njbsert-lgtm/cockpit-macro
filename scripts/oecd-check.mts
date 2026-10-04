@@ -36,7 +36,8 @@ for (const mapping of series) {
 
   let payload: string;
   try {
-    const response = await fetch(url, { headers: { Accept: "text/csv" } });
+    // Aucun en-tête `Accept` : voir `lib/oecd.ts`, l'API de l'OCDE répond 500 à `text/csv`.
+    const response = await fetch(url);
     payload = await response.text();
   } catch (error) {
     failures += 1;
