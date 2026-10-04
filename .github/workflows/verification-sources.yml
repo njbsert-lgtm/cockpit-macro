@@ -41,6 +41,7 @@ on:
           - sonder-alphavantage-ytd
           - boe
           - boj
+          - bis
       series:
         description: "Séries à vérifier (vide = toutes). Explorer : « catalogue <terme> » ou « <dataset> <dimension> ». Sonder-hôte : l'hôte. Sonder-marché : rien. Sonder-page : une URL, ou « URL||motif-grep ». Sonder-twelvedata : rien (tous les candidats). Twelve-data : symbole(s), ex. XAU/USD. Fred-observation / twelve-data-observation : « ID(S)||AAAA-MM-JJ||AAAA-MM-JJ » (plusieurs séries séparées par une virgule, début||fin). Sonder-alphavantage : identifiants séparés par un espace (vide = tous les candidats — silver, sx5e, ukx, cac, hsi, csi300, nifty50, dxy). Sonder-alphavantage-ytd : identifiants séparés par un espace (vide = les sept confirmés — silver, sx5e, ukx, cac, csi300, nifty50, dxy). Alphavantage : symbole(s) tels que déclarés dans la config, ex. C50.PAR (vide = les sept actifs)"
         type: string
@@ -164,6 +165,21 @@ jobs:
             echo '```'
           } | tee -a "$GITHUB_STEP_SUMMARY"
           npm run boj:check --silent -- $SERIES 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
+          code=$?
+          echo '```' | tee -a "$GITHUB_STEP_SUMMARY"
+          exit $code
+
+      - name: BRI
+        if: ${{ inputs.source == 'bis' }}
+        env:
+          SERIES: ${{ inputs.series }}
+        run: |
+          set +e -o pipefail
+          {
+            echo '## BRI'
+            echo '```'
+          } | tee -a "$GITHUB_STEP_SUMMARY"
+          npm run bis:check --silent -- $SERIES 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
           code=$?
           echo '```' | tee -a "$GITHUB_STEP_SUMMARY"
           exit $code

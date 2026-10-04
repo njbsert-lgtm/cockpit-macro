@@ -6,6 +6,7 @@ import { onsMappingFor } from "./ons-series";
 import { estatMappingFor } from "./estat-series";
 import { boeMappingFor } from "./boe-series";
 import { bojMappingFor } from "./boj-series";
+import { bisMappingFor } from "./bis-series";
 import { spreadDefinitionFor } from "./spreads";
 
 /**
@@ -36,6 +37,7 @@ export type Provider =
   | "estat"
   | "boe"
   | "boj"
+  | "bis"
   | "spread";
 
 type Maillon = { source: Provider; actif: (id: string) => boolean };
@@ -60,6 +62,9 @@ const CHAINE_MACRO: Maillon[] = [
   // tête de `config/boe-series.ts` et `config/boj-series.ts`.
   { source: "boe", actif: (id) => boeMappingFor(id) !== null },
   { source: "boj", actif: (id) => bojMappingFor(id) !== null },
+  // Le taux directeur chinois et indien, la dette publique japonaise : aucune source nationale
+  // branchée, la BRI les redistribue — voir `config/bis-series.ts`.
+  { source: "bis", actif: (id) => bisMappingFor(id) !== null },
 ];
 
 /** Le fournisseur qui fait foi pour cet instrument, ou `null` si aucun n'est actif. */

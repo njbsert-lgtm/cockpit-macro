@@ -8,6 +8,7 @@ import { ENABLED_ONS_SERIES, ONS_SOURCE } from "@/config/ons-series";
 import { ENABLED_ESTAT_SERIES, ESTAT_SOURCE } from "@/config/estat-series";
 import { ENABLED_BOE_SERIES, BOE_SOURCE } from "@/config/boe-series";
 import { ENABLED_BOJ_SERIES, BOJ_SOURCE } from "@/config/boj-series";
+import { ENABLED_BIS_SERIES, BIS_SOURCE } from "@/config/bis-series";
 import { fournisseurInstrument, fournisseurMacro, type Provider } from "@/config/providers";
 import { FRED_SOURCE } from "./fred";
 import { TWELVE_DATA_SOURCE } from "./twelve-data";
@@ -102,6 +103,7 @@ function configuredSources(): string[] {
   if (ENABLED_ESTAT_SERIES.length > 0) sources.add(ESTAT_SOURCE);
   if (ENABLED_BOE_SERIES.length > 0) sources.add(BOE_SOURCE);
   if (ENABLED_BOJ_SERIES.length > 0) sources.add(BOJ_SOURCE);
+  if (ENABLED_BIS_SERIES.length > 0) sources.add(BIS_SOURCE);
   return [...sources];
 }
 
@@ -116,6 +118,7 @@ function expectedTargets(): Map<string, string[]> {
     [ESTAT_SOURCE, ENABLED_ESTAT_SERIES, "estat"],
     [BOE_SOURCE, ENABLED_BOE_SERIES, "boe"],
     [BOJ_SOURCE, ENABLED_BOJ_SERIES, "boj"],
+    [BIS_SOURCE, ENABLED_BIS_SERIES, "bis"],
   ];
   const out = new Map<string, string[]>();
   for (const [source, series, provider] of bySrc) {

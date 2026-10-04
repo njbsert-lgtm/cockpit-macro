@@ -15,6 +15,7 @@
     "estat:check": "tsx --env-file-if-exists=.env.local scripts/estat-check.mts",
     "boe:check": "tsx --env-file-if-exists=.env.local scripts/boe-check.mts",
     "boj:check": "tsx --env-file-if-exists=.env.local scripts/boj-check.mts",
+    "bis:check": "tsx --env-file-if-exists=.env.local scripts/bis-check.mts",
     "twelve-data:check": "tsx --env-file-if-exists=.env.local scripts/twelve-data-check.mts",
     "alphavantage:check": "tsx --env-file-if-exists=.env.local scripts/alpha-vantage-check.mts",
     "veille:classer": "tsx --env-file-if-exists=.env.local scripts/classer-veille.mts",
