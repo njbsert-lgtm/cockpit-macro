@@ -14,11 +14,11 @@ import {
  * sur le même brouillon n'écrasent pas les décisions l'un de l'autre : `trancherGuet` sur
  * l'onglet A n'efface pas `corrigerBloc` pris sur l'onglet B entre-temps.
  *
- * `kind` couvre `bloc`, `guet`, `revision`, `tendance`, `regime` — le bloc 4 se range sous `bloc` avec
+ * `kind` couvre `bloc`, `guet`, `revision`, `tendance`, `regime`, `theme` — le bloc 4 se range sous `bloc` avec
  * `ref: "CeQueJavaisMalLu"`, exactement comme les autres blocs ; la valeur `bloc4` du schéma
  * SQL reste un vestige inerte, sans lecture ni écriture ici.
  */
-export type DecisionKind = "bloc" | "guet" | "revision" | "tendance" | "regime";
+export type DecisionKind = "bloc" | "guet" | "revision" | "tendance" | "regime" | "theme";
 
 export async function sauvegarderDecision(
   slug: string,
@@ -70,6 +70,9 @@ export async function chargerDecisions(slug: string): Promise<Decisions> {
         break;
       case "tendance":
         decisions.tendances[row.ref] = row.decision as DecisionProposition;
+        break;
+      case "theme":
+        decisions.themes[row.ref] = row.decision as DecisionProposition;
         break;
       case "regime":
         decisions.regime = row.decision as DecisionRegime;

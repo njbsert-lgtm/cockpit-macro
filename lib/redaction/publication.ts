@@ -7,8 +7,10 @@ import type {
   RegimeProposition,
   RegimeRetenu,
   ScenarioVersion,
+  ThemeObserve,
   TrendDelta,
 } from "@/lib/types";
+import { idTheme, themeDepuisProposition } from "@/lib/themes";
 import { REGIME_A_CHOISIR, RETENUS_REGIME, propositionDe } from "@/lib/regime";
 import type { ContextePaquet } from "./context";
 import type { Brouillon } from "./schema";
@@ -52,12 +54,14 @@ export type Decisions = {
   guets: Record<string, DecisionGuet>;
   revisions: Record<string, DecisionProposition>;
   tendances: Record<string, DecisionProposition>;
+  /** Clé : l'identifiant du thème (`idTheme`). */
+  themes: Record<string, DecisionProposition>;
   /** Absente tant qu'aucune phrase n'est retenue — aucune des trois n'est choisie par défaut. */
   regime?: DecisionRegime;
 };
 
 export function decisionsVides(): Decisions {
-  return { blocs: {}, guets: {}, revisions: {}, tendances: {} };
+  return { blocs: {}, guets: {}, revisions: {}, tendances: {}, themes: {} };
 }
 
 /**
@@ -212,6 +216,15 @@ export function conditionsManquantes(
       });
     }
   }
+  for (const theme of brouillonPropose.themesProposes ?? []) {
+    const id = idTheme(theme.libelle);
+    if (!decisions.themes[id]) {
+      manquantes.push({
+        code: `theme:${id}`,
+        message: `Le thème « ${theme.libelle} » n'a pas été tranché.`,
+      });
+    }
+  }
 
   return manquantes;
 }
@@ -341,6 +354,8 @@ export type ArtefactsPublication = {
   /** Deltas neufs seulement — au script appelant de les fusionner avec l'existant sur disque. */
   scenariosGeneres: ScenarioVersion[];
   tendancesGenerees: TrendDelta[];
+  /** Les thèmes acceptés, neufs seulement — au script de les fusionner avec l'existant. */
+  themesGeneres: ThemeObserve[];
 };
 
 /**
@@ -384,5 +399,9 @@ export function construireArtefactsPublication(
     aujourdhui,
   );
 
-  return { note, scenariosGeneres, tendancesGenerees };
+  const themesGeneres = (brouillonPropose.themesProposes ?? [])
+    .filter((t) => decisions.themes[idTheme(t.libelle)]?.action === "accepter")
+    .map((t) => themeDepuisProposition(t, note.slug, aujourdhui));
+
+  return { note, scenariosGeneres, tendancesGenerees, themesGeneres };
 }

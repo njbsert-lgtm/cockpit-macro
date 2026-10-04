@@ -5,6 +5,8 @@ import {
   estChiffre,
   etatTheme,
   grouperThemes,
+  idTheme,
+  themeDepuisProposition,
   placesRestantes,
   validerPlafond,
   validerTheme,
@@ -216,5 +218,34 @@ describe("assemblerThemes — le généré et le manuel ne s'écrasent pas", () 
 
   it("ignore un ajustement sans thème : il n'invente rien", () => {
     expect(assemblerThemes([], [], { fantome: { debutObservation: "2026-11-01" } })).toEqual([]);
+  });
+});
+
+describe("idTheme", () => {
+  it("retire accents et ponctuation, de façon stable", () => {
+    expect(idTheme("Risque souverain français")).toBe("risque-souverain-francais");
+    expect(idTheme("  L'énergie — prix & offre ! ")).toBe("l-energie-prix-offre");
+  });
+});
+
+describe("themeDepuisProposition", () => {
+  it("part en observation, sans verdict ni début daté", () => {
+    const t = themeDepuisProposition(
+      {
+        libelle: "Risque souverain français",
+        origine: "outlook",
+        emetteur: "BNP Paribas",
+        these: "x",
+        instrumentsTemoins: ["a"],
+        temoinsHorsCatalogue: [],
+        confirmeSi: "> 150",
+        infirmeSi: "< 60",
+        delaiJours: 90,
+      },
+      "2026-S40",
+      "2026-10-04",
+    );
+    expect(t).toMatchObject({ statut: "observe", debutObservation: null, verdictLe: null, verdictPar: null });
+    expect(t.mentions).toEqual([{ date: "2026-10-04", source: "2026-S40", emetteur: "BNP Paribas" }]);
   });
 });

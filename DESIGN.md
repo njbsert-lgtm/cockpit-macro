@@ -351,6 +351,34 @@ un paragraphe de plus de six phrases ou, dans les deux premiers blocs, sans affi
 tête. **Jamais bloquants** : ils ne changent ni le compteur ni la condition de publication. Le
 libellé est toujours écrit, la couleur ne porte jamais seule l'information.
 
+#### Thèmes sous observation
+
+Une page (`/notes/themes`) et une proposition du portail, sans composant nouveau.
+
+**La page** reprend l'**en-tête de page des tendances** (retour, capitales 11px, titre 27px,
+chapeau 15px `--tenu`) et la **carte de la ligne de tendance** : bordure `--trait`, rayon `--rc`,
+fond `--page`. Trois sections au motif de l'**en-tête de section** (titre 17px, compteur à droite,
+ligne de note dessous) : « En attente de données », « Sous observation », « Tranchés » ; une
+section vide n'est pas dessinée. Dans une carte, du haut vers le bas : le libellé en 14.5px poids
+600, l'émetteur et la date en 12px `--tenu`, la thèse en 13px, puis « Confirmé si » et « Infirmé
+si » en 12px `--tenu` (libellés en gras), enfin **une ligne d'état** en 12px : pour un thème sans
+témoin, depuis combien de jours il attend et l'instrument qui le débloquerait (`--doux`, poids
+500) ; pour un thème observé, « Verdict le … », « verdict à trancher » ou « début d'observation
+à dater ». La ligne d'état est toujours écrite : aucune couleur ne la porte, et **jamais d'ambre**,
+réservé à la fraîcheur d'une collecte — un thème qui attend n'est pas une donnée périmée.
+
+Les thèmes en attente sont triés du plus ancien au plus récent : c'est l'argument de priorisation
+de la collecte. L'état vide dit quoi faire (le geste est une proposition acceptée dans le portail).
+Entrée : un bouton « Thèmes sous observation › » sur l'accueil de Notes, au motif des boutons
+« Tendances de fond » et « Triage », **sans compteur**.
+
+**La proposition dans le portail** réutilise la **carte de proposition** des révisions et des
+tendances : titre, sous-titre (émetteur, délai en jours, « témoin hors catalogue » le cas échéant),
+puis dans le corps la thèse, les témoins, les deux seuils. Deux boutons de 44px, « Refuser » et
+« Accepter », aucun coché par défaut, comptés dans les conditions de publication comme toute
+autre proposition. Le bloc s'intitule « Thèmes proposés à l'observation » et n'est dessiné que si
+le modèle en a proposé.
+
 ### Barre d'onglets
 
 `position:fixed` en bas, fond blanc à 95 % avec `blur(16px)`, bordure haute `--trait`,

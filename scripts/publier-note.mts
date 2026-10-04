@@ -13,6 +13,11 @@ import { TRENDS } from "../content/tendances";
 import { SCENARIO_VERSIONS } from "../content/scenarios";
 import { OUTLOOKS } from "../content/outlooks";
 import { GENERATED_SCENARIO_VERSIONS } from "../content/generated/scenarios.generated";
+import { GENERATED_THEMES } from "../content/generated/themes.generated";
+import { AJUSTEMENTS_THEMES, THEMES_MANUELS } from "../content/themes";
+import { assemblerThemes } from "../lib/themes-content";
+import { validerPlafond, validerTheme } from "../lib/themes";
+import { fournisseurInstrument } from "../config/providers";
 import { GENERATED_TREND_DELTAS } from "../content/generated/tendances.generated";
 
 /**
@@ -83,6 +88,25 @@ async function main(): Promise<void> {
   const scenariosGeneres = [...GENERATED_SCENARIO_VERSIONS, ...artefacts.scenariosGeneres];
   const tendancesGenerees = [...GENERATED_TREND_DELTAS, ...artefacts.tendancesGenerees];
 
+  // Les thèmes acceptés rejoignent ceux déjà générés, sans doubler un identifiant connu (écrit à
+  // la main ou déjà accepté une semaine précédente), puis le tout rejoue les règles dures.
+  const connus = new Set([...THEMES_MANUELS, ...GENERATED_THEMES].map((t) => t.id));
+  const themesGeneres = [
+    ...GENERATED_THEMES,
+    ...artefacts.themesGeneres.filter((t) => !connus.has(t.id)),
+  ];
+  const tousThemes = assemblerThemes(THEMES_MANUELS, themesGeneres, AJUSTEMENTS_THEMES);
+  const catalogue = new Set(getInstruments().map((i) => i.id));
+  const erreursThemes = [
+    ...tousThemes.flatMap((t) => validerTheme(t, catalogue)),
+    ...validerPlafond(tousThemes, (id) => fournisseurInstrument(id) !== null, aujourdhui()),
+  ];
+  if (erreursThemes.length > 0) {
+    console.error("Publication refusée — thèmes invalides :");
+    for (const e of erreursThemes) console.error(`  - ${e.id} : ${e.message}`);
+    process.exit(1);
+  }
+
   // Le même corps de règles que l'application, avec la note et ses deltas ajoutés en mémoire —
   // c'est la seule façon de savoir si ce qu'on s'apprête à écrire serait valide une fois publié.
   const existantes = readNoteSources();
@@ -115,6 +139,7 @@ async function main(): Promise<void> {
     scenariosGeneres,
   );
   ecrireGenere("tendances.generated.ts", "TrendDelta", "GENERATED_TREND_DELTAS", tendancesGenerees);
+  ecrireGenere("themes.generated.ts", "ThemeObserve", "GENERATED_THEMES", themesGeneres);
 
   const brouillonMdx = path.join(BROUILLONS_DIR, `${slug}.mdx`);
   const brouillonRapport = path.join(BROUILLONS_DIR, `${slug}.chiffres.txt`);

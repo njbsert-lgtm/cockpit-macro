@@ -32,6 +32,7 @@ describe("chargerDecisions — dégrade sur base absente", () => {
       guets: {},
       revisions: {},
       tendances: {},
+      themes: {},
     });
   });
 });

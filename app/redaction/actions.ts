@@ -10,6 +10,7 @@ import { sauvegarderDecision } from "@/lib/redaction/decisions-store";
 import type { DecisionGuet, DecisionRegime } from "@/lib/redaction/publication";
 import { resoudreRegime } from "@/lib/redaction/publication";
 import { RETENUS_REGIME } from "@/lib/regime";
+import { idTheme } from "@/lib/themes";
 import type { Guet } from "@/lib/types";
 import { chargerPortail } from "@/lib/redaction/portail";
 import { etatPublication } from "@/lib/redaction/etat-publication";
@@ -191,5 +192,18 @@ export async function publierBrouillon(slug: string): Promise<void> {
   const resultat = await declencherPublication(slug);
   if (!resultat.ok) throw new Error(resultat.erreur ?? "échec du déclenchement de la publication");
 
+  revalidateApresDecision(slug);
+}
+
+/**
+ * Accepte ou refuse un thème proposé. La clé est l'identifiant calculé côté serveur depuis le
+ * brouillon, jamais un texte du formulaire : on ne tranche que ce que le modèle a réellement proposé.
+ */
+export async function trancherTheme(slug: string, themeId: string, formData: FormData): Promise<void> {
+  const propositions = (await chargerPortail(slug))?.brouillonPropose.themesProposes ?? [];
+  if (!propositions.some((t) => idTheme(t.libelle) === themeId)) {
+    throw new Error(`aucun thème « ${themeId} » dans ce brouillon`);
+  }
+  await sauvegarderDecision(slug, "theme", themeId, { action: actionProposition(formData) });
   revalidateApresDecision(slug);
 }

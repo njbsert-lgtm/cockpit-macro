@@ -37,6 +37,18 @@ function guet(over: Partial<Guet> = {}): Guet {
   };
 }
 
+const THEME_PROPOSE = {
+  libelle: "Risque souverain français",
+  origine: "notion" as const,
+  emetteur: "Zonebourse",
+  these: "La prime de risque française s'élargit.",
+  instrumentsTemoins: ["spread-oat10y-bund10y"],
+  temoinsHorsCatalogue: [],
+  confirmeSi: "Le spread dépasse 150 bps",
+  infirmeSi: "Le spread repasse sous 60 bps",
+  delaiJours: 90,
+};
+
 describe("authorshipBloc5 — se déduit des guets, jamais saisi directement", () => {
   it("aucun guet : réputé relu", () => {
     expect(authorshipBloc5([], {})).toBe("ia-relue");
@@ -250,6 +262,17 @@ describe("conditionsManquantes", () => {
     expect(manquantes.map((m) => m.code)).toContain("revision:rates");
   });
 
+  it("exige une décision explicite sur chaque thème proposé", () => {
+    const note = parseNote("2026-S36", BROUILLON_MDX);
+    const propose = brouillonPropose({ themesProposes: [THEME_PROPOSE] });
+    const manquantes = conditionsManquantes(note, propose, noteToutesDecisionsPrises());
+    expect(manquantes.map((m) => m.code)).toContain("theme:risque-souverain-francais");
+
+    const decisions = noteToutesDecisionsPrises();
+    decisions.themes["risque-souverain-francais"] = { action: "refuser" };
+    expect(conditionsManquantes(note, propose, decisions)).toEqual([]);
+  });
+
   it("exige une décision explicite sur chaque changement de tendance proposé", () => {
     const note = parseNote("2026-S36", BROUILLON_MDX);
     const propose = brouillonPropose({
@@ -432,6 +455,29 @@ describe("construireArtefactsPublication — le calcul complet, sans disque", ()
       noteSlug: "2026-S36",
       date: "2026-09-06",
       version: 1,
+    });
+  });
+
+  it("verse un thème seulement s'il est accepté, daté du jour et sans début d'observation", () => {
+    const note = parseNote("2026-S36", BROUILLON_MDX);
+    const propose = brouillonPropose({ themesProposes: [THEME_PROPOSE] });
+    const decisions = noteToutesDecisionsPrises();
+
+    decisions.themes["risque-souverain-francais"] = { action: "refuser" };
+    expect(
+      construireArtefactsPublication(note, propose, paquet(), decisions, "2026-09-06").themesGeneres,
+    ).toEqual([]);
+
+    decisions.themes["risque-souverain-francais"] = { action: "accepter" };
+    const [theme] = construireArtefactsPublication(note, propose, paquet(), decisions, "2026-09-06")
+      .themesGeneres;
+    expect(theme).toMatchObject({
+      id: "risque-souverain-francais",
+      statut: "observe",
+      dateOrigine: "2026-09-06",
+      debutObservation: null,
+      verdictLe: null,
+      mentions: [{ date: "2026-09-06", source: "2026-S36", emetteur: "Zonebourse" }],
     });
   });
 

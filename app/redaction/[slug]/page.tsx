@@ -16,6 +16,7 @@ import {
   retenirRegime,
   trancherRevision,
   trancherTendance,
+  trancherTheme,
 } from "@/app/redaction/actions";
 import { PortalCounter } from "@/components/redaction/PortalCounter";
 import { FigureReport } from "@/components/redaction/FigureReport";
@@ -25,6 +26,7 @@ import { RegimePanel } from "@/components/redaction/RegimePanel";
 import { PropositionCard } from "@/components/redaction/PropositionCard";
 import { PublishButton } from "@/components/redaction/PublishButton";
 import { formatDateShort } from "@/lib/format";
+import { idTheme } from "@/lib/themes";
 
 export default async function RedactionSlugPage({
   params,
@@ -162,6 +164,41 @@ export default async function RedactionSlugPage({
                 {update.why}
               </PropositionCard>
             ))}
+          </div>
+        )}
+
+        {brouillonPropose.themesProposes.length > 0 && (
+          <div className="flex flex-col gap-3">
+            <p className="text-9-5 font-semibold uppercase tracking-cap text-tenu">
+              Thèmes proposés à l&rsquo;observation
+            </p>
+            {brouillonPropose.themesProposes.map((theme) => {
+              const id = idTheme(theme.libelle);
+              const sansTemoin = theme.temoinsHorsCatalogue.length > 0;
+              return (
+                <PropositionCard
+                  key={`theme-${id}`}
+                  titre={theme.libelle}
+                  sousTitre={`${theme.emetteur} · ${theme.delaiJours} jours${sansTemoin ? " · témoin hors catalogue" : ""}`}
+                  decision={decisions.themes[id]}
+                  action={trancherTheme.bind(null, slug, id)}
+                >
+                  <p>{theme.these}</p>
+                  <p className="mt-1.5">
+                    <span className="font-semibold text-encre">Témoins : </span>
+                    {[...theme.instrumentsTemoins, ...theme.temoinsHorsCatalogue].join(", ")}
+                  </p>
+                  <p className="mt-1.5">
+                    <span className="font-semibold text-encre">Confirmé si </span>
+                    {theme.confirmeSi}
+                  </p>
+                  <p className="mt-1.5">
+                    <span className="font-semibold text-encre">Infirmé si </span>
+                    {theme.infirmeSi}
+                  </p>
+                </PropositionCard>
+              );
+            })}
           </div>
         )}
 

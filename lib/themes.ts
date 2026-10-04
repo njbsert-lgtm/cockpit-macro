@@ -200,3 +200,60 @@ export function grouperThemes(
   groupes.enAttente.sort((a, b) => a.dateOrigine.localeCompare(b.dateOrigine));
   return groupes;
 }
+
+// ---------------------------------------------------------------------------
+// De la proposition du modèle au thème
+// ---------------------------------------------------------------------------
+
+/** Identifiant stable d'un thème proposé : le libellé, sans accents ni ponctuation. */
+export function idTheme(libelle: string): string {
+  return libelle
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
+export type ThemeProposeEntree = Pick<
+  ThemeObserve,
+  | "libelle"
+  | "origine"
+  | "emetteur"
+  | "these"
+  | "instrumentsTemoins"
+  | "temoinsHorsCatalogue"
+  | "confirmeSi"
+  | "infirmeSi"
+  | "delaiJours"
+>;
+
+/**
+ * Un thème accepté devient un thème sous observation. Le statut est posé à `observe` : c'est le
+ * statut de départ, que `etatTheme` requalifie à la lecture. `debutObservation` reste `null` — il
+ * se date à la main, le jour où le dernier témoin est collecté (CLAUDE.md).
+ */
+export function themeDepuisProposition(
+  p: ThemeProposeEntree,
+  noteSlug: string,
+  date: string,
+): ThemeObserve {
+  return {
+    id: idTheme(p.libelle),
+    libelle: p.libelle,
+    origine: p.origine,
+    emetteur: p.emetteur,
+    these: p.these,
+    dateOrigine: date,
+    instrumentsTemoins: p.instrumentsTemoins,
+    temoinsHorsCatalogue: p.temoinsHorsCatalogue,
+    confirmeSi: p.confirmeSi,
+    infirmeSi: p.infirmeSi,
+    delaiJours: p.delaiJours,
+    debutObservation: null,
+    statut: "observe",
+    mentions: [{ date, source: noteSlug, emetteur: p.emetteur }],
+    verdictLe: null,
+    verdictPar: null,
+  };
+}
