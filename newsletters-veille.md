@@ -76,9 +76,11 @@ Un thème récurrent dans les newsletters suit **exactement le circuit de la pag
 rattachement à un axe existant, candidat axe, ou candidat driver. Pas de second mécanisme.
 
 La différence est le rythme : le consensus des maisons se mesure par trimestre, les
-newsletters par semaine. Un thème n'est donc retenu comme candidat que s'il apparaît dans
-**au moins trois envois d'expéditeurs différents sur quatre semaines**. Sans ce seuil, une
-obsession passagère d'un seul auteur deviendrait un candidat driver.
+newsletters par semaine. Un thème récurrent n'est pas retenu sur le nombre d'envois ni
+d'expéditeurs qui le portent : il suit le **thème sous observation** (`CLAUDE.md`, « Le thème
+sous observation ») — une thèse, des instruments témoins, un seuil chiffré, une échéance. Ce seuil
+empirique remplace le seuil social « trois expéditeurs différents sur quatre semaines », qui
+retenait ce qui est déjà partagé, donc déjà dans les prix.
 
 ### Droit d'auteur — les règles, plus strictes qu'ailleurs
 

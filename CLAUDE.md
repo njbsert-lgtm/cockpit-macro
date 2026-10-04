@@ -303,6 +303,60 @@ relus tels quels → `ia-relue`, au moins un corrigé → `ia-corrigee`, au moin
 → `ia`, donc publication bloquée. Un bloc ne peut pas être réputé relu si l'un de ses guets ne
 l'a pas été.
 
+#### Trois règles de rédaction
+
+**1. Trois phrases de régime proposées, une retenue.** La phrase de régime est le titre de la note
+et son accroche sur la carte. C'est aussi, et surtout, **le seul endroit où le modèle doit dire de
+quoi parle la semaine**. Lui en demander une seule l'autorise à produire une formule passe-partout
+qui coiffe un enchaînement de sujets sans en dégager un. Lui en demander trois l'oblige à
+trancher trois fois.
+
+**Si les trois propositions se ressemblent, la note n'a pas de thèse** : le modèle a résumé la
+fiche au lieu de l'analyser. C'est le signal le plus rapide qu'un brouillon est à rejeter,
+visible avant même d'avoir lu le corps. Les trois visent donc des angles **différents**, pas des
+reformulations — le prompt système l'exige, et la réception refuse deux propositions du même
+angle.
+
+```ts
+regimeStatementPropositions: [
+  { texte: string, angle: 'fait' | 'mecanisme' | 'contradiction', justification: string },
+  // exactement trois, un par angle : le fait dominant, le mécanisme sous-jacent,
+  // la contradiction de la semaine
+]
+regimeStatement: string          // retenu à la validation, jamais écrit par le modèle
+regimeRetenu: 'fait' | 'mecanisme' | 'contradiction' | 'propre'
+```
+
+Dans `/redaction`, les trois s'affichent avec leur angle et leur justification. Vous en retenez
+une, ou vous en écrivez une quatrième (`propre`). **Aucune n'est sélectionnée par défaut**, et la
+publication exige un choix. Les trois propositions sont conservées dans la note publiée, avec
+celle qui a été retenue : relire six mois plus tard l'angle qu'on a écarté est instructif.
+
+En attendant ce choix, le brouillon porte une phrase de remplacement explicite — « Phrase de
+régime à choisir » — que la validation refuse dans une note publiée.
+
+**2. Un sujet, un paragraphe.** Chaque sujet occupe son propre paragraphe. **Un paragraphe ne
+contient jamais deux sujets. Un sujet ne s'étale jamais sur deux paragraphes** sans que le second
+apporte un élément distinct. C'est une règle de fond, pas de mise en forme : le défaut observé —
+un enchaînement de sujets sans compréhension — se loge dans les paragraphes composites. Quand deux
+sujets partagent un paragraphe, la transition tient par une conjonction plutôt que par un
+raisonnement, et la confusion devient invisible. Séparer force à nommer le lien, ou à constater
+qu'il n'y en a pas.
+
+- Chaque paragraphe des blocs 1 et 2 commence par une **affirmation en gras** qui énonce le
+  sujet. Si elle ne tient pas en une phrase, le paragraphe traite de deux choses. Un paragraphe
+  sans cette ouverture est **signalé**.
+- Un paragraphe de plus de six phrases est **signalé** : c'est presque toujours deux sujets
+  agglomérés.
+- **Aucune liste dans les blocs 1 à 4, et la réception la refuse** — puces comme listes
+  numérotées : le modèle est renvoyé à sa réponse, une seule fois, comme pour toute autre
+  violation. Les listes permettent de juxtaposer sans relier, c'est-à-dire exactement le défaut à
+  corriger. Elles restent admises dans le bloc 5 et dans le fil de la semaine, des énumérations
+  assumées.
+
+Les signalements — gras d'attaque absent, paragraphe trop long — ne bloquent pas : ils s'affichent
+sur le bloc concerné, dans le portail, et jamais en avertissement qu'on pourrait ignorer ailleurs.
+
 #### Le contrôle des chiffres, en deux régimes
 
 C'est le garde-fou le plus important du pipeline, parce que c'est la faute la plus
@@ -412,8 +466,9 @@ reformule. Un avertissement qu'on peut ignorer sera ignoré au bout de trois sem
 
 Vérifié mécaniquement, pas par le prompt :
 
-- **Réécrire la `regimeStatement` sans le signaler.** Il peut la proposer différente ; le
-  portail affiche alors une comparaison avec l'ancienne et demande une décision.
+- **Fixer la `regimeStatement`.** Il n'en écrit jamais une : il en propose trois, d'angles
+  différents, et l'humain en retient une ou en écrit une quatrième (voir « Trois règles de
+  rédaction »).
 - **Introduire un instrument, un driver ou une tendance absents du paquet.**
   Toute référence à un identifiant inconnu bloque le rendu.
 - **Citer une source absente de la fiche.** Les émetteurs cités dans la note se rattachent aux
@@ -431,19 +486,24 @@ Il présente, dans cet ordre :
 
 1. **Le rapport de contrôle des chiffres**, en premier. Si un blocage subsiste, la
    publication est indisponible et le bouton dit pourquoi.
-2. **Les blocs**, chacun éditable, avec son `authorship` courant. Un bloc ouvert et refermé
-   sans modification passe de `ia` à `ia-relue` ; modifié, il passe à `ia-corrigee`.
-3. **Les propositions de révision** — scénarios, tendances, ordre des drivers — chacune avec
-   deux boutons : accepter, refuser. Aucune n'est cochée par défaut.
-4. **Les guets proposés**, avec le rappel des échéances de la semaine à venir et les guets
+2. **Les trois phrases de régime**, chacune avec son angle et sa justification, et un champ pour
+   en écrire une quatrième. Aucune n'est sélectionnée par défaut.
+3. **Les blocs**, chacun éditable, avec son `authorship` courant. Un bloc ouvert et refermé
+   sans modification passe de `ia` à `ia-relue` ; modifié, il passe à `ia-corrigee`. Les
+   signalements de style (paragraphe trop long, gras d'attaque absent) s'affichent sur le bloc.
+4. **Les propositions de révision** — scénarios, tendances, ordre des drivers — et **les thèmes
+   sous observation proposés**, chacune avec deux boutons : accepter, refuser. Aucune n'est
+   cochée par défaut.
+5. **Les guets proposés**, avec le rappel des échéances de la semaine à venir et les guets
    remontés de la note précédente. Trois actions par guet : accepter, corriger, refuser.
-5. **Le bloc 4**, vide, en champ de saisie.
+6. **Le bloc 4**, vide, en champ de saisie.
 
 **Conditions de publication**, toutes nécessaires :
 - Aucun blocage sur les chiffres
 - Le bloc 4 est renseigné
 - Aucun bloc n'est resté au statut `ia`
-- Toute proposition de révision a été acceptée ou refusée explicitement
+- Une phrase de régime a été retenue, ou écrite
+- Toute proposition de révision, et tout thème proposé, a été accepté ou refusé explicitement
 - Tout guet proposé ou remonté a été tranché
 
 **Le principe qui gouverne ce portail : la validation doit coûter quelque chose.**
@@ -498,16 +558,18 @@ Le modèle produit une **réponse unique en deux parties** :
 
 1. Le MDX complet, frontmatter compris, selon un gabarit donné en instructions système
 2. Une section JSON délimitée par un marqueur, contenant les seuls objets structurés :
-   révisions de scénario proposées, guets proposés, changements de statut de tendance, et les
-   sources rattachées bloc par bloc — un identifiant choisi dans le paquet, jamais une URL
+   les trois phrases de régime proposées, révisions de scénario proposées, guets proposés,
+   thèmes sous observation proposés, changements de statut de tendance, et les sources
+   rattachées bloc par bloc — un identifiant choisi dans le paquet, jamais une URL
 
 Validation Zod après réception, sur la section JSON **et sur le frontmatter** — les deux
 portent des références au paquet, et les valider d'un seul coup donne un unique message
 d'échec là où deux passes en donneraient deux. Le corps, lui, n'est pas un objet : on y vérifie
 que chaque bloc attendu est présent et non vide, et que le bloc 4 ne l'est pas.
 
-Le frontmatter ne reçoit que les sept champs de jugement — `regimeStatement`, `keyIndicators`,
-`channels`, `driverOrder`, `trendRefs`, `instrumentRefs`, `veilleItemRefs`. Slug, date, statut,
+Le frontmatter ne reçoit que les six champs de jugement — `keyIndicators`, `channels`,
+`driverOrder`, `trendRefs`, `instrumentRefs`, `veilleItemRefs`. La phrase de régime n'en est plus
+un : elle se choisit parmi trois propositions, dans le portail. Slug, date, statut,
 zones, sources résolues et identifiants de guet restent au code : ce sont des conséquences
 mécaniques, et le MDX reçu n'est jamais écrit tel quel — il est reconstruit dans l'ordre
 canonique depuis ce qu'on en a lu.
@@ -761,6 +823,239 @@ produisent un seul brouillon, enrichi du second — pas deux notes spéciales co
 Un déclencheur de prix et un déclencheur d'événement sur le même driver fusionnent aussi :
 le mouvement de prix devient une pièce du brouillon d'événement, pas une note séparée.
 C'est presque toujours la même histoire vue deux fois.
+
+### Détecter un driver : trois sources, un circuit
+
+La grille de drivers n'est pas figée : de nouveaux apparaissent, et il faut pouvoir les voir
+venir. Trois sources de candidats, de natures différentes.
+
+| Source | Ce qui déclenche | Nature du signal |
+|---|---|---|
+| **Outlooks** | Un thème recommandé qui ne rentre dans aucun driver | Consensus — le marché suit une force absente de la grille |
+| **Thèmes sous observation** | Une thèse d'auteur confirmée par les instruments | Empirique — quelqu'un a vu avant les autres |
+| **Angles morts** | Des événements majeurs sans axe de rattachement | Structurel — la grille a un trou |
+
+Les trois convergent vers le même circuit : candidat → en observation → actif. **La création
+d'un driver reste une décision humaine** : le modèle peut en signaler un (`driverCandidate`, un
+texte libre), jamais en émettre l'objet. Le circuit complet de promotion — question fermée, axes,
+condition de retrait — reste à spécifier.
+
+### Les axes d'un driver
+
+Un driver est une incertitude ; un **axe** est un chemin précis par lequel cette incertitude
+atteint les prix. « Contournement » est un axe du driver Iran ; « Ormuz » n'en est pas un, c'est
+le sujet.
+
+```ts
+type Axe = {
+  id: string;                // 'contournement'
+  driverId: string;
+  libelle: string;
+  mecanisme: string;         // comment l'incertitude atteint les prix
+  instruments: string[];     // les instruments collectés où l'axe se lirait
+  macros: string[];          // les indicateurs macro collectés où il se lirait
+  lisibilite: 'directe' | 'indirecte' | 'aucune';
+  limite: string;            // pourquoi elle n'est pas directe
+};
+```
+
+Les axes vivent dans `content/axes.ts` : de l'analyse versionnée, de trois à cinq par driver,
+quinze au 03/10/2026. Un axe dont `lisibilite` vaut `aucune` — aucun instrument collecté ne peut
+révéler son activation — n'est pas retiré : c'est une lacune de collecte à nommer, pas un défaut
+de grille (au 03/10/2026, « Contournement » et « Intensité du capex »).
+
+**Les axes sont posés a priori, jamais ajustés sur les événements observés.** Ils se dérivent de
+la logique du driver — par quels chemins cette incertitude peut-elle atteindre les prix ? — sans
+regarder ce que la veille a remonté. C'est la condition pour que le compteur d'angles morts
+mesure quelque chose : des axes construits depuis les événements garantiraient mécaniquement zéro
+angle mort, et l'instrument serait ajusté sur ses propres données. L'écart entre les axes posés
+et ce qui remonte réellement est la mesure. Un axe qui absorberait un événement qui n'entre
+nulle part est précisément ce qu'il ne faut pas faire : il s'ajoute après une décision explicite
+dans `/redaction`, jamais pour faire disparaître un angle mort du décompte.
+
+`Guet.axeLibelle` reste un libellé libre : rattacher les guets aux `Axe.id` est un chantier à
+part, non fait.
+
+### Le thème sous observation
+
+#### Le principe
+
+Un auteur isolé avance une thèse. Elle n'est pas consensuelle, donc elle n'apparaît ni sur la
+page consensus ni dans une majorité de sources. Elle peut être une obsession personnelle — ou une
+lecture en avance.
+
+**On ne tranche pas sur le nombre de gens qui la portent. On tranche sur ce que font les
+instruments.** C'est la logique des guets, appliquée un cran au-dessus : au lieu de pré-inscrire
+une attente sur un événement, on pré-inscrit une attente sur une thèse.
+
+**Le seuil est empirique, pas social.** Un seuil de popularité — par exemple « trois émetteurs
+différents sur quatre semaines » — retient ce qui est déjà partagé, donc déjà dans les prix, donc
+sans valeur pour qui le découvre à ce moment-là. Un seuil empirique retient ce que les prix
+commencent à valider avant que le consensus ne s'en saisisse. Il remplace le seuil social
+envisagé pour les newsletters : un thème récurrent n'y est pas retenu sur le nombre d'envois qui
+le portent, il suit ce circuit.
+
+#### La forme
+
+```ts
+type ThemeObserve = {
+  id: string;
+  libelle: string;                 // 'Risque souverain français'
+  origine: 'notion' | 'outlook' | 'note';
+  emetteur: string;                // qui l'avance, nommément
+  these: string;                   // ce qu'il affirme, en une phrase
+  dateOrigine: string;
+
+  // Le cœur du mécanisme — obligatoire
+  instrumentsTemoins: string[];    // identifiants du catalogue, collectés ou non
+  temoinsHorsCatalogue: string[];  // libellés des instruments que le catalogue n'a même pas
+  confirmeSi: string;              // seuil chiffré, pas une impression
+  infirmeSi: string;
+  delaiJours: number;              // durée d'observation, qui court à partir du premier jour où
+                                   // tous les témoins sont collectés
+
+  statut: 'observe' | 'observe-sans-temoin' | 'confirme' | 'infirme' | 'expire';
+  mentions: Array<{ date: string; source: string; emetteur: string }>;
+  verdictLe: string | null;
+  verdictPar: string | null;       // slug de la note qui a tranché
+};
+```
+
+`observe` et `observe-sans-temoin` ne se stockent pas comme un fait : ils se **calculent** à la
+lecture, selon que tous les témoins sont collectés ou non. Seuls `confirme`, `infirme` et
+`expire` sont posés par un humain.
+
+#### Trois règles dures
+
+**Un thème s'observe même sans témoin collecté.** La déclaration suffit à créer un thème sous
+observation. L'absence de l'instrument en base ne bloque pas la création : elle change seulement
+le statut, en `observe-sans-temoin`. Un tel thème porte son instrument témoin et son seuil,
+écrits comme les autres ; il attend que l'instrument soit collecté pour que le verdict devienne
+calculable.
+
+C'est ce qui relie la détection de drivers au chantier des données : **ce qu'on ne mesure pas, on
+ne peut pas le promouvoir — mais on peut dire ce qui manque.** La liste des thèmes sans témoin
+devient la feuille de route de collecte. Elle dit, avec des arguments, quelles données manquent
+et pourquoi elles manquent : non pas « il serait bien d'avoir le Bund » mais « une thèse sur le
+risque souverain français est en attente de verdict depuis six semaines, faute du spread
+OAT-Bund ». C'est un meilleur argument de priorisation qu'une liste d'instruments à connecter.
+
+- L'échéance d'un thème sans témoin est **suspendue** : elle ne court qu'à partir du jour où
+  l'instrument est collecté (le plus ancien relevé de collecte du dernier témoin à arriver).
+  Sinon il expirerait sans avoir jamais pu être testé.
+- La page d'un thème sans témoin affiche depuis combien de temps il attend, et quel instrument
+  le débloquerait.
+- Ces thèmes **ne comptent pas** dans le plafond de cinq thèmes observés : ils n'occupent aucune
+  attention, ils attendent.
+
+**Les témoins se nomment, et la cadence se lit dans le seuil.** Un témoin est un identifiant du
+catalogue des instruments ; un instrument que le catalogue n'a même pas se déclare en libellé, à
+part. Un témoin collecté seulement en mensuel — le Bund et l'OAT, donc leur spread — ne rend
+« en clôture » lisible que sur le relevé du mois : un franchissement en cours de mois ne serait
+pas vu.
+
+**Le seuil est chiffré.** « Le spread OAT-Bund dépasse 150 points de base en clôture » se
+vérifie. « Les tensions sur la dette française s'aggravent » ne se vérifie pas. Sans chiffre, le
+thème est refusé à la création.
+
+#### Le cycle
+
+Un thème sous observation est **créé** depuis la fiche Notion ou un outlook, **proposé par le
+modèle** avec son seuil, **validé par vous dans `/redaction`** — comme un guet. Le modèle propose,
+il ne crée jamais : un thème n'entre dans `content/themes.ts` qu'accepté.
+
+À l'échéance, trois issues :
+
+- **Confirmé** — les instruments ont validé. Le thème devient **candidat driver**.
+- **Infirmé** — les instruments ont démenti. Le thème est archivé, et sa trace reste : savoir
+  qu'une thèse a été testée et rejetée vaut mieux que de la retester dans six mois.
+- **Expiré** — sans verdict. Il remonte une fois dans la note suivante, puis s'archive.
+
+La page d'un thème dit « verdict à trancher » quand l'échéance est atteinte ; **le verdict lui-même
+se pose à la main**, il n'est pas calculé. **Cinq thèmes sous observation au maximum**, hors thèmes
+sans témoin : au-delà, on surveille tout, donc rien.
+
+#### Exemple
+
+> **Risque souverain français** — avancé par une seule maison, octobre 2026.
+> *Thèse* : la trajectoire budgétaire française est le sujet sous-estimé de 2027.
+> *Instruments témoins* : `spread-oat10y-bund10y`, `fr10y`.
+> *Confirmé si* : le spread dépasse 150 pb au relevé avant le 31/01/2027.
+> *Infirmé si* : il reste sous 110 pb sur toute la période.
+
+Si le spread passe le seuil, un auteur isolé avait raison avant le consensus, et le sujet mérite
+son driver. S'il ne le passe pas, c'était une obsession, et on le sait. Les deux témoins sont
+collectés — en mensuel seulement, donc « au relevé » et non « en clôture » : un thème qui
+exigerait du quotidien serait en `observe-sans-temoin` pour cette seule raison.
+
+### Le compteur d'angles morts
+
+#### Ce qu'il mesure
+
+**L'incomplétude de la grille, pas la vigilance.** Chaque événement classé par la passe 2 se
+rattache à un axe, ou ne se rattache à rien. Un événement de matérialité haute qui ne trouve aucun
+axe signale que le modèle du driver n'a pas de case pour lui.
+
+L'exemple réel de la semaine S38 : les Houthis prennent des îles dans Bab el-Mandeb ; l'oléoduc
+saoudien de contournement d'Ormuz est frappé par drones. Les axes du driver Iran portaient sur le
+transit d'Ormuz et l'état des négociations. **Aucun ne couvrait les voies de contournement.**
+L'axe a dû être créé à la rédaction de la note. C'est un angle mort caractérisé : matérialité
+haute, driver identifiable, aucun axe correspondant — et détectable mécaniquement.
+
+| | Ce que c'est | Ce que ça dit |
+|---|---|---|
+| Événement **imprévu** | Personne ne pouvait le dater | Normal, aucune conclusion |
+| **Angle mort** | La grille n'avait pas de case | Il manque un axe ou un driver |
+
+Un centre de données dans l'espace est imprévisible dans son détail, mais tombe sur l'axe
+« contrainte physique » du driver IA. Ce n'est **pas** un angle mort : le cadre a fonctionné.
+
+#### La mesure
+
+Un angle mort est un item de veille classé par la passe 2 **signal**, de **matérialité haute**,
+**sans axe**. La passe 2 écrit pour cela trois champs — `axe_id`, `materialite`, `resout_guet` —
+plus `axe_manquant_propose`, le chemin de transmission qui manque, en une expression. « Aucun
+axe » est une réponse légitime du modèle, que le prompt lui demande : forcer un rattachement
+ferait disparaître ce qu'on cherche à mesurer. Un titre qui ne dit pas ce qui s'est produit ne
+justifie ni une matérialité haute ni la résolution d'un guet, et l'émetteur seul ne résout
+jamais un guet.
+
+```ts
+type AngleMort = {
+  id: string;                      // l'identifiant de l'item de veille qui l'a révélé
+  date: string;
+  driverId: string | null;         // null = aucun driver ne convient
+  axeManquantPropose: string | null;
+  titre: string; source: string; url: string;
+  statut: 'ouvert' | 'resolu';     // résolu = un axe ou un driver a été créé
+  resoluPar: string | null;
+};
+```
+
+Les angles morts sont **persistés à part** (`angles_morts`) : un item de veille est purgé à quinze
+jours, alors que les seuils se comptent sur un trimestre. La passe 2 aligne la table sur son
+dernier jugement — un item reclassé et rattaché à un axe est retiré, un angle déjà résolu jamais
+— sans toucher `statut` ni `resoluPar` : seul un humain clôt un angle mort.
+
+Deux compteurs distincts, jamais fondus, sur une fenêtre glissante de 91 jours (seuils dans
+`config/angles-morts.ts`), affichés sur la page du driver et sur l'écran d'accueil :
+
+- **Angles morts avec driver, sans axe** — il manque une dimension à un driver existant. Seuil
+  d'alerte : trois sur le même driver.
+- **Angles morts sans driver** — le marché suit une force absente de la grille. Seuil d'alerte :
+  deux sur un même sujet, le sujet étant le libellé de l'axe manquant proposé, normalisé — un
+  regroupement exact, volontairement étroit.
+
+**Un compteur illisible n'affiche jamais zéro.** Table absente ou base injoignable : « Non mesuré »,
+pas 0, qui affirmerait que la grille tient. Un zéro n'est affiché que sur une table lisible et vide.
+
+#### Ce qu'on en fait
+
+Un angle mort ne crée rien automatiquement. Il doit apparaître dans le paquet de contexte de la
+note suivante, et le modèle proposer l'axe ou le driver manquant au bloc 3 ; vous tranchez. **Le
+paquet ne les porte pas encore** : à ce jour, le compteur se lit, il n'alimente pas la rédaction. Le compteur
+est l'instrument de mesure le plus honnête du dispositif : il ne dit pas si vous avez eu raison,
+il dit si votre cadre a pu accueillir ce qui s'est produit.
 
 ### Comment les deux types s'articulent
 
@@ -1096,7 +1391,10 @@ type Note = {
   parentWeek: string | null; // pour une spéciale : la hebdo de rattachement
   comparesTo: string;        // slug de la note de référence du bloc « ce qui a changé »
   trigger: string | null;    // obligatoire pour une spéciale : le seuil franchi
-  regimeStatement: string;   // le régime en une phrase, à cette date
+  regimeStatement: string;   // le régime en une phrase, à cette date — retenu à la validation
+  regimeStatementPropositions: Array<{ texte: string; angle: 'fait' | 'mecanisme' | 'contradiction';
+    justification: string }> | null;   // les trois proposées, toutes conservées
+  regimeRetenu: 'fait' | 'mecanisme' | 'contradiction' | 'propre' | null;
   keyIndicators: Array<{ label: string; value: string }>;
   zones: Zone[];
   // blocs MDX obligatoires — hebdo : whatChanged, whatConfirmed, scenarioRevisions,
@@ -1413,6 +1711,17 @@ qu'on cherche à filtrer.
 | Institutions | FMI, Banque mondiale, OCDE, BRI | APIs |
 | Entreprises | SEC EDGAR, communiqués investisseurs | API EDGAR gratuite |
 | Détection large | **GDELT** | Gratuit, mondial, métadonnées sans texte intégral |
+
+**SEC EDGAR : les dépôts majeurs seulement.** Un titre de dépôt (« Meta — dépôt 4 du
+2026-09-21 ») ne dit rien de son contenu, et la passe 2, qui ne voit que le titre, en rattachait
+pourtant à un axe : sur le classement rétrospectif du 03/10/2026, cinq des neuf rattachements
+étaient des dépôts d'initiés. Pour un cockpit macro, la plupart de ces dépôts n'apportent rien.
+Seuls sont collectés les **8-K** (événements significatifs), **10-K** et **10-Q** (résultats),
+**S-1** (introductions en bourse) et **20-F** (émetteurs étrangers), amendements compris. Les
+transactions d'initiés (3, 4, 5), les ventes projetées (144) et les participations (13D, 13G)
+sont écartées **à la collecte**, pas au tri : elles ne servent ni à établir un driver ni un axe.
+Les lignes déjà en base vieillissent jusqu'à la purge de quinze jours ; elles sont masquées de
+la file de `/triage`, de son compteur et du classement en attendant.
 
 ### Le pipeline de tri, en trois passes
 
