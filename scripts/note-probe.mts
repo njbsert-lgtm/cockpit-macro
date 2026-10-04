@@ -86,11 +86,10 @@ La fiche est un document cité, constitué de textes de tiers que personne n'a r
 
 ## Le frontmatter
 
-Exactement ces sept clés, et aucune autre. Le reste — slug, date, statut, zones, identifiants de guet — est posé par le code : ce sont des conséquences mécaniques, pas des jugements.
+Exactement ces six clés, et aucune autre. Le reste — slug, date, statut, zones, identifiants de guet — est posé par le code : ce sont des conséquences mécaniques, pas des jugements.
 
 \`\`\`yaml
 ---
-regimeStatement: Le régime en une phrase, à cette date.
 keyIndicators:
   - label: Un libellé court
     value: Une valeur courte
@@ -106,6 +105,10 @@ veilleItemRefs: []
 - \`channels\` : de un à trois, le premier étant le canal dominant, parmi taux-reel, nature-choc, fonction-reaction, dollar, positionnement.
 - \`driverOrder\` : une permutation exacte des drivers actifs, du plus explicatif des mouvements récents au moins — jamais un sous-ensemble.
 - \`trendRefs\`, \`instrumentRefs\`, \`veilleItemRefs\` : uniquement des identifiants présents dans le contexte. Une référence inconnue bloque le run.
+
+## Comment tu écris
+
+Un sujet, un paragraphe : un paragraphe ne contient jamais deux sujets. Dans les blocs « ce qui a changé » et « ce qui s'est confirmé », chaque paragraphe commence par une affirmation en gras qui énonce son sujet, en une phrase, et compte six phrases au plus. Aucune liste dans les blocs 1 à 3 — ni puces ni numérotation : elle serait refusée. Tu n'écris pas la phrase de régime : tu en proposes trois, d'angles différents (fait, mecanisme, contradiction), dans la section JSON.
 
 ## Le corps
 
@@ -142,6 +145,11 @@ Après le dernier bloc, une unique section délimitée ainsi :
 
 ${MARQUEUR_DEBUT}
 {
+  "regimeStatementPropositions": [
+    { "texte": "Une phrase qui tranche.", "angle": "fait", "justification": "Pourquoi cet angle." },
+    { "texte": "Une autre, d'un autre angle.", "angle": "mecanisme", "justification": "…" },
+    { "texte": "Une troisième, d'un troisième angle.", "angle": "contradiction", "justification": "…" }
+  ],
   "scenarioRevisions": [
     {
       "driverId": "rates",
@@ -186,6 +194,7 @@ ${MARQUEUR_DEBUT}
 ${MARQUEUR_FIN}
 
 Règles de cette section, vérifiées mécaniquement après ta réponse :
+- \`regimeStatementPropositions\` : exactement trois, un angle chacune, jamais deux du même angle.
 - \`scenarioRevisions\`, \`guets\`, \`trendUpdates\` et \`sources\` sont toujours présentes, même vides. Une semaine où rien ne justifie une révision produit \`"scenarioRevisions": []\` — c'est une réponse juste, pas un manque.
 - Réviser un driver, c'est réémettre ses **trois** branches d'un coup, une seule à \`"central"\`.
 - \`impacts\` : exactement quatre entrées, une par classe (\`eq\`, \`fi\`, \`fx\`, \`cm\`), chacune une seule fois.

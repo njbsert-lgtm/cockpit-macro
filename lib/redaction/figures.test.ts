@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import { confronter, controlerChiffres, rendreRapport } from "./figures";
 import type { ContextePaquet, ObservationContexte } from "./context";
 import type { Brouillon } from "./schema";
+import { REGIMES_TEST } from "./regime-fixture";
 
 /**
  * Trois clôtures et une base YTD : de quoi éprouver les trois ancrages — une date écrite, une
@@ -77,7 +78,7 @@ function paquet(
 
 function brouillon(over: Partial<Brouillon> = {}): Brouillon {
   return {
-    regimeStatement: "Un régime.",
+    regimeStatementPropositions: REGIMES_TEST,
     keyIndicators: [{ label: "Régime", value: "Choc d'offre" }],
     channels: ["taux-reel"],
     driverOrder: ["rates"],

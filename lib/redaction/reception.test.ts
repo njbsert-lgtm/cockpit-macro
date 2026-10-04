@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { recevoir } from "./reception";
 import { MARQUEUR_DEBUT, MARQUEUR_FIN, type Vivier } from "./sortie-mixte";
+import { REGIMES_TEST } from "./regime-fixture";
 
 function vivier(over: Partial<Vivier> = {}): Vivier {
   return {
@@ -16,8 +17,7 @@ function vivier(over: Partial<Vivier> = {}): Vivier {
   };
 }
 
-const FRONTMATTER = `regimeStatement: Le régime en une phrase.
-keyIndicators:
+const FRONTMATTER = `keyIndicators:
   - label: Régime
     value: Choc d'offre
   - label: Biais
@@ -31,6 +31,7 @@ instrumentRefs: [us10y]
 veilleItemRefs: [item-1]`;
 
 const STRUCTURE = {
+  regimeStatementPropositions: REGIMES_TEST,
   scenarioRevisions: [],
   guets: [],
   trendUpdates: [],
@@ -52,7 +53,7 @@ describe("recevoir — de la réponse brute au brouillon", () => {
     if (!res.ok) return;
 
     const b = res.brouillon;
-    expect(b.regimeStatement).toBe("Le régime en une phrase.");
+    expect(b.regimeStatementPropositions).toEqual(REGIMES_TEST);
     expect(b.driverOrder).toEqual(["rates"]);
     expect(b.instrumentRefs).toEqual(["us10y"]);
     expect(b.blocs).toEqual({

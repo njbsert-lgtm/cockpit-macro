@@ -1,4 +1,5 @@
 import { getInstruments } from "@/lib/data";
+import type { RegimeProposition } from "@/lib/types";
 import type { ContextePaquet } from "./context";
 import type { Vivier } from "./sortie-mixte";
 
@@ -23,7 +24,11 @@ import type { Vivier } from "./sortie-mixte";
  */
 
 export type Brouillon = {
-  regimeStatement: string;
+  /**
+   * Trois phrases d'angles différents. Le modèle n'en retient aucune : c'est l'humain qui choisit,
+   * dans le portail, ou qui en écrit une quatrième.
+   */
+  regimeStatementPropositions: RegimeProposition[];
   keyIndicators: Array<{ label: string; value: string }>;
   channels: string[];
   driverOrder: string[];

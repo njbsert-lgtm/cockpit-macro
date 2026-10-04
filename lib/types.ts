@@ -230,6 +230,15 @@ export type Echeance = {
  */
 export type Authorship = "ia" | "ia-relue" | "ia-corrigee" | "humaine";
 
+/**
+ * Les trois angles d'une phrase de régime : le fait dominant, le mécanisme qui le sous-tend, la
+ * contradiction de la semaine. Trois angles **différents**, pas trois reformulations — si les trois
+ * propositions se ressemblent, la note n'a pas de thèse.
+ */
+export type RegimeAngle = "fait" | "mecanisme" | "contradiction";
+export type RegimeRetenu = RegimeAngle | "propre";
+export type RegimeProposition = { texte: string; angle: RegimeAngle; justification: string };
+
 export type Note = {
   slug: string; // '2026-S33' ou '2026-S33-E1'
   kind: NoteKind;
@@ -240,7 +249,14 @@ export type Note = {
   provenance: "pipeline" | "fiche-notion" | "manuelle";
   comparesTo: string | null; // slug de la note de référence du bloc « ce qui a changé »
   trigger: string | null; // obligatoire pour une spéciale : le seuil franchi
-  regimeStatement: string; // le régime en une phrase, à cette date
+  regimeStatement: string; // le régime en une phrase, à cette date — retenu à la validation
+  /**
+   * Les trois phrases proposées par le modèle, toutes conservées — relire six mois plus tard
+   * l'angle qu'on a écarté est instructif. `null` pour une note antérieure à cette règle.
+   */
+  regimeStatementPropositions?: RegimeProposition[] | null;
+  /** L'angle retenu, ou `propre` quand la phrase a été écrite à la main. */
+  regimeRetenu?: RegimeRetenu | null;
   keyIndicators: Array<{ label: string; value: string }>;
   zones: Zone[];
   driverOrder: string[]; // ordre d'intensité des drivers à cette date, jugement manuel

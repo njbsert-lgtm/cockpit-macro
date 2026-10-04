@@ -14,6 +14,7 @@ import {
 import type { ContextePaquet } from "./context";
 import type { Brouillon } from "./schema";
 import type { Guet } from "@/lib/types";
+import { REGIMES_TEST } from "./regime-fixture";
 
 function guet(over: Partial<Guet> = {}): Guet {
   return {
@@ -191,7 +192,7 @@ function paquet(): ContextePaquet {
 
 function brouillonPropose(over: Partial<Brouillon> = {}): Brouillon {
   return {
-    regimeStatement: "Un régime en une phrase.",
+    regimeStatementPropositions: REGIMES_TEST,
     keyIndicators: [{ label: "Régime", value: "Choc d'offre" }],
     channels: ["taux-reel"],
     driverOrder: ["rates"],

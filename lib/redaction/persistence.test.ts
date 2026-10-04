@@ -3,6 +3,7 @@ import { resetClientsForTests } from "@/lib/supabase";
 import { chargerEtatBrouillon, sauvegarderEtatBrouillon } from "./persistence";
 import type { ContextePaquet } from "./context";
 import type { Brouillon } from "./schema";
+import { REGIMES_TEST } from "./regime-fixture";
 
 function paquet(): ContextePaquet {
   return {
@@ -29,7 +30,7 @@ function paquet(): ContextePaquet {
 
 function brouillon(): Brouillon {
   return {
-    regimeStatement: "Un régime.",
+    regimeStatementPropositions: REGIMES_TEST,
     keyIndicators: [{ label: "a", value: "b" }],
     channels: ["taux-reel"],
     driverOrder: ["rates"],

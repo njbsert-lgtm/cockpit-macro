@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { REGIMES_TEST } from "./regime-fixture";
 import {
   MARQUEUR_DEBUT,
   MARQUEUR_FIN,
@@ -26,7 +27,6 @@ function vivier(over: Partial<Vivier> = {}): Vivier {
 
 function frontmatter(over: Record<string, unknown> = {}) {
   return {
-    regimeStatement: "Le régime en une phrase.",
     keyIndicators: [
       { label: "Régime", value: "Choc d'offre" },
       { label: "Biais Fed", value: "Resserrement" },
@@ -70,6 +70,7 @@ const REVISION_RATES = {
 
 function structure(over: Record<string, unknown> = {}) {
   return {
+    regimeStatementPropositions: REGIMES_TEST,
     scenarioRevisions: [REVISION_RATES],
     guets: [],
     trendUpdates: [],
@@ -314,6 +315,7 @@ describe("validerReponse — la section JSON", () => {
 
   it("tolère l'absence de driverCandidate et de redactionNotes", () => {
     const minimal = {
+      regimeStatementPropositions: REGIMES_TEST,
       scenarioRevisions: [],
       guets: [],
       trendUpdates: [],
@@ -335,5 +337,46 @@ describe("validerReponse — la section JSON", () => {
     if (res.ok) return;
     expect(res.raison).toContain("nikkei");
     expect(res.raison).toContain("inconnue");
+  });
+});
+
+describe("validerReponse — les trois phrases de régime", () => {
+  it("accepte trois propositions d'angles différents", () => {
+    expect(valider(frontmatter(), structure())).toMatchObject({ ok: true });
+  });
+
+  it("refuse deux propositions, ou quatre : exactement trois", () => {
+    expect(valider(frontmatter(), structure({ regimeStatementPropositions: REGIMES_TEST.slice(0, 2) }))).toMatchObject({ ok: false });
+    expect(
+      valider(frontmatter(), structure({ regimeStatementPropositions: [...REGIMES_TEST, REGIMES_TEST[0]] })),
+    ).toMatchObject({ ok: false });
+  });
+
+  it("refuse deux propositions du même angle : ce sont des reformulations, pas trois façons de trancher", () => {
+    const memeAngle = [REGIMES_TEST[0], { ...REGIMES_TEST[1], angle: "fait" }, REGIMES_TEST[2]];
+    const res = valider(frontmatter(), structure({ regimeStatementPropositions: memeAngle }));
+    expect(res).toMatchObject({ ok: false });
+    if (res.ok) return;
+    expect(res.raison).toContain("trois angles différents");
+  });
+
+  it("refuse deux phrases identiques, même d'angles différents", () => {
+    const memeTexte = [REGIMES_TEST[0], { ...REGIMES_TEST[1], texte: REGIMES_TEST[0].texte }, REGIMES_TEST[2]];
+    const res = valider(frontmatter(), structure({ regimeStatementPropositions: memeTexte }));
+    expect(res).toMatchObject({ ok: false });
+    if (res.ok) return;
+    expect(res.raison).toContain("identiques");
+  });
+
+  it("refuse un angle inconnu", () => {
+    const inconnu = [REGIMES_TEST[0], { ...REGIMES_TEST[1], angle: "resume" }, REGIMES_TEST[2]];
+    expect(valider(frontmatter(), structure({ regimeStatementPropositions: inconnu }))).toMatchObject({ ok: false });
+  });
+
+  it("ignore une ligne regimeStatement recopiée d'un ancien gabarit : le modèle n'écrit plus cette phrase", () => {
+    const res = valider(frontmatter({ regimeStatement: "Une phrase écrite par le modèle." }), structure());
+    expect(res).toMatchObject({ ok: true });
+    if (!res.ok) return;
+    expect("regimeStatement" in res.frontmatter).toBe(false);
   });
 });

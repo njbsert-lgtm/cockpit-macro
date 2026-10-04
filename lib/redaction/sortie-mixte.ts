@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { ANGLES_REGIME, anglesDistincts } from "@/lib/regime";
 
 /**
  * Le contrat de sortie du modèle, depuis l'abandon de la sortie structurée.
@@ -70,7 +71,9 @@ export type Vivier = {
  * vaut pas un run perdu, puisque `rendreMdx` réécrit le frontmatter de toute façon.
  */
 const frontmatterSchema = z.object({
-  regimeStatement: z.string().min(1),
+  // `regimeStatement` n'y figure plus : le modèle n'écrit jamais la phrase de régime, il en propose
+  // trois dans la section JSON. Une ligne `regimeStatement:` recopiée d'un ancien gabarit est
+  // ignorée, comme toute clé en trop.
   keyIndicators: z
     .array(z.object({ label: z.string().min(1), value: z.string().min(1) }))
     .min(3)
@@ -145,7 +148,19 @@ const sourceSchema = z.object({
   sourceId: z.string().min(1),
 });
 
+/**
+ * Une proposition de phrase de régime. Trois angles, une proposition par angle : le fait dominant,
+ * le mécanisme sous-jacent, la contradiction de la semaine. Si les trois se ressemblent, la note
+ * n'a pas de thèse — le modèle a résumé la fiche au lieu de l'analyser.
+ */
+const regimeSchema = z.object({
+  texte: z.string().min(1),
+  angle: z.enum(ANGLES_REGIME),
+  justification: z.string().min(1),
+});
+
 const structureSchema = z.object({
+  regimeStatementPropositions: z.array(regimeSchema).length(3),
   scenarioRevisions: z.array(revisionSchema),
   guets: z.array(guetSchema),
   trendUpdates: z.array(trendUpdateSchema),
@@ -155,6 +170,7 @@ const structureSchema = z.object({
   redactionNotes: z.string().default(""),
 });
 
+export type RegimeProposee = z.infer<typeof regimeSchema>;
 export type BrancheProposee = z.infer<typeof brancheSchema>;
 export type RevisionProposee = z.infer<typeof revisionSchema>;
 export type GuetPropose = z.infer<typeof guetSchema>;
@@ -174,6 +190,22 @@ function invariants(
   ctx: z.RefinementCtx,
 ) {
   const { frontmatter: fm, structure: s } = d;
+
+  if (!anglesDistincts(s.regimeStatementPropositions)) {
+    ctx.addIssue({
+      code: "custom",
+      path: ["regimeStatementPropositions"],
+      message: `les trois phrases de régime doivent viser trois angles différents (${ANGLES_REGIME.join(", ")}), un par proposition — des propositions du même angle sont des reformulations`,
+    });
+  }
+  const textes = s.regimeStatementPropositions.map((p) => p.texte.trim().toLowerCase());
+  if (new Set(textes).size !== textes.length) {
+    ctx.addIssue({
+      code: "custom",
+      path: ["regimeStatementPropositions"],
+      message: "deux phrases de régime sont identiques : trois propositions ne valent que si elles tranchent chacune différemment",
+    });
+  }
 
   if (
     fm.driverOrder.length !== vivier.driverIds.length ||

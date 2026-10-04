@@ -9,6 +9,7 @@ import { MARQUEUR_DEBUT, MARQUEUR_FIN } from "./sortie-mixte";
 import { REDACTION_MODEL } from "@/config/ai-models";
 import type { ContextePaquet, ObservationContexte } from "./context";
 import type { Brouillon } from "./schema";
+import { REGIMES_TEST } from "./regime-fixture";
 
 function obs(): ObservationContexte {
   return {
@@ -68,7 +69,7 @@ function paquet(over: Partial<ContextePaquet> = {}): ContextePaquet {
 
 function brouillon(over: Partial<Brouillon> = {}): Brouillon {
   return {
-    regimeStatement: "Un régime en une phrase.",
+    regimeStatementPropositions: REGIMES_TEST,
     keyIndicators: [
       { label: "Régime", value: "Choc d'offre" },
       { label: "Biais", value: "Resserrement" },
@@ -189,7 +190,6 @@ const GRAPHE = {
  */
 function sortieDe(b: Brouillon): string {
   const frontmatter = [
-    `regimeStatement: ${JSON.stringify(b.regimeStatement)}`,
     "keyIndicators:",
     ...b.keyIndicators.flatMap((k) => [
       `  - label: ${JSON.stringify(k.label)}`,
@@ -208,6 +208,7 @@ function sortieDe(b: Brouillon): string {
   ].join("\n\n");
 
   const structure = {
+    regimeStatementPropositions: b.regimeStatementPropositions,
     scenarioRevisions: b.scenarioRevisions,
     guets: b.guets,
     trendUpdates: b.trendUpdates,

@@ -3,6 +3,7 @@ import path from "node:path";
 import matter from "gray-matter";
 import { z } from "zod";
 import type { Note, NoteKind, VeilleChannel, Zone } from "./types";
+import { ANGLES_REGIME, REGIME_A_CHOISIR, RETENUS_REGIME, anglesDistincts, propositionDe } from "./regime";
 import {
   BLOCK_NAMES,
   BLOCK_TITLES,
@@ -148,6 +149,19 @@ const frontmatterSchema = z.object({
   comparesTo: z.string().nullable().default(null),
   trigger: z.string().min(1).nullable().default(null),
   regimeStatement: z.string().min(1),
+  // Les trois phrases proposées, toutes conservées. Absentes des notes antérieures à la règle.
+  regimeStatementPropositions: z
+    .array(
+      z.object({
+        texte: z.string().min(1),
+        angle: z.enum(ANGLES_REGIME),
+        justification: z.string().min(1),
+      }),
+    )
+    .length(3)
+    .nullable()
+    .default(null),
+  regimeRetenu: z.enum(RETENUS_REGIME).nullable().default(null),
   keyIndicators: z
     .array(z.object({ label: z.string().min(1), value: z.string().min(1) }))
     .min(1),
@@ -295,6 +309,39 @@ export function parseNote(slug: string, source: string): ParsedNote {
     );
   }
 
+  // La phrase de régime : trois propositions d'angles différents, une retenue. Le brouillon porte
+  // une phrase de remplacement explicite tant que rien n'est choisi ; elle ne doit jamais atteindre
+  // une note publiée.
+  if (fm.regimeStatementPropositions && !anglesDistincts(fm.regimeStatementPropositions)) {
+    throw new NoteValidationError(
+      slug,
+      `les trois phrases de régime doivent viser trois angles différents (${ANGLES_REGIME.join(", ")}), une fois chacun — des propositions du même angle sont des reformulations, pas trois façons de trancher`,
+    );
+  }
+  if (fm.status === "publiee") {
+    if (fm.regimeStatement === REGIME_A_CHOISIR) {
+      throw new NoteValidationError(
+        slug,
+        "une note publiée ne peut pas porter la phrase de remplacement « à choisir » : une phrase de régime doit être retenue ou écrite",
+      );
+    }
+    if (fm.regimeStatementPropositions && fm.regimeRetenu === null) {
+      throw new NoteValidationError(
+        slug,
+        "une note publiée qui porte trois propositions de régime doit déclarer laquelle a été retenue (`regimeRetenu`)",
+      );
+    }
+  }
+  if (fm.regimeRetenu && fm.regimeRetenu !== "propre") {
+    const retenue = propositionDe(fm.regimeStatementPropositions, fm.regimeRetenu);
+    if (!retenue || retenue.texte !== fm.regimeStatement) {
+      throw new NoteValidationError(
+        slug,
+        `« regimeRetenu: ${fm.regimeRetenu} » ne correspond pas à la phrase de régime : elle devrait reprendre mot pour mot la proposition de cet angle`,
+      );
+    }
+  }
+
   const blocks = readBlockSequence(slug, file.content);
 
   const seen = new Set<BlockName>();
@@ -420,6 +467,8 @@ export function parseNote(slug: string, source: string): ParsedNote {
       comparesTo: fm.comparesTo,
       trigger: fm.trigger,
       regimeStatement: fm.regimeStatement,
+      regimeStatementPropositions: fm.regimeStatementPropositions,
+      regimeRetenu: fm.regimeRetenu,
       keyIndicators: fm.keyIndicators,
       zones: fm.zones,
       driverOrder: fm.driverOrder,

@@ -4,6 +4,7 @@ import { decisionsVides, type Decisions } from "./publication";
 import { etatPublication } from "./etat-publication";
 import type { ContextePaquet } from "./context";
 import type { Brouillon } from "./schema";
+import { REGIMES_TEST } from "./regime-fixture";
 
 const BROUILLON_MDX = `---
 kind: hebdo
@@ -92,7 +93,7 @@ function paquet(): ContextePaquet {
 
 function brouillonPropose(over: Partial<Brouillon> = {}): Brouillon {
   return {
-    regimeStatement: "Un régime en une phrase.",
+    regimeStatementPropositions: REGIMES_TEST,
     keyIndicators: [{ label: "Régime", value: "Choc d'offre" }],
     channels: ["taux-reel"],
     driverOrder: ["rates"],

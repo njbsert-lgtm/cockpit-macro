@@ -49,7 +49,7 @@ export function recevoir(brut: string, vivier: Vivier): ResultatReception {
   return {
     ok: true,
     brouillon: {
-      regimeStatement: fm.regimeStatement,
+      regimeStatementPropositions: structure.regimeStatementPropositions,
       keyIndicators: fm.keyIndicators,
       channels: fm.channels,
       driverOrder: fm.driverOrder,

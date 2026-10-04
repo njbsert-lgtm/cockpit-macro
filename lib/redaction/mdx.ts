@@ -3,6 +3,7 @@ import type { ContextePaquet } from "./context";
 import type { Brouillon } from "./schema";
 import type { Guet } from "@/lib/types";
 import { BLOCK_NAMES, type BlockName } from "@/lib/note-blocks";
+import { REGIME_A_CHOISIR } from "@/lib/regime";
 
 /**
  * Sortie structurée → fichier MDX.
@@ -160,7 +161,10 @@ export function rendreMdx(
     date: paquet.date,
     comparesTo: paquet.comparesTo,
     ...(paquet.trigger ? { trigger: paquet.trigger } : {}),
-    regimeStatement: brouillon.regimeStatement,
+    // Aucune des trois propositions n'est mise par défaut : le titre dit ce qu'il y a à faire, et
+    // `parseNote` refuse cette phrase de remplacement dans une note publiée.
+    regimeStatement: REGIME_A_CHOISIR,
+    regimeStatementPropositions: brouillon.regimeStatementPropositions,
     keyIndicators: brouillon.keyIndicators,
     zones: zonesDeLaNote(brouillon, paquet),
     driverOrder: brouillon.driverOrder,

@@ -5,6 +5,8 @@ import { parseNote } from "@/lib/notes";
 import type { ContextePaquet } from "./context";
 import type { Brouillon } from "./schema";
 import type { Note, VeilleItem } from "@/lib/types";
+import { REGIMES_TEST } from "./regime-fixture";
+import { REGIME_A_CHOISIR } from "@/lib/regime";
 
 function note(over: Partial<Note> = {}): Note {
   return {
@@ -70,7 +72,7 @@ const GUET = {
 
 function brouillon(over: Partial<Brouillon> = {}): Brouillon {
   return {
-    regimeStatement: "Un régime en une phrase.",
+    regimeStatementPropositions: REGIMES_TEST,
     keyIndicators: [
       { label: "Régime", value: "Choc d'offre" },
       { label: "Biais Fed", value: "Resserrement" },
@@ -182,12 +184,24 @@ describe("rendreMdx — le fichier produit est une note valide", () => {
 
   it("échappe le YAML sans qu'on ait à y penser — apostrophes et deux-points", () => {
     const piege = brouillon({
-      regimeStatement: "L'inflation : un régime d'offre, pas de demande.",
+      regimeStatementPropositions: [
+        { texte: "L'inflation : un régime d'offre, pas de demande.", angle: "fait", justification: "Un « test » : d'échappement." },
+        REGIMES_TEST[1],
+        REGIMES_TEST[2],
+      ],
     });
     const { slug, mdx } = rendreMdx(piege, paquet(), "2026-09-05");
-    expect(parseNote(slug, mdx).meta.regimeStatement).toBe(
+    expect(parseNote(slug, mdx).meta.regimeStatementPropositions?.[0].texte).toBe(
       "L'inflation : un régime d'offre, pas de demande.",
     );
+  });
+
+  it("n'en retient aucune : le brouillon porte la phrase « à choisir » et les trois propositions", () => {
+    const { slug, mdx } = rendreMdx(brouillon(), paquet(), "2026-09-05");
+    const meta = parseNote(slug, mdx).meta;
+    expect(meta.regimeStatement).toBe(REGIME_A_CHOISIR);
+    expect(meta.regimeRetenu).toBeNull();
+    expect(meta.regimeStatementPropositions).toEqual(REGIMES_TEST);
   });
 
   it("une spéciale garde son trigger et n'émet pas le bloc 4", () => {

@@ -594,14 +594,20 @@ export function extraireVerdicts(
 /**
  * Confronte chaque nombre des blocs rédigés au paquet de contexte.
  *
- * `keyIndicators` et `regimeStatement` sont contrôlés au même titre que les blocs : un chiffre
- * faux en en-tête de note est au moins aussi visible qu'un chiffre faux dans le corps — et le
- * cahier exige déjà que tout composant affichant un chiffre affiche sa date de relevé, donc la
- * règle de datation y vaut comme ailleurs.
+ * `keyIndicators` est contrôlé au même titre que les blocs : un chiffre faux en en-tête de note
+ * est au moins aussi visible qu'un chiffre faux dans le corps — et le cahier exige déjà que tout
+ * composant affichant un chiffre affiche sa date de relevé, donc la règle de datation y vaut
+ * comme ailleurs.
+ *
+ * Les **trois propositions de phrase de régime** sont contrôlées aussi, et **visibles** dans le
+ * rapport, mais elles ne le font pas bloquer : une seule sera retenue, et le chiffre faux d'une
+ * proposition écartée ne doit pas interdire de publier. Seule la phrase retenue est contrôlée
+ * strictement, au moment de la publication (`controlerChiffresPublication`).
  */
+export const PREFIXE_PROPOSITION_REGIME = "regimeStatement/";
+
 export function controlerChiffres(brouillon: Brouillon, paquet: ContextePaquet): RapportChiffres {
   const aControler: Array<[string, string]> = [
-    ["regimeStatement", brouillon.regimeStatement],
     ...brouillon.keyIndicators.map(
       (k): [string, string] => [`keyIndicators/${k.label}`, `${k.label} : ${k.value}`],
     ),
@@ -613,9 +619,19 @@ export function controlerChiffres(brouillon: Brouillon, paquet: ContextePaquet):
       ]),
     ),
   ];
+  const propositions: Array<[string, string]> = brouillon.regimeStatementPropositions.map(
+    (p): [string, string] => [`${PREFIXE_PROPOSITION_REGIME}${p.angle}`, p.texte],
+  );
 
-  const verdicts = extraireVerdicts(aControler, paquet);
-  return { verdicts, bloque: verdicts.some((v) => v.verdict !== "conforme") };
+  const verdicts = [
+    ...extraireVerdicts(propositions, paquet),
+    ...extraireVerdicts(aControler, paquet),
+  ];
+  // Une proposition non retenue ne bloque pas : voir plus haut.
+  const bloque = verdicts.some(
+    (v) => !v.bloc.startsWith(PREFIXE_PROPOSITION_REGIME) && v.verdict !== "conforme",
+  );
+  return { verdicts, bloque };
 }
 
 /** Ce que chaque verdict reproche, en clair. Partagé avec le portail. */
