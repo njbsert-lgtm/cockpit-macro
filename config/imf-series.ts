@@ -35,6 +35,15 @@ import type { Zone } from "@/lib/types";
  * différente de la croissance sur un an qu'Eurostat publie pour la zone euro. Pour la Chine, seule la
  * série en monnaie locale non désaisonnalisée porte une valeur récente (T2 2026).
  *
+ * **Piste OCDE, non résolue.** Les comptes nationaux trimestriels de l'OCDE (`sdmx.oecd.org`,
+ * `OECD.SDD.NAD`, flux `DSD_NAMAIN1@DF_QNA_EXPENDITURE_GROWTH_G20` et `_OECD`, sondés le
+ * 04/10/2026) publient des taux de croissance — l'existence des flux est confirmée. Mais la clé
+ * n'est pas : quatre requêtes (Chine, Japon, Inde sur le flux G20, Japon sur le flux OCDE)
+ * ont toutes répondu `NoResultsFound`, y compris pour le Japon, membre de l'OCDE, ce qui désigne
+ * une clé fausse plutôt qu'une absence de données — les deux premières des quatorze dimensions de
+ * `DSD_NAMAIN1` n'ont pas été lues et leur ordre a été deviné. À reprendre en lisant la structure
+ * complète avant d'écrire une requête, jamais en en devinant une de plus.
+ *
  * La mise à jour de l'IMF suit celle des instituts nationaux : l'Inde a deux mois de retard sur
  * la Chine (juillet contre août).
  */
