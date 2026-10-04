@@ -7,6 +7,7 @@ import { estatMappingFor } from "./estat-series";
 import { boeMappingFor } from "./boe-series";
 import { bojMappingFor } from "./boj-series";
 import { bisMappingFor } from "./bis-series";
+import { imfMappingFor } from "./imf-series";
 import { spreadDefinitionFor } from "./spreads";
 
 /**
@@ -38,6 +39,7 @@ export type Provider =
   | "boe"
   | "boj"
   | "bis"
+  | "imf"
   | "spread";
 
 type Maillon = { source: Provider; actif: (id: string) => boolean };
@@ -65,6 +67,9 @@ const CHAINE_MACRO: Maillon[] = [
   // Le taux directeur chinois et indien, la dette publique japonaise : aucune source nationale
   // branchée, la BRI les redistribue — voir `config/bis-series.ts`.
   { source: "bis", actif: (id) => bisMappingFor(id) !== null },
+  // L'inflation totale chinoise et indienne : les séries OCDE de FRED sont discontinuées, l'IMF les
+  // redistribue — voir `config/imf-series.ts`.
+  { source: "imf", actif: (id) => imfMappingFor(id) !== null },
 ];
 
 /** Le fournisseur qui fait foi pour cet instrument, ou `null` si aucun n'est actif. */

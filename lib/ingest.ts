@@ -18,6 +18,7 @@ import { ENABLED_ESTAT_SERIES, ESTAT_SOURCE, type EstatMapping } from "@/config/
 import { ENABLED_BOE_SERIES, BOE_SOURCE, type BoeMapping } from "@/config/boe-series";
 import { ENABLED_BOJ_SERIES, BOJ_SOURCE, type BojMapping } from "@/config/boj-series";
 import { ENABLED_BIS_SERIES, BIS_SOURCE, type BisMapping } from "@/config/bis-series";
+import { ENABLED_IMF_SERIES, IMF_SOURCE, type ImfMapping } from "@/config/imf-series";
 import { SPREAD_DEFINITIONS, SPREAD_SOURCE } from "@/config/spreads";
 import { fournisseurInstrument, fournisseurMacro } from "@/config/providers";
 import { fetchFredSeries, FRED_SOURCE, type FredFetchResult } from "./fred";
@@ -29,6 +30,7 @@ import { fetchEstatSeries } from "./estat";
 import { fetchBoeSeries } from "./boe";
 import { fetchBojSeries } from "./boj";
 import { fetchBisSeries } from "./bis";
+import { fetchImfSeries } from "./imf";
 import { computeSpread } from "./spreads";
 import { getMacroIndicators } from "./data";
 import type { Observation } from "./types";
@@ -1103,6 +1105,96 @@ async function ingestBisOne(
   await recordHealthSuccess(client, {
     seriesKey,
     source: BIS_SOURCE,
+    targetKind: "macro",
+    targetId,
+    latestObservation: result.points.at(-1)?.date ?? null,
+    now,
+  });
+  return { seriesId: seriesKey, targetId, ok: true, written: rows.length };
+}
+
+// ---------------------------------------------------------------------------
+// IMF — inflation totale chinoise et indienne (voir config/imf-series.ts)
+// ---------------------------------------------------------------------------
+
+type ImfFetcher = (mapping: ImfMapping) => ReturnType<typeof fetchImfSeries>;
+
+/** Un passage de collecte IMF. Deux séries, sans clé, une requête chacune. */
+export async function runImfIngest(
+  client: SupabaseClient,
+  options: {
+    now?: Date;
+    fetcher?: ImfFetcher;
+    series?: ImfMapping[];
+    deadline?: number;
+  } = {},
+): Promise<IngestReport> {
+  const now = options.now ?? new Date();
+  const fetcher = options.fetcher ?? fetchImfSeries;
+  const startedAt = now.toISOString();
+  const outcomes: SeriesOutcome[] = [];
+  const series =
+    options.series ?? ENABLED_IMF_SERIES.filter((m) => fournisseurMacro(m.target.id) === "imf");
+
+  for (const mapping of series) {
+    if (outOfTime(options.deadline)) break;
+    outcomes.push(await ingestImfOne(client, mapping, now, fetcher));
+  }
+
+  return report(IMF_SOURCE, startedAt, outcomes, series.length);
+}
+
+async function ingestImfOne(
+  client: SupabaseClient,
+  mapping: ImfMapping,
+  now: Date,
+  fetcher: ImfFetcher,
+): Promise<SeriesOutcome> {
+  const targetId = mapping.target.id;
+  const seriesKey = `${mapping.flow}/${mapping.key}`;
+  const result = await fetcher(mapping);
+
+  if (!result.ok) {
+    await recordHealthFailure(client, {
+      seriesKey,
+      source: IMF_SOURCE,
+      targetKind: "macro",
+      targetId,
+      error: result.error,
+      now,
+    });
+    return { seriesId: seriesKey, targetId, ok: false, written: 0, error: result.error };
+  }
+
+  const fetchedAt = now.toISOString();
+  const rows = result.points.map((p) => ({
+    indicator_id: targetId,
+    date: p.date,
+    value: p.value,
+    source: IMF_SOURCE,
+    fetched_at: fetchedAt,
+  }));
+
+  if (rows.length > 0) {
+    const { error } = await client
+      .from("macro_observations")
+      .upsert(rows, { onConflict: "indicator_id,date" });
+    if (error) {
+      await recordHealthFailure(client, {
+        seriesKey,
+        source: IMF_SOURCE,
+        targetKind: "macro",
+        targetId,
+        error: `écriture refusée — ${error.message}`,
+        now,
+      });
+      return { seriesId: seriesKey, targetId, ok: false, written: 0, error: error.message };
+    }
+  }
+
+  await recordHealthSuccess(client, {
+    seriesKey,
+    source: IMF_SOURCE,
     targetKind: "macro",
     targetId,
     latestObservation: result.points.at(-1)?.date ?? null,
