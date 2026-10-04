@@ -23,7 +23,7 @@ import type { Zone } from "@/lib/types";
  * (`StructureSpecificData`) quel que soit le `format` demandé — `lib/imf.ts` le lit sans
  * dépendance, attribut par attribut. Et les périodes sont de la forme `2026-M06`, pas `2026-06`.
  *
- * **Le PIB chinois et japonais n'est pas branché, et la raison est écrite ici.** Le dataflow des
+ * **Le PIB chinois et japonais ne vient pas d'ici, et la raison est écrite.** Le dataflow des
  * comptes nationaux trimestriels (`IMF.STA/QNEA`, `DSD_QNEA` 7.0.0, dimensions `COUNTRY.INDICATOR.
  * PRICE_TYPE.S_ADJUSTMENT.TYPE_OF_TRANSFORMATION.FREQUENCY`) répond bien — sondé le 04/10/2026 pour
  * `CHN.B1GQ....Q` et `JPN.B1GQ....Q` — mais il ne publie que des **niveaux** : dollars (`USD`),
@@ -35,14 +35,8 @@ import type { Zone } from "@/lib/types";
  * différente de la croissance sur un an qu'Eurostat publie pour la zone euro. Pour la Chine, seule la
  * série en monnaie locale non désaisonnalisée porte une valeur récente (T2 2026).
  *
- * **Piste OCDE, non résolue.** Les comptes nationaux trimestriels de l'OCDE (`sdmx.oecd.org`,
- * `OECD.SDD.NAD`, flux `DSD_NAMAIN1@DF_QNA_EXPENDITURE_GROWTH_G20` et `_OECD`, sondés le
- * 04/10/2026) publient des taux de croissance — l'existence des flux est confirmée. Mais la clé
- * n'est pas : quatre requêtes (Chine, Japon, Inde sur le flux G20, Japon sur le flux OCDE)
- * ont toutes répondu `NoResultsFound`, y compris pour le Japon, membre de l'OCDE, ce qui désigne
- * une clé fausse plutôt qu'une absence de données — les deux premières des quatorze dimensions de
- * `DSD_NAMAIN1` n'ont pas été lues et leur ordre a été deviné. À reprendre en lisant la structure
- * complète avant d'écrire une requête, jamais en en devinant une de plus.
+ * Le PIB chinois et japonais vient de l'OCDE, qui le publie en croissance : voir
+ * `config/oecd-series.ts`.
  *
  * La mise à jour de l'IMF suit celle des instituts nationaux : l'Inde a deux mois de retard sur
  * la Chine (juillet contre août).

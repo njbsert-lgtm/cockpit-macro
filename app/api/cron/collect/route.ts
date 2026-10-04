@@ -10,6 +10,7 @@ import {
   runEurostatIngest,
   runImfIngest,
   runIngest,
+  runOecdIngest,
   runOnsIngest,
   runSpreadIngest,
   runTwelveDataIngest,
@@ -122,6 +123,9 @@ const BIS_BUDGET_MS = 2_000;
 // Deux séries IMF. L'API est plus lente que les autres (4 à 5 s relevées pour l'Inde au sondage du
 // 04/10), d'où un budget plus large — borné quand même par le délai de chaque appel.
 const IMF_BUDGET_MS = 6_000;
+// Deux séries OCDE, un appel CSV chacune. L'OCDE limite ses appels par heure et par adresse :
+// deux par jour sont très loin du plafond.
+const OECD_BUDGET_MS = 4_000;
 
 // Les flux institutionnels et EDGAR d'abord : peu de requêtes, rapides, de haute autorité.
 // GDELT en dernier — c'est le seul dont la collecte se découpe sur plusieurs passages via un
@@ -404,7 +408,34 @@ export async function GET(request: Request) {
   }
   revalidatePath("/macro");
 
-  // Module 10 — la veille. Enveloppée dans son propre try/catch : même une exception qui
+  // Module 10 — l'OCDE (croissance du PIB chinois et japonais). Même raisonnement : son propre
+  // try/catch, sans clé.
+  let oecd: IngestReport | { error: string };
+  try {
+    oecd = await runOecdIngest(client, {
+      deadline: Math.min(
+        Date.now() + OECD_BUDGET_MS,
+        routeStartedAt +
+          FRED_BUDGET_MS +
+          SPREAD_BUDGET_MS +
+          TWELVE_DATA_BUDGET_MS +
+          ALPHA_VANTAGE_BUDGET_MS +
+          EUROSTAT_BUDGET_MS +
+          ONS_BUDGET_MS +
+          ESTAT_BUDGET_MS +
+          BOE_BUDGET_MS +
+          BOJ_BUDGET_MS +
+          BIS_BUDGET_MS +
+          IMF_BUDGET_MS +
+          OECD_BUDGET_MS,
+      ),
+    });
+  } catch (err) {
+    oecd = { error: err instanceof Error ? err.message : String(err) };
+  }
+  revalidatePath("/macro");
+
+  // Module 11 — la veille. Enveloppée dans son propre try/catch : même une exception qui
   // échapperait à `runVeilleCollect` ne doit jamais faire échouer la route après que FRED a
   // déjà écrit. Elle passe en dernier parce qu'elle est la seule à savoir reprendre où elle
   // s'est arrêtée : si les modules de données ont mangé le budget, son curseur reprendra demain
@@ -422,7 +453,7 @@ export async function GET(request: Request) {
   // ne pèse sur ce statut — chacun porte le sien, séparément (sauf les spreads, voir plus haut).
   const status = fred.failed > 0 && fred.ok === 0 ? 502 : 200;
   return NextResponse.json(
-    { fred, spreads, twelveData, alphaVantage, eurostat, ons, estat, boe, boj, bis, imf, veille },
+    { fred, spreads, twelveData, alphaVantage, eurostat, ons, estat, boe, boj, bis, imf, oecd, veille },
     { status },
   );
 }

@@ -1524,6 +1524,7 @@ Gratuites, en accès programmatique. Clés en variables d'environnement, jamais 
 | Taux directeur Japon | **Bank of Japan** (API « Time-Series Data Search ») | Gratuit, sans clé, lancée en 2026. Pas une série e-Stat. Proxy retenu : le taux au jour le jour sans garantie (`STRDCLUCON`, base FM01) — la BoJ ne publie pas sa cible sous forme de série numérique. Voir `config/boj-series.ts` |
 | Taux directeur Chine et Inde, dette publique Japon | **BRI** (API SDMX v2 de `stats.bis.org`, **CSV**) | Gratuit, sans clé. `WS_CBPOL` pour le LPR 1 an chinois et le repo indien, `WS_TC` pour la dette brute nominale japonaise en part du PIB. Voir `config/bis-series.ts` |
 | Inflation totale Chine et Inde | **IMF** (API SDMX 2.1 de `api.imf.org`, dataflow `IMF.STA/CPI`) | Gratuit, sans clé. Glissement annuel demandé à la source, réponse en XML. Voir `config/imf-series.ts` |
+| Croissance du PIB Chine et Japon | **OCDE** (API SDMX de `sdmx.oecd.org`, comptes nationaux trimestriels `OECD.SDD.NAD`, **CSV**) | Gratuit, sans clé. Croissance sur un an (`GY`) demandée à la source, treize dimensions numérotées de 1 à 13. Voir `config/oecd-series.ts` |
 | Énergie | **EIA API** | Gratuit, données officielles |
 | Indices actions, FX | **FRED** (huit séries) et **Twelve Data** | FRED : S&P 500, Nasdaq 100, Nikkei 225, EUR/USD, GBP/USD, USD/JPY, Brent, WTI. Twelve Data branché pour l'or (`XAU/USD`) et MSCI ACWI (ETF iShares `ACWI`) ; le reste des indices propriétaires visés (Euro Stoxx 50, FTSE 100, CSI 300, Nifty 50, Hang Seng, CAC 40), l'argent et le DXY restent au seed — verrouillés au palier payant ou absents du catalogue sous les codes usuels, voir `config/twelve-data-series.ts`. Palier gratuit à 8 appels par minute. |
 | Bund, OAT et quatre autres points à 10 ans | **FRED** (taux longs mensuels de l'OCDE) | Gratuit, sans clé — voir plus bas pourquoi le quotidien reste hors de portée |
@@ -1535,7 +1536,7 @@ Contraintes dans le code :
   changement d'heure), jamais à la demande. Le plan Hobby
   n'autorise qu'un seul déclenchement quotidien : la route du cron est un **orchestrateur** qui
   exécute FRED, puis les spreads, puis Twelve Data, puis Alpha Vantage, puis Eurostat, puis ONS,
-  puis e-Stat, puis BoE, puis BoJ, puis la BRI, puis l'IMF, puis la veille, en douze modules
+  puis e-Stat, puis BoE, puis BoJ, puis la BRI, puis l'IMF, puis l'OCDE, puis la veille, en treize modules
   indépendants — jamais un second
   cron (détail à jour dans le commentaire de tête d'`app/api/cron/collect/route.ts`). FRED
   s'exécute et écrit en premier, sans exception ; les modules suivants sont chacun enveloppés
@@ -1669,11 +1670,11 @@ japonaise et chinoise (OCDE via FRED) s'arrêtent au T4 2024 et restent écarté
 les six candidats FRED sondés pour la Chine, l'Inde et la dette japonaise (voir
 `config/fred-series.ts`). Le seed ne porte plus d'observations que pour les séries qu'un
 fournisseur couvre, en repli quand la base est vide. **Recompté le 04/10/2026** : 32 instruments
-et **55 indicateurs** sur 83 et 69 — la BRI (taux directeurs chinois et indien, dette publique
-japonaise) et l'IMF (inflation totale chinoise et indienne) ont ajouté cinq séries. Il reste 14
-indicateurs non suivis : les six PMI (propriétaires S&P Global), les balances courantes
-américaine, japonaise et chinoise, le solde budgétaire britannique, le PIB japonais et chinois,
-les salaires japonais et ceux de la zone euro.
+et **57 indicateurs** sur 83 et 69 — la BRI (taux directeurs chinois et indien, dette publique
+japonaise), l'IMF (inflation totale chinoise et indienne) et l'OCDE (croissance du PIB chinois et
+japonais) ont ajouté sept séries. Il reste 12 indicateurs non suivis : les six PMI (propriétaires
+S&P Global), les balances courantes américaine, japonaise et chinoise, le solde budgétaire
+britannique, les salaires japonais et ceux de la zone euro.
 
 **Les deux spreads (US10Y/Bund, OAT/Bund) ont ensuite été calculés et stockés** — pas collectés
 au sens d'une nouvelle source, mais dérivés à l'insertion de `us10y`, `de10y` et `fr10y`, tous
@@ -2045,19 +2046,35 @@ appel réel** : l'API répond du XML SDMX quel que soit le `format` demandé, et
 La source publie son taux avec ses décimales de calcul (« 1.000065040145302 ») : arrondi à
 deux décimales à la lecture, c'est de la présentation, pas un recalcul. Le pays et la
 transformation de la réponse sont vérifiés : une série en niveau d'indice serait une série
-entière fausse. `IMF_VERIFIED` est à `true`. **Le PIB chinois et japonais n'est pas branché** : le
+entière fausse. `IMF_VERIFIED` est à `true`. **Le PIB chinois et japonais ne vient pas de l'IMF** : le
 dataflow des comptes trimestriels (`IMF.STA/QNEA`) répond, mais ne publie que des niveaux (dollars,
 monnaie locale, indice de prix), aucune transformation en taux — en tirer une croissance, ce serait
-la calculer chez nous, ce que la règle « une transformation se demande à la source » interdit (voir
-`config/imf-series.ts`).
+la calculer chez nous, ce que la règle « une transformation se demande à la source » interdit. Il
+vient de l'OCDE (voir plus bas).
+
+**OCDE — branchée, deux séries.** La croissance du PIB chinois et japonais, que ni FRED (séries
+OCDE arrêtées en 2024 pour la Chine), ni e-Stat (pas de table longue série stable), ni l'IMF
+(niveaux seulement) ne servaient : comptes nationaux trimestriels de l'OCDE (`OECD.SDD.NAD`,
+structure `DSD_NAMAIN1`, API SDMX `sdmx.oecd.org`), sans clé. **Croissance sur un an** (`GY`),
+demandée à la source : même base que la croissance Eurostat, donc comparable en mode comparaison
+avec la zone euro, la France, l'Allemagne, l'Espagne et l'Italie — l'ONS, elle, publie sur
+trimestre. Chine à 4,3 % au T2 2026 (flux `DF_QNA_EXPENDITURE_GROWTH_G20`), Japon à 0,73 % (flux
+`DF_QNA_EXPENDITURE_GROWTH_OECD`) : la Chine n'est pas membre de l'OCDE, chacun a son flux.
+**Un piège coûteux, découvert par appel réel — à la quatrième tentative.** Les treize dimensions
+sont numérotées de **1** à 13 chez l'OCDE, pas de 0 à 13 : en lisant la structure comme 0-indexée,
+le code pays est tombé sur la dimension `SECTOR`, et trois requêtes ont répondu `NoResultsFound`,
+**y compris pour le Japon, membre de l'OCDE** — ce qui désignait une clé fausse, pas une donnée
+absente. La clé est donc écrite en entier, sans joker, et `lib/oecd.ts` nomme ce message plutôt
+que de le prendre pour un vide. Le pays et la transformation de la réponse sont vérifiés.
+`OECD_VERIFIED` est à `true`.
 
 Mise en service, dans l'ordre : exécuter `supabase/schema.sql`, renseigner les variables de
 `.env.example`, lancer `npm run fred:check` et n'activer que les séries sorties vertes, faire
 de même avec `npm run twelve-data:check`, `npm run eurostat:check` (ce dernier avant de
 basculer `EUROSTAT_VERIFIED`), `npm run ons:check` (avant de basculer `ONS_VERIFIED`),
 `npm run estat:check` (avant de basculer `ESTAT_VERIFIED`), `npm run boe:check`,
-`npm run boj:check`, `npm run bis:check` et `npm run imf:check` (avant de basculer
-`BOE_VERIFIED`/`BOJ_VERIFIED`/`BIS_VERIFIED`/`IMF_VERIFIED`), puis laisser le cron
+`npm run boj:check`, `npm run bis:check`, `npm run imf:check` et `npm run oecd:check` (avant de
+basculer `BOE_VERIFIED`/`BOJ_VERIFIED`/`BIS_VERIFIED`/`IMF_VERIFIED`/`OECD_VERIFIED`), puis laisser le cron
 tourner. Le site fonctionne à chaque étape de cette séquence, y compris avant la première —
 c'est ce que garantit le repli sur le seed.
 

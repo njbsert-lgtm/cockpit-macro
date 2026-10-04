@@ -19,6 +19,7 @@ import { ENABLED_BOE_SERIES, BOE_SOURCE, type BoeMapping } from "@/config/boe-se
 import { ENABLED_BOJ_SERIES, BOJ_SOURCE, type BojMapping } from "@/config/boj-series";
 import { ENABLED_BIS_SERIES, BIS_SOURCE, type BisMapping } from "@/config/bis-series";
 import { ENABLED_IMF_SERIES, IMF_SOURCE, type ImfMapping } from "@/config/imf-series";
+import { ENABLED_OECD_SERIES, OECD_SOURCE, type OecdMapping } from "@/config/oecd-series";
 import { SPREAD_DEFINITIONS, SPREAD_SOURCE } from "@/config/spreads";
 import { fournisseurInstrument, fournisseurMacro } from "@/config/providers";
 import { fetchFredSeries, FRED_SOURCE, type FredFetchResult } from "./fred";
@@ -31,6 +32,7 @@ import { fetchBoeSeries } from "./boe";
 import { fetchBojSeries } from "./boj";
 import { fetchBisSeries } from "./bis";
 import { fetchImfSeries } from "./imf";
+import { fetchOecdSeries } from "./oecd";
 import { computeSpread } from "./spreads";
 import { getMacroIndicators } from "./data";
 import type { Observation } from "./types";
@@ -1195,6 +1197,96 @@ async function ingestImfOne(
   await recordHealthSuccess(client, {
     seriesKey,
     source: IMF_SOURCE,
+    targetKind: "macro",
+    targetId,
+    latestObservation: result.points.at(-1)?.date ?? null,
+    now,
+  });
+  return { seriesId: seriesKey, targetId, ok: true, written: rows.length };
+}
+
+// ---------------------------------------------------------------------------
+// OCDE — croissance trimestrielle du PIB chinois et japonais (voir config/oecd-series.ts)
+// ---------------------------------------------------------------------------
+
+type OecdFetcher = (mapping: OecdMapping) => ReturnType<typeof fetchOecdSeries>;
+
+/** Un passage de collecte OCDE. Deux séries, sans clé, une requête chacune. */
+export async function runOecdIngest(
+  client: SupabaseClient,
+  options: {
+    now?: Date;
+    fetcher?: OecdFetcher;
+    series?: OecdMapping[];
+    deadline?: number;
+  } = {},
+): Promise<IngestReport> {
+  const now = options.now ?? new Date();
+  const fetcher = options.fetcher ?? fetchOecdSeries;
+  const startedAt = now.toISOString();
+  const outcomes: SeriesOutcome[] = [];
+  const series =
+    options.series ?? ENABLED_OECD_SERIES.filter((m) => fournisseurMacro(m.target.id) === "oecd");
+
+  for (const mapping of series) {
+    if (outOfTime(options.deadline)) break;
+    outcomes.push(await ingestOecdOne(client, mapping, now, fetcher));
+  }
+
+  return report(OECD_SOURCE, startedAt, outcomes, series.length);
+}
+
+async function ingestOecdOne(
+  client: SupabaseClient,
+  mapping: OecdMapping,
+  now: Date,
+  fetcher: OecdFetcher,
+): Promise<SeriesOutcome> {
+  const targetId = mapping.target.id;
+  const seriesKey = `${mapping.dataflow}/${mapping.key}`;
+  const result = await fetcher(mapping);
+
+  if (!result.ok) {
+    await recordHealthFailure(client, {
+      seriesKey,
+      source: OECD_SOURCE,
+      targetKind: "macro",
+      targetId,
+      error: result.error,
+      now,
+    });
+    return { seriesId: seriesKey, targetId, ok: false, written: 0, error: result.error };
+  }
+
+  const fetchedAt = now.toISOString();
+  const rows = result.points.map((p) => ({
+    indicator_id: targetId,
+    date: p.date,
+    value: p.value,
+    source: OECD_SOURCE,
+    fetched_at: fetchedAt,
+  }));
+
+  if (rows.length > 0) {
+    const { error } = await client
+      .from("macro_observations")
+      .upsert(rows, { onConflict: "indicator_id,date" });
+    if (error) {
+      await recordHealthFailure(client, {
+        seriesKey,
+        source: OECD_SOURCE,
+        targetKind: "macro",
+        targetId,
+        error: `écriture refusée — ${error.message}`,
+        now,
+      });
+      return { seriesId: seriesKey, targetId, ok: false, written: 0, error: error.message };
+    }
+  }
+
+  await recordHealthSuccess(client, {
+    seriesKey,
+    source: OECD_SOURCE,
     targetKind: "macro",
     targetId,
     latestObservation: result.points.at(-1)?.date ?? null,

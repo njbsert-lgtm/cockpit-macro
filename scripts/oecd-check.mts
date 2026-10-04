@@ -1,0 +1,84 @@
+/**
+ * Vérification à blanc des séries OCDE.
+ *
+ *   npm run oecd:check
+ *   npm run oecd:check -- cn-policy-rate       (un sous-ensemble ; par défaut les deux séries)
+ *
+ * Interroge une fois chaque série déclarée dans `config/oecd-series.ts` — l'API SDMX de l'OCDE (CSV)
+ * sans clé — et affiche la dernière valeur reçue face aux bornes de plausibilité
+ * déclarées. Même rôle que `ons:check` et `estat:check` : confronter la configuration à un
+ * appel réel avant d'activer.
+ *
+ * N'écrit rien : ni en base, ni dans la configuration. C'est un contrôle, pas une migration.
+ */
+import { OECD_SERIES, OECD_VERIFIED } from "../config/oecd-series";
+import { buildOecdUrl, parseOecdResponse } from "../lib/oecd";
+
+const only = process.argv.slice(2);
+const series = only.length > 0 ? OECD_SERIES.filter((m) => only.includes(m.target.id)) : OECD_SERIES;
+
+if (series.length === 0) {
+  console.error("Aucune série ne correspond aux identifiants demandés.");
+  process.exit(1);
+}
+
+console.log(
+  OECD_VERIFIED
+    ? "OECD_VERIFIED = true — la collecte est active.\n"
+    : "OECD_VERIFIED = false — rien n'est collecté tant que ce drapeau n'est pas basculé.\n",
+);
+
+let failures = 0;
+
+for (const mapping of series) {
+  const header = `${mapping.target.id.padEnd(20)} ${mapping.dataflow}/${mapping.key}`;
+  const url = buildOecdUrl(mapping);
+
+  let payload: string;
+  try {
+    const response = await fetch(url, { headers: { Accept: "text/csv" } });
+    payload = await response.text();
+  } catch (error) {
+    failures += 1;
+    console.log(`✗ ${header}`);
+    console.log(`    appel impossible — ${(error as Error).message}`);
+    console.log(`    ${url}`);
+    continue;
+  }
+
+  const result = parseOecdResponse(mapping, payload);
+  if (!result.ok) {
+    failures += 1;
+    console.log(`✗ ${header}`);
+    console.log(`    ${result.error}`);
+    console.log(`    ${url}`);
+    continue;
+  }
+
+  const last = result.points.at(-1);
+  if (!last) {
+    failures += 1;
+    console.log(`✗ ${header}`);
+    console.log(`    aucune observation dans la réponse — série non vérifiable`);
+    continue;
+  }
+
+  console.log(`✓ ${header}`);
+  console.log(`    dernière valeur : ${last.value}   au ${last.date}`);
+  console.log(
+    `    bornes déclarées [${mapping.plausible.min} ; ${mapping.plausible.max}] · ${result.points.length} point(s)`,
+  );
+
+  const previous = result.points.slice(-4, -1);
+  if (previous.length > 0) {
+    console.log(`    avant           : ${previous.map((p) => `${p.date} = ${p.value}`).join("  ·  ")}`);
+  }
+}
+
+console.log(
+  `\n${series.length - failures}/${series.length} série(s) exploitables et conformes à ce que la configuration déclare.`,
+);
+if (failures === 0 && !OECD_VERIFIED) {
+  console.log("Tout est vert : basculer OECD_VERIFIED à true dans config/oecd-series.ts.");
+}
+process.exit(failures > 0 ? 1 : 0);

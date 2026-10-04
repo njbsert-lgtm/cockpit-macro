@@ -9,6 +9,7 @@ import { BOE_SERIES } from "./boe-series";
 import { BOJ_SERIES } from "./boj-series";
 import { BIS_SERIES } from "./bis-series";
 import { IMF_SERIES } from "./imf-series";
+import { OECD_SERIES } from "./oecd-series";
 import { SPREAD_DEFINITIONS } from "./spreads";
 import {
   fournisseurInstrument,
@@ -38,6 +39,7 @@ const macroIds = new Set([
   ...BOJ_SERIES.map((m) => m.target.id),
   ...BIS_SERIES.map((m) => m.target.id),
   ...IMF_SERIES.map((m) => m.target.id),
+  ...OECD_SERIES.map((m) => m.target.id),
 ]);
 
 describe("la chaîne de fournisseurs — jamais de fusion, contre la configuration réelle", () => {
@@ -69,6 +71,8 @@ describe("la chaîne de fournisseurs — jamais de fusion, contre la configurati
     expect(fournisseurMacro("jp-debt-gdp")).toBe("bis");
     expect(fournisseurMacro("cn-cpi")).toBe("imf");
     expect(fournisseurMacro("in-cpi")).toBe("imf");
+    expect(fournisseurMacro("cn-gdp")).toBe("oecd");
+    expect(fournisseurMacro("jp-gdp")).toBe("oecd");
     expect(fournisseurInstrument("spread-us10y-bund10y")).toBe("spread");
   });
 

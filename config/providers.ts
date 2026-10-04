@@ -8,6 +8,7 @@ import { boeMappingFor } from "./boe-series";
 import { bojMappingFor } from "./boj-series";
 import { bisMappingFor } from "./bis-series";
 import { imfMappingFor } from "./imf-series";
+import { oecdMappingFor } from "./oecd-series";
 import { spreadDefinitionFor } from "./spreads";
 
 /**
@@ -40,6 +41,7 @@ export type Provider =
   | "boj"
   | "bis"
   | "imf"
+  | "oecd"
   | "spread";
 
 type Maillon = { source: Provider; actif: (id: string) => boolean };
@@ -70,6 +72,9 @@ const CHAINE_MACRO: Maillon[] = [
   // L'inflation totale chinoise et indienne : les séries OCDE de FRED sont discontinuées, l'IMF les
   // redistribue — voir `config/imf-series.ts`.
   { source: "imf", actif: (id) => imfMappingFor(id) !== null },
+  // La croissance du PIB chinois et japonais : ni FRED, ni e-Stat, ni l'IMF (niveaux seulement) ne
+  // la servaient — voir `config/oecd-series.ts`.
+  { source: "oecd", actif: (id) => oecdMappingFor(id) !== null },
 ];
 
 /** Le fournisseur qui fait foi pour cet instrument, ou `null` si aucun n'est actif. */
