@@ -51,5 +51,16 @@ export async function chargerEtatBrouillon(slug: string): Promise<EtatBrouillon 
     .maybeSingle();
 
   if (error || !data || !data.brouillon) return null;
-  return { paquet: data.paquet as ContextePaquet, brouillon: data.brouillon as Brouillon };
+  // Un brouillon persisté avant les thèmes n'en porte pas : on le lit comme « aucun thème proposé »
+  // plutôt que de faire planter le portail sur un champ absent.
+  const paquet = data.paquet as ContextePaquet;
+  const brouillon = data.brouillon as Brouillon;
+  return {
+    paquet: {
+      ...paquet,
+      placesThemes: paquet.placesThemes ?? 0,
+      themesExistants: paquet.themesExistants ?? [],
+    },
+    brouillon: { ...brouillon, themesProposes: brouillon.themesProposes ?? [] },
+  };
 }

@@ -21,6 +21,9 @@ function vivier(over: Partial<Vivier> = {}): Vivier {
     sourceIds: ["item-1", "item-2", "Eurostat"],
     blocsAttendus: ["CeQuiAChange", "CeQuiSestConfirme"],
     budgetGuets: 3,
+    catalogueInstrumentIds: ["us10y", "brent", "eurusd", "spx", "gold"],
+    placesThemes: 5,
+    themesExistantsIds: [],
     ...over,
   };
 }
@@ -76,6 +79,7 @@ function structure(over: Record<string, unknown> = {}) {
     trendUpdates: [],
     sources: [],
     driverCandidate: null,
+    themesProposes: [],
     redactionNotes: "",
     ...over,
   };
@@ -268,6 +272,61 @@ describe("validerReponse — la section JSON", () => {
     if (res.ok) return;
     expect(res.raison).toContain("place(s)");
     expect(valider(frontmatter(), deux, vivier({ budgetGuets: 2 }))).toMatchObject({ ok: true });
+  });
+
+  describe("thèmes sous observation", () => {
+    const THEME = {
+      libelle: "Risque souverain français",
+      origine: "notion",
+      emetteur: "Zonebourse",
+      these: "La prime de risque française s'élargit durablement.",
+      instrumentsTemoins: ["us10y"],
+      temoinsHorsCatalogue: [],
+      confirmeSi: "Le spread dépasse 150 bps en clôture",
+      infirmeSi: "Le spread repasse sous 60 bps",
+      delaiJours: 90,
+    };
+    const avec = (t: Record<string, unknown>, v = vivier()) =>
+      valider(frontmatter(), structure({ themesProposes: [{ ...THEME, ...t }] }), v);
+
+    it("accepte un thème complet, et l'absence de thèmes", () => {
+      expect(avec({})).toMatchObject({ ok: true });
+      expect(valider(frontmatter(), structure())).toMatchObject({ ok: true });
+    });
+
+    it("accepte un témoin hors catalogue, déclaré en libellé", () => {
+      expect(
+        avec({ instrumentsTemoins: [], temoinsHorsCatalogue: ["Spread BTP-Bund à 5 ans"] }),
+      ).toMatchObject({ ok: true });
+    });
+
+    it("refuse un témoin absent du catalogue dans instrumentsTemoins", () => {
+      const res = avec({ instrumentsTemoins: ["inconnu"] });
+      expect(res).toMatchObject({ ok: false });
+      if (!res.ok) expect(res.raison).toContain("temoinsHorsCatalogue");
+    });
+
+    it("refuse un thème sans aucun témoin", () => {
+      const res = avec({ instrumentsTemoins: [] });
+      expect(res).toMatchObject({ ok: false });
+      if (!res.ok) expect(res.raison).toContain("opinion");
+    });
+
+    it("refuse un seuil sans chiffre", () => {
+      expect(avec({ confirmeSi: "Les tensions s'aggravent" })).toMatchObject({ ok: false });
+      expect(avec({ infirmeSi: "Les tensions s'apaisent" })).toMatchObject({ ok: false });
+    });
+
+    it("refuse un délai hors bornes", () => {
+      expect(avec({ delaiJours: 0 })).toMatchObject({ ok: false });
+      expect(avec({ delaiJours: 5000 })).toMatchObject({ ok: false });
+    });
+
+    it("refuse plus de thèmes que de places sous le plafond", () => {
+      const res = avec({}, vivier({ placesThemes: 0 }));
+      expect(res).toMatchObject({ ok: false });
+      if (!res.ok) expect(res.raison).toContain("plafond");
+    });
   });
 
   it("refuse une échéance qui n'est pas une date ISO", () => {

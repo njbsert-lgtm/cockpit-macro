@@ -58,6 +58,7 @@ const VIVIER: Vivier = {
   sourceIds: ["item-fomc", "item-hicp", "Fed", "Eurostat", "Zonebourse", "Goldman Sachs"],
   blocsAttendus: ["CeQuiAChange", "CeQuiSestConfirme", "RevisionDesScenarios", "CeQueJeSurveille"],
   budgetGuets: 3,
+  catalogueInstrumentIds: ["us10y", "brent", "eurusd", "spx", "gold"], placesThemes: 5, themesExistantsIds: [],
 };
 
 const lignesDrivers = [

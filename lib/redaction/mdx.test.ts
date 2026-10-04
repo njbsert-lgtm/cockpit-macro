@@ -53,6 +53,7 @@ function paquet(over: Partial<ContextePaquet> = {}): ContextePaquet {
     guetsOuverts: [],
     guetsExpires: [],
     budgetGuets: 3,
+    placesThemes: 5, themesExistants: [],
     echeancesSemaine: [],
     trigger: null,
     ...over,
@@ -94,6 +95,7 @@ function brouillon(over: Partial<Brouillon> = {}): Brouillon {
     trendUpdates: [],
     guets: [GUET],
     driverCandidate: null,
+    themesProposes: [],
     redactionNotes: "",
     ...over,
   };

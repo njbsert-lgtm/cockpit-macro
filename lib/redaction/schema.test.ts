@@ -35,6 +35,7 @@ function paquet(observations: ObservationContexte[]): ContextePaquet {
     guetsOuverts: [],
     guetsExpires: [],
     budgetGuets: 3,
+    placesThemes: 5, themesExistants: [],
     echeancesSemaine: [],
     trigger: null,
   };

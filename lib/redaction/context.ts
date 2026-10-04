@@ -9,6 +9,8 @@ import type {
   VeilleItem,
 } from "@/lib/types";
 import { echeancesEntre } from "@/config/calendrier-drivers";
+import type { ThemeObserve } from "@/lib/types";
+import { placesRestantes, type EstCollecte } from "@/lib/themes";
 import { guetsARemonter, partitionnerRemontes, budgetDisponible } from "@/lib/guets";
 import { isoWeekOf, isoWeekBounds } from "@/lib/iso-week";
 
@@ -98,6 +100,10 @@ export type ContextePaquet = {
   guetsExpires: Guet[];
   /** Combien de guets neufs le modèle peut proposer : trois moins ce qui remonte. */
   budgetGuets: number;
+  /** Combien de thèmes neufs le modèle peut proposer sous le plafond de cinq. */
+  placesThemes: number;
+  /** Les thèmes déjà suivis (tous statuts) : pour ne pas en proposer un doublon. */
+  themesExistants: Array<{ id: string; libelle: string; statut: string }>;
   /** Le calendrier de la semaine à venir — on ne pose pas un guet sur un événement oublié. */
   echeancesSemaine: Echeance[];
   trigger: string | null;
@@ -202,6 +208,9 @@ export function construireContexte(input: {
   scenariosCourants: ScenarioVersion[];
   tendancesCourantes: Trend[];
   trigger?: string | null;
+  /** Optionnel : les tests qui n'éprouvent pas les thèmes n'en fournissent pas. */
+  themes?: ThemeObserve[];
+  estCollecte?: EstCollecte;
 }): ContextePaquet {
   const { slug, isoWeek, comparesTo, specialesDeLaSemaine } = champsStructurels(
     input.notes,
@@ -234,6 +243,8 @@ export function construireContexte(input: {
     tendancesCourantes: input.tendancesCourantes,
     guetsOuverts: ouverts,
     guetsExpires: expires,
+    placesThemes: placesRestantes(input.themes ?? [], input.estCollecte ?? (() => true), input.dateCible),
+    themesExistants: (input.themes ?? []).map((t) => ({ id: t.id, libelle: t.libelle, statut: t.statut })),
     budgetGuets: budgetDisponible(remontes),
     echeancesSemaine: echeancesEntre(input.dateCible, semaineSuivante),
     trigger: input.trigger ?? null,

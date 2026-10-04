@@ -71,6 +71,7 @@ function paquet(
     guetsOuverts: [],
     guetsExpires: [],
     budgetGuets: 3,
+    placesThemes: 5, themesExistants: [],
     echeancesSemaine: [],
     trigger: null,
   };
@@ -91,6 +92,7 @@ function brouillon(over: Partial<Brouillon> = {}): Brouillon {
     trendUpdates: [],
     guets: [],
     driverCandidate: null,
+    themesProposes: [],
     redactionNotes: "",
     ...over,
   };

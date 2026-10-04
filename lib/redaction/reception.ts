@@ -60,6 +60,7 @@ export function recevoir(brut: string, vivier: Vivier): ResultatReception {
       sources: structure.sources,
       scenarioRevisions: structure.scenarioRevisions,
       trendUpdates: structure.trendUpdates,
+      themesProposes: structure.themesProposes,
       guets: structure.guets,
       driverCandidate: structure.driverCandidate,
       redactionNotes: structure.redactionNotes,

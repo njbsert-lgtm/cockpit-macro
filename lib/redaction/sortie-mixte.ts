@@ -1,5 +1,7 @@
 import { z } from "zod";
 import { ANGLES_REGIME, anglesDistincts } from "@/lib/regime";
+import { THEMES } from "@/config/themes";
+import { estChiffre } from "@/lib/themes";
 
 /**
  * Le contrat de sortie du modèle, depuis l'abandon de la sortie structurée.
@@ -58,6 +60,12 @@ export type Vivier = {
   blocsAttendus: string[];
   /** Trois moins ce qui remonte de la note précédente. */
   budgetGuets: number;
+  /** Le catalogue complet des instruments — collectés ou non : un thème s'observe sans témoin. */
+  catalogueInstrumentIds: string[];
+  /** Les emplacements restants sous le plafond de cinq thèmes observés. */
+  placesThemes: number;
+  /** Les thèmes déjà suivis : le modèle n'en propose pas un second sur le même sujet. */
+  themesExistantsIds: string[];
 };
 
 // ---------------------------------------------------------------------------
@@ -132,6 +140,24 @@ const guetSchema = z.object({
   sourceAttendue: z.array(z.string().min(1)),
 });
 
+/**
+ * Un thème à mettre sous observation : une thèse avancée par un tiers, et le moyen de la tester.
+ * Le modèle propose, l'humain tranche dans le portail ; rien n'entre dans `content/` sans cela.
+ */
+const themeSchema = z.object({
+  libelle: z.string().min(1),
+  origine: z.enum(["notion", "outlook", "note"]),
+  emetteur: z.string().min(1),
+  these: z.string().min(1),
+  /** Identifiants du catalogue des instruments, collectés ou non. */
+  instrumentsTemoins: z.array(z.string().min(1)),
+  /** Libellés des témoins que le catalogue n'a même pas. */
+  temoinsHorsCatalogue: z.array(z.string().min(1)),
+  confirmeSi: z.string().min(1),
+  infirmeSi: z.string().min(1),
+  delaiJours: z.number().int(),
+});
+
 const trendUpdateSchema = z.object({
   trendId: z.string().min(1),
   status: z.enum(TREND_STATUSES),
@@ -164,6 +190,8 @@ const structureSchema = z.object({
   scenarioRevisions: z.array(revisionSchema),
   guets: z.array(guetSchema),
   trendUpdates: z.array(trendUpdateSchema),
+  /** Facultatif : la plupart des semaines n'en proposent aucun. */
+  themesProposes: z.array(themeSchema).default([]),
   sources: z.array(sourceSchema),
   /** Texte libre : la création d'un driver reste une décision humaine, jamais un objet émis. */
   driverCandidate: z.string().nullable().default(null),
@@ -174,6 +202,7 @@ export type RegimeProposee = z.infer<typeof regimeSchema>;
 export type BrancheProposee = z.infer<typeof brancheSchema>;
 export type RevisionProposee = z.infer<typeof revisionSchema>;
 export type GuetPropose = z.infer<typeof guetSchema>;
+export type ThemePropose = z.infer<typeof themeSchema>;
 export type TrendUpdateProposee = z.infer<typeof trendUpdateSchema>;
 export type Structure = z.infer<typeof structureSchema>;
 
@@ -290,6 +319,49 @@ function invariants(
         code: "custom",
         path: ["guets", i, "driverId"],
         message: `driver inconnu « ${guet.driverId} » — un guet sans driver n'a pas de sens`,
+      });
+    }
+  }
+
+  if (s.themesProposes.length > vivier.placesThemes) {
+    ctx.addIssue({
+      code: "custom",
+      path: ["themesProposes"],
+      message: `${s.themesProposes.length} thème(s) proposé(s) pour ${vivier.placesThemes} place(s) sous le plafond de ${THEMES.plafondObserves} — au-delà, on surveille tout, donc rien`,
+    });
+  }
+  for (const [i, theme] of s.themesProposes.entries()) {
+    const at = (champ: string) => ["themesProposes", i, champ];
+    if (theme.instrumentsTemoins.length + theme.temoinsHorsCatalogue.length === 0) {
+      ctx.addIssue({
+        code: "custom",
+        path: at("instrumentsTemoins"),
+        message: "un thème sans aucun témoin n'est pas observable — c'est de l'opinion",
+      });
+    }
+    for (const id of theme.instrumentsTemoins) {
+      if (!vivier.catalogueInstrumentIds.includes(id)) {
+        ctx.addIssue({
+          code: "custom",
+          path: at("instrumentsTemoins"),
+          message: `témoin « ${id} » absent du catalogue — le déclarer en libellé dans temoinsHorsCatalogue`,
+        });
+      }
+    }
+    for (const champ of ["confirmeSi", "infirmeSi"] as const) {
+      if (!estChiffre(theme[champ])) {
+        ctx.addIssue({
+          code: "custom",
+          path: at(champ),
+          message: `« ${champ} » doit porter un seuil chiffré, pas une impression`,
+        });
+      }
+    }
+    if (theme.delaiJours < THEMES.delaiJoursMin || theme.delaiJours > THEMES.delaiJoursMax) {
+      ctx.addIssue({
+        code: "custom",
+        path: at("delaiJours"),
+        message: `delaiJours entre ${THEMES.delaiJoursMin} et ${THEMES.delaiJoursMax}`,
       });
     }
   }

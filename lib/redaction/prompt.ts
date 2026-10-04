@@ -106,6 +106,15 @@ Le bloc « ce que je surveille » est une liste de guets : des attentes pré-ins
 - On te dit combien de guets neufs tu peux proposer. Les guets remontés de la note précédente occupent déjà des places.
 - Un guet doit être vérifiable : « surveiller l'inflation » n'est pas un guet, « le cœur d'inflation US de septembre publié au-dessus de 2,8 % » en est un.
 
+## Les thèmes sous observation
+
+Une thèse avancée par un tiers — la fiche, un outlook — qui ne relève encore d'aucun driver peut être proposée comme **thème sous observation** : on ne la croit pas, on la confronte aux prix. Un thème porte l'émetteur qui l'avance, la thèse en une phrase, un ou plusieurs instruments témoins, un seuil de confirmation et un seuil d'infirmation, et un délai d'observation en jours.
+
+- Les témoins se nomment par identifiant du catalogue des instruments, **collectés ou non**. Un instrument que le catalogue n'a pas se déclare en libellé, dans \`temoinsHorsCatalogue\`. Ne renonce pas à un thème parce que son témoin n'est pas collecté : il attendra la donnée, et la liste de ces attentes dit quoi collecter.
+- Les seuils portent un chiffre : « le spread OAT-Bund dépasse 150 points de base en clôture ». « Les tensions s'aggravent » n'est pas un seuil, et sera refusé.
+- On te dit combien de thèmes tu peux proposer (souvent aucun, c'est la règle). Ne propose pas un thème déjà suivi, et ne propose rien si la fiche n'en porte pas : la section reste vide.
+- Un thème n'est ni un guet (un événement daté) ni une tendance de fond (une direction établie) : c'est une thèse d'autrui à valider par les prix, sans ajouter ta propre conviction.
+
 # Comment tu écris
 
 **Un sujet, un paragraphe.** Chaque sujet occupe son propre paragraphe. Un paragraphe ne contient jamais deux sujets ; un sujet ne s'étale jamais sur deux paragraphes, sauf si le second apporte un élément distinct. Ce n'est pas une règle de mise en page : le défaut à éviter — un enchaînement de sujets sans compréhension — se loge dans les paragraphes composites, où la transition tient par une conjonction plutôt que par un raisonnement. Séparer les paragraphes t'oblige à nommer le lien entre deux sujets, ou à constater qu'il n'y en a pas.
@@ -205,6 +214,19 @@ ${MARQUEUR_DEBUT}
   "trendUpdates": [
     { "trendId": "…", "status": "renforce", "why": "…" }
   ],
+  "themesProposes": [
+    {
+      "libelle": "Risque souverain français",
+      "origine": "notion",
+      "emetteur": "Qui avance la thèse, nommément.",
+      "these": "Ce qu'il affirme, en une phrase.",
+      "instrumentsTemoins": ["spread-oat10y-bund10y"],
+      "temoinsHorsCatalogue": [],
+      "confirmeSi": "Seuil chiffré qui la confirme.",
+      "infirmeSi": "Seuil chiffré qui l'infirme.",
+      "delaiJours": 90
+    }
+  ],
   "sources": [
     { "block": "${blocs[0]}", "sourceId": "…" }
   ],
@@ -215,7 +237,7 @@ ${MARQUEUR_FIN}
 
 Règles de cette section, toutes vérifiées mécaniquement après ta réponse :
 - \`regimeStatementPropositions\` : exactement trois, un angle chacune (\`fait\`, \`mecanisme\`, \`contradiction\`), jamais deux du même angle. Les chiffres qu'elles portent suivent les mêmes règles que le corps : datés, et attribués.
-- \`scenarioRevisions\`, \`guets\`, \`trendUpdates\` et \`sources\` sont toujours présentes, même vides.
+- \`scenarioRevisions\`, \`guets\`, \`trendUpdates\`, \`themesProposes\` et \`sources\` sont toujours présentes, même vides.
 - Réviser un driver, c'est réémettre ses **trois** branches d'un coup, avec une seule à \`"central"\`. Jamais une branche isolée : les deux autres garderaient une vraisemblance qui n'a plus de sens à côté.
 - \`impacts\` : exactement quatre entrées, une par classe (\`eq\`, \`fi\`, \`fx\`, \`cm\`), chacune une seule fois.
 - \`axeLibelle\` : l'angle du driver sur lequel le guet se joue — « Contournement » plutôt qu'« Ormuz » —, ou \`null\` quand le driver n'a qu'un angle.
@@ -303,6 +325,7 @@ export function construirePromptUtilisateur(
   sections.push(rendreScenarios(paquet));
   sections.push(rendreTendances(paquet));
   sections.push(rendreGuets(paquet));
+  sections.push(rendreThemes(paquet));
   sections.push(rendreVeille(paquet));
 
   return sections.filter(Boolean).join("\n\n---\n\n");
@@ -449,6 +472,18 @@ function rendreTendances(paquet: ContextePaquet): string {
     "",
     ...paquet.tendancesCourantes.map((t) => `- \`${t.id}\` — **${t.status}** : ${t.title}`),
   ].join("\n");
+}
+
+function rendreThemes(paquet: ContextePaquet): string {
+  const lignes = [`# Thèmes sous observation — tu peux en proposer ${paquet.placesThemes}`];
+  if (paquet.themesExistants.length > 0) {
+    lignes.push(
+      "",
+      "Déjà suivis, à ne pas redoubler :",
+      ...paquet.themesExistants.map((t) => `- \`${t.id}\` (${t.statut}) — ${t.libelle}`),
+    );
+  }
+  return lignes.join("\n");
 }
 
 function rendreGuets(paquet: ContextePaquet): string {

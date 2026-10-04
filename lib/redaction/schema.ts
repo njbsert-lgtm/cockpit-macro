@@ -1,7 +1,7 @@
 import { getInstruments } from "@/lib/data";
 import type { RegimeProposition } from "@/lib/types";
 import type { ContextePaquet } from "./context";
-import type { Vivier } from "./sortie-mixte";
+import type { ThemePropose, Vivier } from "./sortie-mixte";
 
 /**
  * La forme interne du brouillon, et le vivier qui borne ce que le modèle peut citer.
@@ -59,6 +59,8 @@ export type Brouillon = {
     status: "renforce" | "maintient" | "affaiblit" | "invalidee";
     why: string;
   }>;
+  /** Thèmes à mettre sous observation, proposés — jamais créés sans décision du portail. */
+  themesProposes: ThemePropose[];
   guets: Array<{
     driverId: string;
     axeLibelle: string | null;
@@ -106,5 +108,8 @@ export function construireVivier(paquet: ContextePaquet, blocsAttendus: string[]
     ],
     blocsAttendus,
     budgetGuets: paquet.budgetGuets,
+    catalogueInstrumentIds: getInstruments().map((i) => i.id),
+    placesThemes: paquet.placesThemes,
+    themesExistantsIds: paquet.themesExistants.map((t) => t.id),
   };
 }

@@ -13,6 +13,7 @@ function vivier(over: Partial<Vivier> = {}): Vivier {
     sourceIds: ["item-1"],
     blocsAttendus: ["CeQuiAChange", "CeQueJeSurveille"],
     budgetGuets: 3,
+    catalogueInstrumentIds: ["us10y", "brent", "eurusd", "spx", "gold"], placesThemes: 5, themesExistantsIds: [],
     ...over,
   };
 }

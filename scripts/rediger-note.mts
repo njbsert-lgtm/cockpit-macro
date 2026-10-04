@@ -18,6 +18,8 @@ import { getAnthropicTexteCaller } from "../lib/anthropic";
 import { getNotes, getNoteBody, getDrivers } from "../lib/content";
 import { readNoteSources, extractBlockText, BLOCK_NAMES } from "../lib/notes";
 import { getTrends, getScenarioVersions } from "../lib/content";
+import { getThemes } from "../lib/themes-content";
+import { fournisseurInstrument } from "../config/providers";
 import { construireContexte, type ObservationContexte } from "../lib/redaction/context";
 import { construireObservationsDepuis, type EntreeObservable } from "../lib/redaction/observations";
 import { executerRun } from "../lib/redaction/run";
@@ -78,6 +80,8 @@ const paquet = construireContexte({
   itemsVeille,
   scenariosCourants: getScenarioVersions(),
   tendancesCourantes: getTrends(),
+  themes: getThemes(),
+  estCollecte: (id) => fournisseurInstrument(id) !== null,
 });
 
 console.log(`Note ${paquet.slug} · ${paquet.date} · se compare à ${paquet.comparesTo ?? "rien"}`);

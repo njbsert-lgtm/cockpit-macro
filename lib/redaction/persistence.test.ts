@@ -23,6 +23,7 @@ function paquet(): ContextePaquet {
     guetsOuverts: [],
     guetsExpires: [],
     budgetGuets: 3,
+    placesThemes: 5, themesExistants: [],
     echeancesSemaine: [],
     trigger: null,
   };
@@ -43,6 +44,7 @@ function brouillon(): Brouillon {
     trendUpdates: [],
     guets: [],
     driverCandidate: null,
+    themesProposes: [],
     redactionNotes: "",
   };
 }
