@@ -65,11 +65,33 @@ describe("recevoir — de la réponse brute au brouillon", () => {
 
   it("garde le markdown intérieur d'un bloc tel quel", () => {
     const corps =
-      "<CeQuiAChange>\n**Gras.** Puis une liste :\n\n- un\n- deux\n</CeQuiAChange>\n\n<CeQueJeSurveille>\nTexte.\n</CeQueJeSurveille>";
+      "<CeQuiAChange>\n**Gras.** Puis de l'*italique* et un [lien](https://example.org).\n</CeQuiAChange>\n\n<CeQueJeSurveille>\nTexte.\n</CeQueJeSurveille>";
     const res = recevoir(reponse(corps), vivier());
     expect(res.ok).toBe(true);
     if (!res.ok) return;
-    expect(res.brouillon.blocs.CeQuiAChange).toContain("- deux");
+    expect(res.brouillon.blocs.CeQuiAChange).toContain("*italique*");
+  });
+
+  it("refuse une liste à puces dans un bloc de 1 à 4", () => {
+    const corps =
+      "<CeQuiAChange>\n**Gras.** Puis une liste :\n\n- un\n- deux\n</CeQuiAChange>\n\n<CeQueJeSurveille>\nTexte.\n</CeQueJeSurveille>";
+    const res = recevoir(reponse(corps), vivier());
+    expect(res).toMatchObject({ ok: false });
+    if (res.ok) return;
+    expect(res.raison).toContain("CeQuiAChange");
+    expect(res.raison).toContain("une liste");
+  });
+
+  it("refuse aussi une liste numérotée", () => {
+    const corps =
+      "<CeQuiAChange>\n1. un\n2. deux\n</CeQuiAChange>\n\n<CeQueJeSurveille>\nTexte.\n</CeQueJeSurveille>";
+    expect(recevoir(reponse(corps), vivier())).toMatchObject({ ok: false });
+  });
+
+  it("accepte des puces dans le bloc 5, énumération assumée", () => {
+    const corps =
+      "<CeQuiAChange>\n**Gras.** Texte.\n</CeQuiAChange>\n\n<CeQueJeSurveille>\n- FOMC\n- CPI\n</CeQueJeSurveille>";
+    expect(recevoir(reponse(corps), vivier())).toMatchObject({ ok: true });
   });
 
   it("refuse un bloc attendu manquant", () => {

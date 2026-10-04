@@ -1,6 +1,7 @@
 import matter from "gray-matter";
 import type { Brouillon } from "./schema";
 import { extraireSortieMixte, validerReponse, type Vivier } from "./sortie-mixte";
+import { BLOCS_SANS_LISTE, premiereListe } from "./style";
 
 /**
  * De la réponse brute du modèle au `Brouillon` que le reste du pipeline manipule.
@@ -92,6 +93,23 @@ function extraireBlocs(corps: string, attendus: string[]): ResultatBlocs {
       };
     }
     blocs[nom] = texte;
+  }
+
+  // Aucune liste dans les blocs 1 à 4 : une liste juxtapose sans relier, exactement le défaut que
+  // « un sujet, un paragraphe » corrige. Refusée ici, donc renvoyée au modèle avec le message
+  // de réparation — le bloc 5 et le fil de la semaine, des énumérations assumées, n'y sont pas.
+  for (const nom of BLOCS_SANS_LISTE) {
+    const texte = blocs[nom];
+    if (texte === undefined) continue;
+    const liste = premiereListe(texte);
+    if (liste) {
+      return {
+        ok: false,
+        raison:
+          `bloc « <${nom}> » : une liste (« ${liste.slice(0, 60)} ») — les blocs 1 à 4 s'écrivent en ` +
+          "paragraphes, un sujet par paragraphe, chacun ouvert par une affirmation en gras",
+      };
+    }
   }
 
   const humain = new RegExp(`<${BLOC_HUMAIN}>([\\s\\S]*?)</${BLOC_HUMAIN}>`).exec(corps);
