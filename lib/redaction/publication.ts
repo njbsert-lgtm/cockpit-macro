@@ -1,7 +1,15 @@
 import matter from "gray-matter";
 import { parseNote, type ParsedNote } from "@/lib/notes";
 import { BLOCK_TITLES, type BlockName } from "@/lib/note-blocks";
-import type { Authorship, Guet, ScenarioVersion, TrendDelta } from "@/lib/types";
+import type {
+  Authorship,
+  Guet,
+  RegimeProposition,
+  RegimeRetenu,
+  ScenarioVersion,
+  TrendDelta,
+} from "@/lib/types";
+import { REGIME_A_CHOISIR, RETENUS_REGIME, propositionDe } from "@/lib/regime";
 import type { ContextePaquet } from "./context";
 import type { Brouillon } from "./schema";
 import { extraireVerdicts, type RapportChiffres } from "./figures";
@@ -29,6 +37,13 @@ export type DecisionGuet = {
 export type DecisionProposition = { action: "accepter" | "refuser" };
 
 /**
+ * La phrase de régime retenue : l'un des trois angles proposés, ou `propre` — écrite à la main.
+ * Pour un angle, `texte` n'est qu'un reflet : c'est la proposition elle-même qui fait foi, relue
+ * côté serveur (`resoudreRegime`), jamais ce qu'un formulaire aurait renvoyé.
+ */
+export type DecisionRegime = { choix: RegimeRetenu; texte: string };
+
+/**
  * L'état complet des décisions prises dans le portail pour un brouillon. Les clés : nom de
  * bloc, id de guet, `driverId` d'une révision de scénario, `trendId` d'un changement de statut.
  */
@@ -37,6 +52,8 @@ export type Decisions = {
   guets: Record<string, DecisionGuet>;
   revisions: Record<string, DecisionProposition>;
   tendances: Record<string, DecisionProposition>;
+  /** Absente tant qu'aucune phrase n'est retenue — aucune des trois n'est choisie par défaut. */
+  regime?: DecisionRegime;
 };
 
 export function decisionsVides(): Decisions {
@@ -90,6 +107,32 @@ export function appliquerDecisionGuet(
   return guet;
 }
 
+/**
+ * La phrase de régime effectivement retenue, ou `null` si la décision est absente ou invalide. Pour
+ * un angle, le texte vient de la proposition du brouillon, jamais de la décision : une décision
+ * sauvegardée ne peut pas faire publier une phrase que le modèle n'a pas proposée.
+ */
+export function resoudreRegime(
+  decision: DecisionRegime | undefined,
+  propositions: readonly RegimeProposition[] | null | undefined,
+): { choix: RegimeRetenu; texte: string } | null {
+  if (!decision || !(RETENUS_REGIME as readonly string[]).includes(decision.choix)) return null;
+  if (decision.choix === "propre") {
+    const texte = decision.texte?.trim();
+    return texte ? { choix: "propre", texte } : null;
+  }
+  const proposition = propositionDe(propositions, decision.choix);
+  return proposition ? { choix: decision.choix, texte: proposition.texte } : null;
+}
+
+/** Le brouillon attend-il qu'on retienne une phrase de régime ? */
+export function attendUnRegime(note: ParsedNote): boolean {
+  return (
+    note.meta.regimeStatement === REGIME_A_CHOISIR ||
+    (note.meta.regimeStatementPropositions ?? null) !== null
+  );
+}
+
 export type ConditionManquante = { code: string; message: string };
 
 /**
@@ -104,6 +147,19 @@ export function conditionsManquantes(
 ): ConditionManquante[] {
   const manquantes: ConditionManquante[] = [];
   const blocsPresents = note.blocks;
+
+  // Condition : une phrase de régime a été retenue, ou écrite. Aucune des trois propositions
+  // n'est choisie par défaut — c'est le geste que le portail doit obtenir.
+  if (
+    attendUnRegime(note) &&
+    resoudreRegime(decisions.regime, note.meta.regimeStatementPropositions) === null
+  ) {
+    manquantes.push({
+      code: "regime",
+      message:
+        "Aucune phrase de régime n'a été retenue : choisir l'une des trois propositions, ou en écrire une.",
+    });
+  }
 
   // Condition : le bloc 4 est renseigné.
   if (blocsPresents.includes("CeQueJavaisMalLu")) {
@@ -171,19 +227,21 @@ export function conditionsManquantes(
  * relâchement, le bloc 4 — qui cite typiquement une valeur de la note précédente absente du
  * vivier du jour — serait structurellement impossible à faire passer.
  */
+export type CleControlee = BlockName | "regimeStatement";
+
 export function controlerChiffresPublication(
-  textesFinauxParBloc: Partial<Record<BlockName, string>>,
-  authorshipFinaleParBloc: Partial<Record<BlockName, Authorship>>,
+  textesFinauxParBloc: Partial<Record<CleControlee, string>>,
+  authorshipFinaleParBloc: Partial<Record<CleControlee, Authorship>>,
   paquet: ContextePaquet,
 ): RapportChiffres {
-  const entrees = Object.entries(textesFinauxParBloc) as Array<[BlockName, string]>;
+  const entrees = Object.entries(textesFinauxParBloc) as Array<[CleControlee, string]>;
   const verdicts = extraireVerdicts(entrees, paquet);
 
   const bloque = verdicts.some((v) => {
     // Les trois verdicts fautifs comptent pareil ici : écart avec la base, absence de la
     // fiche, absence d'attribution. Ce qui varie est le geste de correction, pas le blocage.
     if (v.verdict === "conforme") return false;
-    const authorship = authorshipFinaleParBloc[v.bloc as BlockName];
+    const authorship = authorshipFinaleParBloc[v.bloc as CleControlee];
     return authorship === "ia" || authorship === "ia-relue" || authorship === undefined;
   });
 
@@ -218,6 +276,11 @@ export function assemblerNoteFinale(
     authorshipFinale.CeQueJeSurveille = authorshipBloc5(meta.guets, decisions.guets);
   }
 
+  // La phrase de régime : celle qui a été retenue, jamais une des trois par défaut. Sans décision,
+  // on garde ce que porte le brouillon — la phrase « à choisir » —, que `parseNote` refusera dans
+  // une note publiée : c'est le dernier garde-fou si `conditionsManquantes` avait été contournée.
+  const regime = resoudreRegime(decisions.regime, meta.regimeStatementPropositions);
+
   const guetsFinaux = meta.guets
     .map((g) => appliquerDecisionGuet(g, decisions.guets[g.id], slugActuel))
     .filter((g): g is Guet => g !== null);
@@ -237,7 +300,15 @@ export function assemblerNoteFinale(
     date: meta.date,
     comparesTo: meta.comparesTo,
     ...(meta.trigger ? { trigger: meta.trigger } : {}),
-    regimeStatement: meta.regimeStatement,
+    regimeStatement: regime?.texte ?? meta.regimeStatement,
+    // Les trois propositions sont conservées avec celle qui a été retenue : relire six mois plus
+    // tard l'angle qu'on a écarté est instructif.
+    ...(meta.regimeStatementPropositions
+      ? {
+          regimeStatementPropositions: meta.regimeStatementPropositions,
+          regimeRetenu: regime?.choix ?? null,
+        }
+      : {}),
     keyIndicators: meta.keyIndicators,
     zones: meta.zones,
     driverOrder: meta.driverOrder,

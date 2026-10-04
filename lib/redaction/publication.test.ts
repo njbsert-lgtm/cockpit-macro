@@ -9,8 +9,10 @@ import {
   controlerChiffresPublication,
   decisionsVides,
   relireNoteFinale,
+  resoudreRegime,
   type Decisions,
 } from "./publication";
+import { REGIME_A_CHOISIR } from "@/lib/regime";
 import type { ContextePaquet } from "./context";
 import type { Brouillon } from "./schema";
 import type { Guet } from "@/lib/types";
@@ -480,5 +482,123 @@ describe("construireArtefactsPublication — le calcul complet, sans disque", ()
     );
     const attendu = assemblerNoteFinale(note, decisions, "2026-09-06");
     expect(artefacts.note).toEqual(attendu);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// La phrase de régime : trois propositions, une retenue, aucune par défaut
+// ---------------------------------------------------------------------------
+
+/** Le même brouillon, tel que le pipeline le produit désormais : phrase « à choisir » + trois. */
+function brouillonAvecRegimes(): string {
+  const propositions = REGIMES_TEST.map(
+    (p) =>
+      `  - texte: ${JSON.stringify(p.texte)}\n    angle: ${p.angle}\n    justification: ${JSON.stringify(p.justification)}`,
+  ).join("\n");
+  return BROUILLON_MDX.replace(
+    "regimeStatement: Un régime en une phrase.",
+    `regimeStatement: ${JSON.stringify(REGIME_A_CHOISIR)}\nregimeStatementPropositions:\n${propositions}`,
+  );
+}
+
+describe("la phrase de régime — condition de publication", () => {
+  it("manque tant qu'aucune n'est retenue : aucune des trois n'est choisie par défaut", () => {
+    const note = parseNote("2026-S36", brouillonAvecRegimes());
+    const codes = conditionsManquantes(note, brouillonPropose(), noteToutesDecisionsPrises()).map((m) => m.code);
+    expect(codes).toContain("regime");
+  });
+
+  it("est levée quand l'un des trois angles est retenu", () => {
+    const note = parseNote("2026-S36", brouillonAvecRegimes());
+    const decisions = { ...noteToutesDecisionsPrises(), regime: { choix: "mecanisme" as const, texte: "" } };
+    expect(conditionsManquantes(note, brouillonPropose(), decisions).map((m) => m.code)).not.toContain("regime");
+  });
+
+  it("est levée par une phrase écrite à la main, mais pas par une phrase vide", () => {
+    const note = parseNote("2026-S36", brouillonAvecRegimes());
+    const base = noteToutesDecisionsPrises();
+    const ecrite = { ...base, regime: { choix: "propre" as const, texte: "Ma phrase." } };
+    const vide = { ...base, regime: { choix: "propre" as const, texte: "   " } };
+    expect(conditionsManquantes(note, brouillonPropose(), ecrite).map((m) => m.code)).not.toContain("regime");
+    expect(conditionsManquantes(note, brouillonPropose(), vide).map((m) => m.code)).toContain("regime");
+  });
+
+  it("ne s'applique pas à un brouillon antérieur à la règle, qui porte déjà sa phrase", () => {
+    const note = parseNote("2026-S36", BROUILLON_MDX);
+    expect(conditionsManquantes(note, brouillonPropose(), noteToutesDecisionsPrises()).map((m) => m.code)).not.toContain("regime");
+  });
+});
+
+describe("resoudreRegime — la proposition fait foi, jamais le formulaire", () => {
+  it("rend le texte de la proposition de l'angle, pas celui de la décision", () => {
+    const r = resoudreRegime({ choix: "fait", texte: "Une phrase trafiquée." }, REGIMES_TEST);
+    expect(r).toEqual({ choix: "fait", texte: REGIMES_TEST[0].texte });
+  });
+
+  it("refuse un angle absent des propositions et un choix inconnu", () => {
+    expect(resoudreRegime({ choix: "fait", texte: "" }, null)).toBeNull();
+    expect(resoudreRegime({ choix: "resume" as never, texte: "x" }, REGIMES_TEST)).toBeNull();
+    expect(resoudreRegime(undefined, REGIMES_TEST)).toBeNull();
+  });
+});
+
+describe("assemblerNoteFinale — la phrase retenue", () => {
+  it("publie la proposition retenue, garde les trois, et dit laquelle", () => {
+    const note = parseNote("2026-S36", brouillonAvecRegimes());
+    const decisions = { ...noteToutesDecisionsPrises(), regime: { choix: "contradiction" as const, texte: "" } };
+    const { slug, mdx } = assemblerNoteFinale(note, decisions, "2026-09-06");
+    const finale = relireNoteFinale(slug, mdx).meta;
+
+    expect(finale.regimeStatement).toBe(REGIMES_TEST[2].texte);
+    expect(finale.regimeRetenu).toBe("contradiction");
+    expect(finale.regimeStatementPropositions).toEqual(REGIMES_TEST);
+  });
+
+  it("une décision trafiquée ne fait pas publier une phrase que le modèle n'a pas proposée", () => {
+    const note = parseNote("2026-S36", brouillonAvecRegimes());
+    const decisions = { ...noteToutesDecisionsPrises(), regime: { choix: "fait" as const, texte: "Phrase inventée." } };
+    const { mdx } = assemblerNoteFinale(note, decisions, "2026-09-06");
+    expect(relireNoteFinale("2026-S36", mdx).meta.regimeStatement).toBe(REGIMES_TEST[0].texte);
+  });
+
+  it("publie la phrase écrite à la main, retenue comme « propre »", () => {
+    const note = parseNote("2026-S36", brouillonAvecRegimes());
+    const decisions = { ...noteToutesDecisionsPrises(), regime: { choix: "propre" as const, texte: "  Ma phrase à moi.  " } };
+    const { mdx } = assemblerNoteFinale(note, decisions, "2026-09-06");
+    const finale = relireNoteFinale("2026-S36", mdx).meta;
+
+    expect(finale.regimeStatement).toBe("Ma phrase à moi.");
+    expect(finale.regimeRetenu).toBe("propre");
+    // Les trois propositions sont conservées même quand on en écrit une quatrième.
+    expect(finale.regimeStatementPropositions).toEqual(REGIMES_TEST);
+  });
+
+  it("sans décision, la note finale est refusée : la phrase « à choisir » ne se publie pas", () => {
+    const note = parseNote("2026-S36", brouillonAvecRegimes());
+    const { slug, mdx } = assemblerNoteFinale(note, noteToutesDecisionsPrises(), "2026-09-06");
+    expect(() => relireNoteFinale(slug, mdx)).toThrow(/à choisir|retenue ou écrite/);
+  });
+});
+
+describe("controlerChiffresPublication — la phrase de régime retenue", () => {
+  const FAUX = "Le US 10 ans s'établit à 5,50 % au 04/09.";
+
+  it("une proposition du modèle (ia-relue) qui porte un chiffre faux bloque", () => {
+    const rapport = controlerChiffresPublication(
+      { regimeStatement: FAUX },
+      { regimeStatement: "ia-relue" },
+      paquet(),
+    );
+    expect(rapport.bloque).toBe(true);
+  });
+
+  it("la même phrase écrite à la main (humaine) est signalée sans bloquer", () => {
+    const rapport = controlerChiffresPublication(
+      { regimeStatement: FAUX },
+      { regimeStatement: "humaine" },
+      paquet(),
+    );
+    expect(rapport.bloque).toBe(false);
+    expect(rapport.verdicts.some((v) => v.verdict !== "conforme")).toBe(true);
   });
 });

@@ -218,6 +218,13 @@ create table if not exists redaction_decisions (
   primary key (note_slug, kind, ref)
 );
 
+-- La phrase de régime retenue (`regime`) et, plus tard, les thèmes sous observation acceptés ou
+-- refusés (`theme`) sont des décisions du portail au même titre que les autres. La contrainte
+-- d'origine ne les connaît pas : sans cette migration, retenir une phrase échoue à l'écriture.
+alter table redaction_decisions drop constraint if exists redaction_decisions_kind_check;
+alter table redaction_decisions add constraint redaction_decisions_kind_check
+  check (kind in ('bloc', 'guet', 'revision', 'tendance', 'bloc4', 'regime', 'theme'));
+
 -- ---------------------------------------------------------------------------
 -- Sécurité
 -- ---------------------------------------------------------------------------

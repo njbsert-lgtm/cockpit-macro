@@ -7,6 +7,8 @@ import {
   blocsAAuthorshipDirecte,
   conditionsManquantes,
   controlerChiffresPublication,
+  resoudreRegime,
+  type CleControlee,
   type ConditionManquante,
   type Decisions,
 } from "./publication";
@@ -37,12 +39,21 @@ export function etatPublication(
 ): EtatPublication {
   const manquantes = conditionsManquantes(note, brouillonPropose, decisions);
 
-  const textesFinaux: Partial<Record<BlockName, string>> = {};
-  const authorshipFinale: Partial<Record<BlockName, Authorship>> = {};
+  const textesFinaux: Partial<Record<CleControlee, string>> = {};
+  const authorshipFinale: Partial<Record<CleControlee, Authorship>> = {};
   for (const bloc of blocsAAuthorshipDirecte(note.blocks)) {
     const decision = decisions.blocs[bloc];
     textesFinaux[bloc] = decision?.texte ?? extractBlockText(note.body, bloc) ?? "";
     authorshipFinale[bloc] = decision?.authorship ?? "ia";
+  }
+
+  // La phrase de régime retenue est contrôlée sur son texte final. Une proposition du modèle
+  // l'est strictement (`ia-relue`) ; une phrase écrite à la main est signalée sans bloquer, comme
+  // tout texte qu'un humain a tapé.
+  const regime = resoudreRegime(decisions.regime, note.meta.regimeStatementPropositions);
+  if (regime) {
+    textesFinaux.regimeStatement = regime.texte;
+    authorshipFinale.regimeStatement = regime.choix === "propre" ? "humaine" : "ia-relue";
   }
 
   const rapportChiffres = controlerChiffresPublication(textesFinaux, authorshipFinale, paquet);

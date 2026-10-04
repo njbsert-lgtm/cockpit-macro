@@ -591,3 +591,31 @@ describe("rendreRapport", () => {
     );
   });
 });
+
+describe("controlerChiffres — les trois propositions de phrase de régime", () => {
+  const FAUSSE = "Le US 10 ans s'établit à 5,50 % au 04/09.";
+
+  it("contrôle les trois propositions et les rend visibles dans le rapport", () => {
+    const regimes = [
+      { ...REGIMES_TEST[0], texte: FAUSSE },
+      REGIMES_TEST[1],
+      REGIMES_TEST[2],
+    ];
+    const r = controlerChiffres(brouillon({ regimeStatementPropositions: regimes }), paquet());
+
+    const verdict = r.verdicts.find((v) => v.bloc === "regimeStatement/fait");
+    expect(verdict).toBeDefined();
+    expect(verdict!.verdict).not.toBe("conforme");
+  });
+
+  it("le chiffre faux d'une proposition écartée ne fait pas bloquer : une seule sera retenue", () => {
+    const regimes = [{ ...REGIMES_TEST[0], texte: FAUSSE }, REGIMES_TEST[1], REGIMES_TEST[2]];
+    const r = controlerChiffres(brouillon({ regimeStatementPropositions: regimes }), paquet());
+    expect(r.bloque).toBe(false);
+  });
+
+  it("un chiffre faux dans un bloc bloque toujours, proposition fausse ou non", () => {
+    const r = controlerChiffres(brouillon({ blocs: { CeQuiAChange: FAUSSE } }), paquet());
+    expect(r.bloque).toBe(true);
+  });
+});

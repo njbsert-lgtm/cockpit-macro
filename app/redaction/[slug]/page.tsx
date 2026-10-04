@@ -5,14 +5,23 @@ import { EmptyState } from "@/components/states/EmptyState";
 import { chargerPortail } from "@/lib/redaction/portail";
 import { etatPublication } from "@/lib/redaction/etat-publication";
 import {
+  attendUnRegime,
   authorshipBloc5,
   blocsAAuthorshipDirecte,
+  resoudreRegime,
 } from "@/lib/redaction/publication";
-import { publierBrouillon, trancherRevision, trancherTendance } from "@/app/redaction/actions";
+import { signalementsDuBloc } from "@/lib/redaction/style";
+import {
+  publierBrouillon,
+  retenirRegime,
+  trancherRevision,
+  trancherTendance,
+} from "@/app/redaction/actions";
 import { PortalCounter } from "@/components/redaction/PortalCounter";
 import { FigureReport } from "@/components/redaction/FigureReport";
 import { BlockPanel } from "@/components/redaction/BlockPanel";
 import { GuetsPanel } from "@/components/redaction/GuetsPanel";
+import { RegimePanel } from "@/components/redaction/RegimePanel";
 import { PropositionCard } from "@/components/redaction/PropositionCard";
 import { PublishButton } from "@/components/redaction/PublishButton";
 import { formatDateShort } from "@/lib/format";
@@ -44,8 +53,13 @@ export default async function RedactionSlugPage({
     ? authorshipBloc5(note.meta.guets, decisions.guets)
     : null;
 
+  // La phrase de régime est un geste à part entière : elle compte dans la validation, comme un
+  // bloc. Le titre de la page montre celle qui a été retenue, jamais une proposition par défaut.
+  const regimeAttendu = attendUnRegime(note);
+  const regimeRetenu = resoudreRegime(decisions.regime, note.meta.regimeStatementPropositions);
+
   const blocsForCounter = note.blocks.filter((b) => b !== "LeFilDeLaSemaine");
-  const done = blocsForCounter.filter((b) => {
+  const done = (regimeAttendu && regimeRetenu ? 1 : 0) + blocsForCounter.filter((b) => {
     if (b === "CeQueJeSurveille") return authorshipGuets !== "ia";
     const authorship = decisions.blocs[b]?.authorship;
     if (b === "CeQueJavaisMalLu") return Boolean(decisions.blocs[b]?.texte?.trim());
@@ -61,14 +75,22 @@ export default async function RedactionSlugPage({
             {formatDateShort(note.meta.date)}
           </p>
           <h1 className="mt-1 text-20 font-semibold leading-snug text-encre">
-            {note.meta.regimeStatement}
+            {regimeRetenu?.texte ?? note.meta.regimeStatement}
           </h1>
         </div>
-        <PortalCounter done={done} total={blocsForCounter.length} />
+        <PortalCounter done={done} total={blocsForCounter.length + (regimeAttendu ? 1 : 0)} />
       </div>
 
       <div className="mt-6 flex flex-col gap-3">
         <FigureReport rapport={publication.rapportChiffres} />
+
+        {regimeAttendu && note.meta.regimeStatementPropositions && (
+          <RegimePanel
+            propositions={note.meta.regimeStatementPropositions}
+            decision={decisions.regime}
+            action={retenirRegime.bind(null, slug)}
+          />
+        )}
 
         {blocsTexte.map((bloc) => {
           const decision = decisions.blocs[bloc];
@@ -89,6 +111,7 @@ export default async function RedactionSlugPage({
                 bloc === "CeQueJavaisMalLu" ? (decision ? "humaine" : undefined) : authorship
               }
               valide={valide}
+              signalements={signalementsDuBloc(bloc, texteInitial)}
             />
           );
         })}

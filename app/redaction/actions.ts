@@ -3,11 +3,13 @@
 import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { revalidatePath } from "next/cache";
-import { extractBlockText } from "@/lib/notes";
+import { extractBlockText, parseNote } from "@/lib/notes";
 import { BLOCK_NAMES, type BlockName } from "@/lib/note-blocks";
 import { BROUILLONS_DIR } from "@/lib/redaction/run";
 import { sauvegarderDecision } from "@/lib/redaction/decisions-store";
-import type { DecisionGuet } from "@/lib/redaction/publication";
+import type { DecisionGuet, DecisionRegime } from "@/lib/redaction/publication";
+import { resoudreRegime } from "@/lib/redaction/publication";
+import { RETENUS_REGIME } from "@/lib/regime";
 import type { Guet } from "@/lib/types";
 import { chargerPortail } from "@/lib/redaction/portail";
 import { etatPublication } from "@/lib/redaction/etat-publication";
@@ -59,6 +61,39 @@ export async function corrigerBloc(slug: string, bloc: string, formData: FormDat
   const authorship = texte.trim() === original ? "ia-relue" : "ia-corrigee";
 
   await sauvegarderDecision(slug, "bloc", bloc, { authorship, texte });
+  revalidateApresDecision(slug);
+}
+
+/**
+ * Retient une phrase de régime : l'un des trois angles proposés, ou une phrase écrite à la main.
+ *
+ * Pour un angle, le texte n'est **pas** lu dans le formulaire : il vient de la proposition du
+ * brouillon, relue ici. Ce que le client renvoie n'est qu'un choix, jamais une phrase — sans quoi
+ * un formulaire trafiqué ferait publier une phrase que le modèle n'a pas proposée et qu'aucun
+ * contrôle de chiffres n'a vue. Aucune des trois n'est retenue par défaut : sans ce geste,
+ * `conditionsManquantes` interdit la publication.
+ */
+export async function retenirRegime(slug: string, formData: FormData): Promise<void> {
+  const choix = stringField(formData, "choix");
+  if (!(RETENUS_REGIME as readonly string[]).includes(choix)) {
+    throw new Error(`choix de phrase de régime inconnu : « ${choix} »`);
+  }
+
+  const propositions = parseNote(slug, corpsBrouillon(slug)).meta.regimeStatementPropositions;
+  const demande: DecisionRegime = {
+    choix: choix as DecisionRegime["choix"],
+    texte: stringField(formData, "texte"),
+  };
+  const retenue = resoudreRegime(demande, propositions);
+  if (!retenue) {
+    throw new Error(
+      choix === "propre"
+        ? "une phrase écrite à la main ne peut pas être vide"
+        : `aucune proposition « ${choix} » dans ce brouillon`,
+    );
+  }
+
+  await sauvegarderDecision(slug, "regime", "regime", { choix: retenue.choix, texte: retenue.texte });
   revalidateApresDecision(slug);
 }
 

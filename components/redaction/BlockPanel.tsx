@@ -1,6 +1,7 @@
 import { BLOCK_TITLES, type BlockName } from "@/lib/note-blocks";
 import type { Authorship } from "@/lib/types";
 import { corrigerBloc } from "@/app/redaction/actions";
+import type { Signalement } from "@/lib/redaction/style";
 import { AuthorshipBadge } from "./AuthorshipBadge";
 import { ValidationPill } from "./ValidationPill";
 
@@ -18,12 +19,15 @@ export function BlockPanel({
   texte,
   authorship,
   valide,
+  signalements = [],
 }: {
   slug: string;
   bloc: BlockName;
   texte: string;
   authorship: Authorship | undefined;
   valide: boolean;
+  /** Les règles de forme que le texte enfreint — jamais bloquantes, voir `lib/redaction/style.ts`. */
+  signalements?: Signalement[];
 }) {
   const action = corrigerBloc.bind(null, slug, bloc);
   const placeholder =
@@ -42,6 +46,25 @@ export function BlockPanel({
         </span>
         {authorship && <AuthorshipBadge authorship={authorship} />}
       </summary>
+
+      {signalements.length > 0 && (
+        <ul
+          aria-label={`Signalements de style — ${BLOCK_TITLES[bloc]}`}
+          className="flex flex-col gap-1 border-t border-trait px-4 py-3"
+        >
+          {signalements.map((sg) => (
+            <li
+              key={`${sg.code}-${sg.paragraphe}`}
+              className="border-l-3 border-k-choc bg-k-choc/11 px-3 py-1.5 text-13 text-doux"
+            >
+              <span className="text-10-5 font-semibold uppercase tracking-cap text-k-choc">
+                Signalement
+              </span>{" "}
+              {sg.message}
+            </li>
+          ))}
+        </ul>
+      )}
 
       <form action={action} className="flex flex-col gap-2 border-t border-trait bg-repos px-4 py-3">
         <textarea
