@@ -36,7 +36,6 @@ for (const mapping of series) {
 
   let payload: string;
   try {
-    // Aucun en-tête `Accept` : voir `lib/oecd.ts`, l'API de l'OCDE répond 500 à `text/csv`.
     const response = await fetch(url);
     payload = await response.text();
   } catch (error) {
@@ -53,6 +52,26 @@ for (const mapping of series) {
     console.log(`✗ ${header}`);
     console.log(`    ${result.error}`);
     console.log(`    ${url}`);
+    // Diagnostic : la même URL réussit sous `curl` et échoue sous `fetch` (500 « Internal server
+    // error », constaté le 04/10/2026). On rejoue avec des jeux d'en-têtes pour localiser la cause
+    // plutôt que de la deviner.
+    const variantes: Array<[string, Record<string, string>]> = [
+      ["fetch par défaut", {}],
+      ["User-Agent Mozilla/5.0", { "User-Agent": "Mozilla/5.0" }],
+      ["User-Agent applicatif", { "User-Agent": "Marguerite/1.0 (tableau de bord personnel)" }],
+      ["Accept */*", { Accept: "*/*" }],
+      ["Accept-Encoding identity", { "Accept-Encoding": "identity" }],
+      ["Mozilla + Accept */* + identity", { "User-Agent": "Mozilla/5.0", Accept: "*/*", "Accept-Encoding": "identity" }],
+    ];
+    for (const [nom, headers] of variantes) {
+      try {
+        const r = await fetch(url, { headers });
+        const t = await r.text();
+        console.log(`    · ${nom} : HTTP ${r.status} — ${t.slice(0, 60).replace(/\s+/g, " ")}`);
+      } catch (e) {
+        console.log(`    · ${nom} : ${(e as Error).message}`);
+      }
+    }
     continue;
   }
 

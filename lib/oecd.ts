@@ -103,9 +103,9 @@ export function parseOecdResponse(mapping: OecdMapping, text: string): OecdFetch
 export async function fetchOecdSeries(mapping: OecdMapping): Promise<OecdFetchResult> {
   let response: Response;
   try {
-    // Aucun en-tête `Accept` : l'API de l'OCDE répond « Internal server error » (500) à
-    // `Accept: text/csv` — vérifié le 04/10/2026 avec la même URL exactement, qui réussit sans cet
-    // en-tête (`curl`) et échoue avec (`fetch`). Le format se demande dans l'URL (`format=csv`).
+    // Aucun en-tête posé : le format se demande dans l'URL (`format=csv`). L'API répond 500 à
+    // certaines requêtes `fetch` que `curl` obtient pour la même URL — cause en cours d'isolation,
+    // voir `scripts/oecd-check.mts`.
     response = await fetchWithTimeout(buildOecdUrl(mapping), { cache: "no-store" });
   } catch (error) {
     return { ok: false, error: `appel impossible — ${describeFetchError(error)}` };
