@@ -11,6 +11,7 @@
  *
  * N'écrit rien : ni en base, ni dans la configuration. C'est un contrôle, pas une migration.
  */
+import { request as httpsRequest } from "node:https";
 import { OECD_SERIES, OECD_VERIFIED } from "../config/oecd-series";
 import { buildOecdUrl, parseOecdResponse } from "../lib/oecd";
 
@@ -62,6 +63,8 @@ for (const mapping of series) {
       ["Accept */*", { Accept: "*/*" }],
       ["Accept-Encoding identity", { "Accept-Encoding": "identity" }],
       ["Mozilla + Accept */* + identity", { "User-Agent": "Mozilla/5.0", Accept: "*/*", "Accept-Encoding": "identity" }],
+      ["Accept-Language en", { "Accept-Language": "en" }],
+      ["imite curl", { "User-Agent": "curl/8.5.0", Accept: "*/*", "Accept-Language": "en", "Accept-Encoding": "identity" }],
     ];
     for (const [nom, headers] of variantes) {
       try {
@@ -71,6 +74,35 @@ for (const mapping of series) {
       } catch (e) {
         console.log(`    · ${nom} : ${(e as Error).message}`);
       }
+    }
+    // Client de bas niveau : seuls les en-têtes posés ici partent, ni `Sec-Fetch-Mode` ni `Accept-Language`.
+    await new Promise<void>((resolve) => {
+      const u = new URL(url);
+      const req = httpsRequest(
+        { host: u.host, path: u.pathname + u.search, method: "GET", headers: { "User-Agent": "curl/8.5.0", Accept: "*/*" } },
+        (res) => {
+          let body = "";
+          res.on("data", (c) => (body += c));
+          res.on("end", () => {
+            console.log(`    · node:https minimal : HTTP ${res.statusCode} — ${body.slice(0, 60).replace(/\s+/g, " ")}`);
+            resolve();
+          });
+        },
+      );
+      req.on("error", (e) => {
+        console.log(`    · node:https minimal : ${e.message}`);
+        resolve();
+      });
+      req.end();
+    });
+    // La clé avec jokers, qui répondait sous curl.
+    const partielle = url.replace(mapping.key, "Q.Y.CHN.S1.S1.B1GQ....PC.L.GY.");
+    try {
+      const r = await fetch(partielle);
+      const t = await r.text();
+      console.log(`    · clé partielle, fetch : HTTP ${r.status} — ${t.slice(0, 60).replace(/\s+/g, " ")}`);
+    } catch (e) {
+      console.log(`    · clé partielle, fetch : ${(e as Error).message}`);
     }
     continue;
   }
