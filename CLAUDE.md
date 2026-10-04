@@ -1522,6 +1522,8 @@ Gratuites, en accès programmatique. Clés en variables d'environnement, jamais 
 | Macro Japon | **e-Stat API** | Gratuit, clé d'application requise (`ESTAT_APP_ID`). Branchée : IPC total et sous-jacent, chômage. Les salaires répondent mais sont désactivés — données interrompues depuis 2015 sur la seule combinaison de dimensions disponible. La croissance du PIB reste au seed — pas de table longue série stable, voir `config/estat-series.ts` |
 | Taux directeur UK | **Bank of England** (IADB, `_iadb-fromshowcolumns.asp`) | Gratuit, sans clé. Pas une série ONS — la BoE la publie elle-même sur sa base interactive. `IUDBEDR`, quotidienne, en palier. Voir `config/boe-series.ts` |
 | Taux directeur Japon | **Bank of Japan** (API « Time-Series Data Search ») | Gratuit, sans clé, lancée en 2026. Pas une série e-Stat. Proxy retenu : le taux au jour le jour sans garantie (`STRDCLUCON`, base FM01) — la BoJ ne publie pas sa cible sous forme de série numérique. Voir `config/boj-series.ts` |
+| Taux directeur Chine et Inde, dette publique Japon | **BRI** (API SDMX v2 de `stats.bis.org`, **CSV**) | Gratuit, sans clé. `WS_CBPOL` pour le LPR 1 an chinois et le repo indien, `WS_TC` pour la dette brute nominale japonaise en part du PIB. Voir `config/bis-series.ts` |
+| Inflation totale Chine et Inde | **IMF** (API SDMX 2.1 de `api.imf.org`, dataflow `IMF.STA/CPI`) | Gratuit, sans clé. Glissement annuel demandé à la source, réponse en XML. Voir `config/imf-series.ts` |
 | Énergie | **EIA API** | Gratuit, données officielles |
 | Indices actions, FX | **FRED** (huit séries) et **Twelve Data** | FRED : S&P 500, Nasdaq 100, Nikkei 225, EUR/USD, GBP/USD, USD/JPY, Brent, WTI. Twelve Data branché pour l'or (`XAU/USD`) et MSCI ACWI (ETF iShares `ACWI`) ; le reste des indices propriétaires visés (Euro Stoxx 50, FTSE 100, CSI 300, Nifty 50, Hang Seng, CAC 40), l'argent et le DXY restent au seed — verrouillés au palier payant ou absents du catalogue sous les codes usuels, voir `config/twelve-data-series.ts`. Palier gratuit à 8 appels par minute. |
 | Bund, OAT et quatre autres points à 10 ans | **FRED** (taux longs mensuels de l'OCDE) | Gratuit, sans clé — voir plus bas pourquoi le quotidien reste hors de portée |
@@ -1533,7 +1535,8 @@ Contraintes dans le code :
   changement d'heure), jamais à la demande. Le plan Hobby
   n'autorise qu'un seul déclenchement quotidien : la route du cron est un **orchestrateur** qui
   exécute FRED, puis les spreads, puis Twelve Data, puis Alpha Vantage, puis Eurostat, puis ONS,
-  puis e-Stat, puis BoE, puis BoJ, puis la veille, en dix modules indépendants — jamais un second
+  puis e-Stat, puis BoE, puis BoJ, puis la BRI, puis l'IMF, puis la veille, en douze modules
+  indépendants — jamais un second
   cron (détail à jour dans le commentaire de tête d'`app/api/cron/collect/route.ts`). FRED
   s'exécute et écrit en premier, sans exception ; les modules suivants sont chacun enveloppés
   dans leur propre `try`/`catch` pour qu'une panne ou une exception là-bas n'efface rien de ce
@@ -1665,7 +1668,12 @@ Allemagne (`bop_gdp6_q`, Eurostat) est venue s'ajouter. Les balances courantes a
 japonaise et chinoise (OCDE via FRED) s'arrêtent au T4 2024 et restent écartées, de même que
 les six candidats FRED sondés pour la Chine, l'Inde et la dette japonaise (voir
 `config/fred-series.ts`). Le seed ne porte plus d'observations que pour les séries qu'un
-fournisseur couvre, en repli quand la base est vide.
+fournisseur couvre, en repli quand la base est vide. **Recompté le 04/10/2026** : 32 instruments
+et **55 indicateurs** sur 83 et 69 — la BRI (taux directeurs chinois et indien, dette publique
+japonaise) et l'IMF (inflation totale chinoise et indienne) ont ajouté cinq séries. Il reste 14
+indicateurs non suivis : les six PMI (propriétaires S&P Global), les balances courantes
+américaine, japonaise et chinoise, le solde budgétaire britannique, le PIB japonais et chinois,
+les salaires japonais et ceux de la zone euro.
 
 **Les deux spreads (US10Y/Bund, OAT/Bund) ont ensuite été calculés et stockés** — pas collectés
 au sens d'une nouvelle source, mais dérivés à l'insertion de `us10y`, `de10y` et `fr10y`, tous
@@ -2011,12 +2019,41 @@ donnent en `AAAAMM` (année-mois), jamais en date complète — une date complè
 `STATUS: 400`, y compris pour une série quotidienne ; la réponse elle-même date chaque point en
 `AAAAMMJJ` numérique. `BOJ_VERIFIED` est à `true` depuis que `npm run boj:check` est sorti vert.
 
+**BRI — branchée, trois séries.** Ni FRED ni une source nationale ne servaient le taux directeur
+chinois, le taux directeur indien et la dette publique japonaise : le portail statistique de la
+BRI (`stats.bis.org`, API SDMX v2, sans clé) les redistribue. `WS_CBPOL` (« Central bank policy
+rates ») donne le **LPR à 1 an** de la PBOC — la BRI chaîne le taux officiel de prêt jusqu'à
+2019 puis le LPR, exactement la série que le catalogue désigne — et le taux de repo de la RBI ;
+`WS_TC` (« Total credit ») donne le crédit aux administrations publiques du Japon **en valeur
+nominale**, en part du PIB (193,6 % au T1 2026). La variante en valeur de marché (175,6 %)
+réévalue les titres au prix du jour : ce n'est pas la dette brute que le catalogue désigne.
+Confirmées par appels réels le 04/10/2026, `npm run bis:check` vert sur les trois. **Piège de
+format découvert par appel réel** : l'API v2 refuse `format=jsondata` (« Unsupported format »,
+406) — le CSV répond, d'où un parseur qui tient les champs entre guillemets (la description de la
+cible de la BoJ en porte des dizaines). La BRI publie à la cadence de chaque banque centrale : août
+pour la Chine, juin pour l'Inde, trois mois de retard. Le taux directeur japonais reste servi par
+la BoJ — la BRI le publie aussi, sous forme de cible officielle (1,25 % depuis le 24/09/2026),
+mais deux sources pour un même identifiant ne se mélangent jamais. `BIS_VERIFIED` est à `true`.
+
+**IMF — branchée, deux séries.** L'inflation totale chinoise et indienne, dont les séries OCDE
+de FRED sont discontinuées (voir `config/fred-series.ts`) : dataflow `IMF.STA/CPI` version 5.0.0,
+API SDMX 2.1 de l'IMF (`api.imf.org`), sans clé. Les cinq dimensions, dans l'ordre : `COUNTRY.
+INDEX_TYPE.COICOP_1999.TYPE_OF_TRANSFORMATION.FREQUENCY` ; la clé `CHN.CPI._T.YOY_PCH_PA_PT.M`
+désigne l'indice général en glissement annuel, **demandé à la source** comme `units=pc1` chez
+FRED. Chine à 0,8 % en août, Inde à 4,4 % en juillet 2026. **Deux pièges de format découverts par
+appel réel** : l'API répond du XML SDMX quel que soit le `format` demandé, et date en `2026-M06`.
+La source publie son taux avec ses décimales de calcul (« 1.000065040145302 ») : arrondi à
+deux décimales à la lecture, c'est de la présentation, pas un recalcul. Le pays et la
+transformation de la réponse sont vérifiés : une série en niveau d'indice serait une série
+entière fausse. `IMF_VERIFIED` est à `true`.
+
 Mise en service, dans l'ordre : exécuter `supabase/schema.sql`, renseigner les variables de
 `.env.example`, lancer `npm run fred:check` et n'activer que les séries sorties vertes, faire
 de même avec `npm run twelve-data:check`, `npm run eurostat:check` (ce dernier avant de
 basculer `EUROSTAT_VERIFIED`), `npm run ons:check` (avant de basculer `ONS_VERIFIED`),
-`npm run estat:check` (avant de basculer `ESTAT_VERIFIED`), `npm run boe:check` et
-`npm run boj:check` (avant de basculer `BOE_VERIFIED`/`BOJ_VERIFIED`), puis laisser le cron
+`npm run estat:check` (avant de basculer `ESTAT_VERIFIED`), `npm run boe:check`,
+`npm run boj:check`, `npm run bis:check` et `npm run imf:check` (avant de basculer
+`BOE_VERIFIED`/`BOJ_VERIFIED`/`BIS_VERIFIED`/`IMF_VERIFIED`), puis laisser le cron
 tourner. Le site fonctionne à chaque étape de cette séquence, y compris avant la première —
 c'est ce que garantit le repli sur le seed.
 
