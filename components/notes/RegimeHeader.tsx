@@ -76,6 +76,14 @@ export function RegimeHeader({
             Tendances de fond ›
           </Link>
         )}
+        {drivers.length > 0 && (
+          <Link
+            href="/notes/themes"
+            className="inline-flex min-h-11 items-center rounded-rb border border-trait bg-page px-4 text-13 font-medium text-encre transition-colors hover:border-trait-f"
+          >
+            Thèmes sous observation ›
+          </Link>
+        )}
         {pendingVeilleCount !== undefined && (
           <Link
             href="/triage"
