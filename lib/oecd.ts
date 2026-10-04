@@ -103,10 +103,14 @@ export function parseOecdResponse(mapping: OecdMapping, text: string): OecdFetch
 export async function fetchOecdSeries(mapping: OecdMapping): Promise<OecdFetchResult> {
   let response: Response;
   try {
-    // Aucun en-tête posé : le format se demande dans l'URL (`format=csv`). L'API répond 500 à
-    // certaines requêtes `fetch` que `curl` obtient pour la même URL — cause en cours d'isolation,
-    // voir `scripts/oecd-check.mts`.
-    response = await fetchWithTimeout(buildOecdUrl(mapping), { cache: "no-store" });
+    // `Accept-Language` posé explicitement : le `fetch` de Node envoie `Accept-Language: *` par
+    // défaut, et l'API de l'OCDE répond « Internal server error » (500) à cette valeur — la même URL
+    // réussit avec `Accept-Language: en`, comme sous `curl` (diagnostiqué le 04/10/2026, voir
+    // `config/oecd-series.ts`). Le format, lui, se demande dans l'URL (`format=csv`).
+    response = await fetchWithTimeout(buildOecdUrl(mapping), {
+      headers: { "Accept-Language": "en" },
+      cache: "no-store",
+    });
   } catch (error) {
     return { ok: false, error: `appel impossible — ${describeFetchError(error)}` };
   }

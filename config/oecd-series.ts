@@ -27,12 +27,13 @@ import type { Zone } from "@/lib/types";
  * trimestre (Chine : 0,9 % au T2) : non retenue, pour cette raison. Les valeurs japonaises
  * portent beaucoup de décimales (« 0.726654038 ») : arrondies à deux à la lecture.
  *
- * **Deuxième piège, trouvé au contrôle : la même URL réussit sous `curl` et échoue sous `fetch`.**
- * Le contrôle officiel a répondu « Internal server error » (500) à trois reprises, à l'identique,
- * alors que `curl` obtenait seize trimestres chinois (de 3,0 % au T3 2022 à 4,3 % au T2 2026) sur
- * la même URL le 04/10/2026. Retirer l'en-tête `Accept` n'a rien changé : ce n'était pas lui.
- * Les différences restantes entre les deux clients (User-Agent, encodage) sont rejouées une à une
- * par `npm run oecd:check` en cas d'échec.
+ * **Deuxième piège, trouvé au contrôle : `Accept-Language: *`.** Le contrôle officiel a répondu
+ * « Internal server error » (500) à quatre reprises, à l'identique, alors que `curl` obtenait seize
+ * trimestres chinois (de 3,0 % au T3 2022 à 4,3 % au T2 2026) sur la même URL. Le `fetch` de Node
+ * envoie par défaut `Accept-Language: *`, et c'est cette valeur que l'API rejette : avec
+ * `Accept-Language: en`, la même requête répond 200 (diagnostic du 04/10/2026, `npm run oecd:check`
+ * rejoue les variantes d'en-têtes en cas d'échec). Ni `Accept`, ni le `User-Agent`, ni l'encodage
+ * n'y changeaient rien — deux hypothèses fausses successives, écartées par mesure.
  *
  * Le flux est choisi par appartenance : le Japon est membre de l'OCDE, la Chine non — chacun a
  * son flux, et la même clé n'aurait pas de réponse dans l'autre.

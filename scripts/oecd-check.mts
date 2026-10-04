@@ -37,7 +37,8 @@ for (const mapping of series) {
 
   let payload: string;
   try {
-    const response = await fetch(url);
+    // `Accept-Language: en` : voir `lib/oecd.ts`, l'API répond 500 à la valeur par défaut `*` de fetch.
+    const response = await fetch(url, { headers: { "Accept-Language": "en" } });
     payload = await response.text();
   } catch (error) {
     failures += 1;

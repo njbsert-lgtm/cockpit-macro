@@ -2065,8 +2065,14 @@ sont numérotées de **1** à 13 chez l'OCDE, pas de 0 à 13 : en lisant la stru
 le code pays est tombé sur la dimension `SECTOR`, et trois requêtes ont répondu `NoResultsFound`,
 **y compris pour le Japon, membre de l'OCDE** — ce qui désignait une clé fausse, pas une donnée
 absente. La clé est donc écrite en entier, sans joker, et `lib/oecd.ts` nomme ce message plutôt
-que de le prendre pour un vide. Le pays et la transformation de la réponse sont vérifiés.
-`OECD_VERIFIED` est à `true`.
+que de le prendre pour un vide. **Second piège, trouvé au contrôle : l'en-tête `Accept-Language`.**
+Le `fetch` de Node envoie `Accept-Language: *` par défaut, et l'API répond « Internal server
+error » (500) à cette valeur — quatre échecs identiques du contrôle, alors que `curl` obtenait
+seize trimestres sur la même URL. Avec `Accept-Language: en`, la même requête répond 200. Deux
+hypothèses fausses (`Accept`, `User-Agent`) ont été écartées par mesure avant de la trouver :
+`npm run oecd:check` rejoue désormais les variantes d'en-têtes en cas d'échec, pour que la
+prochaine panne de ce genre se localise en une passe. Le pays et la transformation de la réponse
+sont vérifiés. `OECD_VERIFIED` est à `true`.
 
 Mise en service, dans l'ordre : exécuter `supabase/schema.sql`, renseigner les variables de
 `.env.example`, lancer `npm run fred:check` et n'activer que les séries sorties vertes, faire

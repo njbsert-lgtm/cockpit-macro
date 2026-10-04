@@ -1,5 +1,5 @@
-import { describe, expect, it } from "vitest";
-import { buildOecdUrl, parseOecdResponse } from "./oecd";
+import { afterEach, describe, expect, it, vi } from "vitest";
+import { buildOecdUrl, fetchOecdSeries, parseOecdResponse } from "./oecd";
 import type { OecdMapping } from "@/config/oecd-series";
 
 const CHINE: OecdMapping = {
@@ -94,5 +94,26 @@ describe("parseOecdResponse", () => {
     const res = parseOecdResponse(CHINE, "<html>Service unavailable</html>");
     expect(res.ok).toBe(false);
     if (!res.ok) expect(res.error).toContain("Service unavailable");
+  });
+});
+
+describe("fetchOecdSeries — l'en-tête qui évite l'erreur 500", () => {
+  afterEach(() => vi.unstubAllGlobals());
+
+  it("pose Accept-Language: en — le « * » par défaut de fetch fait répondre 500 à l'OCDE", async () => {
+    const fetchMock = vi.fn(async () => new Response(`${ENTETE}\n${ligne("CHN", "GY", "2026-Q2", "4.3")}\n`));
+    vi.stubGlobal("fetch", fetchMock);
+
+    const res = await fetchOecdSeries(CHINE);
+
+    expect(res).toEqual({ ok: true, points: [{ date: "2026-04-01", value: 4.3 }] });
+    const init = (fetchMock.mock.calls[0] as unknown as [string, RequestInit])[1];
+    expect(new Headers(init.headers).get("accept-language")).toBe("en");
+  });
+
+  it("rend l'erreur HTTP d'un serveur en panne, sans rien écrire", async () => {
+    vi.stubGlobal("fetch", vi.fn(async () => new Response("Internal server error", { status: 500, statusText: "Internal Server Error" })));
+    const res = await fetchOecdSeries(CHINE);
+    expect(res).toEqual({ ok: false, error: "HTTP 500 — Internal Server Error" });
   });
 });
