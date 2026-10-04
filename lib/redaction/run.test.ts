@@ -176,6 +176,8 @@ const GRAPHE = {
   outlooks: [],
   instrumentIds: new Set<string>(["us10y"]),
   macroIndicatorIds: new Set<string>(),
+  // Rien de ce que le vrai dépôt a généré : le graphe de ce test est clos sur lui-même.
+  generated: { scenarios: [], trendDeltas: [] },
 };
 
 /**

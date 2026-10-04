@@ -47,6 +47,17 @@ export type GrapheInjecte = {
   outlooks: typeof OUTLOOKS;
   instrumentIds: ReadonlySet<string>;
   macroIndicatorIds: ReadonlySet<string>;
+  /**
+   * Les deltas produits par les publications réelles. Injectables pour la même raison que le
+   * reste : un graphe de test qui n'injecterait que ses propres scénarios se mélangerait aux
+   * versions générées du vrai dépôt, et ses trois branches deviendraient six dès la première
+   * publication — ce qui a cassé quatre tests de `run.test.ts` le 26/09, sans aucun rapport avec
+   * ce qu'ils éprouvent.
+   */
+  generated?: {
+    scenarios: typeof GENERATED_SCENARIO_VERSIONS;
+    trendDeltas: typeof GENERATED_TREND_DELTAS;
+  };
 };
 
 export function validerBrouillon(input: {
@@ -86,7 +97,7 @@ export function validerBrouillon(input: {
       trends: graphe.trends,
       scenarios: graphe.scenarios,
       outlooks: graphe.outlooks,
-      generated: {
+      generated: graphe.generated ?? {
         scenarios: GENERATED_SCENARIO_VERSIONS,
         trendDeltas: GENERATED_TREND_DELTAS,
       },
