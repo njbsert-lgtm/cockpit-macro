@@ -114,7 +114,13 @@ export function parseTwelveDataSeries(
     points.push({ date: raw.datetime, value });
   }
 
-  return { ok: true, points };
+  // Une même date peut revenir deux fois (l'or en a produit) : l'upsert refuse alors tout le lot
+  // (« cannot affect row a second time »). On garde la dernière occurrence de la réponse,
+  // ordonnée en ASC — la plus récente cotation de la journée.
+  const parDate = new Map<string, TwelveDataPoint>();
+  for (const p of points) parDate.set(p.date, p);
+
+  return { ok: true, points: [...parDate.values()] };
 }
 
 /** Appelle Twelve Data pour un symbole. Ne lève jamais : toute panne devient un échec typé. */

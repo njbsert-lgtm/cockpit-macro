@@ -43,6 +43,22 @@ describe("parseTwelveDataSeries — lecture normale", () => {
     if (!r.ok) return;
     expect(r.points).toEqual([]);
   });
+
+  it("ne garde qu'un point par date, le dernier de la réponse", () => {
+    const r = parseTwelveDataSeries(gold, {
+      values: [
+        { datetime: "2026-10-05", close: "4000.10" },
+        { datetime: "2026-10-06", close: "4010.00" },
+        { datetime: "2026-10-06", close: "4012.50" },
+      ],
+    });
+    expect(r.ok).toBe(true);
+    if (!r.ok) return;
+    expect(r.points).toEqual([
+      { date: "2026-10-05", value: 4000.1 },
+      { date: "2026-10-06", value: 4012.5 },
+    ]);
+  });
 });
 
 describe("parseTwelveDataSeries — le refus explicite de Twelve Data", () => {
