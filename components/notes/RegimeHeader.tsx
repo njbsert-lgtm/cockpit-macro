@@ -5,6 +5,8 @@ import { DriverCards, type DriverWithBranches } from "./DriverCards";
 import { SectionHeader } from "./SectionHeader";
 import { AnglesMortsAccueil } from "./AnglesMortsAccueil";
 import type { VueAccueil } from "@/lib/angles-morts";
+import { getMacroIndicator } from "@/lib/data";
+import { resoudreIndicateurCle } from "@/lib/indicateur-cle";
 
 /**
  * Couche 1 : le régime en une phrase, les indicateurs clés, puis les cartes de driver.
@@ -41,17 +43,40 @@ export function RegimeHeader({
       </h1>
 
       <dl className="mt-5 grid grid-cols-2 overflow-hidden rounded-rc border border-trait md:grid-cols-4">
-        {note.keyIndicators.map((ind, i) => (
-          <div
-            key={ind.label}
-            className={`px-3.5 py-3 ${i % 2 === 1 ? "border-l border-trait" : ""} ${
-              i >= 2 ? "border-t border-trait md:border-t-0" : ""
-            } md:border-l md:first:border-l-0`}
-          >
-            <dt className="text-9-5 font-semibold uppercase tracking-cap text-tenu">{ind.label}</dt>
-            <dd className="mt-1 text-13 font-semibold leading-tight text-encre">{ind.value}</dd>
-          </div>
-        ))}
+        {note.keyIndicators.map((ind, i) => {
+          // Un chiffre qui désigne un indicateur suivi en Macro en ouvre la fiche ; les autres
+          // (prévisions, chiffres de marché) restent du texte.
+          const indicatorId = resoudreIndicateurCle(ind, (id) => getMacroIndicator(id) !== undefined);
+          const contenu = (
+            <>
+              <dt className="text-9-5 font-semibold uppercase tracking-cap text-tenu">
+                {ind.label}
+                {indicatorId && <span aria-hidden> ›</span>}
+              </dt>
+              <dd className="mt-1 text-13 font-semibold leading-tight text-encre">{ind.value}</dd>
+            </>
+          );
+          return (
+            <div
+              key={ind.label}
+              className={`${i % 2 === 1 ? "border-l border-trait" : ""} ${
+                i >= 2 ? "border-t border-trait md:border-t-0" : ""
+              } md:border-l md:first:border-l-0`}
+            >
+              {indicatorId ? (
+                <Link
+                  href={`/macro/${indicatorId}`}
+                  className="block min-h-11 px-3.5 py-3 hover:bg-repos"
+                  aria-label={`${ind.label} : ${ind.value} — ouvrir la fiche de l'indicateur`}
+                >
+                  {contenu}
+                </Link>
+              ) : (
+                <div className="px-3.5 py-3">{contenu}</div>
+              )}
+            </div>
+          );
+        })}
       </dl>
 
       {drivers.length > 0 && (

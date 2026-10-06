@@ -149,6 +149,15 @@ Structure d'une carte de note :
 6. Pied poussé en bas par `margin-top:auto` : cinq points de 6px, allumés à la couleur des
    canaux traversés, éteints en `#E0E3E5`, puis le décompte à droite
 
+### Chiffres clés du régime
+
+Sous le titre de l'accueil, une grille de cellules bordées (2 colonnes sur mobile, 4 sur desktop). Une
+cellule dont le libellé désigne un indicateur suivi dans Macro — « Fed funds », « BCE — facilité de
+dépôt » — est entière un lien vers `/macro/<id>` : hauteur minimale 44 px, fond `--repos` au survol,
+chevron `›` après le libellé. Les autres (prévisions, chiffres de marché) restent du texte, sans
+chevron : le chevron annonce la fiche, il ne se met pas partout. Le rattachement se lit dans le
+libellé (`lib/indicateur-cle.ts`) ; un `indicatorId` dans le frontmatter le force.
+
 ### Carte de driver
 
 Bordure `--trait`, rayon `--rc`, padding 16px. Titre 15.5px avec une étiquette « Driver »

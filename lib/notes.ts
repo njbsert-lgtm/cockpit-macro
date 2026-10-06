@@ -163,7 +163,13 @@ const frontmatterSchema = z.object({
     .default(null),
   regimeRetenu: z.enum(RETENUS_REGIME).nullable().default(null),
   keyIndicators: z
-    .array(z.object({ label: z.string().min(1), value: z.string().min(1) }))
+    .array(
+      z.object({
+        label: z.string().min(1),
+        value: z.string().min(1),
+        indicatorId: z.string().optional(),
+      }),
+    )
     .min(1),
   zones: z.array(z.enum(ZONES)).min(1),
   driverOrder: z.array(z.string()).min(1),

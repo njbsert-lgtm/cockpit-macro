@@ -294,7 +294,7 @@ export type Note = {
   regimeStatementPropositions?: RegimeProposition[] | null;
   /** L'angle retenu, ou `propre` quand la phrase a été écrite à la main. */
   regimeRetenu?: RegimeRetenu | null;
-  keyIndicators: Array<{ label: string; value: string }>;
+  keyIndicators: Array<{ label: string; value: string; indicatorId?: string }>;
   zones: Zone[];
   driverOrder: string[]; // ordre d'intensité des drivers à cette date, jugement manuel
   trendRefs: string[]; // tendances de fond touchées
