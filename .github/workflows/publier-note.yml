@@ -68,4 +68,7 @@ jobs:
           Décidé depuis /redaction — bloc par bloc, guet par guet, révision par
           révision. Aucune validation globale."
           # Jamais --force : la publication ne vaut pas d'écraser un historique.
+          # Un autre commit (collecte, brouillon, publication précédente) a pu arriver pendant
+          # l'exécution : on rejoue le nôtre par-dessus plutôt que d'échouer sur un rejet.
+          git pull --rebase origin main
           git push origin HEAD

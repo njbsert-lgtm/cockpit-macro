@@ -197,6 +197,9 @@ export async function publierBrouillon(
   _formData: FormData,
 ): Promise<RetourPublication> {
   try {
+    if (existsSync(path.join(process.cwd(), "content", "notes", `${slug}.mdx`))) {
+      return { statut: "ok", message: `La note ${slug} est déjà publiée — rien à relancer.` };
+    }
     const etat = await chargerPortail(slug);
     if (!etat) throw new Error(`aucun brouillon chargeable pour « ${slug} »`);
 
