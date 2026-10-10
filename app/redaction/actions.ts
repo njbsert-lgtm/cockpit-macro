@@ -6,7 +6,7 @@ import { revalidatePath } from "next/cache";
 import { extractBlockText, parseNote } from "@/lib/notes";
 import { BLOCK_NAMES, type BlockName } from "@/lib/note-blocks";
 import { BROUILLONS_DIR } from "@/lib/redaction/run";
-import { sauvegarderDecision } from "@/lib/redaction/decisions-store";
+import { sauvegarderDecision as sauvegarderBrut } from "@/lib/redaction/decisions-store";
 import type { DecisionGuet, DecisionRegime } from "@/lib/redaction/publication";
 import { resoudreRegime } from "@/lib/redaction/publication";
 import { RETENUS_REGIME } from "@/lib/regime";
@@ -45,6 +45,18 @@ function stringField(formData: FormData, name: string): string {
  * `CeQueJavaisMalLu` est toujours `humaine` — il n'a pas de proposition du modèle à comparer,
  * il part vide par construction (voir le cahier, § Rédaction assistée).
  */
+/**
+ * Une décision que la base a refusée ne doit pas passer pour prise : sans cela, le bouton ne
+ * réagit pas et le portail n'en dit rien. Le message de Supabase est remonté tel quel — contrainte
+ * `redaction_decisions_kind_check` non migrée, clé d'écriture absente, table manquante.
+ */
+async function sauvegarderDecision(
+  ...args: Parameters<typeof sauvegarderBrut>
+): Promise<void> {
+  const r = await sauvegarderBrut(...args);
+  if (!r.ok) throw new Error(`décision non enregistrée — ${r.erreur ?? "erreur inconnue"}`);
+}
+
 export async function corrigerBloc(slug: string, bloc: string, formData: FormData): Promise<void> {
   if (!(BLOCK_NAMES as readonly string[]).includes(bloc)) {
     throw new Error(`bloc inconnu : « ${bloc} »`);
