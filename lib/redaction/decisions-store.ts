@@ -4,6 +4,7 @@ import {
   decisionsVides,
   type Decisions,
   type DecisionBloc,
+  type DecisionChiffre,
   type DecisionGuet,
   type DecisionProposition,
   type DecisionRegime,
@@ -18,13 +19,13 @@ import {
  * `ref: "CeQueJavaisMalLu"`, exactement comme les autres blocs ; la valeur `bloc4` du schéma
  * SQL reste un vestige inerte, sans lecture ni écriture ici.
  */
-export type DecisionKind = "bloc" | "guet" | "revision" | "tendance" | "regime" | "theme";
+export type DecisionKind = "bloc" | "guet" | "revision" | "tendance" | "regime" | "theme" | "chiffre";
 
 export async function sauvegarderDecision(
   slug: string,
   kind: DecisionKind,
   ref: string,
-  decision: DecisionBloc | DecisionGuet | DecisionProposition | DecisionRegime,
+  decision: DecisionBloc | DecisionGuet | DecisionProposition | DecisionRegime | DecisionChiffre,
 ): Promise<{ ok: boolean; erreur?: string }> {
   const client = getWriteClient();
   if (!client) return { ok: false, erreur: "Supabase non configuré côté écriture" };
@@ -73,6 +74,9 @@ export async function chargerDecisions(slug: string): Promise<Decisions> {
         break;
       case "theme":
         decisions.themes[row.ref] = row.decision as DecisionProposition;
+        break;
+      case "chiffre":
+        decisions.chiffres[row.ref] = row.decision as DecisionChiffre;
         break;
       case "regime":
         decisions.regime = row.decision as DecisionRegime;

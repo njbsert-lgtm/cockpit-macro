@@ -14,6 +14,7 @@ import { idTheme } from "@/lib/themes";
 import type { Guet } from "@/lib/types";
 import { chargerPortail } from "@/lib/redaction/portail";
 import { etatPublication } from "@/lib/redaction/etat-publication";
+import { cleChiffre } from "@/lib/redaction/figures";
 import { declencherPublication } from "@/lib/redaction/github-dispatch";
 
 /**
@@ -217,5 +218,53 @@ export async function trancherTheme(slug: string, themeId: string, formData: For
     throw new Error(`aucun thème « ${themeId} » dans ce brouillon`);
   }
   await sauvegarderDecision(slug, "theme", themeId, { action: actionProposition(formData) });
+  revalidateApresDecision(slug);
+}
+
+/** Retrouve, côté serveur, le verdict visé : on ne tranche que ce que le contrôle a réellement relevé. */
+async function verdictFautif(slug: string, cle: string) {
+  const etat = await chargerPortail(slug);
+  if (!etat) throw new Error(`aucun brouillon chargeable pour « ${slug} »`);
+  const publication = etatPublication(etat.note, etat.brouillonPropose, etat.decisions, etat.paquet);
+  const verdict = publication.rapportChiffres.verdicts.find(
+    (v) => v.verdict !== "conforme" && cleChiffre(v) === cle,
+  );
+  if (!verdict) throw new Error("ce chiffre n'est plus signalé — la page a changé, rechargez");
+  return { etat, verdict };
+}
+
+/**
+ * Garde un nombre signalé tel qu'il est écrit — après examen, un nombre à la fois. Le rapport
+ * continue de le montrer (« gardé ») : la décision se relit, elle ne fait pas disparaître le verdict.
+ */
+export async function garderChiffre(slug: string, cle: string, formData: FormData): Promise<void> {
+  await verdictFautif(slug, cle);
+  const reprendre = stringField(formData, "action") === "examiner";
+  await sauvegarderDecision(slug, "chiffre", cle, { action: reprendre ? "examiner" : "garder" });
+  revalidateApresDecision(slug);
+}
+
+/**
+ * Remplace la phrase qui porte le nombre signalé. Le bloc passe à `ia-corrigee` s'il diffère du
+ * texte proposé : la correction est le geste qui relâche le contrôle, exactement comme une
+ * édition du bloc entier.
+ */
+export async function corrigerPhrase(slug: string, cle: string, formData: FormData): Promise<void> {
+  const { etat, verdict } = await verdictFautif(slug, cle);
+  const bloc = verdict.bloc;
+  if (!(BLOCK_NAMES as readonly string[]).includes(bloc)) {
+    throw new Error("cette phrase ne se corrige pas ici — choisissez ou écrivez la phrase de régime");
+  }
+  const nouvelle = stringField(formData, "phrase");
+  if (!nouvelle) throw new Error("la phrase corrigée ne peut pas être vide");
+
+  const original = extractBlockText(etat.note.body, bloc as BlockName)?.trim() ?? "";
+  const courant = etat.decisions.blocs[bloc as BlockName]?.texte ?? original;
+  if (!courant.includes(verdict.phrase)) {
+    throw new Error("la phrase n'est plus dans le bloc — rechargez la page");
+  }
+  const texte = courant.replace(verdict.phrase, nouvelle);
+  const authorship = texte.trim() === original ? "ia-relue" : "ia-corrigee";
+  await sauvegarderDecision(slug, "bloc", bloc, { authorship, texte });
   revalidateApresDecision(slug);
 }

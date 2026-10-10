@@ -56,7 +56,12 @@ export function etatPublication(
     authorshipFinale.regimeStatement = regime.choix === "propre" ? "humaine" : "ia-relue";
   }
 
-  const rapportChiffres = controlerChiffresPublication(textesFinaux, authorshipFinale, paquet);
+  const rapportChiffres = controlerChiffresPublication(
+    textesFinaux,
+    authorshipFinale,
+    paquet,
+    decisions.chiffres,
+  );
 
   return { manquantes, rapportChiffres, pret: manquantes.length === 0 && !rapportChiffres.bloque };
 }

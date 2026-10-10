@@ -7,6 +7,9 @@ import {
   conditionsManquantes,
   construireArtefactsPublication,
   controlerChiffresPublication,
+} from "./publication";
+import { cleChiffre } from "./figures";
+import {
   decisionsVides,
   relireNoteFinale,
   resoudreRegime,
@@ -309,6 +312,33 @@ describe("controlerChiffresPublication — bloquant sur ia/ia-relue, signalant a
     );
     expect(rapport.bloque).toBe(false);
     expect(rapport.verdicts[0].verdict).toBe("introuvable");
+  });
+
+  it("un nombre gardé explicitement ne bloque plus, et reste marqué gardé", () => {
+    const texte = { CeQuiAChange: "L'inflation atteint 4,7 %." };
+    const bloque = controlerChiffresPublication(texte, { CeQuiAChange: "ia-relue" }, paquet());
+    const cle = cleChiffre(bloque.verdicts[0]);
+
+    const garde = controlerChiffresPublication(texte, { CeQuiAChange: "ia-relue" }, paquet(), {
+      [cle]: { action: "garder" },
+    });
+    expect(garde.bloque).toBe(false);
+    expect(garde.verdicts[0].garde).toBe(true);
+
+    const repris = controlerChiffresPublication(texte, { CeQuiAChange: "ia-relue" }, paquet(), {
+      [cle]: { action: "examiner" },
+    });
+    expect(repris.bloque).toBe(true);
+  });
+
+  it("garder un nombre ne couvre pas le même nombre dans une autre phrase", () => {
+    const rapport = controlerChiffresPublication(
+      { CeQuiAChange: "L'inflation atteint 4,7 %. Le chômage atteint 4,7 %." },
+      { CeQuiAChange: "ia-relue" },
+      paquet(),
+    );
+    const [a, b] = rapport.verdicts;
+    expect(cleChiffre(a)).not.toBe(cleChiffre(b));
   });
 
   it("ia-corrigee ne bloque pas non plus", () => {

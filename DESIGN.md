@@ -302,6 +302,16 @@ seuil, et le libellé ne dépend jamais d'elle.
    collecté ») à la place de la valeur, avec une phrase qui nomme la cause. **Jamais un 0** : il
    affirmerait que la grille tient alors qu'on n'en sait rien.
 
+### Chiffres à trancher
+
+Panneau du portail, sous le rapport de contrôle des chiffres, présent seulement quand un nombre est
+non conforme. Bordure `--k-choc`, titre en capitales avec le décompte « N restants sur M ». Une ligne
+par nombre : le bloc en petites capitales, **la phrase entière avec le nombre surligné** (`<mark>`,
+fond `--k-choc` à 25 %), le reproche du contrôle en `--doux`. Deux gestes, jamais en bloc : un champ
+« Corriger la phrase » (remplace la phrase dans le bloc, qui passe à `ia-corrigee`) et un bouton
+« Garder tel quel ». Un nombre gardé reste listé, marqué « gardé », avec « Reprendre l'examen ».
+Boutons de 44 px minimum.
+
 ### Portail de rédaction
 
 Reprend le **motif de validation de la liste d'archive**, que cette charte invite déjà à

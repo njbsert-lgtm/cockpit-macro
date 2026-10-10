@@ -50,7 +50,18 @@ export type VerdictChiffre = {
   dateRetenue: string | null;
   /** Régime A : ce que la base porte à cette date, rendu en français. */
   valeurBase: string | null;
+  /** La phrase qui contient le nombre — c'est ce qu'on montre pour le retrouver dans le texte. */
+  phrase: string;
+  /** Posé à la publication : le nombre a été gardé explicitement, après examen. */
+  garde?: boolean;
 };
+
+/** Clé stable d'un nombre dans un texte : bloc, nombre tel qu'écrit, et phrase qui le porte. */
+export function cleChiffre(v: Pick<VerdictChiffre, "bloc" | "ecrit" | "phrase">): string {
+  let h = 5381;
+  for (const c of v.phrase) h = ((h * 33) ^ c.charCodeAt(0)) >>> 0;
+  return `${v.bloc}:${v.ecrit}:${h.toString(36)}`;
+}
 
 /**
  * Six issues plutôt que deux. Une note bloquée doit dire *pourquoi* : les gestes de correction
@@ -546,7 +557,7 @@ export function extraireVerdicts(
         // Une année, un rang : rien à confronter, et les lister noierait les vrais chiffres.
         if (estNeutre(ecrit, valeur, nue.slice(finPrecedente))) continue;
 
-        const commun = { ecrit, valeur, bloc };
+        const commun = { ecrit, valeur, bloc, phrase };
 
         if (nommes.length > 0) {
           const obs = bornes.get(m.index) ?? nommes[0];

@@ -14,7 +14,7 @@ import { idTheme, themeDepuisProposition } from "@/lib/themes";
 import { REGIME_A_CHOISIR, RETENUS_REGIME, propositionDe } from "@/lib/regime";
 import type { ContextePaquet } from "./context";
 import type { Brouillon } from "./schema";
-import { extraireVerdicts, type RapportChiffres } from "./figures";
+import { cleChiffre, extraireVerdicts, type RapportChiffres } from "./figures";
 import { construireDeltasScenarios, construireDeltasTendances } from "./deltas";
 
 /**
@@ -38,6 +38,9 @@ export type DecisionGuet = {
 
 export type DecisionProposition = { action: "accepter" | "refuser" };
 
+/** Un nombre non conforme examiné : gardé tel quel, ou remis à l'examen. */
+export type DecisionChiffre = { action: "garder" | "examiner" };
+
 /**
  * La phrase de régime retenue : l'un des trois angles proposés, ou `propre` — écrite à la main.
  * Pour un angle, `texte` n'est qu'un reflet : c'est la proposition elle-même qui fait foi, relue
@@ -56,12 +59,14 @@ export type Decisions = {
   tendances: Record<string, DecisionProposition>;
   /** Clé : l'identifiant du thème (`idTheme`). */
   themes: Record<string, DecisionProposition>;
+  /** Clé : `cleChiffre` — un nombre précis dans une phrase précise d'un bloc. */
+  chiffres: Record<string, DecisionChiffre>;
   /** Absente tant qu'aucune phrase n'est retenue — aucune des trois n'est choisie par défaut. */
   regime?: DecisionRegime;
 };
 
 export function decisionsVides(): Decisions {
-  return { blocs: {}, guets: {}, revisions: {}, tendances: {}, themes: {} };
+  return { blocs: {}, guets: {}, revisions: {}, tendances: {}, themes: {}, chiffres: {} };
 }
 
 /**
@@ -246,14 +251,19 @@ export function controlerChiffresPublication(
   textesFinauxParBloc: Partial<Record<CleControlee, string>>,
   authorshipFinaleParBloc: Partial<Record<CleControlee, Authorship>>,
   paquet: ContextePaquet,
+  chiffresGardes: Record<string, DecisionChiffre> = {},
 ): RapportChiffres {
   const entrees = Object.entries(textesFinauxParBloc) as Array<[CleControlee, string]>;
-  const verdicts = extraireVerdicts(entrees, paquet);
+  const verdicts = extraireVerdicts(entrees, paquet).map((v) =>
+    v.verdict !== "conforme" && chiffresGardes[cleChiffre(v)]?.action === "garder"
+      ? { ...v, garde: true }
+      : v,
+  );
 
   const bloquants = verdicts.filter((v) => {
     // Les trois verdicts fautifs comptent pareil ici : écart avec la base, absence de la
     // fiche, absence d'attribution. Ce qui varie est le geste de correction, pas le blocage.
-    if (v.verdict === "conforme") return false;
+    if (v.verdict === "conforme" || v.garde) return false;
     const authorship = authorshipFinaleParBloc[v.bloc as CleControlee];
     return authorship === "ia" || authorship === "ia-relue" || authorship === undefined;
   });

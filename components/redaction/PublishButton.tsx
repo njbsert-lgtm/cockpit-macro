@@ -25,7 +25,7 @@ export function PublishButton({
 }) {
   const disabled = !pret || !action;
   const raisonPrincipale = chiffresBloquants
-    ? "Un chiffre non conforme reste dans un bloc relu sans correction — relire ne suffit pas, corrigez le texte."
+    ? "Un chiffre non conforme reste dans un bloc relu sans correction — relire ne suffit pas : corrigez la phrase ou gardez le nombre, depuis « Chiffres à trancher »."
     : manquantes[0]?.message;
   const raison = !pret
     ? raisonPrincipale

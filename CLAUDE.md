@@ -458,6 +458,13 @@ libellé, sans quoi on enverrait corriger un nombre qui n'a pas besoin de l'êtr
 chiffres du régime B est normale ; une note n'en comportant que du régime B signale que la
 collecte n'a rien apporté cette semaine.
 
+**Trancher un nombre, pas seulement corriger.** Le portail liste chaque nombre non conforme dans sa
+phrase, surligné (`Chiffres à trancher`). Deux gestes, un nombre à la fois : corriger la phrase (le
+bloc passe à `ia-corrigee`, le contrôle se relâche) ou **garder le nombre tel quel** après l'avoir lu —
+décision `chiffre`, clé = bloc + nombre + phrase, donc elle ne couvre pas le même nombre ailleurs. Le
+rapport continue de montrer le verdict d'origine, marqué « gardé » : la décision se relit. Relire un
+bloc sans y toucher ne lève pas le blocage.
+
 **Pourquoi bloquant et non signalant.** Un chiffre légèrement de travers dans une phrase bien
 tournée est invisible à la relecture — c'est précisément ce qu'un modèle produit quand il
 reformule. Un avertissement qu'on peut ignorer sera ignoré au bout de trois semaines.

@@ -223,7 +223,7 @@ create table if not exists redaction_decisions (
 -- d'origine ne les connaît pas : sans cette migration, retenir une phrase échoue à l'écriture.
 alter table redaction_decisions drop constraint if exists redaction_decisions_kind_check;
 alter table redaction_decisions add constraint redaction_decisions_kind_check
-  check (kind in ('bloc', 'guet', 'revision', 'tendance', 'bloc4', 'regime', 'theme'));
+  check (kind in ('bloc', 'guet', 'revision', 'tendance', 'bloc4', 'regime', 'theme', 'chiffre'));
 
 -- ---------------------------------------------------------------------------
 -- Sécurité

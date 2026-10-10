@@ -20,6 +20,7 @@ import {
 } from "@/app/redaction/actions";
 import { PortalCounter } from "@/components/redaction/PortalCounter";
 import { FigureReport } from "@/components/redaction/FigureReport";
+import { ChiffresATrancher } from "@/components/redaction/ChiffresATrancher";
 import { BlockPanel } from "@/components/redaction/BlockPanel";
 import { GuetsPanel } from "@/components/redaction/GuetsPanel";
 import { RegimePanel } from "@/components/redaction/RegimePanel";
@@ -85,6 +86,7 @@ export default async function RedactionSlugPage({
 
       <div className="mt-6 flex flex-col gap-3">
         <FigureReport rapport={publication.rapportChiffres} />
+        <ChiffresATrancher slug={slug} verdicts={publication.rapportChiffres.verdicts} />
 
         {regimeAttendu && note.meta.regimeStatementPropositions && (
           <RegimePanel
