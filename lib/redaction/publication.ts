@@ -250,7 +250,7 @@ export function controlerChiffresPublication(
   const entrees = Object.entries(textesFinauxParBloc) as Array<[CleControlee, string]>;
   const verdicts = extraireVerdicts(entrees, paquet);
 
-  const bloque = verdicts.some((v) => {
+  const bloquants = verdicts.filter((v) => {
     // Les trois verdicts fautifs comptent pareil ici : écart avec la base, absence de la
     // fiche, absence d'attribution. Ce qui varie est le geste de correction, pas le blocage.
     if (v.verdict === "conforme") return false;
@@ -258,7 +258,7 @@ export function controlerChiffresPublication(
     return authorship === "ia" || authorship === "ia-relue" || authorship === undefined;
   });
 
-  return { verdicts, bloque };
+  return { verdicts, bloque: bloquants.length > 0, bloquants };
 }
 
 export type NoteFinale = { slug: string; mdx: string };

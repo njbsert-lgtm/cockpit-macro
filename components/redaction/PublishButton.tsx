@@ -1,4 +1,6 @@
 import type { ConditionManquante } from "@/lib/redaction/publication";
+import { reproche, type VerdictChiffre } from "@/lib/redaction/figures";
+import { BLOCK_TITLES, type BlockName } from "@/lib/note-blocks";
 
 /**
  * Le bouton de publication (DESIGN.md) : primaire, désactivé tant qu'une condition manque, la
@@ -12,16 +14,18 @@ export function PublishButton({
   pret,
   manquantes,
   chiffresBloquants,
+  verdictsBloquants = [],
   action,
 }: {
   pret: boolean;
   manquantes: ConditionManquante[];
   chiffresBloquants: boolean;
+  verdictsBloquants?: VerdictChiffre[];
   action?: (formData: FormData) => Promise<void>;
 }) {
   const disabled = !pret || !action;
   const raisonPrincipale = chiffresBloquants
-    ? "Un chiffre reste introuvable dans un bloc non relu."
+    ? "Un chiffre non conforme reste dans un bloc relu sans correction — relire ne suffit pas, corrigez le texte."
     : manquantes[0]?.message;
   const raison = !pret
     ? raisonPrincipale
@@ -43,6 +47,15 @@ export function PublishButton({
     <div>
       {action ? <form action={action}>{bouton}</form> : bouton}
       {raison && <p className="mt-2 text-12 text-k-choc">{raison}</p>}
+      {chiffresBloquants && verdictsBloquants.length > 0 && (
+        <ul className="mt-1.5 list-disc pl-4 text-11 text-tenu">
+          {verdictsBloquants.map((v, i) => (
+            <li key={`${v.bloc}-${v.ecrit}-${i}`}>
+              «&nbsp;{v.ecrit}&nbsp;» dans {BLOCK_TITLES[v.bloc as BlockName] ?? v.bloc} — {reproche(v)}
+            </li>
+          ))}
+        </ul>
+      )}
       {!pret && manquantes.length > 1 && (
         <ul className="mt-1.5 list-disc pl-4 text-11 text-tenu">
           {manquantes.slice(1).map((m) => (

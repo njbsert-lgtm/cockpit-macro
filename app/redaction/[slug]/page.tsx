@@ -206,6 +206,7 @@ export default async function RedactionSlugPage({
           pret={publication.pret}
           manquantes={publication.manquantes}
           chiffresBloquants={publication.rapportChiffres.bloque}
+          verdictsBloquants={publication.rapportChiffres.bloquants}
           action={publication.pret ? publierBrouillon.bind(null, slug) : undefined}
         />
       </div>

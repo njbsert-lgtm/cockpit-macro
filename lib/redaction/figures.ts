@@ -78,6 +78,8 @@ export type RapportChiffres = {
   verdicts: VerdictChiffre[];
   /** Vrai dès qu'un seul nombre n'est pas conforme. La publication est alors indisponible. */
   bloque: boolean;
+  /** Les verdicts qui font bloquer — renseigné au contrôle de publication, où l'authorship décide. */
+  bloquants?: VerdictChiffre[];
 };
 
 /**
