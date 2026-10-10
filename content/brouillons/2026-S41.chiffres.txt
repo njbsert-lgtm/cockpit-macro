@@ -1,0 +1,30 @@
+29 chiffre(s) — régime A : 10, régime B : 19 · 14 non conforme(s) — publication bloquée
+  ✓ [A] 125,44       keyIndicators/Brent — brent au 06/10 — base 125,44 (06/10)
+  ✓ [A] 5,22         keyIndicators/US 10 ans — us10y au 08/10 — base 5,22 (08/10)
+  ✗ [B] 3,75         keyIndicators/Taux directeur Fed — ni en base, ni littéralement dans la fiche
+  ✗ [B] 4,00         keyIndicators/Taux directeur Fed — ni en base, ni littéralement dans la fiche
+  ✗ [A] 40           keyIndicators/CAC 40 (ETF) — arrondi trop grossier — la base porte 78,96, une décimale de moins au plus
+  ✓ [A] 78,96        keyIndicators/CAC 40 (ETF) — cac au 09/10 — base 78,96 (09/10)
+  ✓ [B] 5            CeQuiAChange — brief.eco
+  ✓ [B] 5,4          CeQuiAChange — brief.eco
+  ✓ [B] 12           CeQuiAChange — BNP Paribas
+  ✓ [B] 5,3          CeQuiAChange — BNP Paribas
+  ✗ [A] 26           CeQuiAChange — arrondi trop grossier — la base porte 125,44, une décimale de moins au plus
+  ✗ [A] 105          CeQuiAChange — arrondi trop grossier — la base porte 125,44, une décimale de moins au plus
+  ✗ [A] 14           CeQuiAChange — arrondi trop grossier — la base porte 114,82, une décimale de moins au plus
+  ✗ [A] 100          CeQuiAChange — arrondi trop grossier — la base porte 135,51, une décimale de moins au plus
+  ✓ [A] 125,44       CeQuiAChange — brent au 06/10 — base 125,44 (06/10)
+  ✓ [B] 48           CeQuiAChange — Apollo
+  ✓ [B] 22           CeQuiAChange — Apollo
+  ✗ [B] 3,75         CeQuiSestConfirme — ni en base, ni littéralement dans la fiche
+  ✗ [B] 4,00         CeQuiSestConfirme — ni en base, ni littéralement dans la fiche
+  ✓ [B] 501          CeQuiSestConfirme — Goldman Sachs
+  ✓ [B] 50           CeQuiSestConfirme — Goldman Sachs
+  ✓ [B] 36           CeQuiSestConfirme — Goldman Sachs
+  ✓ [B] 25           CeQuiSestConfirme — Apollo
+  ✗ [B] 3,75         RevisionDesScenarios — ni en base, ni littéralement dans la fiche
+  ✗ [B] 4,00         RevisionDesScenarios — ni en base, ni littéralement dans la fiche
+  ✗ [A] 26           RevisionDesScenarios — aucune date dans la phrase — un prix sans date n'est pas une information
+  ✗ [B] 5,22         CeQueJeSurveille — ni en base, ni littéralement dans la fiche
+  ✗ [B] -1,14        CeQueJeSurveille — ni en base, ni littéralement dans la fiche
+  ✓ [B] 50           CeQueJeSurveille — Goldman Sachs
