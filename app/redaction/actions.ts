@@ -189,23 +189,38 @@ export async function trancherTendance(
  * c'est lui l'autorité finale, cette revérification n'est qu'un premier filtre qui évite un
  * aller-retour GitHub inutile pour un brouillon manifestement pas prêt.
  */
-export async function publierBrouillon(slug: string): Promise<void> {
-  const etat = await chargerPortail(slug);
-  if (!etat) throw new Error(`aucun brouillon chargeable pour « ${slug} »`);
+export type RetourPublication = { statut: "inactif" | "ok" | "erreur"; message: string };
 
-  const publication = etatPublication(etat.note, etat.brouillonPropose, etat.decisions, etat.paquet);
-  if (!publication.pret) {
-    throw new Error(
-      publication.rapportChiffres.bloque
-        ? "un chiffre reste non conforme dans un bloc non relu"
-        : (publication.manquantes[0]?.message ?? "des conditions de publication manquent"),
-    );
+export async function publierBrouillon(
+  slug: string,
+  _precedent: RetourPublication,
+  _formData: FormData,
+): Promise<RetourPublication> {
+  try {
+    const etat = await chargerPortail(slug);
+    if (!etat) throw new Error(`aucun brouillon chargeable pour « ${slug} »`);
+
+    const publication = etatPublication(etat.note, etat.brouillonPropose, etat.decisions, etat.paquet);
+    if (!publication.pret) {
+      throw new Error(
+        publication.rapportChiffres.bloque
+          ? "un chiffre reste non conforme dans un bloc relu sans correction"
+          : (publication.manquantes[0]?.message ?? "des conditions de publication manquent"),
+      );
+    }
+
+    const resultat = await declencherPublication(slug);
+    if (!resultat.ok) throw new Error(resultat.erreur ?? "échec du déclenchement de la publication");
+
+    revalidateApresDecision(slug);
+    return {
+      statut: "ok",
+      message:
+        "Publication lancée : GitHub assemble et commite la note (environ une minute), puis le site se redéploie. Le brouillon disparaît d'ici quand c'est fait.",
+    };
+  } catch (erreur) {
+    return { statut: "erreur", message: `Publication non lancée — ${(erreur as Error).message}` };
   }
-
-  const resultat = await declencherPublication(slug);
-  if (!resultat.ok) throw new Error(resultat.erreur ?? "échec du déclenchement de la publication");
-
-  revalidateApresDecision(slug);
 }
 
 /**
