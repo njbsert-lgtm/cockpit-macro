@@ -1,0 +1,49 @@
+48 chiffre(s) — régime A : 15, régime B : 33 · 26 non conforme(s) — publication bloquée
+  ✗ [B] 3,75         regimeStatement/mecanisme — ni en base, ni littéralement dans la fiche
+  ✗ [B] 4,00         regimeStatement/mecanisme — ni en base, ni littéralement dans la fiche
+  ✗ [A] 80           regimeStatement/contradiction — aucune date dans la phrase — un prix sans date n'est pas une information
+  ✓ [A] 5,1          keyIndicators/US 10 ans — us10y au 15/10 — base 5,1 (15/10)
+  ✗ [B] 3,75         keyIndicators/Taux directeur Fed (fourchette) — ni en base, ni littéralement dans la fiche
+  ✗ [B] 4,00         keyIndicators/Taux directeur Fed (fourchette) — ni en base, ni littéralement dans la fiche
+  ✓ [A] 29 950,82    keyIndicators/Nasdaq 100 — ndx au 14/10 — base 29950,82 (14/10)
+  ✗ [B] -2,02        keyIndicators/Nasdaq 100 — ni en base, ni littéralement dans la fiche
+  ✓ [A] 125,44       keyIndicators/Brent — brent au 06/10 — base 125,44 (06/10)
+  ✓ [A] 28,92        keyIndicators/Indice dollar (DXY) — dxy au 16/10 — base 28,92 (16/10)
+  ✓ [B] 10           CeQuiAChange — Apollo
+  ✗ [B] 3,75         CeQuiAChange — ni en base, ni littéralement dans la fiche
+  ✗ [B] 4,00         CeQuiAChange — ni en base, ni littéralement dans la fiche
+  ✗ [B] 5,1          CeQuiAChange — ni en base, ni littéralement dans la fiche
+  ✓ [A] 125,44       CeQuiAChange — brent au 06/10 — base 125,44 (06/10)
+  ✗ [A] 90           CeQuiAChange — non vérifiable — donnée absente au 16/10
+  ✗ [A] 85           CeQuiAChange — non vérifiable — donnée absente au 16/10
+  ✗ [A] 80           CeQuiAChange — non vérifiable — donnée absente au 16/10
+  ✓ [B] 396          CeQuiAChange — Apollo
+  ✓ [B] 63           CeQuiAChange — Apollo
+  ✓ [B] 15           CeQuiAChange — Apollo
+  ✓ [B] 28           CeQuiAChange — Brief.eco
+  ✓ [B] 8            CeQuiAChange — Brief.eco
+  ✓ [B] 30           CeQuiAChange — Apollo
+  ✓ [B] 4            CeQuiAChange — Apollo
+  ✓ [B] 3            CeQuiAChange — Apollo
+  ✗ [B] 3,75         CeQuiSestConfirme — ni en base, ni littéralement dans la fiche
+  ✗ [B] 4,00         CeQuiSestConfirme — ni en base, ni littéralement dans la fiche
+  ✓ [B] 3            CeQuiSestConfirme — BNP Paribas
+  ✗ [A] 25           CeQuiSestConfirme — non vérifiable — donnée absente au 15/10
+  ✗ [B] 3,75         RevisionDesScenarios — ni en base, ni littéralement dans la fiche
+  ✗ [B] 4,00         RevisionDesScenarios — ni en base, ni littéralement dans la fiche
+  ✗ [A] 30           RevisionDesScenarios — arrondi trop grossier — la base porte 29950,82, une décimale de moins au plus
+  ✓ [B] 4            RevisionDesScenarios — Apollo
+  ✓ [B] 3            RevisionDesScenarios — Apollo
+  ✓ [A] 2,02         RevisionDesScenarios — ndx — sur la séance — base -2,02 % (du 13/10 au 14/10)
+  ✓ [B] 4,5          RevisionDesScenarios — Apollo
+  ✗ [B] 38           CeQueJeSurveille — ni en base, ni littéralement dans la fiche
+  ✗ [B] 5,1          CeQueJeSurveille — ni en base, ni littéralement dans la fiche
+  ✗ [B] 38           CeQueJeSurveille — ni en base, ni littéralement dans la fiche
+  ✗ [B] 38           CeQueJeSurveille — ni en base, ni littéralement dans la fiche
+  ✓ [B] 63           CeQueJeSurveille — Apollo
+  ✗ [A] 25           CeQueJeSurveille — aucune date dans la phrase — un prix sans date n'est pas une information
+  ✗ [A] 30           scenarioRevisions/ai/ai-decoit/why — arrondi trop grossier — la base porte 29950,82, une décimale de moins au plus
+  ✗ [B] -4           scenarioRevisions/ai/ai-decoit/why — ni en base, ni littéralement dans la fiche
+  ✗ [B] -3           scenarioRevisions/ai/ai-decoit/why — ni en base, ni littéralement dans la fiche
+  ✓ [B] 4,5          scenarioRevisions/ai/ai-decoit/why — Apollo
+  ✓ [A] 2,02         scenarioRevisions/ai/ai-decoit/why — ndx — sur la séance — base -2,02 % (du 13/10 au 14/10)
