@@ -1,9 +1,10 @@
 import { BLOCK_TITLES, type BlockName } from "@/lib/notes";
+import { BLOCK_EMOJI } from "@/lib/note-blocks";
 import type { Guet, Note, VeilleItem } from "@/lib/types";
 import { GuetLine } from "./GuetLine";
+import { formatDateShort } from "@/lib/format";
 
 type NoteSource = { label: string; url: string };
-import { formatDateShort } from "@/lib/format";
 import { groupEvidenceByBlock, sortChronologically } from "@/lib/veille/evidence";
 
 type BlockProps = { children?: React.ReactNode };
@@ -23,7 +24,7 @@ function EvidencePills({ items }: { items: VeilleItem[] }) {
             target="_blank"
             rel="noreferrer"
             title={item.title}
-            className="inline-block max-w-[26ch] truncate rounded-rc border border-trait bg-repos px-1.5 py-0.5 align-bottom text-10-5 text-doux hover:border-trait-f hover:text-encre"
+            className="inline-block max-w-[26ch] truncate rounded-rp border border-trait bg-repos px-2 py-0.5 align-bottom text-10-5 text-doux hover:border-trait-f hover:text-encre"
           >
             {item.source} · {item.title}
           </a>
@@ -64,25 +65,49 @@ function BlockSources({ sources }: { sources: NoteSource[] }) {
   );
 }
 
+/**
+ * L'intitulé d'un bloc sur la page de lecture (DESIGN.md) : une pastille de 30px fond `--repos`
+ * portant l'emoji du bloc, tirée dans la marge gauche par-dessus le filet de canal, puis le libellé
+ * en capitales 10px à la couleur du canal. L'emoji est décoratif pour un lecteur d'écran : le
+ * libellé écrit porte l'information.
+ */
+function BlockHeading({ name, tone }: { name: BlockName; tone: string }) {
+  return (
+    <h2 className="flex items-center gap-2.5">
+      <span
+        aria-hidden="true"
+        className="-ml-[39px] flex h-[30px] w-[30px] shrink-0 items-center justify-center rounded-rp bg-repos text-14-5"
+      >
+        {BLOCK_EMOJI[name]}
+      </span>
+      <span className={`text-10 font-semibold uppercase tracking-cap ${tone}`}>
+        {BLOCK_TITLES[name]}
+      </span>
+    </h2>
+  );
+}
+
+/** Le texte d'un bloc : 14.5px, interligne 1.6, `--encre` — une note se lit longuement. */
+const TEXTE_BLOC =
+  "mt-2.5 text-14-5 leading-[1.6] text-encre [&_p]:mt-3 [&>p:first-child]:mt-0 [&_strong]:font-semibold";
+
 function Block({
   name,
   evidence,
   sources,
+  tone,
   children,
 }: {
   name: BlockName;
   evidence: VeilleItem[];
   sources: NoteSource[];
+  tone: string;
   children?: React.ReactNode;
 }) {
   return (
-    <section className="border-t border-trait py-4 first:border-t-0">
-      <h4 className="text-11 font-semibold uppercase tracking-cap text-tenu">
-        {BLOCK_TITLES[name]}
-      </h4>
-      <div className="mt-2 max-w-[70ch] text-15-5 leading-relaxed text-doux [&>p]:mt-3 [&>p:first-child]:mt-0">
-        {children}
-      </div>
+    <section className="mt-7 first:mt-0">
+      <BlockHeading name={name} tone={tone} />
+      <div className={TEXTE_BLOC}>{children}</div>
       <EvidencePills items={evidence} />
       <BlockSources sources={sources} />
     </section>
@@ -103,32 +128,28 @@ function CeQueJeSurveilleBlock({
   noteSlug,
   evidence,
   sources,
+  tone,
   children,
 }: {
   guets: Guet[];
   noteSlug: string;
   evidence: VeilleItem[];
   sources: NoteSource[];
+  tone: string;
   children?: React.ReactNode;
 }) {
   if (guets.length === 0) {
     return (
-      <Block name="CeQueJeSurveille" evidence={evidence} sources={sources}>
+      <Block name="CeQueJeSurveille" evidence={evidence} sources={sources} tone={tone}>
         {children}
       </Block>
     );
   }
 
   return (
-    <section className="border-t border-trait py-4 first:border-t-0">
-      <h4 className="text-11 font-semibold uppercase tracking-cap text-tenu">
-        {BLOCK_TITLES.CeQueJeSurveille}
-      </h4>
-      {children && (
-        <div className="mt-2 max-w-[70ch] text-15-5 leading-relaxed text-doux [&>p]:mt-3 [&>p:first-child]:mt-0">
-          {children}
-        </div>
-      )}
+    <section className="mt-7 first:mt-0">
+      <BlockHeading name="CeQueJeSurveille" tone={tone} />
+      {children && <div className={TEXTE_BLOC}>{children}</div>}
       <ul className="mt-3" aria-label="Guets posés par cette note">
         {guets.map((guet) => (
           <GuetLine key={guet.id} guet={guet} noteSlug={noteSlug} />
@@ -155,9 +176,11 @@ function CeQueJeSurveilleBlock({
  */
 function LeFilDeLaSemaineBlock({
   items,
+  tone,
   children,
 }: {
   items: VeilleItem[];
+  tone: string;
   children?: React.ReactNode;
 }) {
   const redige = children !== undefined && children !== null && children !== "";
@@ -165,14 +188,10 @@ function LeFilDeLaSemaineBlock({
   const chronological = sortChronologically(items);
 
   return (
-    <section className="border-t border-trait py-4">
-      <h4 className="text-11 font-semibold uppercase tracking-cap text-tenu">
-        {BLOCK_TITLES.LeFilDeLaSemaine}
-      </h4>
+    <section className="mt-7 first:mt-0">
+      <BlockHeading name="LeFilDeLaSemaine" tone={tone} />
       {redige ? (
-        <div className="mt-2 max-w-[70ch] text-15-5 leading-relaxed text-doux [&>p]:mt-3 [&>p:first-child]:mt-0">
-          {children}
-        </div>
+        <div className={TEXTE_BLOC}>{children}</div>
       ) : (
         <ul className="mt-2.5 flex flex-col gap-1.5">
           {chronological.map((item) => (
@@ -207,11 +226,17 @@ export function createNoteMdxComponents(
   sources: Note["sources"],
   guets: Guet[] = [],
   noteSlug = "",
+  /** La classe de texte du canal dominant ; `text-tenu` pour une note sans canal. */
+  tone = "text-tenu",
 ) {
   const byBlock = groupEvidenceByBlock(veilleItems);
   const evidenceFor = (name: BlockName) => byBlock.get(name) ?? [];
   const sourcesFor = (name: BlockName) => sources[name] ?? [];
-  const props = (name: BlockName) => ({ evidence: evidenceFor(name), sources: sourcesFor(name) });
+  const props = (name: BlockName) => ({
+    evidence: evidenceFor(name),
+    sources: sourcesFor(name),
+    tone,
+  });
 
   return {
     CeQuiAChange: (p: BlockProps) => <Block name="CeQuiAChange" {...props("CeQuiAChange")} {...p} />,
@@ -236,7 +261,7 @@ export function createNoteMdxComponents(
       <Block name="RecapDesSpeciales" {...props("RecapDesSpeciales")} {...p} />
     ),
     LeFilDeLaSemaine: (p: BlockProps) => (
-      <LeFilDeLaSemaineBlock items={veilleItems} {...p} />
+      <LeFilDeLaSemaineBlock items={veilleItems} tone={tone} {...p} />
     ),
   };
 }

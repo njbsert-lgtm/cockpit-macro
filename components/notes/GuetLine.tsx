@@ -6,8 +6,10 @@ import { formatDateShort } from "@/lib/format";
  * Une ligne de guet — même motif que la ligne de tendance (DESIGN.md) : grille `1fr auto`,
  * le libellé et l'attendu à gauche, la pastille de statut et l'échéance à droite.
  *
- * `confirmeSi` et `infirmeSi` vivent dans un dépliant : ce sont les critères de résolution,
- * on les consulte au moment de trancher, pas à chaque lecture.
+ * Le « Infirmé si » est sorti du dépliant et rompt la série (DESIGN.md) : fond `--repos`, rayon
+ * `--rb`, libellé en `--baisse` — il expose la note à la contradiction et doit se voir au premier
+ * regard. « Confirmé si » et la source attendue restent dans le dépliant : on les consulte au
+ * moment de trancher, pas à chaque lecture.
  */
 export function GuetLine({ guet, noteSlug }: { guet: Guet; noteSlug?: string }) {
   // Un guet remonté d'une note antérieure porte sa date d'origine : c'est ce qui rend visible
@@ -16,7 +18,7 @@ export function GuetLine({ guet, noteSlug }: { guet: Guet; noteSlug?: string }) 
   const criteres = `guet-${guet.id}-criteres`;
 
   return (
-    <li className="border-t border-trait py-3 first:border-t-0 first:pt-0">
+    <li className="border-t border-trait py-3.5 first:border-t-0 first:pt-0">
       <div className="grid grid-cols-[1fr_auto] items-start gap-3">
         <div>
           {/* L'axe avant le libellé : il dit par où on regarde, le libellé dit quoi. */}
@@ -47,27 +49,28 @@ export function GuetLine({ guet, noteSlug }: { guet: Guet; noteSlug?: string }) 
         </div>
       </div>
 
-      <details className="mt-2 group">
+      <div className="mt-2.5 rounded-rb bg-repos px-4 py-3.5">
+        <p className="text-10 font-semibold uppercase tracking-cap text-baisse">⚠️ Infirmé si</p>
+        <p className="mt-1 text-13 text-doux">{guet.infirmeSi}</p>
+      </div>
+
+      <details className="group mt-2">
         <summary
           aria-controls={criteres}
-          className="cursor-pointer list-none text-11 text-tenu transition-colors hover:text-encre"
+          className="flex min-h-11 cursor-pointer list-none items-center text-11 text-tenu transition-colors hover:text-encre"
         >
-          Critères de résolution
+          Confirmé si, source attendue
           <span className="ml-1 inline-block transition-transform group-open:rotate-90">›</span>
         </summary>
-        <dl id={criteres} className="mt-1.5 rounded-rb bg-repos px-3 py-2 text-12 text-doux">
+        <dl id={criteres} className="rounded-rb bg-repos px-3 py-2 text-12 text-doux">
           <dt className="text-9-5 font-semibold uppercase tracking-cap text-tenu">Confirmé si</dt>
           <dd className="mt-0.5">{guet.confirmeSi}</dd>
-          <dt className="mt-2 text-9-5 font-semibold uppercase tracking-cap text-tenu">
-            Infirmé si
-          </dt>
-          <dd className="mt-0.5">{guet.infirmeSi}</dd>
           {guet.sourceAttendue.length > 0 && (
             <>
               <dt className="mt-2 text-9-5 font-semibold uppercase tracking-cap text-tenu">
                 Source attendue
               </dt>
-              <dd className="mt-0.5 font-mono text-11">{guet.sourceAttendue.join(" · ")}</dd>
+              <dd className="mt-0.5 text-11">{guet.sourceAttendue.join(" · ")}</dd>
             </>
           )}
         </dl>

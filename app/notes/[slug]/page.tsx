@@ -1,7 +1,6 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { getNote, getNotes } from "@/lib/content";
-import { RegimeHeader } from "@/components/notes/RegimeHeader";
 import { NoteBlocks } from "@/components/notes/NoteBlocks";
 
 /**
@@ -13,6 +12,10 @@ export function generateStaticParams() {
   return getNotes().map((e) => ({ slug: e.slug }));
 }
 
+/**
+ * La page de lecture (DESIGN.md) : le retour appartient au cadre, au-dessus de la note ; la
+ * colonne est limitée à 640px sur desktop — une ligne plus longue ne se lit pas.
+ */
 export default async function NotePage({
   params,
 }: {
@@ -23,17 +26,14 @@ export default async function NotePage({
   if (!note) notFound();
 
   return (
-    <>
-      <RegimeHeader note={note} />
-      <div className="mx-auto max-w-colonne md:max-w-content px-4.5 py-7 md:px-6">
-        <Link
-          href="/notes"
-          className="mb-4 inline-block text-12 text-encre underline decoration-trait underline-offset-4 hover:decoration-encre"
-        >
-          ← Retour aux notes
-        </Link>
-        <NoteBlocks note={note} />
-      </div>
-    </>
+    <div className="mx-auto max-w-colonne px-4.5 py-6 md:max-w-lecture md:px-6">
+      <Link
+        href="/notes"
+        className="mb-4 inline-flex min-h-11 items-center text-12 text-encre underline decoration-trait underline-offset-4 hover:decoration-encre"
+      >
+        ← Notes
+      </Link>
+      <NoteBlocks note={note} />
+    </div>
   );
 }

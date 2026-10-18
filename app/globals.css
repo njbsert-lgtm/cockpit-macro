@@ -43,6 +43,7 @@
   /* Échelle typographique — chaque palier est attesté dans DESIGN.md, aucun intermédiaire
      improvisé. Toute taille de police du produit vient d'ici. */
   --text-9-5: 0.59375rem; /* étiquettes capitales, borne basse */
+  --text-10: 0.625rem; /* libellé de bloc, page de lecture */
   --text-10-5: 0.65625rem; /* libellé d'onglet */
   --text-11: 0.6875rem; /* métadonnées, intertitre de mois */
   --text-11-5: 0.71875rem; /* sous-titre de branche */
@@ -53,15 +54,18 @@
   --text-15: 0.9375rem; /* corps */
   --text-15-5: 0.96875rem; /* titre de carte */
   --text-17: 1.0625rem; /* titre de section */
+  --text-26: 1.625rem; /* titre d'une note, page de lecture */
   --text-27: 1.6875rem; /* titre de page */
 
   /* Suivi de lettres : titres serrés, étiquettes capitales ouvertes. */
   --tracking-titre: -0.015em;
   --tracking-cap: 0.09em;
+  --tracking-note: -0.025em; /* titre d'une note */
 
   /* Colonne unique de 520px sur mobile ; le desktop garde sa largeur et ses grilles. */
   --container-colonne: 32.5rem; /* 520px */
   --container-content: 66.25rem; /* 1060px */
+  --container-lecture: 40rem; /* 640px — colonne de lecture d'une note sur desktop */
 }
 
 @layer base {

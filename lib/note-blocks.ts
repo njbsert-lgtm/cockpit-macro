@@ -31,6 +31,21 @@ export const BLOCK_TITLES: Record<BlockName, string> = {
 };
 
 /**
+ * Le vocabulaire d'emoji de la page de lecture (DESIGN.md) — fermé : un emoji ne change jamais
+ * de bloc d'une note à l'autre, sans quoi on ne peut plus sauter au bloc cherché d'un regard.
+ * ⚠️ est réservé au « Infirmé si » d'un guet ; aucun autre emoji dans l'application.
+ */
+export const BLOCK_EMOJI: Record<BlockName, string> = {
+  CeQuiAChange: "🔄",
+  CeQuiSestConfirme: "✅",
+  RevisionDesScenarios: "🔀",
+  CeQueJavaisMalLu: "✏️",
+  CeQueJeSurveille: "👁️",
+  RecapDesSpeciales: "📎",
+  LeFilDeLaSemaine: "🧵",
+};
+
+/**
  * Les blocs de jugement : cinq pour une hebdo, trois pour une spéciale. Ni `RecapDesSpeciales`
  * ni `LeFilDeLaSemaine` n'en font partie — ce sont des compléments, pas des jugements.
  *

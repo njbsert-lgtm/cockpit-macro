@@ -44,6 +44,15 @@ export const CHANNEL_BG: Record<VeilleChannel, string> = {
   positionnement: "bg-k-pos",
 };
 
+/** Le filet de la page de lecture, à la couleur du canal dominant. */
+export const CHANNEL_BORDER: Record<VeilleChannel, string> = {
+  "taux-reel": "border-k-taux",
+  "nature-choc": "border-k-choc",
+  "fonction-reaction": "border-k-reac",
+  dollar: "border-k-usd",
+  positionnement: "border-k-pos",
+};
+
 /**
  * Le canal dominant d'une note : le premier déclaré. L'ordre du frontmatter est donc un
  * jugement — le canal par lequel la semaine s'explique le mieux vient en tête.
