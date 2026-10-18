@@ -40,7 +40,7 @@ const STRUCTURE = {
 };
 
 function reponse(
-  corps = "<CeQuiAChange>\nCe qui a changé.\n</CeQuiAChange>\n\n<CeQueJavaisMalLu>\n</CeQueJavaisMalLu>\n\n<CeQueJeSurveille>\nTrois guets.\n</CeQueJeSurveille>",
+  corps = "<CeQuiAChange>\n### Sujet\n\nCe qui a changé.\n</CeQuiAChange>\n\n<CeQueJavaisMalLu>\n</CeQueJavaisMalLu>\n\n<CeQueJeSurveille>\nTrois guets.\n</CeQueJeSurveille>",
   structure: unknown = STRUCTURE,
   frontmatter = FRONTMATTER,
 ) {
@@ -58,7 +58,7 @@ describe("recevoir — de la réponse brute au brouillon", () => {
     expect(b.driverOrder).toEqual(["rates"]);
     expect(b.instrumentRefs).toEqual(["us10y"]);
     expect(b.blocs).toEqual({
-      CeQuiAChange: "Ce qui a changé.",
+      CeQuiAChange: "### Sujet\n\nCe qui a changé.",
       CeQueJeSurveille: "Trois guets.",
     });
     expect(b.sources).toEqual([{ block: "CeQuiAChange", sourceId: "item-1" }]);
@@ -67,7 +67,7 @@ describe("recevoir — de la réponse brute au brouillon", () => {
 
   it("garde le markdown intérieur d'un bloc tel quel", () => {
     const corps =
-      "<CeQuiAChange>\n**Gras.** Puis de l'*italique* et un [lien](https://example.org).\n</CeQuiAChange>\n\n<CeQueJeSurveille>\nTexte.\n</CeQueJeSurveille>";
+      "<CeQuiAChange>\n### Sujet\n\n**Gras.** Puis de l'*italique* et un [lien](https://example.org).\n</CeQuiAChange>\n\n<CeQueJeSurveille>\nTexte.\n</CeQueJeSurveille>";
     const res = recevoir(reponse(corps), vivier());
     expect(res.ok).toBe(true);
     if (!res.ok) return;
@@ -76,7 +76,7 @@ describe("recevoir — de la réponse brute au brouillon", () => {
 
   it("refuse une liste à puces dans un bloc de 1 à 4", () => {
     const corps =
-      "<CeQuiAChange>\n**Gras.** Puis une liste :\n\n- un\n- deux\n</CeQuiAChange>\n\n<CeQueJeSurveille>\nTexte.\n</CeQueJeSurveille>";
+      "<CeQuiAChange>\n### Sujet\n\n**Gras.** Puis une liste :\n\n- un\n- deux\n</CeQuiAChange>\n\n<CeQueJeSurveille>\nTexte.\n</CeQueJeSurveille>";
     const res = recevoir(reponse(corps), vivier());
     expect(res).toMatchObject({ ok: false });
     if (res.ok) return;
@@ -86,21 +86,37 @@ describe("recevoir — de la réponse brute au brouillon", () => {
 
   it("refuse aussi une liste numérotée", () => {
     const corps =
-      "<CeQuiAChange>\n1. un\n2. deux\n</CeQuiAChange>\n\n<CeQueJeSurveille>\nTexte.\n</CeQueJeSurveille>";
+      "<CeQuiAChange>\n### Sujet\n\n1. un\n2. deux\n</CeQuiAChange>\n\n<CeQueJeSurveille>\nTexte.\n</CeQueJeSurveille>";
     expect(recevoir(reponse(corps), vivier())).toMatchObject({ ok: false });
   });
 
   it("accepte des puces dans le bloc 5, énumération assumée", () => {
     const corps =
-      "<CeQuiAChange>\n**Gras.** Texte.\n</CeQuiAChange>\n\n<CeQueJeSurveille>\n- FOMC\n- CPI\n</CeQueJeSurveille>";
+      "<CeQuiAChange>\n### Sujet\n\n**Gras.** Texte.\n</CeQuiAChange>\n\n<CeQueJeSurveille>\n- FOMC\n- CPI\n</CeQueJeSurveille>";
     expect(recevoir(reponse(corps), vivier())).toMatchObject({ ok: true });
   });
 
   it("refuse un bloc attendu manquant", () => {
-    const res = recevoir(reponse("<CeQuiAChange>\nTexte.\n</CeQuiAChange>"), vivier());
+    const res = recevoir(reponse("<CeQuiAChange>\n### Sujet\n\nTexte.\n</CeQuiAChange>"), vivier());
     expect(res).toMatchObject({ ok: false });
     if (res.ok) return;
     expect(res.raison).toContain("CeQueJeSurveille");
+  });
+
+  it("refuse un paragraphe des blocs 1 à 3 sans sous-titre, avec le message de réparation", () => {
+    const corps =
+      "<CeQuiAChange>\n**Gras.** Sans sous-titre.\n</CeQuiAChange>\n\n<CeQueJeSurveille>\nTexte.\n</CeQueJeSurveille>";
+    const res = recevoir(reponse(corps), vivier());
+    expect(res).toMatchObject({ ok: false });
+    if (res.ok) return;
+    expect(res.raison).toContain("sous-titre");
+    expect(res.raison).toContain("CeQuiAChange");
+  });
+
+  it("n'exige pas de sous-titre dans le bloc 5", () => {
+    const corps =
+      "<CeQuiAChange>\n### Sujet\n\nTexte.\n</CeQuiAChange>\n\n<CeQueJeSurveille>\nTrois guets, sans titre.\n</CeQueJeSurveille>";
+    expect(recevoir(reponse(corps), vivier()).ok).toBe(true);
   });
 
   it("refuse un bloc attendu vide — l'écrire est la réponse attendue", () => {
@@ -113,7 +129,7 @@ describe("recevoir — de la réponse brute au brouillon", () => {
 
   it("refuse un bloc 4 pré-rempli — une auto-critique de modèle est creuse par construction", () => {
     const corps =
-      "<CeQuiAChange>\nTexte.\n</CeQuiAChange>\n\n<CeQueJavaisMalLu>\nJ'avais sous-estimé le choc.\n</CeQueJavaisMalLu>\n\n<CeQueJeSurveille>\nTexte.\n</CeQueJeSurveille>";
+      "<CeQuiAChange>\n### Sujet\n\nTexte.\n</CeQuiAChange>\n\n<CeQueJavaisMalLu>\nJ'avais sous-estimé le choc.\n</CeQueJavaisMalLu>\n\n<CeQueJeSurveille>\nTexte.\n</CeQueJeSurveille>";
     const res = recevoir(reponse(corps), vivier());
     expect(res).toMatchObject({ ok: false });
     if (res.ok) return;
@@ -121,7 +137,7 @@ describe("recevoir — de la réponse brute au brouillon", () => {
   });
 
   it("accepte un bloc 4 absent : le code le pose au rendu", () => {
-    const corps = "<CeQuiAChange>\nTexte.\n</CeQuiAChange>\n\n<CeQueJeSurveille>\nTexte.\n</CeQueJeSurveille>";
+    const corps = "<CeQuiAChange>\n### Sujet\n\nTexte.\n</CeQuiAChange>\n\n<CeQueJeSurveille>\nTexte.\n</CeQueJeSurveille>";
     expect(recevoir(reponse(corps), vivier())).toMatchObject({ ok: true });
   });
 
@@ -133,7 +149,7 @@ describe("recevoir — de la réponse brute au brouillon", () => {
   });
 
   it("remonte la raison d'une section JSON absente", () => {
-    const res = recevoir(`---\n${FRONTMATTER}\n---\n\n<CeQuiAChange>\nTexte.\n</CeQuiAChange>`, vivier());
+    const res = recevoir(`---\n${FRONTMATTER}\n---\n\n<CeQuiAChange>\n### Sujet\n\nTexte.\n</CeQuiAChange>`, vivier());
     expect(res).toMatchObject({ ok: false });
     if (res.ok) return;
     expect(res.raison).toContain("introuvable");

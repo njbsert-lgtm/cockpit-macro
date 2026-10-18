@@ -82,9 +82,9 @@ function brouillon(over: Partial<Brouillon> = {}): Brouillon {
     instrumentRefs: [],
     veilleItemRefs: [],
     blocs: {
-      CeQuiAChange: "Rien n'a modifié la thèse cette semaine.",
-      CeQuiSestConfirme: "Le régime tient.",
-      RevisionDesScenarios: "Aucune révision ne s'impose.",
+      CeQuiAChange: "### Sujet\n\nRien n'a modifié la thèse cette semaine.",
+      CeQuiSestConfirme: "### Sujet\n\nLe régime tient.",
+      RevisionDesScenarios: "### Sujet\n\nAucune révision ne s'impose.",
       CeQueJeSurveille: "Un point d'attention.",
     },
     sources: [],
@@ -127,11 +127,29 @@ channels: [taux-reel]
 sources: {}
 ---
 
-<CeQuiAChange>Texte.</CeQuiAChange>
+<CeQuiAChange>
 
-<CeQuiSestConfirme>Texte.</CeQuiSestConfirme>
+### Sujet
 
-<RevisionDesScenarios>Texte.</RevisionDesScenarios>
+Texte.
+
+</CeQuiAChange>
+
+<CeQuiSestConfirme>
+
+### Sujet
+
+Texte.
+
+</CeQuiSestConfirme>
+
+<RevisionDesScenarios>
+
+### Sujet
+
+Texte.
+
+</RevisionDesScenarios>
 
 <CeQueJavaisMalLu>Texte.</CeQueJavaisMalLu>
 
@@ -260,7 +278,7 @@ describe("executerRun — le dry-run n'écrit rien", () => {
 describe("executerRun — le contrôle des chiffres bloque la publication", () => {
   it("un chiffre hors paquet rend le brouillon non publiable", async () => {
     const faux = brouillon({
-      blocs: { ...brouillon().blocs, CeQuiAChange: "L'inflation atteint 4,7 %." },
+      blocs: { ...brouillon().blocs, CeQuiAChange: "### Sujet\n\nL'inflation atteint 4,7 %." },
     });
     const r = await executerRun(paquet(), callerRendant(faux), { dryRun: true, sourcesExistantes: CORPUS, graphe: GRAPHE });
     expect(r.rapportChiffres?.bloque).toBe(true);
@@ -270,7 +288,7 @@ describe("executerRun — le contrôle des chiffres bloque la publication", () =
 
   it("un chiffre du paquet laisse le brouillon publiable", async () => {
     const juste = brouillon({
-      blocs: { ...brouillon().blocs, CeQuiAChange: "Le US 10 ans à 4,18 % au 04/09." },
+      blocs: { ...brouillon().blocs, CeQuiAChange: "### Sujet\n\nLe US 10 ans à 4,18 % au 04/09." },
     });
     const r = await executerRun(paquet(), callerRendant(juste), { dryRun: true, sourcesExistantes: CORPUS, graphe: GRAPHE });
     expect(r.rapportChiffres?.bloque).toBe(false);
@@ -279,7 +297,7 @@ describe("executerRun — le contrôle des chiffres bloque la publication", () =
 
   it("le brouillon est produit malgré le blocage — un silence serait moins utile", async () => {
     const faux = brouillon({
-      blocs: { ...brouillon().blocs, CeQuiAChange: "Inflation à 4,7 %." },
+      blocs: { ...brouillon().blocs, CeQuiAChange: "### Sujet\n\nInflation à 4,7 %." },
     });
     const r = await executerRun(paquet(), callerRendant(faux), { dryRun: true, sourcesExistantes: CORPUS, graphe: GRAPHE });
     expect(r.mdx).toContain("Inflation à 4,7 %");

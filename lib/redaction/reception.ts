@@ -1,7 +1,7 @@
 import matter from "gray-matter";
 import type { Brouillon } from "./schema";
 import { extraireSortieMixte, validerReponse, type Vivier } from "./sortie-mixte";
-import { BLOCS_SANS_LISTE, premiereListe } from "./style";
+import { BLOCS_SANS_LISTE, BLOCS_SOUS_TITRES, premiereListe, signalementsDuBloc } from "./style";
 
 /**
  * De la réponse brute du modèle au `Brouillon` que le reste du pipeline manipule.
@@ -109,6 +109,24 @@ function extraireBlocs(corps: string, attendus: string[]): ResultatBlocs {
         raison:
           `bloc « <${nom}> » : une liste (« ${liste.slice(0, 60)} ») — les blocs 1 à 4 s'écrivent en ` +
           "paragraphes, un sujet par paragraphe, chacun ouvert par une affirmation en gras",
+      };
+    }
+  }
+
+  // Un sous-titre `###` avant chaque paragraphe des blocs 1 à 3 : exigé ici, à la rédaction, là où
+  // le modèle écrit titre et texte d'un même geste — zéro appel de plus. Le poser à la
+  // publication ou dans le portail demanderait un second passage du modèle pour nommer des sujets
+  // déjà écrits. Refusé comme une liste : renvoyé au modèle, une seule fois, avec ce message.
+  for (const nom of BLOCS_SOUS_TITRES) {
+    const texte = blocs[nom];
+    if (texte === undefined) continue;
+    const manque = signalementsDuBloc(nom, texte).find((sg) => sg.code === "sans-sous-titre");
+    if (manque) {
+      return {
+        ok: false,
+        raison:
+          `bloc « <${nom}> » : le paragraphe ${manque.paragraphe} n'a pas de sous-titre — chaque ` +
+          "paragraphe des trois premiers blocs est précédé d'une ligne `### Le sujet nommé en quelques mots`",
       };
     }
   }

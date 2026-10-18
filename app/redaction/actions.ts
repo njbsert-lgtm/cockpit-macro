@@ -37,7 +37,9 @@ function corpsBrouillon(slug: string): string {
 
 function stringField(formData: FormData, name: string): string {
   const value = formData.get(name);
-  return typeof value === "string" ? value.trim() : "";
+  // Un navigateur renvoie les sauts de ligne d'un champ multiligne en CRLF : le fichier MDX
+  // les garde sinon, et un saut sur deux devient invisible aux outils qui lisent « \n\n ».
+  return typeof value === "string" ? value.replace(/\r\n?/g, "\n").trim() : "";
 }
 
 /**
