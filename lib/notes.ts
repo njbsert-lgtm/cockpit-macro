@@ -245,6 +245,17 @@ const COMPONENT_TAG = /<([A-Z][A-Za-z0-9]*)(\s[^>]*)?\/?>/g;
  * tronqué ici à un nombre de caractères, qui ne saurait pas ce qu'une police ou une largeur de
  * carte permettent d'afficher.
  */
+/**
+ * Le markdown d'un bloc, tel qu'écrit : paragraphes, gras d'attaque et liens conservés. C'est ce
+ * que le portail édite et republie — `extractBlockText`, qui aplatit le texte pour une accroche,
+ * y effaçait les paragraphes et les gras, et la note publiée sortait en un seul pavé.
+ */
+export function extractBlockSource(body: string, block: BlockName): string | null {
+  const match = new RegExp(`<${block}>([\\s\\S]*?)</${block}>`).exec(body);
+  return match ? match[1].trim() : null;
+}
+
+/** Le texte d'un bloc aplati en une ligne, pour une accroche de carte — jamais pour l'éditer. */
 export function extractBlockText(body: string, block: BlockName): string | null {
   const match = new RegExp(`<${block}>([\\s\\S]*?)</${block}>`).exec(body);
   if (!match) return null;

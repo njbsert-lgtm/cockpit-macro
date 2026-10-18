@@ -3,7 +3,7 @@
 import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { revalidatePath } from "next/cache";
-import { extractBlockText, parseNote } from "@/lib/notes";
+import { extractBlockSource, parseNote } from "@/lib/notes";
 import { BLOCK_NAMES, type BlockName } from "@/lib/note-blocks";
 import { BROUILLONS_DIR } from "@/lib/redaction/run";
 import { sauvegarderDecision as sauvegarderBrut } from "@/lib/redaction/decisions-store";
@@ -71,7 +71,7 @@ export async function corrigerBloc(slug: string, bloc: string, formData: FormDat
   }
 
   const source = corpsBrouillon(slug);
-  const original = extractBlockText(source, bloc as BlockName)?.trim() ?? "";
+  const original = extractBlockSource(source, bloc as BlockName)?.trim() ?? "";
   const authorship = texte.trim() === original ? "ia-relue" : "ia-corrigee";
 
   await sauvegarderDecision(slug, "bloc", bloc, { authorship, texte });
@@ -276,7 +276,7 @@ export async function corrigerPhrase(slug: string, cle: string, formData: FormDa
   const nouvelle = stringField(formData, "phrase");
   if (!nouvelle) throw new Error("la phrase corrigée ne peut pas être vide");
 
-  const original = extractBlockText(etat.note.body, bloc as BlockName)?.trim() ?? "";
+  const original = extractBlockSource(etat.note.body, bloc as BlockName)?.trim() ?? "";
   const courant = etat.decisions.blocs[bloc as BlockName]?.texte ?? original;
   if (!courant.includes(verdict.phrase)) {
     throw new Error("la phrase n'est plus dans le bloc — rechargez la page");

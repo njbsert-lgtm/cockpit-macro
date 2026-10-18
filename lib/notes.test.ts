@@ -1,5 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
+  extractBlockSource,
+  extractBlockText,
   parseNote,
   parseSlug,
   readNoteSources,
@@ -495,5 +497,26 @@ describe("guets — ce que le code pose lui-même", () => {
 
   it("une note sans guets en porte un tableau vide, jamais undefined", () => {
     expect(parseNote("2026-S33", source()).meta.guets).toEqual([]);
+  });
+});
+
+describe("extractBlockSource — le texte que le portail édite", () => {
+  const corps =
+    "<CeQuiAChange>\n\n**Premier sujet.** Une phrase.\n\n**Second sujet.** Une [source](https://x.y).\n\n</CeQuiAChange>";
+
+  it("garde paragraphes, gras d'attaque et liens", () => {
+    expect(extractBlockSource(corps, "CeQuiAChange")).toBe(
+      "**Premier sujet.** Une phrase.\n\n**Second sujet.** Une [source](https://x.y).",
+    );
+  });
+
+  it("là où l'accroche aplatit tout, ce qui ne doit jamais être republié", () => {
+    expect(extractBlockText(corps, "CeQuiAChange")).toBe(
+      "Premier sujet. Une phrase. Second sujet. Une source.",
+    );
+  });
+
+  it("renvoie null pour un bloc absent", () => {
+    expect(extractBlockSource(corps, "CeQueJeSurveille")).toBeNull();
   });
 });

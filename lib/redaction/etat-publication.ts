@@ -1,4 +1,4 @@
-import { extractBlockText, type ParsedNote } from "@/lib/notes";
+import { extractBlockSource, type ParsedNote } from "@/lib/notes";
 import type { BlockName } from "@/lib/note-blocks";
 import type { Authorship } from "@/lib/types";
 import type { ContextePaquet } from "./context";
@@ -43,7 +43,7 @@ export function etatPublication(
   const authorshipFinale: Partial<Record<CleControlee, Authorship>> = {};
   for (const bloc of blocsAAuthorshipDirecte(note.blocks)) {
     const decision = decisions.blocs[bloc];
-    textesFinaux[bloc] = decision?.texte ?? extractBlockText(note.body, bloc) ?? "";
+    textesFinaux[bloc] = decision?.texte ?? extractBlockSource(note.body, bloc) ?? "";
     authorshipFinale[bloc] = decision?.authorship ?? "ia";
   }
 

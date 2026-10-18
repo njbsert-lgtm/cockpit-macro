@@ -1,4 +1,4 @@
-import { extractBlockText } from "@/lib/notes";
+import { extractBlockSource } from "@/lib/notes";
 import { getDriver, getTrend } from "@/lib/content";
 import { TREND_STATUS_LABEL } from "@/lib/trend-labels";
 import { EmptyState } from "@/components/states/EmptyState";
@@ -99,7 +99,7 @@ export default async function RedactionSlugPage({
         {blocsTexte.map((bloc) => {
           const decision = decisions.blocs[bloc];
           const texteInitial =
-            decision?.texte ?? extractBlockText(note.body, bloc) ?? "";
+            decision?.texte ?? extractBlockSource(note.body, bloc) ?? "";
           const authorship = decision?.authorship;
           const valide =
             bloc === "CeQueJavaisMalLu"
