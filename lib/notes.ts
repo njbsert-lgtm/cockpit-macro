@@ -260,6 +260,7 @@ export function extractBlockText(body: string, block: BlockName): string | null 
   const match = new RegExp(`<${block}>([\\s\\S]*?)</${block}>`).exec(body);
   if (!match) return null;
   return match[1]
+    .replace(/^#{1,6}\s.*$/gm, "") // sous-titres : une accroche n'a pas d'intertitre
     .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1") // liens markdown : garde le texte, jette l'URL
     .replace(/[*_`]/g, "") // emphase et code inline
     .replace(/\s+/g, " ")

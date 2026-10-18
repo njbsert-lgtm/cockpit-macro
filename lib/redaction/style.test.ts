@@ -59,24 +59,29 @@ describe("paragraphes", () => {
 
 describe("signalementsDuBloc — jamais bloquants", () => {
   it("signale un paragraphe de plus de six phrases", () => {
-    const long = "**Fait.** " + Array(6).fill("Une phrase.").join(" ");
+    const long = "### Le fait\n\n**Fait.** " + Array(6).fill("Une phrase.").join(" ");
     const s = signalementsDuBloc("CeQuiAChange", long);
     expect(s.map((x) => x.code)).toEqual(["paragraphe-long"]);
     expect(s[0].paragraphe).toBe(1);
   });
 
   it("ne signale pas six phrases pile", () => {
-    const six = "**Fait.** " + Array(5).fill("Une phrase.").join(" ");
+    const six = "### Le fait\n\n**Fait.** " + Array(5).fill("Une phrase.").join(" ");
     expect(signalementsDuBloc("CeQuiAChange", six)).toEqual([]);
   });
 
   it("signale un paragraphe de bloc 1 ou 2 qui ne s'ouvre pas en gras", () => {
-    const s = signalementsDuBloc("CeQuiSestConfirme", "**Bon.** Ok.\n\nSans gras d'attaque.");
+    const s = signalementsDuBloc(
+      "CeQuiSestConfirme",
+      "### Un\n\n**Bon.** Ok.\n\n### Deux\n\nSans gras d'attaque.",
+    );
     expect(s).toEqual([expect.objectContaining({ code: "sans-gras-d-attaque", paragraphe: 2 })]);
   });
 
   it("n'exige pas le gras d'attaque hors des blocs 1 et 2", () => {
-    expect(signalementsDuBloc("RevisionDesScenarios", "Sans gras, c'est permis ici.")).toEqual([]);
+    expect(
+      signalementsDuBloc("RevisionDesScenarios", "### Taux directeurs\n\nSans gras, c'est permis ici."),
+    ).toEqual([]);
   });
 
   it("n'exige pas le gras d'un composant MDX ni d'un titre", () => {
@@ -84,7 +89,16 @@ describe("signalementsDuBloc — jamais bloquants", () => {
   });
 
   it("agrège plusieurs blocs", () => {
-    const s = signalementsDesBlocs({ CeQuiAChange: "Sans gras.", CeQuiSestConfirme: "**Bon.** Ok." });
+    const s = signalementsDesBlocs({
+      CeQuiAChange: "### Sujet\n\nSans gras.",
+      CeQuiSestConfirme: "### Sujet\n\n**Bon.** Ok.",
+    });
     expect(s.map((x) => x.bloc)).toEqual(["CeQuiAChange"]);
+  });
+
+  it("signale un paragraphe des blocs 1 à 3 sans sous-titre, et seulement là", () => {
+    const s = signalementsDuBloc("CeQuiAChange", "### Le risque souverain\n\n**Un.** Ok.\n\n**Deux.** Ok.");
+    expect(s).toEqual([expect.objectContaining({ code: "sans-sous-titre", paragraphe: 2 })]);
+    expect(signalementsDuBloc("CeQueJavaisMalLu", "Rien de notable.")).toEqual([]);
   });
 });

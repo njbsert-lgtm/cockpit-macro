@@ -24,13 +24,23 @@ export const BLOCS_SANS_LISTE: readonly BlockName[] = [
 /** Les blocs dont chaque paragraphe s'ouvre sur une affirmation en gras. */
 export const BLOCS_GRAS_D_ATTAQUE: readonly BlockName[] = ["CeQuiAChange", "CeQuiSestConfirme"];
 
+/**
+ * Les blocs dont chaque paragraphe est précédé d'un sous-titre `### …` qui nomme son sujet : un
+ * texte long ne se lit pas en un bloc, et le sous-titre permet de sauter au sujet cherché.
+ */
+export const BLOCS_SOUS_TITRES: readonly BlockName[] = [
+  "CeQuiAChange",
+  "CeQuiSestConfirme",
+  "RevisionDesScenarios",
+];
+
 /** Au-delà de ce nombre de phrases, un paragraphe est presque toujours deux sujets agglomérés. */
 export const PHRASES_MAX_PAR_PARAGRAPHE = 6;
 
 export type Signalement = {
   bloc: BlockName;
-  code: "paragraphe-long" | "sans-gras-d-attaque";
-  /** Rang du paragraphe dans le bloc, à partir de 1. */
+  code: "paragraphe-long" | "sans-gras-d-attaque" | "sans-sous-titre";
+  /** Rang du paragraphe de prose dans le bloc, à partir de 1 — les sous-titres ne comptent pas. */
   paragraphe: number;
   message: string;
 };
@@ -71,6 +81,11 @@ function ouvreEnGras(paragraphe: string): boolean {
   return /^\*\*[^*\n]+\*\*/.test(paragraphe);
 }
 
+/** Un sous-titre de sujet : `### …`, seul niveau de titre admis dans un bloc. */
+function estUnSousTitre(paragraphe: string): boolean {
+  return /^###\s+\S/.test(paragraphe);
+}
+
 /** Un paragraphe qui n'est pas de la prose — composant MDX, titre — n'a pas à s'ouvrir en gras. */
 function estDeLaProse(paragraphe: string): boolean {
   return !paragraphe.startsWith("<") && !paragraphe.startsWith("#");
@@ -80,9 +95,21 @@ function estDeLaProse(paragraphe: string): boolean {
 export function signalementsDuBloc(bloc: BlockName, texte: string): Signalement[] {
   const signalements: Signalement[] = [];
   const gras = BLOCS_GRAS_D_ATTAQUE.includes(bloc);
+  const sousTitres = BLOCS_SOUS_TITRES.includes(bloc);
+  const liste = paragraphes(texte);
+  let rang = 0;
 
-  for (const [i, p] of paragraphes(texte).entries()) {
-    const rang = i + 1;
+  for (const [i, p] of liste.entries()) {
+    if (!estDeLaProse(p)) continue;
+    rang += 1;
+    if (sousTitres && !(i > 0 && estUnSousTitre(liste[i - 1]))) {
+      signalements.push({
+        bloc,
+        code: "sans-sous-titre",
+        paragraphe: rang,
+        message: `Le paragraphe ${rang} n'a pas de sous-titre : nommez son sujet en quelques mots (« ### Le risque souverain français »).`,
+      });
+    }
     const phrases = compterPhrases(p);
     if (phrases > PHRASES_MAX_PAR_PARAGRAPHE) {
       signalements.push({
@@ -92,7 +119,7 @@ export function signalementsDuBloc(bloc: BlockName, texte: string): Signalement[
         message: `Le paragraphe ${rang} compte ${phrases} phrases : c'est presque toujours deux sujets agglomérés.`,
       });
     }
-    if (gras && estDeLaProse(p) && !ouvreEnGras(p)) {
+    if (gras && !ouvreEnGras(p)) {
       signalements.push({
         bloc,
         code: "sans-gras-d-attaque",

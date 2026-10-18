@@ -87,9 +87,17 @@ function BlockHeading({ name, tone }: { name: BlockName; tone: string }) {
   );
 }
 
-/** Le texte d'un bloc : 14.5px, interligne 1.6, `--encre` — une note se lit longuement. */
-const TEXTE_BLOC =
-  "mt-2.5 text-14-5 leading-[1.6] text-encre [&_p]:mt-3 [&>p:first-child]:mt-0 [&_strong]:font-semibold";
+/**
+ * Le texte d'un bloc : 14.5px, interligne 1.6, `--encre` — une note se lit longuement. Chaque
+ * sujet porte son sous-titre `###` (15.5px poids 600) ; les paragraphes sont justifiés, avec
+ * césure automatique en français pour que la justification ne creuse pas de lézardes sur mobile.
+ */
+const TEXTE_BLOC = [
+  "mt-2.5 text-14-5 leading-[1.6] text-encre [&_strong]:font-semibold",
+  "[&_p]:mt-3 [&>p:first-child]:mt-0 [&_p]:text-justify [&_p]:hyphens-auto",
+  "[&_h3]:mt-6 [&>h3:first-child]:mt-1 [&_h3]:text-15-5 [&_h3]:leading-[1.25] [&_h3]:font-semibold [&_h3]:tracking-titre [&_h3]:text-encre",
+  "[&_h3+p]:mt-1.5",
+].join(" ");
 
 function Block({
   name,

@@ -516,6 +516,12 @@ describe("extractBlockSource — le texte que le portail édite", () => {
     );
   });
 
+  it("l'accroche saute les sous-titres", () => {
+    expect(extractBlockText("<CeQuiAChange>\n\n### Le sujet\n\n**Fait.** Suite.\n\n</CeQuiAChange>", "CeQuiAChange")).toBe(
+      "Fait. Suite.",
+    );
+  });
+
   it("renvoie null pour un bloc absent", () => {
     expect(extractBlockSource(corps, "CeQueJeSurveille")).toBeNull();
   });

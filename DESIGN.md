@@ -519,7 +519,7 @@ qu'il faut vérifier à l'œil — une proposition cochée d'avance se publierai
 **Signalements de style** — au-dessus du texte éditable d'un bloc, une liste reprenant la **ligne
 d'alerte** de la fiche d'un driver : bordure gauche de 3px `--k-choc`, fond `--k-choc` à 11 %,
 13px `--doux`, précédée du libellé « Signalement » en 10.5px capitales `--k-choc`. Ils portent sur
-un paragraphe de plus de six phrases ou, dans les deux premiers blocs, sans affirmation en gras en
+un paragraphe de plus de six phrases, sans sous-titre dans les trois premiers blocs ou, dans les deux premiers, sans affirmation en gras en
 tête. **Jamais bloquants** : ils ne changent ni le compteur ni la condition de publication. Le
 libellé est toujours écrit, la couleur ne porte jamais seule l'information.
 
@@ -594,8 +594,20 @@ spéciale, le seuil déclenché en **ligne d'alerte**. Enfin la grille des **chi
 **Corps** — pas de carte autour : `border-left: 3px solid` à la couleur du canal,
 `padding-left: 18px`. Chaque bloc : une pastille ronde de 30px en fond `--repos` portant l'emoji,
 tirée dans la marge gauche par `margin-left:-39px`, suivie du libellé en capitales 10px poids 600
-à la couleur du canal. Texte du bloc en 14.5px, interligne 1.6, `--encre`. En pied de bloc, dans
-cet ordre, les pièces à conviction (pastilles `--rp`) puis les sources (11px `--tenu`, liens).
+à la couleur du canal. Texte du bloc en 14.5px, interligne 1.6, `--encre`, **justifié** avec
+césure automatique (`hyphens:auto`, la page est en `lang="fr"`) : sans césure, la justification
+creuse des lézardes sur une colonne de mobile. En pied de bloc, dans cet ordre, les pièces à
+conviction (pastilles `--rp`) puis les sources (11px `--tenu`, liens).
+
+**Un sujet, un sous-titre.** Dans les blocs « Ce qui a changé », « Ce qui s'est confirmé » et
+« Révision des scénarios », chaque paragraphe est précédé de son sous-titre (`###` dans le MDX) :
+15.5px poids 600 `--encre`, interligne 1.25, 24px au-dessus et 6px en dessous. Un texte long ne
+se lit pas en un bloc : le sous-titre aère, et permet de sauter au sujet cherché. Il nomme le
+sujet (« Le risque souverain français ») ; le jugement reste dans l'affirmation en gras qui
+ouvre le paragraphe.
+
+Sur mobile, le corps est décalé de 12px vers la droite pour que les pastilles d'emoji tirées dans
+la marge ne touchent pas le bord de l'écran.
 
 **Pied de note** — les tendances touchées en pastilles `--rp`, puis les badges d'authorship en
 `--tenu`.

@@ -83,7 +83,7 @@ export async function NoteBlocks({ note }: { note: Note }) {
       </header>
 
       <div
-        className={`mt-7 border-l-3 pl-[18px] ${dominant ? CHANNEL_BORDER[dominant] : "border-trait"}`}
+        className={`mt-7 ml-3 border-l-3 pl-[18px] md:ml-0 ${dominant ? CHANNEL_BORDER[dominant] : "border-trait"}`}
       >
         {content}
       </div>

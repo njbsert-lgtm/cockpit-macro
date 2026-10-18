@@ -346,6 +346,11 @@ qu'il n'y en a pas.
 - Chaque paragraphe des blocs 1 et 2 commence par une **affirmation en gras** qui énonce le
   sujet. Si elle ne tient pas en une phrase, le paragraphe traite de deux choses. Un paragraphe
   sans cette ouverture est **signalé**.
+- Dans les blocs 1, 2 et 3, chaque paragraphe est précédé d'un **sous-titre** (`### …`) qui
+  nomme son sujet en deux à six mots — « Le risque souverain français », et dans le bloc 3 le
+  nom du driver. Il nomme, il ne juge pas : le jugement reste dans l'affirmation en gras. Un texte
+  long en un seul bloc est illisible ; le sous-titre aère et permet de sauter au sujet cherché.
+  Un paragraphe sans sous-titre est **signalé**.
 - Un paragraphe de plus de six phrases est **signalé** : c'est presque toujours deux sujets
   agglomérés.
 - **Aucune liste dans les blocs 1 à 4, et la réception la refuse** — puces comme listes
@@ -354,7 +359,7 @@ qu'il n'y en a pas.
   corriger. Elles restent admises dans le bloc 5 et dans le fil de la semaine, des énumérations
   assumées.
 
-Les signalements — gras d'attaque absent, paragraphe trop long — ne bloquent pas : ils s'affichent
+Les signalements — gras d'attaque absent, sous-titre absent, paragraphe trop long — ne bloquent pas : ils s'affichent
 sur le bloc concerné, dans le portail, et jamais en avertissement qu'on pourrait ignorer ailleurs.
 
 #### Le contrôle des chiffres, en deux régimes

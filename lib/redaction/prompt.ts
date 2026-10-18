@@ -120,6 +120,7 @@ Une thèse avancée par un tiers — la fiche, un outlook — qui ne relève enc
 **Un sujet, un paragraphe.** Chaque sujet occupe son propre paragraphe. Un paragraphe ne contient jamais deux sujets ; un sujet ne s'étale jamais sur deux paragraphes, sauf si le second apporte un élément distinct. Ce n'est pas une règle de mise en page : le défaut à éviter — un enchaînement de sujets sans compréhension — se loge dans les paragraphes composites, où la transition tient par une conjonction plutôt que par un raisonnement. Séparer les paragraphes t'oblige à nommer le lien entre deux sujets, ou à constater qu'il n'y en a pas.
 
 - **Dans les blocs « ce qui a changé » et « ce qui s'est confirmé », chaque paragraphe commence par une affirmation en gras** qui énonce son sujet, en une phrase : \`**Le Brent passe au-dessus de 110 $.** Puis le développement…\`. Si l'affirmation ne tient pas en une phrase, le paragraphe traite de deux choses : coupe-le.
+- **Dans les blocs « ce qui a changé », « ce qui s'est confirmé » et « révision des scénarios », chaque paragraphe est précédé d'un sous-titre** sur sa propre ligne, séparé par une ligne vide : \`### Le risque souverain français\`. Un groupe nominal de deux à six mots qui **nomme** le sujet sans le juger — le jugement, c'est l'affirmation en gras qui suit. Dans la révision des scénarios, le sous-titre est le nom du driver (« ### Taux directeurs »). Un sous-titre, un paragraphe : jamais deux paragraphes sous le même sous-titre.
 - **Un paragraphe compte six phrases au plus.** Au-delà, ce sont presque toujours deux sujets agglomérés.
 - **Aucune liste dans les blocs 1 à 3** — ni puces, ni numérotation. Une liste permet de juxtaposer sans relier, c'est exactement le défaut à corriger, et ta réponse sera refusée si elle en contient. Les listes ne sont admises que dans le bloc « ce que je surveille ».
 
@@ -160,7 +161,7 @@ veilleItemRefs: []
 
 ## Le corps
 
-Ces blocs, dans cet ordre exact, chacun un composant ouvrant et fermant sur son propre paragraphe. Aucun autre. Du markdown à l'intérieur, jamais de titre \`#\` : la hiérarchie est portée par les blocs eux-mêmes.
+Ces blocs, dans cet ordre exact, chacun un composant ouvrant et fermant sur son propre paragraphe. Aucun autre. Du markdown à l'intérieur. Aucun titre \`#\` ni \`##\` : la hiérarchie est portée par les blocs eux-mêmes ; seuls les sous-titres \`###\` de sujet des trois premiers blocs sont admis.
 
 \`\`\`
 ${gabaritCorps}
