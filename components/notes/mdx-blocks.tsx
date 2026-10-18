@@ -66,8 +66,9 @@ function BlockSources({ sources }: { sources: NoteSource[] }) {
 }
 
 /**
- * L'intitulé d'un bloc sur la page de lecture (DESIGN.md) : une pastille de 30px fond `--repos`
- * portant l'emoji du bloc, tirée dans la marge gauche par-dessus le filet de canal, puis le libellé
+ * L'intitulé d'un bloc sur la page de lecture (DESIGN.md) : l'emoji du bloc sur fond `--page`,
+ * tiré dans la marge gauche par-dessus le filet de canal — le fond blanc, plus haut que l'emoji,
+ * interrompt le filet à cet endroit —, puis le libellé
  * en capitales 10px à la couleur du canal. L'emoji est décoratif pour un lecteur d'écran : le
  * libellé écrit porte l'information.
  */
@@ -76,7 +77,7 @@ function BlockHeading({ name, tone }: { name: BlockName; tone: string }) {
     <h2 className="flex items-center gap-2.5">
       <span
         aria-hidden="true"
-        className="-ml-[39px] flex h-[30px] w-[30px] shrink-0 items-center justify-center rounded-rp bg-repos text-14-5"
+        className="-ml-[39px] flex h-[38px] w-[30px] shrink-0 items-center justify-center bg-page text-14-5"
       >
         {BLOCK_EMOJI[name]}
       </span>

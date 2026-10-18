@@ -592,8 +592,9 @@ poids 700, `letter-spacing:-.025em`, interligne 1.14. Rien sous le titre ne la r
 spéciale, le seuil déclenché en **ligne d'alerte**. Enfin la grille des **chiffres clés**.
 
 **Corps** — pas de carte autour : `border-left: 3px solid` à la couleur du canal,
-`padding-left: 18px`. Chaque bloc : une pastille ronde de 30px en fond `--repos` portant l'emoji,
-tirée dans la marge gauche par `margin-left:-39px`, suivie du libellé en capitales 10px poids 600
+`padding-left: 18px`. Chaque bloc : l'emoji, sur un fond `--page` de 30px de large et 38px de
+haut, tiré dans la marge gauche par `margin-left:-39px` par-dessus le filet — **le filet est
+interrompu à l'endroit de l'emoji**, qui se lit sur blanc —, suivi du libellé en capitales 10px poids 600
 à la couleur du canal. Texte du bloc en 14.5px, interligne 1.6, `--encre`, **justifié** avec
 césure automatique (`hyphens:auto`, la page est en `lang="fr"`) : sans césure, la justification
 creuse des lézardes sur une colonne de mobile. En pied de bloc, dans cet ordre, les pièces à
