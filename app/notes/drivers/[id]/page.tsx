@@ -21,7 +21,7 @@ import { DriverBranches } from "@/components/notes/DriverBranches";
 import { ScenarioTrajectory } from "@/components/notes/ScenarioTrajectory";
 import { DataValue } from "@/components/states/DataValue";
 import { NonCollecteBadge } from "@/components/states/NonCollecteBadge";
-import { TREND_STATUS_CLASS, TREND_STATUS_LABEL } from "@/lib/trend-labels";
+import { TREND_STATUS_CLASS, TREND_STATUS_LABEL, TREND_TRAJECTORY } from "@/lib/trend-labels";
 
 /**
  * Énumère les drivers au build. Effet de bord voulu, comme pour les notes : cela force le
@@ -41,7 +41,7 @@ export const revalidate = 3600;
 
 function SectionTitle({ children }: { children: React.ReactNode }) {
   return (
-    <h2 className="mt-10 text-17 font-semibold text-encre">{children}</h2>
+    <h2 className="mt-7 text-17 font-semibold tracking-titre text-encre">{children}</h2>
   );
 }
 
@@ -67,9 +67,9 @@ export default async function DriverPage({ params }: { params: Promise<{ id: str
     <div className="mx-auto max-w-colonne md:max-w-content px-4.5 py-7 md:px-6">
       <Link
         href="/notes"
-        className="mb-4 inline-block text-12 text-encre underline decoration-trait underline-offset-4 hover:decoration-encre"
+        className="mb-4 inline-flex min-h-11 items-center text-12 text-encre underline decoration-trait underline-offset-4 hover:decoration-encre"
       >
-        ← Retour aux notes
+        ← Notes
       </Link>
 
       {/* 1 — La question et la branche dominante */}
@@ -138,7 +138,7 @@ export default async function DriverPage({ params }: { params: Promise<{ id: str
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <Link
                   href={`/marches/${instrument.assetClass}/${instrumentId}`}
-                  className="text-14-5 font-bold text-encre hover:text-encre"
+                  className="text-14-5 font-semibold text-encre underline-offset-4 hover:underline"
                 >
                   {instrument.label}
                 </Link>
@@ -202,22 +202,29 @@ export default async function DriverPage({ params }: { params: Promise<{ id: str
           const canInvalidate = trend.driverRefs.includes(driver.id);
           return (
             <li key={trendId}>
+              {/* La forme de la ligne de tendance (DESIGN.md) — jamais une carte haute, pour
+                  qu'une tendance ne se confonde pas avec un driver. */}
               <Link
                 href={`/notes/tendances/${trendId}`}
-                className="block rounded-rc border border-trait bg-page px-3.5 py-3 hover:border-trait-f"
+                className="grid grid-cols-[1fr_auto] gap-3 rounded-rc border border-trait bg-page px-4 py-3.5 transition-colors hover:border-trait-f active:scale-[.99]"
               >
-                <div className="flex flex-wrap items-center gap-2">
-                  <span className="text-14-5 font-bold text-encre">{trend.title}</span>
+                <span className="min-w-0">
+                  <span className="block text-14-5 font-semibold leading-[1.25] tracking-titre text-encre">
+                    {trend.title}
+                  </span>
+                  <span className="mt-1 block text-12 text-tenu">
+                    {canInvalidate
+                      ? "Ce driver pourrait la faire tomber"
+                      : "Ce driver l’alimente, sans pouvoir l’invalider"}
+                  </span>
+                </span>
+                <span className="flex shrink-0 flex-col items-end gap-1">
                   <span
                     className={`rounded-rp px-2 py-0.5 text-9-5 font-semibold uppercase tracking-cap ${TREND_STATUS_CLASS[trend.status]}`}
                   >
                     {TREND_STATUS_LABEL[trend.status]}
                   </span>
-                </div>
-                <span className="mt-1 block text-11 text-tenu">
-                  {canInvalidate
-                    ? "Ce driver pourrait la faire tomber"
-                    : "Ce driver l’alimente, sans pouvoir l’invalider"}
+                  <span className="text-11 text-tenu">{TREND_TRAJECTORY[trend.status]}</span>
                 </span>
               </Link>
             </li>
@@ -234,9 +241,9 @@ export default async function DriverPage({ params }: { params: Promise<{ id: str
             <li key={note.slug}>
               <Link
                 href={`/notes/${note.slug}`}
-                className="block rounded-rc border border-trait bg-page px-3.5 py-2.5 hover:border-trait-f"
+                className="block rounded-rc border border-trait bg-page px-4 py-3 transition-colors hover:border-trait-f active:scale-[.99]"
               >
-                <span className="text-14-5 font-bold text-encre">
+                <span className="block text-14-5 font-semibold leading-[1.25] tracking-titre text-encre">
                   {note.regimeStatement}
                 </span>
                 <span className="mt-1 block text-11 text-tenu">

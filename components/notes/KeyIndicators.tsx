@@ -8,15 +8,15 @@ import { resoudreIndicateurCle } from "@/lib/indicateur-cle";
  * mobile, quatre sur desktop. Une cellule qui désigne un indicateur suivi dans Macro en ouvre la
  * fiche ; les autres (prévisions, chiffres de marché) restent du texte, sans chevron.
  *
- * Chaque cellule porte sa bordure haute et gauche, et la grille est décalée d'un pixel sous un
- * cadre `overflow:hidden` : les séparateurs tombent juste quel que soit le nombre de cellules,
- * sans calcul de rang ni trou en fin de ligne.
+ * Les séparateurs sont l'interstice d'1px d'une grille sur fond `--trait` ; la dernière ligne
+ * est complétée par des cellules vides au fond de page, différentes sur mobile (2 colonnes) et
+ * desktop (4), pour que les traits tombent juste quel que soit le nombre de chiffres.
  */
 export function KeyIndicators({ indicators }: { indicators: Note["keyIndicators"] }) {
   if (indicators.length === 0) return null;
   return (
     <div className="overflow-hidden rounded-rc border border-trait">
-      <dl className="-mt-px -ml-px grid grid-cols-2 md:grid-cols-4">
+      <dl className="grid grid-cols-2 gap-px bg-trait md:grid-cols-4">
         {indicators.map((ind) => {
           const indicatorId = resoudreIndicateurCle(ind, (id) => getMacroIndicator(id) !== undefined);
           const contenu = (
@@ -29,7 +29,7 @@ export function KeyIndicators({ indicators }: { indicators: Note["keyIndicators"
             </>
           );
           return (
-            <div key={ind.label} className="border-t border-l border-trait">
+            <div key={ind.label} className="bg-page">
               {indicatorId ? (
                 <Link
                   href={`/macro/${indicatorId}`}
@@ -42,6 +42,18 @@ export function KeyIndicators({ indicators }: { indicators: Note["keyIndicators"
                 <div className="px-3.5 py-3">{contenu}</div>
               )}
             </div>
+          );
+        })}
+        {Array.from({ length: 3 }, (_, i) => {
+          const mobile = i < (2 - (indicators.length % 2)) % 2;
+          const desktop = i < (4 - (indicators.length % 4)) % 4;
+          if (!mobile && !desktop) return null;
+          return (
+            <div
+              key={`vide-${i}`}
+              aria-hidden="true"
+              className={`bg-page ${mobile ? "" : "hidden"} ${desktop ? "md:block" : "md:hidden"}`}
+            />
           );
         })}
       </dl>

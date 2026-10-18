@@ -32,3 +32,11 @@ export const TREND_STATUS_CLASS: Record<TrendStatus, string> = {
   affaiblit: "bg-k-choc/11 text-k-choc",
   invalidee: "bg-tenu/11 text-tenu",
 };
+
+/** Le point de la frise d'une tendance, à la couleur du statut de ce passage (DESIGN.md). */
+export const TREND_STATUS_DOT: Record<TrendStatus, string> = {
+  renforce: "bg-k-taux",
+  maintient: "bg-k-pos",
+  affaiblit: "bg-k-choc",
+  invalidee: "bg-tenu",
+};

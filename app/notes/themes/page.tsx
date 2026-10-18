@@ -92,9 +92,9 @@ export default function ThemesPage() {
     <div className="mx-auto max-w-colonne px-4.5 py-7 md:max-w-content md:px-6">
       <Link
         href="/notes"
-        className="mb-4 inline-block text-12 text-encre underline decoration-trait underline-offset-4 hover:decoration-encre"
+        className="mb-4 inline-flex min-h-11 items-center text-12 text-encre underline decoration-trait underline-offset-4 hover:decoration-encre"
       >
-        ← Retour aux notes
+        ← Notes
       </Link>
       <p className="text-11 uppercase tracking-cap text-tenu">Notes</p>
       <h1 className="mt-1 text-27 font-bold text-encre">Thèmes sous observation</h1>

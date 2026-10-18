@@ -3,6 +3,7 @@
 import { useState } from "react";
 import type { ScenarioVersion } from "@/lib/types";
 import { BRANCH_LABELS, IMPACT_LABELS, LIKELIHOOD_LABELS } from "@/lib/scenario-labels";
+import { branchSemantic, LIKELIHOOD_FILL, SEMANTIC_FILL } from "@/lib/branch-semantics";
 
 /**
  * Un libellé d'impact (« Hausse forte, élargie ») est du contenu, pas une performance : la
@@ -46,7 +47,7 @@ function BranchBody({ branch }: { branch: ScenarioVersion }) {
               </dt>
               <dd>
                 <span
-                  className={`text-13 font-bold ${DIRECTION_CLASS[impact.direction]}`}
+                  className={`text-13 font-semibold ${DIRECTION_CLASS[impact.direction]}`}
                 >
                   {DIRECTION_ARROW[impact.direction]} {impact.label}
                 </span>
@@ -57,7 +58,7 @@ function BranchBody({ branch }: { branch: ScenarioVersion }) {
         })}
       </dl>
 
-      <div className="mt-3 border-l-3 border-encre bg-repos px-3 py-2.5">
+      <div className="mt-3 rounded-rc bg-repos p-3">
         <p className="text-10-5 font-semibold uppercase tracking-cap text-tenu">
           Signaux à surveiller
         </p>
@@ -67,6 +68,25 @@ function BranchBody({ branch }: { branch: ScenarioVersion }) {
   );
 }
 
+/** La jauge de vraisemblance, à trois crans, à la couleur sémantique de la branche. */
+function Gauge({ branch }: { branch: ScenarioVersion }) {
+  return (
+    <div
+      className="mt-1.5 h-[5px] w-full overflow-hidden rounded-rp bg-repos"
+      role="img"
+      aria-label={`Vraisemblance ${LIKELIHOOD_LABELS[branch.likelihood].toLowerCase()}`}
+    >
+      <div
+        className={`h-full rounded-rp ${LIKELIHOOD_FILL[branch.likelihood]} ${SEMANTIC_FILL[branchSemantic(branch)]}`}
+      />
+    </div>
+  );
+}
+
+/**
+ * Le nom de la branche, sa vraisemblance écrite, et la mention « dominante » en toutes lettres —
+ * jamais une couleur de canal pour dire la dominance (DESIGN.md, page d'un driver).
+ */
 function BranchHeading({
   branch,
   dominant,
@@ -76,24 +96,23 @@ function BranchHeading({
 }) {
   return (
     <>
-      <span className="block text-15 font-bold text-encre">
+      <span className="block text-14-5 font-semibold leading-[1.25] tracking-titre text-encre">
         {BRANCH_LABELS[branch.branchId] ?? branch.branchId}
       </span>
-      <span
-        className={`mt-0.5 block text-11 tracking-wide ${
-          dominant ? "font-semibold text-k-choc" : "text-tenu"
-        }`}
-      >
+      <span className="mt-0.5 block text-11 text-tenu">
         {LIKELIHOOD_LABELS[branch.likelihood]}
-        {dominant && " · dominante"}
+        {dominant && <span className="font-semibold text-encre"> · dominante</span>}
       </span>
+      <Gauge branch={branch} />
     </>
   );
 }
 
 /**
- * Les trois branches d'un driver. Côte à côte sur desktop pour qu'elles soient comparables
- * d'un coup d'œil ; en onglets sur mobile, où trois colonnes seraient illisibles.
+ * Les trois branches d'un driver. Sur mobile, trois lignes-boutons empilées dans une carte —
+ * la ligne active passe sur fond `--repos` — et le panneau de la branche active dessous ; sur
+ * desktop, trois colonnes comparables dans une seule carte, la dominante marquée d'un filet haut
+ * de 2px `--encre`.
  */
 export function DriverBranches({
   branches,
@@ -109,9 +128,14 @@ export function DriverBranches({
 
   return (
     <>
-      {/* Mobile : onglets. */}
+      {/* Mobile : onglets empilés. */}
       <div className="md:hidden">
-        <div role="tablist" aria-label="Branches du scénario" className="flex flex-col border border-trait">
+        <div
+          role="tablist"
+          aria-orientation="vertical"
+          aria-label="Branches du scénario"
+          className="flex flex-col divide-y divide-trait overflow-hidden rounded-rc border border-trait"
+        >
           {branches.map((b, i) => (
             <button
               key={b.branchId}
@@ -128,8 +152,8 @@ export function DriverBranches({
                 setSelected(next.branchId);
                 document.getElementById(`branche-${next.branchId}`)?.focus();
               }}
-              className={`border-b border-trait px-4 py-3 text-left last:border-b-0 focus-visible:-outline-offset-3 ${
-                b.branchId === active.branchId ? "bg-page text-encre" : "bg-repos"
+              className={`min-h-11 px-4 py-3 text-left transition-colors focus-visible:-outline-offset-3 ${
+                b.branchId === active.branchId ? "bg-repos" : "bg-page"
               }`}
             >
               <BranchHeading branch={b} dominant={b.branchId === dominantBranchId} />
@@ -140,21 +164,22 @@ export function DriverBranches({
           role="tabpanel"
           id={`panneau-${active.branchId}`}
           aria-labelledby={`branche-${active.branchId}`}
-          className="border border-t-0 border-trait bg-page p-4"
+          className="mt-2.5 rounded-rc border border-trait bg-page p-4"
         >
           <BranchBody branch={active} />
         </div>
       </div>
 
       {/* Desktop : les trois côte à côte, comparables. */}
-      <div className="hidden gap-px bg-trait md:grid md:grid-cols-3 md:border md:border-trait">
+      <div className="hidden overflow-hidden rounded-rc border border-trait md:grid md:grid-cols-3 md:divide-x md:divide-trait">
         {branches.map((b) => (
-          <section key={b.branchId} className="bg-page p-4">
-            <header
-              className={`border-b-2 pb-2 ${
-                b.branchId === dominantBranchId ? "border-encre" : "border-trait"
-              }`}
-            >
+          <section
+            key={b.branchId}
+            className={`bg-page p-4 ${
+              b.branchId === dominantBranchId ? "border-t-2 border-t-encre" : "border-t-2 border-t-transparent"
+            }`}
+          >
+            <header className="border-b border-trait pb-3">
               <BranchHeading branch={b} dominant={b.branchId === dominantBranchId} />
             </header>
             <div className="mt-3">

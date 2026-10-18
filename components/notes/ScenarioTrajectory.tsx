@@ -1,6 +1,7 @@
 import type { ScenarioLikelihood, ScenarioVersion } from "@/lib/types";
 import { formatDateShort } from "@/lib/format";
 import { BRANCH_LABELS, LIKELIHOOD_LABELS, LIKELIHOOD_SHORT } from "@/lib/scenario-labels";
+import { branchSemantic, type BranchSemantic } from "@/lib/branch-semantics";
 
 // Trois niveaux de vraisemblance, du plus probable au moins probable. La position verticale
 // est ce qui rend les croisements lisibles : une branche qui monte pendant qu'une autre
@@ -17,14 +18,16 @@ const STEP = 150;
 const RIGHT_PAD = 32;
 const HEIGHT = 190;
 
-// Couleurs d'identité, pas de sémantique : elles distinguent trois branches, elles ne disent
-// pas « tension » ou « détente ». Le trait pointillé double l'information pour ne pas
-// dépendre de la seule couleur.
-const STROKES = [
-  { color: "var(--color-k-taux)", dash: undefined },
-  { color: "var(--color-k-choc)", dash: "6 4" },
-  { color: "var(--color-k-pos)", dash: "2 4" },
-];
+// La couleur d'une branche vient de son sens, comme sur la carte de driver (DESIGN.md) :
+// `--k-pos` pour la centrale, `--hausse` et `--baisse` pour la favorable et la défavorable.
+// Chaque branche a en plus son propre tiret, pour que la couleur ne porte jamais seule
+// l'information — et pour distinguer deux branches de même sens.
+const SEMANTIC_STROKE: Record<BranchSemantic, string> = {
+  neutre: "var(--color-k-pos)",
+  hausse: "var(--color-hausse)",
+  baisse: "var(--color-baisse)",
+};
+const DASHES = [undefined, "6 4", "2 4", "10 3 2 3"];
 
 type Point = { x: number; y: number; revised: boolean };
 
@@ -38,7 +41,7 @@ export function ScenarioTrajectory({
   const dates = [...new Set(versions.map((v) => v.date))].sort();
   if (dates.length < 2) {
     return (
-      <p className="border border-dashed border-trait px-4 py-6 text-center text-13 text-tenu">
+      <p className="rounded-rc bg-repos p-4 text-12-5 text-doux">
         Une seule date de révision pour l&rsquo;instant : la trajectoire apparaîtra dès la
         deuxième.
       </p>
@@ -72,7 +75,11 @@ export function ScenarioTrajectory({
         .map((p, idx) => (idx === 0 ? `M ${p.x} ${p.y}` : `L ${p.x} ${points[idx - 1].y} L ${p.x} ${p.y}`))
         .join(" ");
 
-      return { branchId, points, d, stroke: STROKES[i % STROKES.length] };
+      const stroke = {
+        color: SEMANTIC_STROKE[branchSemantic(branchVersions.at(-1)!)],
+        dash: DASHES[i % DASHES.length],
+      };
+      return { branchId, points, d, stroke };
     })
     .filter((l): l is NonNullable<typeof l> => l !== null);
 
@@ -123,14 +130,14 @@ export function ScenarioTrajectory({
                 y1={ROW_Y[row]}
                 x2={width - RIGHT_PAD + 12}
                 y2={ROW_Y[row]}
-                stroke="var(--color-line-2)"
+                stroke="var(--color-trait)"
                 strokeWidth="1"
               />
               <text
                 x={LEFT - 20}
                 y={ROW_Y[row] + 4}
                 textAnchor="end"
-                className="fill-mute"
+                className="fill-tenu"
                 fontSize="11"
               >
                 {LIKELIHOOD_SHORT[row]}
@@ -144,7 +151,7 @@ export function ScenarioTrajectory({
               x={xOf(date)}
               y={HEIGHT - 14}
               textAnchor="middle"
-              className="fill-mute"
+              className="fill-tenu"
               fontSize="11"
             >
               {formatDateShort(date)}
@@ -169,7 +176,7 @@ export function ScenarioTrajectory({
                     cx={p.x}
                     cy={p.y}
                     r="4.5"
-                    fill="var(--color-card)"
+                    fill="var(--color-page)"
                     stroke={l.stroke.color}
                     strokeWidth="2.5"
                   />
@@ -181,6 +188,7 @@ export function ScenarioTrajectory({
 
       <p className="mt-2 text-11 text-tenu">
         Un cercle marque une révision ; entre deux cercles, la vraisemblance a été maintenue.
+        Vraisemblances éditoriales, non implicites de marché.
       </p>
     </div>
   );
