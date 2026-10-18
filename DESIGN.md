@@ -594,18 +594,19 @@ spéciale, le seuil déclenché en **ligne d'alerte**. Enfin la grille des **chi
 **Corps** — pas de carte autour : `border-left: 3px solid` à la couleur du canal,
 `padding-left: 18px`. Chaque bloc : l'emoji, sur un fond `--page` de 30px de large et 38px de
 haut, tiré dans la marge gauche par `margin-left:-39px` par-dessus le filet — **le filet est
-interrompu à l'endroit de l'emoji**, qui se lit sur blanc —, suivi du libellé en capitales 10px poids 600
-à la couleur du canal. Texte du bloc en 14.5px, interligne 1.6, `--encre`, **justifié** avec
+interrompu à l'endroit de l'emoji**, qui se lit sur blanc —, suivi du libellé du bloc, **à la taille d'un sous-titre** (15.5px poids 600, sans capitales), à la couleur du canal. Texte du bloc en 14.5px, interligne 1.6, `--encre`, **justifié** avec
 césure automatique (`hyphens:auto`, la page est en `lang="fr"`) : sans césure, la justification
 creuse des lézardes sur une colonne de mobile. En pied de bloc, dans cet ordre, les pièces à
 conviction (pastilles `--rp`) puis les sources (11px `--tenu`, liens).
 
 **Un sujet, un sous-titre.** Dans les blocs « Ce qui a changé », « Ce qui s'est confirmé » et
 « Révision des scénarios », chaque paragraphe est précédé de son sous-titre (`###` dans le MDX) :
-15.5px poids 600 `--encre`, interligne 1.25, 24px au-dessus et 6px en dessous. Un texte long ne
+15.5px **poids 700** `--encre`, interligne 1.25, 24px au-dessus et 6px en dessous. Un texte long ne
 se lit pas en un bloc : le sous-titre aère, et permet de sauter au sujet cherché. Il nomme le
 sujet (« Le risque souverain français ») ; le jugement reste dans l'affirmation en gras qui
-ouvre le paragraphe.
+ouvre le paragraphe — **mais cette affirmation se rend en poids normal** : le sous-titre est
+le seul gras de la page de lecture, deux gras voisins se concurrencent. Le `**…**` reste dans le
+MDX, où il structure et où le contrôle de style le cherche.
 
 Sur mobile, le corps est décalé de 12px vers la droite pour que les pastilles d'emoji tirées dans
 la marge ne touchent pas le bord de l'écran.
