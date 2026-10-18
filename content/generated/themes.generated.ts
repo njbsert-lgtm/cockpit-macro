@@ -30,5 +30,33 @@ export const GENERATED_THEMES: ThemeObserve[] = [
     ],
     "verdictLe": null,
     "verdictPar": null
+  },
+  {
+    "id": "reveil-europeen-sous-la-surface",
+    "libelle": "Réveil européen sous la surface",
+    "origine": "notion",
+    "emetteur": "BNP Paribas Études Économiques",
+    "these": "La productivité européenne se redresse et l'amélioration du climat des affaires se diffuse au-delà de la tech, annonçant une croissance agrégée meilleure que ne le suggèrent les chiffres actuels.",
+    "dateOrigine": "2026-10-18",
+    "instrumentsTemoins": [
+      "sx5e"
+    ],
+    "temoinsHorsCatalogue": [
+      "Croissance du PIB de la zone euro (ez-gdp)"
+    ],
+    "confirmeSi": "La croissance du PIB de la zone euro publiée pour un trimestre de 2026 dépasse 1,2 % en rythme annuel, au-dessus de la prévision du FMI citée par BNP Paribas.",
+    "infirmeSi": "La croissance du PIB de la zone euro reste à 1,2 % ou en dessous sur deux trimestres consécutifs, sans redressement visible malgré l'amélioration du climat des affaires.",
+    "delaiJours": 180,
+    "debutObservation": null,
+    "statut": "observe",
+    "mentions": [
+      {
+        "date": "2026-10-18",
+        "source": "2026-S42",
+        "emetteur": "BNP Paribas Études Économiques"
+      }
+    ],
+    "verdictLe": null,
+    "verdictPar": null
   }
 ];

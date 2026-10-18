@@ -310,5 +310,107 @@ export const GENERATED_SCENARIO_VERSIONS: ScenarioVersion[] = [
       }
     },
     "watchSignals": "Dégradation marquée du rapport sur l'emploi ; signal de ralentissement net de la consommation américaine."
+  },
+  {
+    "driverId": "ai",
+    "branchId": "ai-accelere",
+    "version": 2,
+    "date": "2026-10-18",
+    "noteSlug": "2026-S42",
+    "likelihood": "faible",
+    "likelihoodChangedFrom": "moderee",
+    "why": "Aucune preuve de diffusion de gains économiques agrégés liés à l'IA ; la diffusion du climat des affaires en zone euro (BNP Paribas Études Économiques, 14/10) ne porte pas spécifiquement sur l'IA.",
+    "thesis": "L'adoption se diffuse au-delà des fournisseurs d'infrastructure, les entreprises utilisatrices montrent des gains de marge mesurables.",
+    "impacts": {
+      "eq": {
+        "direction": "up",
+        "label": "Actions",
+        "text": "Re-rating des utilisateurs de l'IA au-delà des seuls constructeurs d'infrastructure."
+      },
+      "fi": {
+        "direction": "up",
+        "label": "Taux",
+        "text": "Anticipations de croissance plus fortes poussant les rendements réels à la hausse."
+      },
+      "fx": {
+        "direction": "up",
+        "label": "Change",
+        "text": "Dollar soutenu par le différentiel de croissance."
+      },
+      "cm": {
+        "direction": "up",
+        "label": "Matières premières",
+        "text": "Demande de cuivre et d'électricité pour l'infrastructure de calcul en expansion."
+      }
+    },
+    "watchSignals": "Une saison de résultats où les entreprises utilisatrices, pas seulement les fournisseurs, documentent un ROI mesurable."
+  },
+  {
+    "driverId": "ai",
+    "branchId": "ai-plafonne",
+    "version": 4,
+    "date": "2026-10-18",
+    "noteSlug": "2026-S42",
+    "likelihood": "central",
+    "likelihoodChangedFrom": null,
+    "why": "Les fournisseurs d'infrastructure continuent de délivrer (rachats d'actions reportés vers l'infrastructure IA selon Goldman Sachs Research), mais le sujet de la saison de résultats devient le coût de l'adoption, pas sa capacité.",
+    "thesis": "Les fournisseurs d'infrastructure continuent de délivrer, mais les dépenses cessent d'accélérer et le coût de l'adoption devient visible dans les marges des utilisateurs.",
+    "impacts": {
+      "eq": {
+        "direction": "flat",
+        "label": "Actions",
+        "text": "Les profits tiennent sans plus surprendre à la hausse ; dispersion croissante entre constructeurs et utilisateurs."
+      },
+      "fi": {
+        "direction": "flat",
+        "label": "Taux",
+        "text": "Prime de terme soutenue par le financement continu de l'infrastructure, sans accélération supplémentaire."
+      },
+      "fx": {
+        "direction": "flat",
+        "label": "Change",
+        "text": "Pas de nouveau catalyseur directionnel sur le dollar."
+      },
+      "cm": {
+        "direction": "flat",
+        "label": "Matières premières",
+        "text": "Demande de cuivre et d'électricité stable, sans choc visible côté data centers."
+      }
+    },
+    "watchSignals": "Les résultats trimestriels des hyperscalers et des utilisateurs de l'IA, pour vérifier si le coût de l'adoption pèse sur les marges au-delà de l'enquête Apollo."
+  },
+  {
+    "driverId": "ai",
+    "branchId": "ai-decoit",
+    "version": 2,
+    "date": "2026-10-18",
+    "noteSlug": "2026-S42",
+    "likelihood": "moderee",
+    "likelihoodChangedFrom": "faible",
+    "why": "Apollo modélise pour la première fois un scénario quantifié de correction (spreads +10 à 30 pb, investissement américain -1 à -4 %, exportations sud-coréennes -1 à -3 %), et le marché a déjà corrigé les semi-conducteurs de 4,5 % en séance le 14/10, le Nasdaq 100 reculant de 2,02 % le même jour.",
+    "thesis": "Une correction des anticipations de cash-flows futurs de l'IA déclenche un repli du capex et pèse sur la croissance, avec un risque de stagflation si elle se combine à un pétrole élevé, aux tarifs et aux restrictions migratoires.",
+    "impacts": {
+      "eq": {
+        "direction": "down",
+        "label": "Actions",
+        "text": "Correction des valeurs tech et semi-conducteurs, contagion possible aux indices larges."
+      },
+      "fi": {
+        "direction": "up",
+        "label": "Taux",
+        "text": "Écartement des spreads de crédit mondiaux de 10 à 30 points de base selon le scénario Apollo."
+      },
+      "fx": {
+        "direction": "up",
+        "label": "Change",
+        "text": "Soutien ponctuel au dollar via la demande de valeurs refuge en phase de correction."
+      },
+      "cm": {
+        "direction": "down",
+        "label": "Matières premières",
+        "text": "Recul de la demande de métaux industriels lié au repli du capex, pétrole restant soutenu par des facteurs exogènes."
+      }
+    },
+    "watchSignals": "Une nouvelle vague de révisions à la baisse des budgets de compute, ou un écartement effectif des spreads de crédit au-delà de quelques points de base."
   }
 ];

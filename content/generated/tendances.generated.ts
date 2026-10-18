@@ -64,5 +64,35 @@ export const GENERATED_TREND_DELTAS: TrendDelta[] = [
       "noteSlug": "2026-S40",
       "why": "L'incohérence de cash-flow documentée par Apollo entre fournisseurs et clients de l'IA, ainsi que le resserrement du nombre de dossiers porteurs du rallye actions relevé par Morgan Stanley, confirment que les bénéfices liés à l'IA restent concentrés plutôt que diffus."
     }
+  },
+  {
+    "trendId": "desinflation-terminee",
+    "status": "renforce",
+    "entry": {
+      "date": "2026-10-18",
+      "status": "renforce",
+      "noteSlug": "2026-S42",
+      "why": "Le baromètre de l'inflation de BNP Paribas Études Économiques (15/10) montre des indices sous-jacents qui se raffermissent 3m/3m en zone euro et au Japon, désigné comme signal à surveiller."
+    }
+  },
+  {
+    "trendId": "prime-risque-permanente",
+    "status": "renforce",
+    "entry": {
+      "date": "2026-10-18",
+      "status": "renforce",
+      "noteSlug": "2026-S42",
+      "why": "Goldman Sachs Research chiffre elle-même à 25 $ la prime de risque géopolitique sur le Brent spot et maintient le risque d'escalade États-Unis/Israël/Iran comme facteur pouvant prolonger des prix élevés, indépendamment de son scénario central d'excédent."
+    }
+  },
+  {
+    "trendId": "capex-ia-benefices",
+    "status": "maintient",
+    "entry": {
+      "date": "2026-10-18",
+      "status": "maintient",
+      "noteSlug": "2026-S42",
+      "why": "La concentration des bénéfices sur les fournisseurs d'infrastructure se confirme (rachats d'actions reportés vers l'infrastructure IA selon Goldman Sachs Research), tandis que les entreprises utilisatrices documentent pour la première fois une compression de marge liée au coût de l'adoption."
+    }
   }
 ];
