@@ -30,8 +30,8 @@ export async function FeedContent() {
   return (
     <div className="mx-auto max-w-colonne md:max-w-content px-4.5 py-7 md:px-6">
       <p className="text-11 uppercase tracking-cap text-tenu">Notes</p>
-      <h1 className="mt-1 text-27 font-semibold text-encre">Toutes les notes</h1>
-      <p className="mt-2 max-w-[64ch] text-15 text-tenu">
+      <h1 className="mt-1 text-27 font-bold text-encre">Toutes les notes</h1>
+      <p className="mt-2 max-w-[64ch] text-15 text-doux">
         De la plus récente à la plus ancienne, hebdos et spéciales confondues.
       </p>
 

@@ -97,8 +97,8 @@ export default function ThemesPage() {
         ← Retour aux notes
       </Link>
       <p className="text-11 uppercase tracking-cap text-tenu">Notes</p>
-      <h1 className="mt-1 text-27 font-semibold text-encre">Thèmes sous observation</h1>
-      <p className="mt-2 max-w-[64ch] text-15 text-tenu">
+      <h1 className="mt-1 text-27 font-bold text-encre">Thèmes sous observation</h1>
+      <p className="mt-2 max-w-[64ch] text-15 text-doux">
         Des thèses avancées par d&rsquo;autres, mises à l&rsquo;épreuve des prix avant d&rsquo;être
         retenues. Ce qu&rsquo;on ne mesure pas, on ne peut pas le promouvoir — mais on peut dire
         ce qui manque.

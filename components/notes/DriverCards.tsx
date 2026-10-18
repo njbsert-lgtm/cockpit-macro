@@ -3,6 +3,8 @@ import type { Driver, ScenarioVersion } from "@/lib/types";
 import { formatDateShort } from "@/lib/format";
 import { BRANCH_LABELS, BRANCH_ORDER, LIKELIHOOD_SHORT } from "@/lib/scenario-labels";
 import { branchSemantic, LIKELIHOOD_FILL, SEMANTIC_FILL } from "@/lib/branch-semantics";
+import { getNote } from "@/lib/content";
+import { ALL_CHANNELS, CHANNEL_BG, CHANNEL_LABELS } from "@/lib/channels";
 
 export type DriverWithBranches = { driver: Driver; branches: ScenarioVersion[] };
 
@@ -38,6 +40,29 @@ function Branch({ branch }: { branch: ScenarioVersion }) {
         <div className={`h-full rounded-rp ${LIKELIHOOD_FILL[branch.likelihood]} ${SEMANTIC_FILL[semantic]}`} />
       </div>
     </li>
+  );
+}
+
+/**
+ * Le pied d'une carte de driver (DESIGN.md) : les points de canal suivis de leurs noms. Les
+ * canaux d'un driver sont ceux de la note qui l'a révisé en dernier, dans l'ordre fixe de la
+ * grille ; sans canal déclaré, le libellé du driver tient la place plutôt qu'un vide.
+ */
+function DriverChannels({ driverLabel, noteSlug }: { driverLabel: string; noteSlug: string }) {
+  const declared = new Set(getNote(noteSlug)?.channels ?? []);
+  const channels = ALL_CHANNELS.filter((c) => declared.has(c));
+  if (channels.length === 0) {
+    return <span className="truncate text-11 text-doux">{driverLabel}</span>;
+  }
+  return (
+    <span className="flex min-w-0 flex-wrap items-center gap-x-2.5 gap-y-1">
+      {channels.map((c) => (
+        <span key={c} className="inline-flex items-center gap-1 text-11 text-doux">
+          <span aria-hidden="true" className={`h-1.5 w-1.5 shrink-0 rounded-rp ${CHANNEL_BG[c]}`} />
+          {CHANNEL_LABELS[c]}
+        </span>
+      ))}
+    </span>
   );
 }
 
@@ -82,8 +107,8 @@ export function DriverCards({ drivers }: { drivers: DriverWithBranches[] }) {
                   ))}
                 </ul>
 
-                <div className="mt-3 flex items-baseline justify-between gap-3 border-t border-trait pt-2.5">
-                  <span className="truncate text-11 text-doux">{driver.label}</span>
+                <div className="mt-3 flex items-center justify-between gap-3 border-t border-trait pt-2.5">
+                  <DriverChannels driverLabel={driver.label} noteSlug={driver.lastRevisedIn} />
                   <span className="shrink-0 text-11 tabular-nums text-tenu">
                     révisé le {formatDateShort(driver.lastRevisedAt)}
                   </span>

@@ -77,7 +77,7 @@ export default async function DriverPage({ params }: { params: Promise<{ id: str
         Driver · {driver.label}
         {driver.retiredAt && " · retiré"}
       </p>
-      <h1 className="mt-1.5 max-w-[28ch] text-27 font-semibold leading-tight text-encre">
+      <h1 className="mt-1.5 max-w-[28ch] text-27 font-bold leading-tight text-encre">
         {driver.question}
       </h1>
       <p className="mt-3 text-15 text-doux">
@@ -104,7 +104,7 @@ export default async function DriverPage({ params }: { params: Promise<{ id: str
 
       {/* 2 — Les trois branches */}
       <SectionTitle>Les trois branches</SectionTitle>
-      <p className="mt-1 max-w-[64ch] text-15 text-tenu">
+      <p className="mt-1 max-w-[64ch] text-15 text-doux">
         Comparables côte à côte : la thèse, les impacts par classe d&rsquo;actifs, et ce qui
         confirmerait ou infirmerait chacune.
       </p>
@@ -114,7 +114,7 @@ export default async function DriverPage({ params }: { params: Promise<{ id: str
 
       {/* 3 — La trajectoire */}
       <SectionTitle>Trajectoire</SectionTitle>
-      <p className="mt-1 max-w-[64ch] text-15 text-tenu">
+      <p className="mt-1 max-w-[64ch] text-15 text-doux">
         Comment la vraisemblance de chaque branche a évolué — la vue qui montre si la lecture a
         suivi les données ou couru derrière les prix.
       </p>

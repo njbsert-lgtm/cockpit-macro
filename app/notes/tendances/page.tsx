@@ -24,8 +24,8 @@ export default function TrendsIndexPage() {
       </Link>
 
       <p className="text-11 uppercase tracking-cap text-tenu">Notes</p>
-      <h1 className="mt-1 text-27 font-semibold text-encre">Tendances de fond</h1>
-      <p className="mt-2 max-w-[64ch] text-15 text-tenu">
+      <h1 className="mt-1 text-27 font-bold text-encre">Tendances de fond</h1>
+      <p className="mt-2 max-w-[64ch] text-15 text-doux">
         Ce qui est durablement vrai, par opposition aux drivers, qui sont les incertitudes
         actives. Une tendance se lit sur des années : son intérêt est de voir si elle tient ou
         si elle s&rsquo;érode sans qu&rsquo;on le remarque.

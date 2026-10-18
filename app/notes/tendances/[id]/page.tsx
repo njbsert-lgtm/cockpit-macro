@@ -33,7 +33,7 @@ export default async function TrendPage({
       </Link>
 
       <p className="text-11 uppercase tracking-cap text-tenu">Tendance de fond</p>
-      <h1 className="mt-1.5 max-w-[36ch] text-27 font-semibold leading-tight text-encre">
+      <h1 className="mt-1.5 max-w-[36ch] text-27 font-bold leading-tight text-encre">
         {trend.title}
       </h1>
       <span
@@ -56,7 +56,7 @@ export default async function TrendPage({
           Les drivers qui pourraient la faire tomber
         </h2>
         {trend.driverRefs.length === 0 ? (
-          <p className="mt-2 text-14-5 text-tenu">
+          <p className="mt-2 text-14-5 text-doux">
             Aucun driver suivi ne peut l&rsquo;invalider aujourd&rsquo;hui. C&rsquo;est ce qui
             la rend confortable — et ce qui la rendrait dangereuse si elle se mettait à
             s&rsquo;éroder sans qu&rsquo;on sache quoi surveiller.

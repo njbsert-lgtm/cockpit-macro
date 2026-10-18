@@ -33,7 +33,9 @@ function BlockPill({ present }: { present: boolean }) {
 
 /**
  * Une entrée d'archive : grille `4px 1fr` dont la colonne de gauche porte la couleur du canal,
- * un en-tête dépliant qui révèle l'état des blocs obligatoires, puis deux boutons d'action.
+ * un en-tête dépliant qui révèle l'état des blocs obligatoires, puis deux boutons d'action —
+ * tous deux secondaires : plusieurs entrées peuvent être ouvertes à la fois, et chacune ne doit
+ * pas ajouter un aplat `--encre` à l'écran (DESIGN.md, un seul primaire par écran).
  */
 export function ArchiveEntry({
   note,
@@ -112,7 +114,7 @@ export function ArchiveEntry({
             <div className="mt-3 flex flex-wrap gap-2">
               <Link
                 href={`/notes/${note.slug}`}
-                className="inline-flex min-h-11 items-center rounded-rb border border-encre bg-encre px-4 text-13 font-medium text-white transition-colors hover:border-trait-f"
+                className="inline-flex min-h-11 items-center rounded-rb border border-trait bg-page px-4 text-13 font-medium text-encre transition-colors hover:border-trait-f"
               >
                 Ouvrir la note
               </Link>

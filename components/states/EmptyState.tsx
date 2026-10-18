@@ -1,5 +1,7 @@
 /**
- * L'état « vide » ne doit jamais se limiter à « aucun résultat » — il dit quoi faire.
+ * L'état « vide » (DESIGN.md, « Les cinq états ») : panneau `--repos`, rayon `--rc`, un titre
+ * et une phrase qui dit quoi faire — jamais un simple « aucun résultat ». Le pointillé est
+ * réservé à la carte d'appel du carrousel.
  */
 export function EmptyState({
   title,
@@ -11,10 +13,10 @@ export function EmptyState({
   action?: React.ReactNode;
 }) {
   return (
-    <div className="rounded-rc border border-dashed border-trait bg-page px-6 py-10 text-center">
-      <p className="text-17 font-bold text-encre">{title}</p>
-      <p className="mx-auto mt-2 max-w-md text-15 text-tenu">{description}</p>
-      {action && <div className="mt-4">{action}</div>}
+    <div className="rounded-rc bg-repos p-4">
+      <p className="text-14-5 font-semibold text-encre">{title}</p>
+      <p className="mt-1 max-w-[64ch] text-12-5 text-doux">{description}</p>
+      {action && <div className="mt-3">{action}</div>}
     </div>
   );
 }

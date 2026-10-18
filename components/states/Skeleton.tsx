@@ -1,17 +1,30 @@
+/**
+ * Les squelettes (DESIGN.md, « Les cinq états ») : des blocs `--repos` à la forme exacte du
+ * contenu, au rayon du composant imité, et **sans pulsation** — aucune animation décorative.
+ */
 export function SkeletonLine({ width = "100%" }: { width?: string }) {
   return (
     <div
-      className="h-4 animate-pulse rounded-rp bg-trait"
+      className="h-4 rounded-rp bg-repos"
       style={{ width }}
       aria-hidden="true"
     />
   );
 }
 
-export function SkeletonBlock({ className = "" }: { className?: string }) {
+const FORME = { pastille: "rounded-rp", bouton: "rounded-rb", carte: "rounded-rc" } as const;
+
+/** `forme` imite le rayon du composant remplacé : une carte se charge en carte, un titre en ligne. */
+export function SkeletonBlock({
+  className = "",
+  forme = "pastille",
+}: {
+  className?: string;
+  forme?: keyof typeof FORME;
+}) {
   return (
     <div
-      className={`animate-pulse rounded-rp bg-trait ${className}`}
+      className={`${FORME[forme]} bg-repos ${className}`}
       aria-hidden="true"
     />
   );

@@ -31,7 +31,7 @@ export async function HomeContent() {
 
   if (!latestNote) {
     return (
-      <div className="bg-encre px-4.5 py-7 md:px-6">
+      <div className="px-4.5 py-7 md:px-6">
         <div className="mx-auto max-w-colonne md:max-w-content">
           <EmptyState
             title="Aucune note n'a encore été publiée"
