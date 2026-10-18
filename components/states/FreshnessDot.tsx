@@ -3,7 +3,7 @@ import { TIER_LABEL } from "@/lib/freshness";
 
 const TIER_COLOR: Record<FreshnessTier, string> = {
   frais: "bg-hausse",
-  perime: "bg-k-choc",
+  perime: "bg-perime",
   erreur: "bg-baisse",
   absente: "bg-tenu",
 };

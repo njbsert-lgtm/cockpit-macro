@@ -8,9 +8,9 @@ import { usePathname } from "next/navigation";
  * et un padding bas qui absorbe `env(safe-area-inset-bottom)` — sans quoi les libellés
  * passeraient sous la barre d'accueil des téléphones sans bouton physique.
  *
- * Une seule barre désormais, en bas sur tous les écrans : DESIGN.md ne prévoit pas de rangée
- * d'onglets desktop distincte. Les libellés restent ceux du cahier des charges — la maquette
- * montre « Carnet » et « Veille », qui ne sont pas les nôtres.
+ * Sur desktop (≥ 768px), la barre du bas disparaît et les mêmes onglets montent dans la barre
+ * collante (`TabBarDesktop`, CLAUDE.md : « horizontale en haut sur desktop »). Les libellés
+ * restent ceux du cahier des charges — la maquette montre « Carnet » et « Veille ».
  */
 type Tab = { href: string; label: string; icon: React.ReactNode };
 
@@ -63,6 +63,55 @@ function isTabActive(tab: Tab, pathname: string): boolean {
   return pathname.startsWith(tab.href);
 }
 
+function TabIcon({ size, children }: { size: number; children: React.ReactNode }) {
+  return (
+    <svg
+      aria-hidden="true"
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.7"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      {children}
+    </svg>
+  );
+}
+
+/**
+ * Les onglets dans la barre collante, sur desktop : icône de 18px et libellé 13px côte à côte,
+ * actif en `--encre` avec un filet bas de 2px (DESIGN.md). Aucune couleur d'accent.
+ */
+export function TabBarDesktop() {
+  const pathname = usePathname();
+
+  return (
+    <nav role="tablist" aria-label="Navigation principale" className="hidden h-full items-stretch gap-5 md:flex">
+      {TABS.map((tab) => {
+        const active = isTabActive(tab, pathname);
+        return (
+          <Link
+            key={tab.href}
+            href={tab.href}
+            role="tab"
+            aria-selected={active}
+            aria-current={active ? "page" : undefined}
+            className={`flex items-center gap-1.5 border-b-2 text-13 font-medium transition-colors ${
+              active ? "border-encre text-encre" : "border-transparent text-tenu hover:text-doux"
+            }`}
+          >
+            <TabIcon size={18}>{tab.icon}</TabIcon>
+            {tab.label}
+          </Link>
+        );
+      })}
+    </nav>
+  );
+}
+
 export function TabBar() {
   const pathname = usePathname();
 
@@ -70,7 +119,7 @@ export function TabBar() {
     <nav
       role="tablist"
       aria-label="Navigation principale"
-      className="fixed inset-x-0 bottom-0 z-40 border-t border-trait bg-page/95 pt-2 pb-[max(8px,env(safe-area-inset-bottom))] backdrop-blur-[16px]"
+      className="fixed inset-x-0 bottom-0 z-40 md:hidden border-t border-trait bg-page/95 pt-2 pb-[max(8px,env(safe-area-inset-bottom))] backdrop-blur-[16px]"
     >
       <div className="mx-auto flex max-w-colonne md:max-w-content">
         {TABS.map((tab) => {
@@ -86,19 +135,7 @@ export function TabBar() {
                 active ? "text-encre" : "text-tenu hover:text-doux"
               }`}
             >
-              <svg
-                aria-hidden="true"
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.7"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                {tab.icon}
-              </svg>
+              <TabIcon size={20}>{tab.icon}</TabIcon>
               <span className="text-10-5">{tab.label}</span>
             </Link>
           );

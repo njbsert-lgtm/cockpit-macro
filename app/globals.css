@@ -22,6 +22,9 @@
   --color-k-usd: #0e7490; /* dollar */
   --color-k-pos: #4a5a66; /* positionnement */
 
+  /* Fraîcheur d'une collecte — le seul usage est le point « périmé » de la barre et des valeurs. */
+  --color-perime: #c9900c;
+
   /* Point de canal éteint — la seule valeur de gris propre aux pastilles de pied de carte. */
   --color-eteint: #e0e3e5;
 
@@ -72,8 +75,23 @@
     font-size: 0.9375rem; /* 15px */
     line-height: 1.55;
     -webkit-font-smoothing: antialiased;
-    /* Dégage la barre d'onglets fixée en bas. */
+    /* Tous les chiffres à chasse fixe, sur le body entier : un chiffre oublié dans un <span>
+       est un chiffre qui tremble (DESIGN.md). */
+    font-variant-numeric: tabular-nums;
+    /* Dégage la barre d'onglets fixée en bas — sur mobile seulement : sur desktop, les onglets
+       montent dans la barre du haut. */
     padding-bottom: 78px;
+  }
+
+  @media (min-width: 48rem) {
+    body {
+      padding-bottom: 0;
+    }
+  }
+
+  /* Une section atteinte par ancre ne passe jamais sous la barre collante. */
+  section[id] {
+    scroll-margin-top: 96px;
   }
 
   h1,
