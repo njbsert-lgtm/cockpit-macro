@@ -264,3 +264,22 @@ describe("runIngest — une base qui refuse l'écriture le dit une fois, clairem
     expect(report.skipped).toBe(ENABLED_SERIES.length);
   });
 });
+
+describe("runIngest — le budget de temps", () => {
+  it("tente toutes les séries quand chaque appel est lent, plutôt que de sauter la fin de la liste", async () => {
+    const { client } = fakeClient();
+    // Chaque appel coûte 25 ms. En séquence, les séries tiendraient en N × 25 ms ; la
+    // collecte en parallèle les finit toutes dans un délai où la séquence en aurait sauté.
+    const fetcher = vi.fn(async (): Promise<FredFetchResult> => {
+      await new Promise((r) => setTimeout(r, 25));
+      return { ok: true, points: [] };
+    });
+    const n = ENABLED_SERIES.length;
+    const deadline = Date.now() + Math.ceil(n * 25 * 0.6);
+
+    const report = await runIngest(client, "clef", { now: NOW, fetcher, deadline });
+
+    expect(report.skipped).toBe(0);
+    expect(fetcher).toHaveBeenCalledTimes(report.outcomes.length);
+  });
+});

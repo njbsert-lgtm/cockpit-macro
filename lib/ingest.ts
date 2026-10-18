@@ -120,6 +120,8 @@ async function mapBounded<T, R>(
 }
 
 /** Appels simultanés par module mensuel/trimestriel. */
+/** FRED tolère 120 appels par minute : quatre en parallèle, trente-trois séries, reste très en deçà. */
+const FRED_CONCURRENCY = 4;
 const EUROSTAT_CONCURRENCY = 4;
 const ONS_CONCURRENCY = 5;
 const ESTAT_CONCURRENCY = 3;
@@ -160,12 +162,17 @@ export async function runIngest(
     return { ...report(FRED_SOURCE, startedAt, [], series.length), databaseError };
   }
 
-  for (const mapping of series) {
-    // Chaque série écrit avant qu'on passe à la suivante : s'arrêter ici ne perd rien de ce
-    // qui précède, et le passage du lendemain reprendra les séries non tentées.
-    if (outOfTime(options.deadline)) break;
-    outcomes.push(await ingestOne(client, mapping, apiKey, now, fetcher));
-  }
+  // Quelques séries en parallèle, pas une par une : chaque série coûte un appel FRED, une
+  // écriture et une ligne de santé, soit près d'une seconde en séquence — et la liste, passée à
+  // 33 séries, ne tenait plus dans les 27 s du module. Les dernières n'étaient alors jamais
+  // tentées, ni journalisées en échec : le Brent, le Nikkei, l'EUR/USD et le Nasdaq 100 sont
+  // restés figés au 13-15/10 sans qu'aucune erreur ne s'affiche. Chaque série écrit toujours
+  // avant que la suivante ne démarre sur son créneau : s'arrêter ne perd rien de ce qui précède.
+  outcomes.push(
+    ...(await mapBounded(series, FRED_CONCURRENCY, options.deadline, (mapping) =>
+      ingestOne(client, mapping, apiKey, now, fetcher),
+    )),
+  );
 
   return report(FRED_SOURCE, startedAt, outcomes, series.length);
 }
