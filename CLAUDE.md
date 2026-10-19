@@ -1308,13 +1308,25 @@ le prix et l'analyse : on doit pouvoir partir d'un chiffre et remonter à ce qu'
 Les derniers outlooks stratégiques des grandes banques privées (J.P. Morgan, Goldman Sachs,
 BNP Paribas, HSBC, UBS…), condensés et reliés au maillage driver/tendance existant.
 
-**Liste** (`/outlook`) — une carte par outlook : la banque (identité typographique, pas une
-image — le design n'embarque pas de logos externes), le titre de la publication, la période
-couverte (« Mid-year 2026 », un libellé humain, pas une date ISO), la date de publication.
+**Liste** (`/outlook`) — en tête, la grille des **positionnements comparés** : pour chaque maison,
+ce qu'elle recommande sur les actions, les obligations et l'or ou les matières premières, en ▲ ● ▼
+(renforcer, neutre ou prudent, alléger) et « n.p. » quand le document ne tranche pas — on ne
+déduit jamais une position non écrite. Puis une carte par outlook, de la plus récente à la plus
+ancienne : le logo de la banque (repli : son monogramme, tant qu'aucun logo n'est fourni dans
+`public/outlooks/logos/`), le titre, la période couverte, la date, et **les thèmes de la maison**
+en pastilles à contour, chacun avec son emoji (vocabulaire propre aux outlooks, `DESIGN.md`).
 
-**Détail** (`/outlook/[id]`) — le condensé, ses points majeurs, les drivers et tendances de
-fond que la publication met en avant (pastilles cliquables vers leurs pages respectives), et
-en dernier un lien vers le document original.
+**Aucune référence aux drivers ni aux tendances de Marguerite sur les écrans Outlook.** Un
+outlook est prospectif et se lit avec ses propres thèmes. `driverRefs` et `trendRefs` restent dans
+les données — contrôle d'intégrité, repérage des candidats drivers —, jamais à l'écran.
+
+**Fiche** (`/outlook/[id]`) — une série de fiches, pas un texte à filet : les points majeurs en
+cartes, chiffrées (chiffre en exergue, en encre) ou textuelles, filtrables par thème ; le condensé
+replié ensuite ; le lien vers le document original en haut.
+
+**Point** (`/outlook/[id]/[point]`) — un point majeur en page : ses chiffres, le graphique
+redessiné à partir des **seuls points cités** par le document (aucune interpolation), l'explication,
+les risques, la capture du graphique original si elle est fournie, et les points voisins.
 
 **Contenu rédigé hors de l'application, jamais scrapé.** Même principe que l'interdiction de
 Bloomberg/Reuters/FactSet (§ Veille) : le condensé est produit avec l'assistance d'un modèle
@@ -1460,14 +1472,18 @@ type VeilleItem = {
 type Outlook = {
   id: string;                 // 'jpmorgan-mid-2026'
   bank: string;                // 'J.P. Morgan'
-  bankMonogram: string;        // 'JPM' — identité typographique, pas un logo externe
+  bankMonogram: string;        // 'JPM' — repli quand aucun logo n'est fourni
+  logo?: string;               // /outlooks/logos/<bank>.svg
+  auteur?: string;
   title: string;               // 'Mid-Year Outlook 2026'
   periodCovered: string;       // libellé humain, ex. 'Mid-year 2026'
   publishedAt: string;         // date ISO, saisie à la main
   summary: string;             // le condensé, un ou plusieurs paragraphes
-  highlights: string[];        // les points majeurs mis en avant, une ligne chacun
-  driverRefs: string[];
-  trendRefs: string[];
+  themes: OutlookTheme[];      // { id, emoji, label } — les thèmes de la maison
+  points: OutlookPoint[];      // les points majeurs : texte, chiffre(s), série citée, risques
+  positionnement: { actions: Position; obligations: Position; orMatieres: Position };
+  driverRefs: string[];        // jamais affichés
+  trendRefs: string[];         // jamais affichés
   sourceUrl: string;           // lien vers le document original
 };
 

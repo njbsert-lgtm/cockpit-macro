@@ -8,6 +8,11 @@ import type { Outlook } from "@/lib/types";
  *
  * Vide par défaut sinon : aucun condensé n'est inventé au nom d'une banque. `/outlook` affiche
  * un état vide tant que rien n'est renseigné — à remplir au fil des publications réellement lues.
+ *
+ * Les points majeurs reprennent mot pour mot les anciens `highlights` (test de migration contre
+ * `lib/__fixtures__/outlook-highlights.json`). Thèmes, chiffres, risques et séries se lisent dans
+ * le document, comme le condensé : rien n'est ajouté que la banque n'ait écrit. Un positionnement
+ * que le document ne tranche pas reste `null` (« n.p. »).
  */
 export const OUTLOOKS: Outlook[] = [
   {
@@ -52,16 +57,74 @@ export const OUTLOOKS: Outlook[] = [
       "La conclusion résume la thèse : les chocs et les dislocations créent des points " +
       "d'entrée pour les investisseurs patients, à condition de rester alignés sur leur plan " +
       "plutôt que de chercher à prévoir le prochain choc.",
-    highlights: [
-      "Trois thèmes structurent 2026 : fragmentation géopolitique, inflation persistante et cycle de l'IA — plus déterminants qu'en début d'année.",
-      "La fermeture du détroit d'Ormuz après la frappe américano-israélienne contre l'Iran a déclenché le plus important choc pétrolier depuis la Seconde Guerre mondiale.",
-      "Les chocs géopolitiques ont historiquement infligé des dégâts limités aux portefeuilles diversifiés : la banque y voit un point d'entrée, pas un signal de sortie.",
-      "Diversifier au-delà des actions et obligations classiques : 3 % à 6 % du portefeuille en or, jusqu'à 5 % en actifs réels, face à une inflation plus volatile.",
-      "Le narratif sur l'IA est jugé trop pessimiste : preuves de dégâts sur l'emploi encore limitées, marges et productivité sous-estimées par le marché.",
-      "Le logiciel hérité (SaaS) reste le secteur le plus exposé à la disruption par l'IA ; les bénéficiaires du data center (semi-conducteurs, réseau, énergie) restent privilégiés.",
+    themes: [
+      {
+        id: "fragmentation",
+        emoji: "🌍",
+        label: "Fragmentation géopolitique",
+        court: "Géopolitique",
+      },
+      { id: "inflation", emoji: "📈", label: "Inflation" },
+      {
+        id: "ia",
+        emoji: "🤖",
+        label: "Intelligence artificielle",
+        court: "IA",
+      },
     ],
+    points: [
+      {
+        id: "trois-themes",
+        themeId: "fragmentation",
+        texte:
+          "Trois thèmes structurent 2026 : fragmentation géopolitique, inflation persistante et cycle de l'IA — plus déterminants qu'en début d'année.",
+      },
+      {
+        id: "choc-ormuz",
+        themeId: "fragmentation",
+        texte:
+          "La fermeture du détroit d'Ormuz après la frappe américano-israélienne contre l'Iran a déclenché le plus important choc pétrolier depuis la Seconde Guerre mondiale.",
+      },
+      {
+        id: "point-d-entree",
+        themeId: "fragmentation",
+        texte:
+          "Les chocs géopolitiques ont historiquement infligé des dégâts limités aux portefeuilles diversifiés : la banque y voit un point d'entrée, pas un signal de sortie.",
+      },
+      {
+        id: "or-et-actifs-reels",
+        themeId: "inflation",
+        texte:
+          "Diversifier au-delà des actions et obligations classiques : 3 % à 6 % du portefeuille en or, jusqu'à 5 % en actifs réels, face à une inflation plus volatile.",
+        chiffre: {
+          valeur: "3-6 %",
+          legende: "du portefeuille en or, face à une inflation plus volatile",
+        },
+      },
+      {
+        id: "ia-trop-pessimiste",
+        themeId: "ia",
+        texte:
+          "Le narratif sur l'IA est jugé trop pessimiste : preuves de dégâts sur l'emploi encore limitées, marges et productivité sous-estimées par le marché.",
+      },
+      {
+        id: "saas-expose",
+        themeId: "ia",
+        texte:
+          "Le logiciel hérité (SaaS) reste le secteur le plus exposé à la disruption par l'IA ; les bénéficiaires du data center (semi-conducteurs, réseau, énergie) restent privilégiés.",
+      },
+    ],
+    positionnement: {
+      actions: null,
+      obligations: null,
+      orMatieres: { sens: "renforcer", libelle: "Or 3-6 %" },
+    },
     driverRefs: ["iran", "rates", "ai"],
-    trendRefs: ["prime-risque-permanente", "desinflation-terminee", "capex-ia-benefices"],
+    trendRefs: [
+      "prime-risque-permanente",
+      "desinflation-terminee",
+      "capex-ia-benefices",
+    ],
     sourceUrl:
       "https://privatebank.jpmorgan.com/content/dam/jpm-pb-aem/global/en/documents/2026-mid-year-outlook/2026-mid-year-outlook.pdf",
   },
@@ -121,16 +184,83 @@ export const OUTLOOKS: Outlook[] = [
       "révisions de bénéfices récentes ; le capex des hyperscalers américains est désormais " +
       "attendu à 1 116 milliards de dollars pour 2027, et 2026 s'annonce comme l'une des plus " +
       "grosses années d'introductions en bourse jamais enregistrées, portée par l'IA.",
-    highlights: [
-      "« Deux chocs et un boom » : le choc pétrolier et la concurrence chinoise pèsent sur la croissance et l'inflation, le boom de l'IA fait contrepoids — une dynamique de marché « en K ».",
-      "Scénario central « Broadening out » : le choc pétrolier reflue progressivement, la Fed s'approche de 2,5 %, le leadership boursier s'élargit mais reste ciblé sur la chaîne IA.",
-      "La fermeture du détroit d'Ormuz a retiré environ 10 Mb/j du marché pétrolier — cinq fois la perte de l'offre russe ; le Qatar fournit un tiers de l'hélium mondial, critique pour les semi-conducteurs.",
-      "Sur l'Inde : 32 milliards de dollars de sorties de capitaux étrangers de pic à creux, mais intensité pétrolière structurellement plus basse et valorisations normalisées — vue constructive et neutre.",
-      "Les hyperscalers américains portent leur capex attendu pour 2027 à 1 116 milliards de dollars, et 2026 s'annonce comme l'une des plus grosses années d'IPO jamais enregistrées, portée par l'IA.",
-      "L'or reste une couverture davantage géopolitique et de réserve qu'anti-inflationniste : sur 28 années d'inflation élevée depuis 1900, son rendement a été négatif 13 fois.",
+    themes: [
+      { id: "petrole", emoji: "🛢️", label: "Choc pétrolier", court: "Pétrole" },
+      {
+        id: "chine",
+        emoji: "🏭",
+        label: "Concurrence chinoise",
+        court: "Chine",
+      },
+      { id: "ia", emoji: "🤖", label: "Boom de l'IA", court: "IA" },
+      { id: "or", emoji: "🪙", label: "Or" },
     ],
+    points: [
+      {
+        id: "deux-chocs-un-boom",
+        themeId: "chine",
+        texte:
+          "« Deux chocs et un boom » : le choc pétrolier et la concurrence chinoise pèsent sur la croissance et l'inflation, le boom de l'IA fait contrepoids — une dynamique de marché « en K ».",
+      },
+      {
+        id: "broadening-out",
+        themeId: "petrole",
+        texte:
+          "Scénario central « Broadening out » : le choc pétrolier reflue progressivement, la Fed s'approche de 2,5 %, le leadership boursier s'élargit mais reste ciblé sur la chaîne IA.",
+      },
+      {
+        id: "ormuz-10-mbj",
+        themeId: "petrole",
+        texte:
+          "La fermeture du détroit d'Ormuz a retiré environ 10 Mb/j du marché pétrolier — cinq fois la perte de l'offre russe ; le Qatar fournit un tiers de l'hélium mondial, critique pour les semi-conducteurs.",
+        chiffre: {
+          valeur: "10 Mb/j",
+          legende: "retirés du marché pétrolier par la fermeture d'Ormuz",
+        },
+      },
+      {
+        id: "inde",
+        themeId: "petrole",
+        texte:
+          "Sur l'Inde : 32 milliards de dollars de sorties de capitaux étrangers de pic à creux, mais intensité pétrolière structurellement plus basse et valorisations normalisées — vue constructive et neutre.",
+        chiffre: {
+          valeur: "32 Md$",
+          legende: "de sorties de capitaux étrangers de l'Inde, de pic à creux",
+        },
+      },
+      {
+        id: "capex-hyperscalers",
+        themeId: "ia",
+        texte:
+          "Les hyperscalers américains portent leur capex attendu pour 2027 à 1 116 milliards de dollars, et 2026 s'annonce comme l'une des plus grosses années d'IPO jamais enregistrées, portée par l'IA.",
+        chiffre: {
+          valeur: "1 116 Md$",
+          legende: "de capex attendu des hyperscalers américains pour 2027",
+        },
+      },
+      {
+        id: "or-couverture",
+        themeId: "or",
+        texte:
+          "L'or reste une couverture davantage géopolitique et de réserve qu'anti-inflationniste : sur 28 années d'inflation élevée depuis 1900, son rendement a été négatif 13 fois.",
+        chiffre: {
+          valeur: "13 sur 28",
+          legende: "années d'inflation élevée où l'or a perdu, depuis 1900",
+        },
+      },
+    ],
+    positionnement: {
+      actions: null,
+      obligations: null,
+      orMatieres: { sens: "neutre", libelle: "Or nuancé" },
+    },
     driverRefs: ["iran", "rates", "ai"],
-    trendRefs: ["prime-risque-permanente", "desinflation-terminee", "capex-ia-benefices", "recomposition-flux-hors-chine"],
+    trendRefs: [
+      "prime-risque-permanente",
+      "desinflation-terminee",
+      "capex-ia-benefices",
+      "recomposition-flux-hors-chine",
+    ],
     sourceUrl:
       "https://www.assetmanagement.hsbc.co.uk/en/institutional-investor/-/media/files/attachments/common/2026-mid-year-investment-outlook",
   },
@@ -193,14 +323,70 @@ export const OUTLOOKS: Outlook[] = [
       "auxquelles s'ajoute le besoin urgent de reconstruction en Ukraine et au Moyen-Orient. " +
       "Risques : le niveau d'endettement des États pourrait limiter les dépenses, et la classe " +
       "d'actifs reste sensible à l'inflation et aux hausses de taux.",
-    highlights: [
-      "Le marché haussier actions entre dans sa quatrième année malgré le conflit iranien et les perturbations record de l'offre énergétique — résilient, mais jugé fragile.",
-      "Dispersion IA : puces mémoire, robots humanoïdes et infrastructure électrique ont gagné 26 % à 184 % depuis janvier, contre -24 % pour les éditeurs SaaS menacés par les outils de codage IA.",
-      "La fermeture du détroit d'Ormuz a provoqué pénuries et hausses de prix sur l'énergie, les engrais, le soufre, l'hélium et les métaux stratégiques — des tensions qui persisteront plusieurs mois même après une réouverture rapide.",
-      "L'indice de matières premières pondéré à parts égales de Bloomberg a gagné 74 % en dollars depuis les points bas post-Covid, contre des obligations mondiales globalement négatives même coupons compris.",
-      "Quatre mégatendances soutiennent l'infrastructure : sécurité énergétique, électrification, digitalisation, croissance du transport aérien et ferroviaire — plus la reconstruction de l'Ukraine et du Moyen-Orient.",
-      "Un indice technologique large comme le Nasdaq 100 devient un véhicule de plus en plus inefficace pour capter le thème IA, qui exige une exposition ciblée sur les sous-thèmes gagnants.",
+    themes: [
+      {
+        id: "haussier",
+        emoji: "📈",
+        label: "Marché haussier fragile",
+        court: "Marché haussier",
+      },
+      { id: "ia", emoji: "🤖", label: "Frontières de l'IA", court: "IA" },
+      { id: "rarete", emoji: "🪙", label: "Âge de la rareté", court: "Rareté" },
+      { id: "infra", emoji: "⚡", label: "Infrastructure" },
     ],
+    points: [
+      {
+        id: "marche-haussier",
+        themeId: "haussier",
+        texte:
+          "Le marché haussier actions entre dans sa quatrième année malgré le conflit iranien et les perturbations record de l'offre énergétique — résilient, mais jugé fragile.",
+      },
+      {
+        id: "dispersion-ia",
+        themeId: "ia",
+        texte:
+          "Dispersion IA : puces mémoire, robots humanoïdes et infrastructure électrique ont gagné 26 % à 184 % depuis janvier, contre -24 % pour les éditeurs SaaS menacés par les outils de codage IA.",
+        chiffre: {
+          valeur: "26 à 184 %",
+          legende:
+            "de hausse depuis janvier pour les gagnants de l'IA, contre -24 % pour le SaaS",
+        },
+      },
+      {
+        id: "penuries-ormuz",
+        themeId: "rarete",
+        texte:
+          "La fermeture du détroit d'Ormuz a provoqué pénuries et hausses de prix sur l'énergie, les engrais, le soufre, l'hélium et les métaux stratégiques — des tensions qui persisteront plusieurs mois même après une réouverture rapide.",
+      },
+      {
+        id: "matieres-premieres",
+        themeId: "rarete",
+        texte:
+          "L'indice de matières premières pondéré à parts égales de Bloomberg a gagné 74 % en dollars depuis les points bas post-Covid, contre des obligations mondiales globalement négatives même coupons compris.",
+        chiffre: {
+          valeur: "74 %",
+          legende:
+            "de hausse en dollars de l'indice Bloomberg de matières premières à parts égales",
+        },
+      },
+      {
+        id: "megatendances-infra",
+        themeId: "infra",
+        texte:
+          "Quatre mégatendances soutiennent l'infrastructure : sécurité énergétique, électrification, digitalisation, croissance du transport aérien et ferroviaire — plus la reconstruction de l'Ukraine et du Moyen-Orient.",
+      },
+      {
+        id: "nasdaq-inefficace",
+        themeId: "ia",
+        texte:
+          "Un indice technologique large comme le Nasdaq 100 devient un véhicule de plus en plus inefficace pour capter le thème IA, qui exige une exposition ciblée sur les sous-thèmes gagnants.",
+      },
+    ],
+    positionnement: {
+      actions: { sens: "neutre", libelle: "Protéger" },
+      obligations: null,
+      orMatieres: { sens: "renforcer", libelle: "Mat. 1res" },
+    },
     driverRefs: ["iran", "ai"],
     trendRefs: ["prime-risque-permanente", "capex-ia-benefices"],
     sourceUrl:
@@ -282,16 +468,124 @@ export const OUTLOOKS: Outlook[] = [
       "environnement de stagflation difficile pour les actions comme pour les obligations, et " +
       "l'incertitude politique — élections de mi-mandat américaines, changement de premier " +
       "ministre au Royaume-Uni, élection générale serrée au Brésil.",
-    highlights: [
-      "Malgré la fermeture du détroit d'Ormuz et le conflit au Moyen-Orient, l'industrie manufacturière mondiale a progressé plus vite en juin qu'en février, avant le début du conflit.",
-      "Nouveau thème d'investissement : la cybersécurité — l'IA augmente la valeur de ce qui doit être protégé tout en abaissant le coût des attaques, qui ont bondi de 89 % en 2025 selon CrowdStrike.",
-      "La Fed, sous son nouveau président Kevin Warsh, juge sa prochaine décision plus probablement une hausse qu'une baisse ; Citi maintient une vue de taux « plus élevés plus longtemps ».",
-      "Les entreprises américaines financent leur capex sur leurs flux internes avec un surplus de 635 milliards de dollars au T1 2026, contre un déficit de financement de 6,4 % de la production en 2000.",
-      "La croissance sud-coréenne et taïwanaise accélère nettement, portée par les exportations liées à l'IA — les révisions de croissance 2026 sont positives pour l'Asie du Nord, négatives pour les économies avancées.",
-      "Portefeuille : surpondération des grandes capitalisations américaines, sous-pondération de la duration longue, montée en qualité sur le crédit, et l'or comme socle face à une corrélation actions-obligations moins fiable.",
+    auteur: "Kate Moore, CIO",
+    themes: [
+      {
+        id: "croissance",
+        emoji: "📈",
+        label: "Croissance résiliente",
+        court: "Croissance",
+      },
+      {
+        id: "investissement",
+        emoji: "🏗️",
+        label: "Cycle d'investissement",
+        court: "Investissement",
+      },
+      {
+        id: "taux",
+        emoji: "🏦",
+        label: "Taux élevés plus longtemps",
+        court: "Taux",
+      },
+      { id: "cyber", emoji: "🔐", label: "Cybersécurité", court: "Cyber" },
+      { id: "portefeuille", emoji: "🧭", label: "Portefeuille" },
     ],
+    points: [
+      {
+        id: "industrie-resiliente",
+        themeId: "croissance",
+        texte:
+          "Malgré la fermeture du détroit d'Ormuz et le conflit au Moyen-Orient, l'industrie manufacturière mondiale a progressé plus vite en juin qu'en février, avant le début du conflit.",
+      },
+      {
+        id: "cybersecurite",
+        themeId: "cyber",
+        texte:
+          "Nouveau thème d'investissement : la cybersécurité — l'IA augmente la valeur de ce qui doit être protégé tout en abaissant le coût des attaques, qui ont bondi de 89 % en 2025 selon CrowdStrike.",
+        titre:
+          "L'IA augmente la valeur de ce qui doit être protégé et abaisse le coût des attaques",
+        chiffre: {
+          valeur: "+89 %",
+          legende: "d'attaques assistées par IA en 2025",
+        },
+        chiffres: [
+          { valeur: "+89 %", legende: "d'attaques assistées par IA en 2025" },
+          {
+            valeur: "29 min",
+            legende: "pour qu'une machine compromise en atteigne d'autres",
+          },
+          {
+            valeur: "82 %",
+            legende: "des intrusions sans logiciel malveillant",
+          },
+        ],
+        source: "CrowdStrike, cité par Citi Wealth",
+        explication:
+          "Citi ajoute la cybersécurité à ses thèmes d'investissement ce trimestre, dans le prolongement de sa thèse de résilience : l'IA augmente simultanément la valeur de ce qui doit être protégé et abaisse le coût des attaques. La banque juge la prime de valorisation du secteur justifiée par la durabilité de cette dépense, dont la part dans les budgets logiciels d'entreprise a plus que doublé depuis 2011.",
+        risques: [
+          "Ralentissement de la consommation cloud.",
+          "Ralentissement des revenus récurrents des plus grandes plateformes, dont les valorisations laissent peu de marge à la déception.",
+          "Concurrence des hyperscalers, qui intègrent la sécurité directement dans leurs offres cloud.",
+        ],
+        serie: {
+          titre:
+            "Part de la cybersécurité dans les budgets logiciels d'entreprise",
+          unite: "%",
+          points: [
+            { x: "2011", y: 4.8 },
+            { x: "2025", y: 10.6 },
+          ],
+          note: "Le document cite deux points, sans série intermédiaire.",
+        },
+      },
+      {
+        id: "fed-warsh",
+        themeId: "taux",
+        texte:
+          "La Fed, sous son nouveau président Kevin Warsh, juge sa prochaine décision plus probablement une hausse qu'une baisse ; Citi maintient une vue de taux « plus élevés plus longtemps ».",
+      },
+      {
+        id: "capex-autofinance",
+        themeId: "investissement",
+        texte:
+          "Les entreprises américaines financent leur capex sur leurs flux internes avec un surplus de 635 milliards de dollars au T1 2026, contre un déficit de financement de 6,4 % de la production en 2000.",
+        chiffre: {
+          valeur: "635 Md$",
+          legende:
+            "de surplus de financement interne des entreprises américaines au T1 2026",
+        },
+      },
+      {
+        id: "asie-du-nord",
+        themeId: "croissance",
+        texte:
+          "La croissance sud-coréenne et taïwanaise accélère nettement, portée par les exportations liées à l'IA — les révisions de croissance 2026 sont positives pour l'Asie du Nord, négatives pour les économies avancées.",
+      },
+      {
+        id: "portefeuille",
+        themeId: "portefeuille",
+        texte:
+          "Portefeuille : surpondération des grandes capitalisations américaines, sous-pondération de la duration longue, montée en qualité sur le crédit, et l'or comme socle face à une corrélation actions-obligations moins fiable.",
+        recommandations: [
+          { sens: "renforcer", libelle: "Grandes cap. US" },
+          { sens: "alleger", libelle: "Duration longue" },
+          { sens: "renforcer", libelle: "Crédit de qualité" },
+          { sens: "renforcer", libelle: "Or, socle" },
+        ],
+      },
+    ],
+    positionnement: {
+      actions: { sens: "renforcer", libelle: "Surpond." },
+      obligations: { sens: "alleger", libelle: "Duration" },
+      orMatieres: { sens: "renforcer", libelle: "Or socle" },
+    },
     driverRefs: ["iran", "rates", "ai"],
-    trendRefs: ["prime-risque-permanente", "desinflation-terminee", "capex-ia-benefices"],
+    trendRefs: [
+      "prime-risque-permanente",
+      "desinflation-terminee",
+      "capex-ia-benefices",
+    ],
     sourceUrl: "https://www.docs.citi.com/WealthOCIO/2026Q3Report.pdf",
   },
   {
@@ -354,16 +648,80 @@ export const OUTLOOKS: Outlook[] = [
       "sous-performé les autres classes d'actifs depuis le début du conflit, pourrait se " +
       "redresser à mesure que les banques centrales et les ETF reprennent leurs achats " +
       "physiques et que le marché intègre des taux de la Fed plus bas.",
-    highlights: [
-      "S&P 500 : objectif de fin d'année relevé à 8 000 points, cible mi-2027 à 8 300 — soit +12 % par rapport au niveau du 12 mai 2026, porté par des résultats du T1 en hausse de 6 % au-dessus des attentes.",
-      "Le capex combiné des cinq plus grandes technologiques américaines, anticipé à 450 milliards de dollars il y a un an pour 2026 et 2027, a bondi à environ 800 milliards pour 2026 et 1 160 milliards pour 2027.",
-      "Le crédit devrait sous-performer à mesure que les entreprises émettent davantage de dette pour financer leurs investissements IA — l'IA soutient les bénéfices mais pèse sur le crédit.",
-      "Le dollar devrait rester faible au second semestre avant un point bas et une reprise en 2027 ; l'élection présidentielle française du printemps prochain pourrait peser sur l'euro.",
-      "Scénario central : les exportations via le détroit d'Ormuz commencent à se rétablir début juin, mais le marché pétrolier reste tendu jusqu'au T4 2026, avec des prix du pétrole et du gaz plus élevés.",
-      "Allocation recommandée : surpondération des actions, sous-pondération de l'obligataire cœur, pondération neutre sur le reste de l'obligataire, les matières premières et le cash.",
+    auteur: "Serena Tang, Chief Cross-Asset Strategist",
+    themes: [
+      { id: "actions", emoji: "📈", label: "Actions" },
+      {
+        id: "petrole",
+        emoji: "🛢️",
+        label: "Pétrole et Iran",
+        court: "Pétrole",
+      },
+      { id: "ia", emoji: "🤖", label: "Investissement IA", court: "IA" },
+      { id: "fed", emoji: "🏦", label: "Inflation et Fed", court: "Fed" },
+      { id: "portefeuille", emoji: "🧭", label: "Portefeuille" },
     ],
+    points: [
+      {
+        id: "sp500-8000",
+        themeId: "actions",
+        texte:
+          "S&P 500 : objectif de fin d'année relevé à 8 000 points, cible mi-2027 à 8 300 — soit +12 % par rapport au niveau du 12 mai 2026, porté par des résultats du T1 en hausse de 6 % au-dessus des attentes.",
+        chiffre: {
+          valeur: "8 000",
+          legende: "objectif de fin d'année pour le S&P 500",
+        },
+      },
+      {
+        id: "capex-big-tech",
+        themeId: "ia",
+        texte:
+          "Le capex combiné des cinq plus grandes technologiques américaines, anticipé à 450 milliards de dollars il y a un an pour 2026 et 2027, a bondi à environ 800 milliards pour 2026 et 1 160 milliards pour 2027.",
+        chiffre: {
+          valeur: "1 160 Md$",
+          legende:
+            "de capex attendu des cinq géants technologiques américains en 2027",
+        },
+      },
+      {
+        id: "credit-sous-performe",
+        themeId: "ia",
+        texte:
+          "Le crédit devrait sous-performer à mesure que les entreprises émettent davantage de dette pour financer leurs investissements IA — l'IA soutient les bénéfices mais pèse sur le crédit.",
+      },
+      {
+        id: "dollar-faible",
+        themeId: "fed",
+        texte:
+          "Le dollar devrait rester faible au second semestre avant un point bas et une reprise en 2027 ; l'élection présidentielle française du printemps prochain pourrait peser sur l'euro.",
+      },
+      {
+        id: "ormuz-retablissement",
+        themeId: "petrole",
+        texte:
+          "Scénario central : les exportations via le détroit d'Ormuz commencent à se rétablir début juin, mais le marché pétrolier reste tendu jusqu'au T4 2026, avec des prix du pétrole et du gaz plus élevés.",
+      },
+      {
+        id: "allocation",
+        themeId: "portefeuille",
+        texte:
+          "Allocation recommandée : surpondération des actions, sous-pondération de l'obligataire cœur, pondération neutre sur le reste de l'obligataire, les matières premières et le cash.",
+        recommandations: [
+          { sens: "renforcer", libelle: "Actions" },
+          { sens: "alleger", libelle: "Obligataire cœur" },
+          { sens: "neutre", libelle: "Reste de l'obligataire" },
+          { sens: "neutre", libelle: "Mat. 1res et cash" },
+        ],
+      },
+    ],
+    positionnement: {
+      actions: { sens: "renforcer", libelle: "Surpond." },
+      obligations: { sens: "alleger", libelle: "Cœur" },
+      orMatieres: { sens: "neutre", libelle: "Neutre" },
+    },
     driverRefs: ["iran", "rates", "ai"],
     trendRefs: ["prime-risque-permanente", "capex-ia-benefices"],
-    sourceUrl: "https://www.morganstanley.com/insights/articles/investment-outlook-midyear-2026",
+    sourceUrl:
+      "https://www.morganstanley.com/insights/articles/investment-outlook-midyear-2026",
   },
 ];

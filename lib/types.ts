@@ -431,18 +431,58 @@ export type ScenarioVersion = {
  * que l'interdiction de Bloomberg/Reuters/FactSet (§ Veille) : leurs conditions d'utilisation
  * interdisent l'extraction automatisée, et le condensé ici est une lecture, pas une citation.
  */
+/**
+ * Le vocabulaire d'emoji des thèmes d'outlook (DESIGN.md) — distinct de celui des blocs de note,
+ * et seulement sur les écrans Outlook. Un ajout se décide dans la charte, pas dans le contenu.
+ */
+export const OUTLOOK_EMOJIS = ["📈", "🏦", "🛢️", "🤖", "🏗️", "🔐", "🪙", "⚡", "🌍", "🏭", "🧭"] as const;
+export type OutlookEmoji = (typeof OUTLOOK_EMOJIS)[number];
+
+/** `court` : le libellé des filtres et des boutons de pied, quand `label` est long. */
+export type OutlookTheme = { id: string; emoji: OutlookEmoji; label: string; court?: string };
+
+/** Ce que la maison recommande sur une classe d'actifs ; `null` quand le document ne tranche pas. */
+export type Position = { sens: "renforcer" | "neutre" | "alleger"; libelle: string } | null;
+
+export type OutlookPoint = {
+  id: string; // segment d'URL de la page du point
+  themeId: string; // → OutlookTheme.id
+  texte: string; // le point majeur, tel qu'écrit dans le condensé
+  titre?: string; // titre de la page du point ; à défaut, le texte
+  chiffre?: { valeur: string; legende: string }; // la carte chiffrée de la fiche
+  chiffres?: Array<{ valeur: string; legende: string }>; // la grille de la page du point
+  source?: string;
+  explication?: string;
+  risques?: string[];
+  /** Les seuls points cités par le document : on ne trace jamais entre eux. */
+  serie?: { titre: string; unite: string; points: Array<{ x: string; y: number }>; note?: string };
+  /** Les recommandations d'une carte « Portefeuille » (🧭). */
+  recommandations?: Array<{ sens: "renforcer" | "neutre" | "alleger"; libelle: string }>;
+  imageGraphique?: string; // /outlooks/<id>/<point>.png, facultatif
+};
+
 export type Outlook = {
   id: string; // 'jpmorgan-mid-2026'
   bank: string; // 'J.P. Morgan'
-  /** Identité typographique de la banque — le design n'embarque pas de logos externes. */
+  /** Repli typographique quand aucun logo n'est fourni. */
   bankMonogram: string; // 'JPM'
+  logo?: string; // /outlooks/logos/<bank>.svg — repli : bankMonogram
+  auteur?: string;
   title: string; // 'Mid-Year Outlook 2026'
   periodCovered: string; // libellé humain, ex. 'Mid-year 2026' — pas une date ISO stricte
   publishedAt: string; // date ISO de publication, saisie à la main
   summary: string; // le condensé, un ou plusieurs paragraphes
-  highlights: string[]; // les points majeurs mis en avant, une ligne chacun
-  driverRefs: string[]; // les drivers que l'outlook reprend
-  trendRefs: string[]; // les tendances de fond que l'outlook reprend
+  themes: OutlookTheme[]; // les thèmes de la maison, lus dans le document
+  points: OutlookPoint[]; // les points majeurs, une carte chacun
+  /** Ancienne forme des points majeurs : affichée en cartes texte quand `points` est vide. */
+  highlights?: string[];
+  positionnement: { actions: Position; obligations: Position; orMatieres: Position };
+  /**
+   * Gardés pour le contrôle d'intégrité et le repérage des candidats drivers (CLAUDE.md, « Détecter
+   * un driver ») — jamais affichés : un outlook se lit avec ses propres thèmes.
+   */
+  driverRefs: string[];
+  trendRefs: string[];
   sourceUrl: string; // lien vers le document original
 };
 

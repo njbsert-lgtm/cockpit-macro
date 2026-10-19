@@ -1,3 +1,4 @@
+import { OUTLOOK_EMOJIS } from "./types";
 import type {
   DriverInput,
   Note,
@@ -313,6 +314,28 @@ function checkOutlooks(
         where,
         `publishedAt doit être une date AAAA-MM-JJ, reçu « ${outlook.publishedAt} »`,
       );
+    }
+
+    // Les thèmes et les points : un point se rattache à un thème déclaré, son id fait une URL.
+    const themeIds = new Set(outlook.themes.map((t) => t.id));
+    for (const theme of outlook.themes) {
+      if (!(OUTLOOK_EMOJIS as readonly string[]).includes(theme.emoji)) {
+        throw new IntegrityError(where, `emoji hors vocabulaire « ${theme.emoji} » pour le thème « ${theme.id} »`);
+      }
+    }
+    const pointIds = new Set<string>();
+    for (const point of outlook.points) {
+      if (!themeIds.has(point.themeId)) {
+        throw new IntegrityError(where, `thème inconnu « ${point.themeId} » pour le point « ${point.id} »`);
+      }
+      if (!/^[a-z0-9-]+$/.test(point.id) || pointIds.has(point.id)) {
+        throw new IntegrityError(where, `id de point invalide ou en double « ${point.id} »`);
+      }
+      pointIds.add(point.id);
+      // On ne trace jamais entre des points qu'on n'a pas : une série en a au moins deux.
+      if (point.serie && point.serie.points.length < 2) {
+        throw new IntegrityError(where, `la série du point « ${point.id} » doit citer au moins deux points`);
+      }
     }
   }
 }
