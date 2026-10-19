@@ -2,6 +2,7 @@ import type { ContextePaquet } from "./context";
 import { estDegrade } from "./context";
 import { BLOCK_NAMES, BLOCK_TITLES, type BlockName } from "@/lib/note-blocks";
 import { MARQUEUR_DEBUT, MARQUEUR_FIN } from "./sortie-mixte";
+import { trendEstRevisee } from "@/lib/trend-labels";
 
 /**
  * Le prompt de rédaction.
@@ -471,7 +472,11 @@ function rendreTendances(paquet: ContextePaquet): string {
   return [
     "# Tendances de fond",
     "",
-    ...paquet.tendancesCourantes.map((t) => `- \`${t.id}\` — **${t.status}** : ${t.title}`),
+    // Une tendance sans historique n'a pas de statut : jamais un état hérité d'une note retirée.
+    ...paquet.tendancesCourantes.map(
+      (t) =>
+        `- \`${t.id}\` — **${trendEstRevisee(t) ? t.status : "pas encore révisée par une note"}** : ${t.title}`,
+    ),
   ].join("\n");
 }
 

@@ -26,3 +26,36 @@ describe("une tendance sans historique", () => {
     expect(TREND_NON_REVISEE).toBe("Pas encore révisée par une note");
   });
 });
+
+describe("le prompt de rédaction", () => {
+  it("ne présente aucun statut pour une tendance sans historique", async () => {
+    const { construirePromptUtilisateur } = await import("./redaction/prompt");
+    const trend = (id: string, statusHistory: unknown[]) =>
+      ({ id, title: id, status: "renforce", statusHistory }) as never;
+    const paquet = {
+      noteType: "hebdo",
+      isoWeek: "2026-S43",
+      date: "2026-10-24",
+      comparesTo: "2026-S42",
+      slug: "2026-S43",
+      specialesDeLaSemaine: [],
+      notePrecedente: null,
+      ficheNotion: null,
+      observations: [],
+      drivers: [],
+      itemsVeille: [],
+      scenariosCourants: [],
+      tendancesCourantes: [trend("revisee", [{}]), trend("jamais", [])],
+      guetsOuverts: [],
+      guetsExpires: [],
+      budgetGuets: 3,
+      placesThemes: 5,
+      themesExistants: [],
+      echeancesSemaine: [],
+      trigger: null,
+    } as never;
+    const prompt = construirePromptUtilisateur(paquet, ["CeQuiAChange"]);
+    expect(prompt).toContain("`revisee` — **renforce**");
+    expect(prompt).toContain("`jamais` — **pas encore révisée par une note**");
+  });
+});
