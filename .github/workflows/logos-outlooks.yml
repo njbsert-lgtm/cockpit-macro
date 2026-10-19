@@ -1,10 +1,12 @@
 # Récupère les logos des maisons dont un outlook est lu (onglet Outlook), lancé à la main.
 #
 # Raison d'être : l'environnement de développement n'a pas d'accès réseau sortant vers
-# Wikimedia. Ce workflow télécharge chaque logo depuis Wikimedia Commons — d'abord l'image de
-# tête de l'article Wikipédia de la maison, puis des noms de fichier candidats —, vérifie que
-# c'est bien une image, et commite le résultat dans `public/outlooks/logos/`. Un logo
-# introuvable n'est pas inventé : la carte garde son monogramme.
+# Wikimedia. Ce workflow télécharge chaque logo depuis Wikimedia Commons — d'abord la propriété
+# « logo » (P154) de l'entité Wikidata de la maison, puis des noms de fichier candidats —,
+# n'accepte qu'un SVG ou un PNG de moins de 500 Ko, et commite le résultat dans
+# `public/outlooks/logos/`. L'image de tête d'un article Wikipédia n'est jamais utilisée : c'est
+# souvent une photo du siège, pas un logo. Un logo introuvable n'est pas inventé : la carte garde
+# son monogramme.
 
 name: Logos des outlooks
 
@@ -23,6 +25,8 @@ jobs:
       - name: Télécharger les logos
         run: |
           set -u
+          # Repartir d'un dossier vide : un fichier qui n'est plus retrouvé disparaît du dépôt.
+          rm -rf public/outlooks/logos
           mkdir -p public/outlooks/logos
           UA="Marguerite/1.0 (cockpit macro personnel; github.com/${GITHUB_REPOSITORY})"
           echo '## Logos' >> "$GITHUB_STEP_SUMMARY"
@@ -30,12 +34,13 @@ jobs:
           # Une image Commons, par son nom de fichier : Special:FilePath suit la redirection
           # vers le fichier original.
           essayer_fichier() {
-            local cible="$1" fichier="$2" ext="${2##*.}"
+            local cible="$1" fichier="${2// /_}" ext="${2##*.}"
             ext=$(echo "$ext" | tr 'A-Z' 'a-z')
+            case "$ext" in svg|png) ;; *) return 1 ;; esac
             local sortie="public/outlooks/logos/${cible}.${ext}"
             if curl -sSfL -A "$UA" --max-time 30 -o "$sortie" \
               "https://commons.wikimedia.org/wiki/Special:FilePath/${fichier}"; then
-              if file "$sortie" | grep -qiE 'svg|png|image'; then
+              if file "$sortie" | grep -qiE 'svg|png image' && [ "$(wc -c < "$sortie")" -lt 512000 ]; then
                 echo "- ${cible} : ${fichier} ($(wc -c < "$sortie") octets)" >> "$GITHUB_STEP_SUMMARY"
                 return 0
               fi
@@ -44,33 +49,38 @@ jobs:
             return 1
           }
 
-          # L'image de tête d'un article Wikipédia, quand c'est un fichier Commons.
-          image_de_tete() {
+          # Le logo déclaré sur Wikidata (P154) pour l'entité liée à un article Wikipédia.
+          logo_wikidata() {
+            local qid
+            qid=$(curl -sSf -A "$UA" --max-time 30 \
+              "https://en.wikipedia.org/w/api.php?action=query&format=json&prop=pageprops&ppprop=wikibase_item&redirects=1&titles=$1" \
+              | jq -r '.query.pages[] | .pageprops.wikibase_item // empty')
+            [ -n "$qid" ] || return 0
             curl -sSf -A "$UA" --max-time 30 \
-              "https://en.wikipedia.org/w/api.php?action=query&format=json&prop=pageimages&piprop=name&titles=$1" \
-              | jq -r '.query.pages[] | .pageimage // empty'
+              "https://www.wikidata.org/wiki/Special:EntityData/${qid}.json" \
+              | jq -r --arg q "$qid" '.entities[$q].claims.P154[]?.mainsnak.datavalue.value // empty'
           }
 
+          # Les candidats explicites d'abord (quand la marque visée n'est pas celle de l'article),
+          # puis le logo Wikidata de l'article.
           recuperer() {
             local cible="$1" article="$2"; shift 2
-            local tete
-            tete=$(image_de_tete "$article" || true)
-            for f in ${tete:+"$tete"} "$@"; do
+            local wd
+            wd=$(logo_wikidata "$article" || true)
+            local IFS=$'\n'
+            for f in "$@" $wd; do
               essayer_fichier "$cible" "$f" && return 0
             done
-            echo "- ${cible} : **introuvable** (article ${article}, candidats : $*)" >> "$GITHUB_STEP_SUMMARY"
+            echo "- ${cible} : **introuvable** (article ${article}, Wikidata : ${wd:-rien}, candidats : $*)" >> "$GITHUB_STEP_SUMMARY"
           }
 
-          recuperer jpmorgan "J.P._Morgan" \
+          # J.P. Morgan Private Bank signe sous la marque J.P. Morgan, pas JPMorgan Chase.
+          recuperer jpmorgan "JPMorgan_Chase" \
             "J.P._Morgan_Logo_2008_1.svg" "J.P._Morgan_logo.svg" "JPMorgan_Logo_2008.svg"
-          recuperer hsbc "HSBC" \
-            "HSBC_logo_(2018).svg" "HSBC_logo.svg" "HSBC_Logo.svg"
-          recuperer bnpparibas "BNP_Paribas" \
-            "BNP_Paribas.svg" "Logo_BNP_Paribas.svg" "BNP_Paribas_logo.svg"
-          recuperer citi "Citigroup" \
-            "Citi.svg" "Citi_logo.svg" "Citigroup.svg"
-          recuperer morganstanley "Morgan_Stanley" \
-            "Morgan_Stanley_Logo_1.svg" "Morgan_Stanley_logo.svg" "Morgan_Stanley.svg"
+          recuperer hsbc "HSBC"
+          recuperer bnpparibas "BNP_Paribas"
+          recuperer citi "Citigroup" "Citi.svg"
+          recuperer morganstanley "Morgan_Stanley"
 
           ls -la public/outlooks/logos
 
