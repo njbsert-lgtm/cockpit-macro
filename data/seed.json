@@ -4527,8 +4527,8 @@
       "toValue": 25550,
       "fromDate": "2026-07-31",
       "toDate": "2026-08-03",
-      "status": "promu",
-      "noteSlug": "2026-S32-E1"
+      "status": "nouveau",
+      "noteSlug": null
     },
     {
       "ruleId": "spread-oat-bund-30bp",
@@ -4539,8 +4539,8 @@
       "toValue": 1.17,
       "fromDate": "2026-08-04",
       "toDate": "2026-08-07",
-      "status": "promu",
-      "noteSlug": "2026-S32-E2"
+      "status": "nouveau",
+      "noteSlug": null
     }
   ]
 }
