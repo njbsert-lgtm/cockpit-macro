@@ -2151,6 +2151,10 @@ Dans cet ordre, chaque palier laissant le dépôt déployable :
    avec les trajectoires de scénario et les historiques de tendance qui s'y accrochent. Les
    thèses des tendances et les questions des drivers restent : ce sont des convictions
    permanentes, pas des événements datés.
+   **Fait le 19/10/2026** : la S38, première note réelle, ouvre le suivi (`config/suivi.ts`).
+   Un driver ou une tendance qu'aucune note n'a révisé affiche « Pas encore révisé », et les
+   numéros de version de scénario peuvent commencer au-dessus de 1 à partir du début du suivi.
+   Voir `ETAT.md`.
 
 **Étape 7 — Les déclencheurs d'événement.**
 Le pont entre la veille et le moteur d'alertes : `resoutGuet` et `materialite` en sortie de

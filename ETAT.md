@@ -1,4 +1,4 @@
-# État du projet — au 19/10/2026
+# État du projet — au 19/10/2026 (remise à zéro du corpus faite)
 
 Point d'entrée pour reprendre le travail. **`CLAUDE.md` (cahier des charges) et `DESIGN.md`
 (charte) font autorité** ; ce fichier dit où on en est par rapport à eux, et ce qui a été discuté
@@ -40,6 +40,27 @@ prolonge les dates.
 `note-hebdo.yml` **planifié** (samedi 8 h UTC) puis `publier-note.yml`, fiche Notion comme
 matière principale, contrôle des chiffres à deux régimes. Notes réelles publiées : S38 à S42.
 
+**Remise à zéro du corpus (Étape 6.6, faite le 19/10/2026).** Les neuf notes de développement
+S24, S26, S26-E1, S27, S28, S28-E1, S29, S31, S32 et tout ce qui en dérivait ont été retirés :
+20 versions de scénario (`content/scenarios.ts`), 13 entrées d'historique de tendance
+(`content/tendances.ts`), les liens « promue en note » de deux alertes d'exemple du seed.
+Restent les notes réelles S38 à S42, les versions que le pipeline a écrites
+(`content/generated/`) et la version taux issue de la S38. **Rien n'est reconstitué pour S33 à
+S37 : un trou reste un trou.** Cadre posé (option « A », décidée le 19/10) :
+- `config/suivi.ts` : début du suivi (S38), note comparée de la S38 (S32, retirée), liste des
+  notes retirées. C'est la seule trace de ce qui a été purgé.
+- La chaîne des notes accepte `comparesTo: 2026-S32` pour la S38 seule. Les numéros de version
+  de scénario peuvent commencer au-dessus de 1 à partir du début du suivi (v4, v5…) ; un trou au
+  milieu reste refusé.
+- Les anciennes adresses `/notes/<slug retiré>` redirigent (307) vers `/notes`.
+- Un driver ou une tendance qu'aucune note n'a révisé affiche « Pas encore révisé(e) par une
+  note » (jamais un état hérité) ; la trajectoire porte « Début du suivi : S38 » et ne trace rien
+  avant la première révision d'une branche. Le prompt de rédaction applique la même règle aux
+  tendances.
+- **Aucun test de règle ne lit plus le corpus réel** : fixtures dans `lib/__fixtures__/`,
+  graphes synthétiques. Seul `lib/corpus-reel.test.ts` lit le corpus, sans nommer de donnée
+  (il ne vérifie que l'assemblage et l'absence de ce qui a été retiré).
+
 **Veille (Étape 5).** Passe 1 dans le cron, passe 2 via `veille-passe2.yml` (7 h UTC), file
 `/triage`, angles morts (`angles_morts`, compteur sur la page du driver).
 
@@ -48,6 +69,27 @@ Morgan Stanley), rédigés hors de l'app. Modèle `themes` / `points` / `positio
 point a titre, explication, source, et chiffres/risques/série quand le document les donne — tirés
 des condensés, rien d'ajouté. Logos SVG dans `public/outlooks/logos/` (workflow
 `logos-outlooks.yml`, Wikidata P154). Sous un filtre de thème, les points s'affichent en phrase.
+
+### Drivers et tendances après la remise à zéro (19/10/2026)
+
+**Aucun driver n'est sans état** : les trois ont des versions réelles. Dernière révision :
+IA — S42 (18/10) ; Taux — S40 (03/10) ; Iran — S39 (27/09), le plus anciennement révisé.
+Les trois sont donc affichés avec leur branche dominante (IA : plafonne ; Taux : statu quo ;
+Iran : enlisement).
+
+**Tendances sans état** (historique vide, affichées « Pas encore révisée par une note ») :
+`japon-anomalie` et `recomposition-flux-hors-chine`. Les trois autres (désinflation, capex IA,
+prime de risque) ont des passages S39, S40 et S42.
+
+**Consigne éditoriale pour la S43 (samedi 24/10, 8 h UTC) : réviser en priorité le driver IA.**
+Constat à garder en tête en l'appliquant : la dernière version du driver IA date de la S42 ;
+c'est Iran qui n'a pas été révisé depuis le plus longtemps. Et les versions réelles de l'IA
+(v2/v4/v2, S42) affichent « était modérée / faible / … en S41 » par rapport à des versions v1
+retirées : ce repère se lit comme un état de la S41 alors qu'il vient d'une version fictive.
+C'est le coût assumé de l'option A (on ne réécrit aucune version validée). Le paquet de
+contexte de la S43, construit hors ligne, ne contient plus aucune référence à S24–S32 (ni dans
+le JSON ni dans les prompts) ; il ne marque aucun driver « à réviser » — cette notion
+n'existe pas dans le paquet.
 
 ## Passation de design mobile (Claude Design) — entièrement faite
 
@@ -86,14 +128,19 @@ trajectoire compacte, instruments en cellules, guets ouverts), **2a/3a/3b/3c** O
 6. **Moteur d'alertes (Étape 4)** : non commencé. Les alertes affichées viennent du seed
    (`nonCollecte`). Pas de notes spéciales automatisées (Étape 7) ni d'`AlertEvent` de type
    `evenement`.
-7. **Remise à zéro du corpus (Étape 6.6)** : les notes de développement fictives S24 à S32
-   (et les trajectoires/historiques qui s'y accrochent) sont toujours dans `content/notes/`.
-8. **Angles morts dans le paquet de contexte** : le compteur se lit, mais n'alimente pas encore
+7. **Angles morts dans le paquet de contexte** : le compteur se lit, mais n'alimente pas encore
    la rédaction.
-9. **`Guet.axeLibelle` → `Axe.id`** : rattachement des guets aux axes, non fait.
-10. **Circuit de promotion d'un driver** (candidat → observation → actif) : à spécifier.
-11. **Étape 4, confort** : recherche dans les notes, export PDF d'une note.
-12. **Données manquantes** : 12 indicateurs non suivis (six PMI propriétaires, balances
+8. **`Guet.axeLibelle` → `Axe.id`** : rattachement des guets aux axes, non fait.
+9. **Circuit de promotion d'un driver** (candidat → observation → actif) : à spécifier.
+10. **Étape 4, confort** : recherche dans les notes, export PDF d'une note.
+11. **Alertes d'exemple du seed** (`alertEvents`, deux alertes d'août) : toujours des exemples
+    écrits à la main, affichés « non collecté » sur les fiches Nasdaq 100 et spread OAT-Bund. Leur
+    lien vers des notes S32 inexistantes a été retiré (statut ramené à « nouveau ») ; elles
+    disparaîtront avec le moteur d'alertes réel.
+12. **Prompt de rédaction** : la section « Scénarios courants » liste *toutes* les versions de
+    chaque driver (v4, v5, v6…), pas seulement la courante, sans les distinguer. Existait avant la
+    remise à zéro ; à reprendre avant la S43 si le modèle s'y trompe.
+13. **Données manquantes** : 12 indicateurs non suivis (six PMI propriétaires, balances
     courantes US/JP/CN, solde budgétaire UK, salaires JP et zone euro) ; Bund/OAT et donc les
     spreads seulement en mensuel ; points à 10 ans Inde/Chine au seed ; Hang Seng sans source ;
     INSEE non branchée.

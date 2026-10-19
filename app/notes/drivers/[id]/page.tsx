@@ -148,7 +148,10 @@ export default async function DriverPage({ params }: { params: Promise<{ id: str
 
       {/* 3 — La trajectoire */}
       <div className="mt-7">
-        <SectionHeader title="Trajectoire" count={`${new Set(versions.map((v) => v.noteSlug)).size} notes`} />
+        <SectionHeader title="Trajectoire" count={(() => {
+            const n = new Set(versions.map((v) => v.noteSlug)).size;
+            return n === 0 ? "aucune note" : `${n} note${n > 1 ? "s" : ""}`;
+          })()} />
       </div>
       <div className="mt-3">
         <ScenarioTrajectory versions={versions} branchOrder={branchOrder} />
