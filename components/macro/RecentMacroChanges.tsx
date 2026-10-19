@@ -18,7 +18,7 @@ export async function RecentMacroChanges() {
       aria-label="Données macro publiées cette semaine"
       className="rounded-rc border border-trait bg-page p-4"
     >
-      <h2 className="text-11 uppercase tracking-cap text-tenu">Cette semaine</h2>
+      <h2 className="text-11 uppercase tracking-cap text-tenu">Publié ces 7 derniers jours</h2>
 
       {changes.length === 0 ? (
         <p className="mt-2 text-13 italic text-tenu">
