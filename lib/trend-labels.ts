@@ -40,3 +40,14 @@ export const TREND_STATUS_DOT: Record<TrendStatus, string> = {
   affaiblit: "bg-k-choc",
   invalidee: "bg-tenu",
 };
+
+/**
+ * Ce qu'une tendance affiche tant qu'aucune note réelle ne l'a révisée : son historique est
+ * vide, donc son statut ne repose sur rien — jamais l'état hérité d'une note retirée à la
+ * remise à zéro du corpus (config/suivi.ts).
+ */
+export const TREND_NON_REVISEE = "Pas encore révisée par une note";
+
+export function trendEstRevisee(trend: { statusHistory: unknown[] }): boolean {
+  return trend.statusHistory.length > 0;
+}

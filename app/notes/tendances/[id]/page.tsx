@@ -6,7 +6,9 @@ import {
   TREND_STATUS_CLASS as STATUS_CLASS,
   TREND_STATUS_DOT as STATUS_DOT,
   TREND_STATUS_LABEL as STATUS_LABEL,
+  TREND_NON_REVISEE,
   TREND_TRAJECTORY,
+  trendEstRevisee,
 } from "@/lib/trend-labels";
 
 /** Énumère les tendances au build — même effet de bord voulu que pour les drivers. */
@@ -39,12 +41,18 @@ export default async function TrendPage({
         {trend.title}
       </h1>
       <p className="mt-3 flex items-center gap-2">
-        <span
-          className={`rounded-rp px-2 py-0.5 text-9-5 font-semibold uppercase tracking-cap ${STATUS_CLASS[trend.status]}`}
-        >
-          {STATUS_LABEL[trend.status]}
-        </span>
-        <span className="text-11 text-tenu">{TREND_TRAJECTORY[trend.status]}</span>
+        {trendEstRevisee(trend) ? (
+          <>
+            <span
+              className={`rounded-rp px-2 py-0.5 text-9-5 font-semibold uppercase tracking-cap ${STATUS_CLASS[trend.status]}`}
+            >
+              {STATUS_LABEL[trend.status]}
+            </span>
+            <span className="text-11 text-tenu">{TREND_TRAJECTORY[trend.status]}</span>
+          </>
+        ) : (
+          <span className="text-11 text-tenu">{TREND_NON_REVISEE}</span>
+        )}
       </p>
 
       <p className="mt-4 max-w-[70ch] text-15 text-doux">{trend.thesis}</p>

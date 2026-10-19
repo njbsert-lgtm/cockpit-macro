@@ -165,10 +165,12 @@ export type ThemeObserve = {
 };
 
 export type Driver = DriverInput & {
-  dominantBranchId: string; // dérivé : la branche dont la version courante est 'central'
+  // Les trois champs suivants sont `null` tant qu'aucune note n'a révisé le driver : l'état
+  // d'un driver n'existe que par une version de scénario, jamais par défaut.
+  dominantBranchId: string | null; // dérivé : la branche dont la version courante est 'central'
   intensityRank: number; // dérivé : position dans le driverOrder de la dernière note
-  lastRevisedAt: string; // dérivé : date de sa ScenarioVersion la plus récente
-  lastRevisedIn: string; // dérivé : slug de la note qui a produit cette révision
+  lastRevisedAt: string | null; // dérivé : date de sa ScenarioVersion la plus récente
+  lastRevisedIn: string | null; // dérivé : slug de la note qui a produit cette révision
 };
 
 export type TrendStatus = "renforce" | "maintient" | "affaiblit" | "invalidee";

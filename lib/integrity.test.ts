@@ -158,6 +158,11 @@ describe("références mortes — driver", () => {
     expect(() => checkIntegrity(g)).toThrow(/2 branche\(s\).*3 attendues/);
   });
 
+  it("accepte un driver sans aucune version : il n'a simplement pas encore été révisé", () => {
+    const g = graph({ drivers: [driver(), driver({ id: "ai", trendRefs: [] })], scenarios: branches("rates"), notes: [note({ driverOrder: ["rates", "ai"] })] });
+    expect(() => checkIntegrity(g)).not.toThrow();
+  });
+
   it("refuse un driver sans branche centrale : la dominante serait indéterminée", () => {
     const g = graph({
       scenarios: branches("rates", [{ likelihood: "moderee" }]),
@@ -440,6 +445,25 @@ describe("dérivation des champs de Driver", () => {
     const derived = deriveDrivers([driver()], notes, scenarios);
     expect(derived[0].lastRevisedAt).toBe("2026-07-12");
     expect(derived[0].lastRevisedIn).toBe("2026-S28");
+  });
+
+  it("ne donne aucun état à un driver qu'aucune note n'a révisé — ni branche, ni date, ni note", () => {
+    const derived = deriveDrivers([driver(), driver({ id: "ai", trendRefs: [] })], notes, branches("rates"));
+    const ai = derived.find((d) => d.id === "ai")!;
+    expect(ai.dominantBranchId).toBeNull();
+    expect(ai.lastRevisedAt).toBeNull();
+    expect(ai.lastRevisedIn).toBeNull();
+  });
+
+  it("recalcule le classement sans les versions retirées : il ne dépend que de la dernière note", () => {
+    // Trois drivers, dont un sans aucune version : le rang vient du driverOrder, pas des versions.
+    const ordre = [note({ slug: "2026-S42", date: "2026-10-17", driverOrder: ["ai", "rates", "iran"] })];
+    const derived = deriveDrivers(
+      [driver(), driver({ id: "iran", trendRefs: [] }), driver({ id: "ai", trendRefs: [] })],
+      ordre,
+      branches("rates"),
+    );
+    expect(activeDrivers(derived, "2026-10-17").map((d) => d.id)).toEqual(["ai", "rates", "iran"]);
   });
 
   it("écarte des cartes un driver retiré, sans supprimer son objet", () => {

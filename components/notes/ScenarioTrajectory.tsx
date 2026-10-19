@@ -2,6 +2,7 @@ import type { ScenarioLikelihood, ScenarioVersion } from "@/lib/types";
 import { formatDateShort } from "@/lib/format";
 import { BRANCH_LABELS, LIKELIHOOD_LABELS, LIKELIHOOD_SHORT } from "@/lib/scenario-labels";
 import { branchSemantic, type BranchSemantic } from "@/lib/branch-semantics";
+import { DEBUT_DU_SUIVI } from "@/config/suivi";
 
 // Trois niveaux de vraisemblance, du plus probable au moins probable. La position verticale
 // est ce qui rend les croisements lisibles : une branche qui monte pendant qu'une autre
@@ -49,8 +50,10 @@ export function ScenarioTrajectory({
   if (dates.length < 2) {
     return (
       <p className="rounded-rc bg-repos p-4 text-12-5 text-doux">
-        Une seule date de révision pour l&rsquo;instant : la trajectoire apparaîtra dès la
-        deuxième.
+        {versions.length === 0
+          ? "Aucune révision pour l’instant : la trajectoire commencera avec la première."
+          : "Une seule date de révision pour l’instant : la trajectoire apparaîtra dès la deuxième."}
+        <span className="mt-1 block text-11 text-tenu">Début du suivi : {DEBUT_DU_SUIVI.semaine}</span>
       </p>
     );
   }
@@ -177,7 +180,10 @@ export function ScenarioTrajectory({
         </svg>
       </div>
 
-      <p className="mt-2 text-11 text-tenu">Vraisemblances éditoriales, non implicites de marché.</p>
+      <p className="mt-2 text-11 text-tenu">
+        Début du suivi : {DEBUT_DU_SUIVI.semaine}. Aucune valeur n&rsquo;est tracée avant la première
+        révision d&rsquo;une branche. Vraisemblances éditoriales, non implicites de marché.
+      </p>
     </div>
   );
 }

@@ -21,13 +21,19 @@ import { dailyChange } from "@/lib/performance";
 import { estNonCollectee } from "@/lib/provenance";
 import { expirer } from "@/lib/guets";
 import { formatDateLong, formatJourMois, formatSignedPct } from "@/lib/format";
-import { BRANCH_LABELS, BRANCH_ORDER, LIKELIHOOD_LABELS } from "@/lib/scenario-labels";
+import { BRANCH_LABELS, BRANCH_ORDER, DRIVER_NON_REVISE, LIKELIHOOD_LABELS } from "@/lib/scenario-labels";
 import { DriverBranches, type AncienCran } from "@/components/notes/DriverBranches";
 import { ScenarioTrajectory, semaineDeNote } from "@/components/notes/ScenarioTrajectory";
 import { GuetLine } from "@/components/notes/GuetLine";
 import { SectionHeader } from "@/components/notes/SectionHeader";
 import { NonCollecteBadge } from "@/components/states/NonCollecteBadge";
-import { TREND_STATUS_CLASS, TREND_STATUS_LABEL, TREND_TRAJECTORY } from "@/lib/trend-labels";
+import {
+  TREND_NON_REVISEE,
+  TREND_STATUS_CLASS,
+  TREND_STATUS_LABEL,
+  TREND_TRAJECTORY,
+  trendEstRevisee,
+} from "@/lib/trend-labels";
 
 /**
  * Énumère les drivers au build. Effet de bord voulu, comme pour les notes : cela force le
@@ -93,12 +99,16 @@ export default async function DriverPage({ params }: { params: Promise<{ id: str
         >
           ← Notes
         </Link>
-        <Link
-          href={`/notes/${driver.lastRevisedIn}`}
-          className="inline-flex min-h-11 items-center text-11 text-tenu hover:text-encre"
-        >
-          révisé le {formatJourMois(driver.lastRevisedAt)} · {semaineDeNote(driver.lastRevisedIn)}
-        </Link>
+        {driver.lastRevisedIn && driver.lastRevisedAt ? (
+          <Link
+            href={`/notes/${driver.lastRevisedIn}`}
+            className="inline-flex min-h-11 items-center text-11 text-tenu hover:text-encre"
+          >
+            révisé le {formatJourMois(driver.lastRevisedAt)} · {semaineDeNote(driver.lastRevisedIn)}
+          </Link>
+        ) : (
+          <span className="text-11 text-tenu">{DRIVER_NON_REVISE}</span>
+        )}
       </div>
 
       {/* 1 — La question et la branche dominante (nommée dans la carte des branches) */}
@@ -119,11 +129,21 @@ export default async function DriverPage({ params }: { params: Promise<{ id: str
 
       {/* 2 — Les trois branches */}
       <div className="mt-4">
-        <DriverBranches
-          branches={ordered}
-          dominantBranchId={driver.dominantBranchId}
-          anciensCrans={anciensCrans}
-        />
+        {driver.dominantBranchId && ordered.length > 0 ? (
+          <DriverBranches
+            branches={ordered}
+            dominantBranchId={driver.dominantBranchId}
+            anciensCrans={anciensCrans}
+          />
+        ) : (
+          <div className="rounded-rc bg-repos p-4">
+            <p className="text-14-5 font-semibold text-encre">{DRIVER_NON_REVISE}</p>
+            <p className="mt-1 text-12-5 text-doux">
+              Aucune note publiée n&rsquo;a encore tranché entre ses trois branches : la prochaine
+              révision en posera la première version.
+            </p>
+          </div>
+        )}
       </div>
 
       {/* 3 — La trajectoire */}
@@ -265,12 +285,18 @@ export default async function DriverPage({ params }: { params: Promise<{ id: str
                   </span>
                 </span>
                 <span className="flex shrink-0 flex-col items-end gap-1">
-                  <span
-                    className={`rounded-rp px-2 py-0.5 text-9-5 font-semibold uppercase tracking-cap ${TREND_STATUS_CLASS[trend.status]}`}
-                  >
-                    {TREND_STATUS_LABEL[trend.status]}
-                  </span>
-                  <span className="text-11 text-tenu">{TREND_TRAJECTORY[trend.status]}</span>
+                  {trendEstRevisee(trend) ? (
+                    <>
+                      <span
+                        className={`rounded-rp px-2 py-0.5 text-9-5 font-semibold uppercase tracking-cap ${TREND_STATUS_CLASS[trend.status]}`}
+                      >
+                        {TREND_STATUS_LABEL[trend.status]}
+                      </span>
+                      <span className="text-11 text-tenu">{TREND_TRAJECTORY[trend.status]}</span>
+                    </>
+                  ) : (
+                    <span className="max-w-[12ch] text-right text-11 leading-snug text-tenu">{TREND_NON_REVISEE}</span>
+                  )}
                 </span>
               </Link>
             </li>

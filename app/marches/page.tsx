@@ -13,7 +13,7 @@ import {
 import Link from "next/link";
 import { getInstrument, getInstrumentsByAssetClass } from "@/lib/data";
 import { getActiveDriversWithBranches, getLatestNote } from "@/lib/content";
-import { BRANCH_LABELS } from "@/lib/scenario-labels";
+import { BRANCH_LABELS, DRIVER_NON_REVISE } from "@/lib/scenario-labels";
 import { loadObservations, observationsOf, type ObservationsBySeries } from "@/lib/observations";
 import { dailyChange, latestObservation, MAX_SESSION_GAP_DAYS, ytdChange } from "@/lib/performance";
 import { freshnessTier } from "@/lib/freshness";
@@ -176,10 +176,12 @@ async function MarchesParDriver() {
                     ›
                   </span>
                 </Link>
-                {centrale && (
+                {centrale ? (
                   <span className="text-11 text-tenu">
                     centrale : {(BRANCH_LABELS[centrale.branchId] ?? centrale.branchId).toLowerCase()}
                   </span>
+                ) : (
+                  <span className="text-11 text-tenu">{DRIVER_NON_REVISE}</span>
                 )}
               </div>
               {instruments.length > 0 ? (

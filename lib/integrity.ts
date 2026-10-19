@@ -97,10 +97,13 @@ function checkDrivers(
       throw new IntegrityError(where, `retiredAt doit être null ou une date AAAA-MM-JJ, reçu « ${driver.retiredAt} »`);
     }
 
-    // « Un driver, une question, trois branches. »
+    // « Un driver, une question, trois branches. » Un driver qu'aucune note n'a encore révisé
+    // n'a aucune version — c'est un état, « pas encore révisé », pas une erreur. Une ou deux
+    // branches seulement restent refusées : la trajectoire serait amputée sans le dire.
     const branches = new Set(
       scenarios.filter((s) => s.driverId === driver.id).map((s) => s.branchId),
     );
+    if (branches.size === 0) continue;
     if (branches.size !== BRANCHES_PER_DRIVER) {
       throw new IntegrityError(
         where,

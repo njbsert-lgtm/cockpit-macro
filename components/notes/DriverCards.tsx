@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { Driver, ScenarioVersion } from "@/lib/types";
 import { formatDateShort } from "@/lib/format";
-import { BRANCH_LABELS, BRANCH_ORDER, LIKELIHOOD_SHORT } from "@/lib/scenario-labels";
+import { BRANCH_LABELS, BRANCH_ORDER, DRIVER_NON_REVISE, LIKELIHOOD_SHORT } from "@/lib/scenario-labels";
 import { branchSemantic, LIKELIHOOD_FILL, SEMANTIC_FILL } from "@/lib/branch-semantics";
 import { getNote } from "@/lib/content";
 import { ALL_CHANNELS, CHANNEL_BG, CHANNEL_LABELS } from "@/lib/channels";
@@ -101,18 +101,24 @@ export function DriverCards({ drivers }: { drivers: DriverWithBranches[] }) {
                   </span>
                 </div>
 
-                <ul className="mt-3 flex flex-col gap-2.5">
-                  {list.map((b) => (
-                    <Branch key={b.branchId} branch={b} />
-                  ))}
-                </ul>
+                {driver.lastRevisedIn && driver.lastRevisedAt && list.length > 0 ? (
+                  <>
+                    <ul className="mt-3 flex flex-col gap-2.5">
+                      {list.map((b) => (
+                        <Branch key={b.branchId} branch={b} />
+                      ))}
+                    </ul>
 
-                <div className="mt-3 flex items-center justify-between gap-3 border-t border-trait pt-2.5">
-                  <DriverChannels driverLabel={driver.label} noteSlug={driver.lastRevisedIn} />
-                  <span className="shrink-0 text-11 tabular-nums text-tenu">
-                    révisé le {formatDateShort(driver.lastRevisedAt)}
-                  </span>
-                </div>
+                    <div className="mt-3 flex items-center justify-between gap-3 border-t border-trait pt-2.5">
+                      <DriverChannels driverLabel={driver.label} noteSlug={driver.lastRevisedIn} />
+                      <span className="shrink-0 text-11 tabular-nums text-tenu">
+                        révisé le {formatDateShort(driver.lastRevisedAt)}
+                      </span>
+                    </div>
+                  </>
+                ) : (
+                  <p className="mt-3 rounded-rp bg-repos px-3 py-2 text-12-5 text-doux">{DRIVER_NON_REVISE}</p>
+                )}
               </Link>
             </li>
           );

@@ -12,7 +12,7 @@ import {
 import { getInstrument } from "@/lib/data";
 import { loadObservationsFor } from "@/lib/observations";
 import { getDriversForInstrument, getNotes } from "@/lib/content";
-import { BRANCH_LABELS } from "@/lib/scenario-labels";
+import { BRANCH_LABELS, DRIVER_NON_REVISE } from "@/lib/scenario-labels";
 import { formatDateLong } from "@/lib/format";
 import type { AssetClass } from "@/lib/types";
 import { estNonCollectee } from "@/lib/provenance";
@@ -136,9 +136,10 @@ export default async function InstrumentPage({
                     {driver.question}
                   </span>
                   <span className="mt-1 block text-11 text-tenu">
-                    {driver.label} · branche dominante :{" "}
-                    {BRANCH_LABELS[driver.dominantBranchId] ?? driver.dominantBranchId} ·
-                    révisée le {formatDateLong(driver.lastRevisedAt)}
+                    {driver.label} ·{" "}
+                    {driver.dominantBranchId && driver.lastRevisedAt
+                      ? `branche dominante : ${BRANCH_LABELS[driver.dominantBranchId] ?? driver.dominantBranchId} · révisée le ${formatDateLong(driver.lastRevisedAt)}`
+                      : DRIVER_NON_REVISE}
                   </span>
                 </Link>
               </li>

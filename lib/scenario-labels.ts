@@ -44,3 +44,9 @@ export const IMPACT_LABELS: Record<string, string> = {
   fx: "Devises",
   cm: "Matières premières",
 };
+
+/**
+ * Ce qu'un driver affiche tant qu'aucune note réelle ne l'a révisé : jamais un état hérité
+ * d'une note retirée à la remise à zéro du corpus (config/suivi.ts).
+ */
+export const DRIVER_NON_REVISE = "Pas encore révisé par une note";

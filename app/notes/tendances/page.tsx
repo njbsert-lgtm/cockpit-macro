@@ -1,7 +1,13 @@
 import Link from "next/link";
 import { getTrends } from "@/lib/content";
 import { formatDateLong } from "@/lib/format";
-import { TREND_STATUS_CLASS, TREND_STATUS_LABEL, TREND_TRAJECTORY } from "@/lib/trend-labels";
+import {
+  TREND_NON_REVISEE,
+  TREND_STATUS_CLASS,
+  TREND_STATUS_LABEL,
+  TREND_TRAJECTORY,
+  trendEstRevisee,
+} from "@/lib/trend-labels";
 
 /**
  * Couche 3 des Notes : l'index thématique des tendances de fond. Ce qu'on consulte une fois
@@ -49,18 +55,24 @@ export default function TrendsIndexPage() {
                     {trend.title}
                   </span>
                   <span className="mt-1 block text-12 text-tenu">
-                    {trend.statusHistory.length} passage
-                    {trend.statusHistory.length > 1 ? "s" : ""}
-                    {last && ` · dernier le ${formatDateLong(last.date)}`}
+                    {last
+                      ? `${trend.statusHistory.length} passage${trend.statusHistory.length > 1 ? "s" : ""} · dernier le ${formatDateLong(last.date)}`
+                      : "Aucun passage"}
                   </span>
                 </span>
                 <span className="flex shrink-0 flex-col items-end gap-1">
-                  <span
-                    className={`rounded-rp px-2 py-0.5 text-9-5 font-semibold uppercase tracking-cap ${TREND_STATUS_CLASS[trend.status]}`}
-                  >
-                    {TREND_STATUS_LABEL[trend.status]}
-                  </span>
-                  <span className="text-11 text-tenu">{TREND_TRAJECTORY[trend.status]}</span>
+                  {trendEstRevisee(trend) ? (
+                    <>
+                      <span
+                        className={`rounded-rp px-2 py-0.5 text-9-5 font-semibold uppercase tracking-cap ${TREND_STATUS_CLASS[trend.status]}`}
+                      >
+                        {TREND_STATUS_LABEL[trend.status]}
+                      </span>
+                      <span className="text-11 text-tenu">{TREND_TRAJECTORY[trend.status]}</span>
+                    </>
+                  ) : (
+                    <span className="max-w-[12ch] text-right text-11 leading-snug text-tenu">{TREND_NON_REVISEE}</span>
+                  )}
                 </span>
               </Link>
             </li>
