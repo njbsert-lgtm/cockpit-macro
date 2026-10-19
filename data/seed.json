@@ -175,14 +175,14 @@
     },
     {
       "id": "brent",
-      "label": "Brent",
+      "label": "Brent physique",
       "assetClass": "commodity",
       "zones": [
         "global"
       ],
       "unit": "usd",
       "ytdBasis": 61.35,
-      "note": "Variable maîtresse : Ormuz contraint, prime de risque installée."
+      "note": "Brent spot physique (Europe Brent Spot Price FOB, EIA via FRED DCOILBRENTEU), pas le contrat à terme ICE que citent la presse et les courtiers : en tension d'offre, le physique se paie nettement plus cher. Publié avec environ une semaine de retard. Variable maîtresse : Ormuz contraint, prime de risque installée."
     },
     {
       "id": "wti",

@@ -20,6 +20,9 @@ describe("instrumentDepuisLibelle", () => {
     expect(instrumentDepuisLibelle("Prévision Brent 2027 (Goldman)", [{ id: "x", label: "Or" }])).toBeNull();
     expect(instrumentDepuisLibelle("Inflation US", instruments)).toBeNull();
   });
+  it("retrouve le Brent physique quand la note écrit « Brent »", () => {
+    expect(instrumentDepuisLibelle("Brent", [{ id: "brent", label: "Brent physique" }])).toBe("brent");
+  });
 });
 
 describe("dateDansLaValeur", () => {
