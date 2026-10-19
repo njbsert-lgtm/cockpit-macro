@@ -1,5 +1,6 @@
 import { OUTLOOK_EMOJIS } from "./types";
 import { DEBUT_DU_SUIVI } from "@/config/suivi";
+import { erratumSchema } from "./erratum";
 import type {
   DriverInput,
   Note,
@@ -269,6 +270,13 @@ function checkScenarios(
     }
 
     // « Une révision sans justification écrite est interdite. »
+    if (v.erratum != null) {
+      const parsed = erratumSchema.safeParse(v.erratum);
+      if (!parsed.success) {
+        throw new IntegrityError(where, `erratum invalide : ${parsed.error.issues.map((i) => i.message).join(", ")}`);
+      }
+    }
+
     if (v.likelihoodChangedFrom && !v.why.trim()) {
       throw new IntegrityError(
         where,

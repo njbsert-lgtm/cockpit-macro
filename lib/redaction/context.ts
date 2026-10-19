@@ -191,6 +191,18 @@ export function contextePrecedent(
 }
 
 /**
+ * Un erratum (`lib/erratum.ts`) est une mention de lecteur : il ne doit jamais entrer dans la
+ * matière que le modèle reçoit. On l'ôte à l'entrée du paquet, pas à son affichage — un champ
+ * absent du paquet ne peut pas fuiter dans un prompt.
+ */
+function sansErratum<T extends { erratum?: unknown }>(objet: T): T {
+  if (objet.erratum === undefined) return objet;
+  const { erratum: _erratum, ...reste } = objet;
+  void _erratum;
+  return reste as T;
+}
+
+/**
  * Assemble le paquet. Toutes les entrées sont fournies par l'appelant — chargement disque et
  * base restent à l'extérieur, pour que cette fonction soit pure et testable sans réseau.
  */
@@ -233,13 +245,13 @@ export function construireContexte(input: {
     isoWeek,
     date: input.dateCible,
     comparesTo,
-    specialesDeLaSemaine,
+    specialesDeLaSemaine: specialesDeLaSemaine.map(sansErratum),
     notePrecedente: contextePrecedent(input.notePrecedente, input.blocsPrecedents),
     ficheNotion: input.ficheNotion ?? null,
     observations: input.observations,
     drivers: input.drivers ?? [],
     itemsVeille: input.itemsVeille,
-    scenariosCourants: input.scenariosCourants,
+    scenariosCourants: input.scenariosCourants.map(sansErratum),
     tendancesCourantes: input.tendancesCourantes,
     guetsOuverts: ouverts,
     guetsExpires: expires,

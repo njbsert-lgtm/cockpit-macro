@@ -25,6 +25,7 @@ import { BRANCH_LABELS, BRANCH_ORDER, DRIVER_NON_REVISE, LIKELIHOOD_LABELS } fro
 import { DriverBranches, type AncienCran } from "@/components/notes/DriverBranches";
 import { ScenarioTrajectory, semaineDeNote } from "@/components/notes/ScenarioTrajectory";
 import { GuetLine } from "@/components/notes/GuetLine";
+import { Erratum } from "@/components/notes/Erratum";
 import { SectionHeader } from "@/components/notes/SectionHeader";
 import { NonCollecteBadge } from "@/components/states/NonCollecteBadge";
 import {
@@ -333,6 +334,10 @@ export default async function DriverPage({ params }: { params: Promise<{ id: str
                     .join(" ; ")}
                 </span>
               </Link>
+              {/* Sous la version concernée : un erratum ne s'insère jamais dans le texte lié. */}
+              {revised.map((v) => (
+                <Erratum key={`${v.branchId}-${v.version}`} erratum={v.erratum} />
+              ))}
             </li>
           );
         })}

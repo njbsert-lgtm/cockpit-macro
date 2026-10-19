@@ -1,5 +1,7 @@
 // Modèle de données — reprend tel quel le schéma du cahier des charges (CLAUDE.md).
 
+import type { Erratum } from "./erratum";
+
 export type Zone =
   | "us"
   | "ez"
@@ -335,6 +337,11 @@ export type Note = {
    * s'y lit comme `humaine`, pas comme une donnée manquante.
    */
   authorship: Partial<Record<string, Authorship>>;
+  /**
+   * Une correction ajoutée après coup, affichée tout en bas de la note (`lib/erratum.ts`).
+   * Jamais une réécriture du texte publié. Facultatif : la plupart des notes n'en ont pas.
+   */
+  erratum?: Erratum | null;
 };
 
 /**
@@ -424,6 +431,8 @@ export type ScenarioVersion = {
     { direction: ImpactDirection; label: string; text: string }
   >;
   watchSignals: string;
+  /** Une correction ajoutée sous la version, sans toucher à son texte (`lib/erratum.ts`). */
+  erratum?: Erratum | null;
 };
 
 /**

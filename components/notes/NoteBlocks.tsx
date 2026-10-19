@@ -1,3 +1,4 @@
+import { Erratum } from "./Erratum";
 import Link from "next/link";
 import { compileMDX } from "next-mdx-remote/rsc";
 import type { Note } from "@/lib/types";
@@ -145,6 +146,10 @@ export async function NoteBlocks({ note }: { note: Note }) {
           </div>
         </footer>
       )}
+
+      {/* Tout en bas, après le dernier bloc et le pied : une correction ajoutée, jamais une
+          réécriture du texte publié. */}
+      <Erratum erratum={note.erratum} />
     </article>
   );
 }

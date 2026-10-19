@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import type { ScenarioLikelihood, ScenarioVersion } from "@/lib/types";
+import { Erratum } from "./Erratum";
 import { BRANCH_LABELS, IMPACT_LABELS, LIKELIHOOD_LABELS, LIKELIHOOD_SHORT } from "@/lib/scenario-labels";
 import { branchSemantic, LIKELIHOOD_FILL, SEMANTIC_FILL } from "@/lib/branch-semantics";
 
@@ -64,6 +65,7 @@ function BranchBody({ branch }: { branch: ScenarioVersion }) {
         </p>
         <p className="mt-1 text-13 text-doux">{branch.watchSignals}</p>
       </div>
+      <Erratum erratum={branch.erratum} />
     </>
   );
 }

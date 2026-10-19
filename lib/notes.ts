@@ -4,6 +4,7 @@ import matter from "gray-matter";
 import { z } from "zod";
 import type { Note, NoteKind, VeilleChannel, Zone } from "./types";
 import { DEBUT_DU_SUIVI } from "@/config/suivi";
+import { erratumSchema } from "./erratum";
 import { ANGLES_REGIME, REGIME_A_CHOISIR, RETENUS_REGIME, anglesDistincts, propositionDe } from "./regime";
 import {
   BLOCK_NAMES,
@@ -196,6 +197,8 @@ const frontmatterSchema = z.object({
   authorship: z
     .record(z.string(), z.enum(["ia", "ia-relue", "ia-corrigee", "humaine"]))
     .default({}),
+  // Une correction ajoutée après coup, jamais une réécriture : voir `lib/erratum.ts`.
+  erratum: erratumSchema.nullable().default(null),
 });
 
 // ---------------------------------------------------------------------------
@@ -499,6 +502,7 @@ export function parseNote(slug: string, source: string): ParsedNote {
       status: fm.status,
       publishedAt: fm.publishedAt,
       authorship: fm.authorship,
+      erratum: fm.erratum,
       // Un guet neuf appartient à la note qui le déclare ; un guet remonté garde la sienne,
       // sans quoi son ancienneté disparaîtrait au premier report.
       guets: fm.guets.map((g) => ({ ...g, noteSlug: g.noteSlug ?? slug })),
