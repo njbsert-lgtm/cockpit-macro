@@ -78,18 +78,44 @@ export const OUTLOOKS: Outlook[] = [
         themeId: "fragmentation",
         texte:
           "Trois thèmes structurent 2026 : fragmentation géopolitique, inflation persistante et cycle de l'IA — plus déterminants qu'en début d'année.",
+        titre:
+          "Fragmentation, inflation et IA : trois forces plus lourdes qu'en début d'année",
+        source: "J.P. Morgan Private Bank",
+        explication:
+          "J.P. Morgan Private Bank reprend les trois forces interconnectées qu'elle avait identifiées en début d'année — fragmentation géopolitique, inflation et intelligence artificielle — et les juge désormais encore plus lourdes de conséquences. La banque se dit sélective mais constructive : son objectif n'est pas de prévoir le prochain choc, mais de construire des portefeuilles capables d'y résister et d'en tirer parti.",
       },
       {
         id: "choc-ormuz",
         themeId: "fragmentation",
         texte:
           "La fermeture du détroit d'Ormuz après la frappe américano-israélienne contre l'Iran a déclenché le plus important choc pétrolier depuis la Seconde Guerre mondiale.",
+        titre:
+          "Ormuz fermé : le plus important choc d'offre pétrolière depuis 1945",
+        chiffres: [
+          {
+            valeur: "≈ 10 %",
+            legende: "de repli des marchés actions, avant un rebond partiel",
+          },
+        ],
+        source: "J.P. Morgan Private Bank",
+        explication:
+          "La fermeture du détroit d'Ormuz, après une frappe conjointe américano-israélienne contre l'Iran, est pour J.P. Morgan le plus important choc d'offre pétrolière depuis la Seconde Guerre mondiale. Les marchés actions ont plongé d'environ 10 % avant de rebondir partiellement. La banque voit aussi un potentiel haussier dans la fragmentation : des marchés émergents mieux capitalisés, une « fragmentation sélective » qui renforcerait les blocs occidentaux sans démondialiser, et un possible marché haussier séculaire sur les actions chinoises, décotées et exposées à l'IA.",
+        risques: [
+          "Un blocage simultané des goulets d'étranglement pétroliers et semi-conducteurs (Ormuz, Taïwan).",
+          "L'aggravation de la dépendance énergétique européenne.",
+          "L'approfondissement de la rivalité stratégique américano-chinoise.",
+        ],
       },
       {
         id: "point-d-entree",
         themeId: "fragmentation",
         texte:
           "Les chocs géopolitiques ont historiquement infligé des dégâts limités aux portefeuilles diversifiés : la banque y voit un point d'entrée, pas un signal de sortie.",
+        titre:
+          "Les chocs créent des points d'entrée pour les investisseurs patients",
+        source: "J.P. Morgan Private Bank",
+        explication:
+          "Les chocs géopolitiques ont historiquement infligé des dégâts limités aux portefeuilles diversifiés. La conclusion de J.P. Morgan en découle : les chocs et les dislocations créent des points d'entrée pour les investisseurs patients, à condition de rester alignés sur leur plan plutôt que de chercher à prévoir le prochain choc.",
       },
       {
         id: "or-et-actifs-reels",
@@ -100,18 +126,43 @@ export const OUTLOOKS: Outlook[] = [
           valeur: "3-6 %",
           legende: "du portefeuille en or, face à une inflation plus volatile",
         },
+        titre:
+          "Face à une inflation plus volatile, diversifier au-delà du 60/40",
+        chiffres: [
+          { valeur: "3-6 %", legende: "du portefeuille en or" },
+          { valeur: "≤ 5 %", legende: "en actifs réels" },
+          {
+            valeur: "≈ 3 %",
+            legende: "d'inflation cœur américaine avant même le choc",
+          },
+        ],
+        source: "J.P. Morgan Private Bank",
+        explication:
+          "Le choc énergétique de mars aggrave une dynamique déjà installée : le cœur d'inflation américain tournait près de 3 % avant même le choc. J.P. Morgan redoute une répétition du schéma des années 1970, où des chocs présentés comme temporaires finissent par s'incruster dans les anticipations. D'où la recommandation de diversifier au-delà des actions et obligations classiques, avec de l'or et des actifs réels. Le contrepoids : un marché du travail qui reste mou, une désinflation du logement jugée durable, et une pression désinflationniste venue de la concurrence mondiale, en particulier chinoise.",
+        risques: [
+          "Des chocs présentés comme temporaires qui s'incrustent dans les anticipations d'inflation, comme dans les années 1970.",
+        ],
       },
       {
         id: "ia-trop-pessimiste",
         themeId: "ia",
         texte:
           "Le narratif sur l'IA est jugé trop pessimiste : preuves de dégâts sur l'emploi encore limitées, marges et productivité sous-estimées par le marché.",
+        titre: "Le narratif de marché sur l'IA est devenu trop pessimiste",
+        source: "J.P. Morgan Private Bank",
+        explication:
+          "Les scénarios extrêmes — destruction massive d'emplois de cols blancs, disruption accélérée des modèles économiques existants, sommet de cycle marqué par une vague d'IPO — dominent le débat. J.P. Morgan juge pourtant les preuves actuelles de dégâts sur l'emploi très limitées, et met en avant le potentiel de l'IA à élargir durablement les marges et, via les gains de productivité, à alléger la trajectoire de la dette publique.",
       },
       {
         id: "saas-expose",
         themeId: "ia",
         texte:
           "Le logiciel hérité (SaaS) reste le secteur le plus exposé à la disruption par l'IA ; les bénéficiaires du data center (semi-conducteurs, réseau, énergie) restent privilégiés.",
+        titre:
+          "Le logiciel hérité exposé, les bénéficiaires du data center privilégiés",
+        source: "J.P. Morgan Private Bank",
+        explication:
+          "Dans le partage entre gagnants et perdants de l'IA, J.P. Morgan place le logiciel hérité (SaaS) au rang du secteur le plus exposé à la disruption. Les bénéficiaires de l'infrastructure du data center — semi-conducteurs, réseau, énergie — restent privilégiés.",
       },
     ],
     positionnement: {
@@ -201,12 +252,35 @@ export const OUTLOOKS: Outlook[] = [
         themeId: "chine",
         texte:
           "« Deux chocs et un boom » : le choc pétrolier et la concurrence chinoise pèsent sur la croissance et l'inflation, le boom de l'IA fait contrepoids — une dynamique de marché « en K ».",
+        titre: "Deux chocs et un boom : une économie « en K »",
+        source: "HSBC Asset Management",
+        explication:
+          "HSBC Asset Management résume l'année en une formule. Le choc pétrolier pèse sur la croissance et alimente l'inflation, surtout pour les importateurs d'énergie ; la compétitivité exportatrice chinoise dans les technologies avancées désinflate les prix des biens mondiaux tout en pressant les marges des concurrents ; le boom de l'investissement en IA fait contrepoids en soutenant croissance, profits et leadership de marché. Il en résulte une dynamique « en K » : la force est concentrée dans l'investissement lié à l'IA aux États-Unis, pendant que la demande des ménages et l'investissement hors technologie restent fragiles.",
       },
       {
         id: "broadening-out",
         themeId: "petrole",
         texte:
           "Scénario central « Broadening out » : le choc pétrolier reflue progressivement, la Fed s'approche de 2,5 %, le leadership boursier s'élargit mais reste ciblé sur la chaîne IA.",
+        titre: "Scénario central « Broadening out » : un élargissement ciblé",
+        chiffres: [
+          {
+            valeur: "≈ 2,5 %",
+            legende:
+              "taux directeur américain visé, avec un assouplissement modeste",
+          },
+          {
+            valeur: "≈ 3 %",
+            legende:
+              "croissance américaine dans le scénario optimiste « Boom boom »",
+          },
+        ],
+        source: "HSBC Asset Management",
+        explication:
+          "Le scénario central suppose que le choc pétrolier reflue progressivement, en ligne avec les prix à terme, et que les banques centrales restent prudentes. Le leadership boursier s'élargit, mais de façon ciblée — vers les semi-conducteurs, les infrastructures et certains émergents liés à la chaîne IA — plutôt que par une rotation généralisée hors des États-Unis. Dans le scénario optimiste, « Boom boom », le capex IA se transformerait en expansion tirée par l'investissement au sens large.",
+        risques: [
+          "Scénario « Shockwave » : la perturbation de l'offre s'installe durablement.",
+        ],
       },
       {
         id: "ormuz-10-mbj",
@@ -217,6 +291,26 @@ export const OUTLOOKS: Outlook[] = [
           valeur: "10 Mb/j",
           legende: "retirés du marché pétrolier par la fermeture d'Ormuz",
         },
+        titre:
+          "Ormuz : 10 Mb/j retirés du marché, et un gaz plus lent à se normaliser",
+        chiffres: [
+          {
+            valeur: "10 Mb/j",
+            legende:
+              "retirés du marché pétrolier, cinq fois la perte de l'offre russe",
+          },
+          { valeur: "≈ 20 %", legende: "du GNL mondial fourni par le Qatar" },
+          {
+            valeur: "1/3",
+            legende: "de l'hélium mondial, critique pour les semi-conducteurs",
+          },
+        ],
+        source: "HSBC Asset Management",
+        explication:
+          "La fermeture du détroit d'Ormuz a retiré environ 10 millions de barils par jour du marché, cinq fois la perte d'approvisionnement russe. Le Qatar, qui fournit environ 20 % du GNL mondial et un tiers de l'hélium mondial, rend la normalisation du gaz plus lente que celle du pétrole : trois ans contre quelques mois, selon HSBC.",
+        risques: [
+          "Une normalisation du gaz bien plus lente que celle du pétrole — trois ans contre quelques mois.",
+        ],
       },
       {
         id: "inde",
@@ -227,6 +321,11 @@ export const OUTLOOKS: Outlook[] = [
           valeur: "32 Md$",
           legende: "de sorties de capitaux étrangers de l'Inde, de pic à creux",
         },
+        titre:
+          "Inde : une sensibilité pétrolière qui a structurellement baissé",
+        source: "HSBC Asset Management",
+        explication:
+          "La sensibilité de l'Inde au pétrole ravive les inquiétudes, après une année de sorties de capitaux étrangers. Mais HSBC relève que l'intensité pétrolière de l'économie a structurellement baissé et que les valorisations se sont normalisées : sa vue est « constructive et neutre ». Plus largement, la performance des émergents n'est plus une simple fonction de la faiblesse du dollar — l'Asie du Nord est au cœur de la chaîne IA, et la discipline monétaire post-Covid a réduit la vulnérabilité aux chocs externes.",
       },
       {
         id: "capex-hyperscalers",
@@ -237,6 +336,24 @@ export const OUTLOOKS: Outlook[] = [
           valeur: "1 116 Md$",
           legende: "de capex attendu des hyperscalers américains pour 2027",
         },
+        titre: "Des bénéfices portés par l'IA et une poignée de valeurs",
+        chiffres: [
+          {
+            valeur: "1 116 Md$",
+            legende: "de capex attendu des hyperscalers américains pour 2027",
+          },
+          {
+            valeur: "82 %",
+            legende: "des entreprises du S&P 500 au-dessus du consensus",
+          },
+          {
+            valeur: "≈ 23 %",
+            legende: "de croissance des bénéfices sur un an",
+          },
+        ],
+        source: "HSBC Asset Management",
+        explication:
+          "Au S&P 500, 82 % des entreprises ont battu le consensus, avec une croissance des bénéfices d'environ 23 % sur un an. Cette force est concentrée : dix valeurs portent plus de la moitié des révisions de bénéfices récentes. Le capex des hyperscalers américains est désormais attendu à 1 116 milliards de dollars pour 2027, et 2026 s'annonce comme l'une des plus grosses années d'introductions en bourse jamais enregistrées, portée par l'IA.",
       },
       {
         id: "or-couverture",
@@ -247,6 +364,11 @@ export const OUTLOOKS: Outlook[] = [
           valeur: "13 sur 28",
           legende: "années d'inflation élevée où l'or a perdu, depuis 1900",
         },
+        titre:
+          "L'or, assurance géopolitique plus que protection contre l'inflation",
+        source: "HSBC Asset Management",
+        explication:
+          "HSBC nuance le rôle de l'or comme couverture : sur les 28 années d'inflation supérieure à 3 % depuis 1900, son rendement a été négatif 13 fois. Sa valeur tient davantage à l'assurance géopolitique et à la diversification des réserves face au dollar qu'à une protection anti-inflationniste systématique.",
       },
     ],
     positionnement: {
@@ -340,6 +462,15 @@ export const OUTLOOKS: Outlook[] = [
         themeId: "haussier",
         texte:
           "Le marché haussier actions entre dans sa quatrième année malgré le conflit iranien et les perturbations record de l'offre énergétique — résilient, mais jugé fragile.",
+        titre:
+          "« Ride the bull, but guard the gains » : un marché haussier fragile",
+        source: "BNP Paribas Wealth Management",
+        explication:
+          "Le marché haussier actions entame sa quatrième année et atteint de nouveaux records malgré le conflit iranien et des perturbations record de l'offre énergétique. BNP Paribas Wealth Management juge cette résilience fragile, et recommande de protéger les gains : solutions structurées à protection du capital, fonds actions américaines couverts en devises, rééquilibrage hors des méga-capitalisations américaines vers d'autres régions et le style value/mid-small caps, fonds défensifs à faible volatilité, fonds alternatifs, matières premières et autres actifs réels.",
+        risques: [
+          "Des bénéfices qui décevraient par rapport à ce que les marchés anticipent.",
+          "Une récession américaine plus profonde que prévu, qui mettrait fin au cycle haussier.",
+        ],
       },
       {
         id: "dispersion-ia",
@@ -351,12 +482,46 @@ export const OUTLOOKS: Outlook[] = [
           legende:
             "de hausse depuis janvier pour les gagnants de l'IA, contre -24 % pour le SaaS",
         },
+        titre:
+          "Gagnants et perdants de l'IA : une dispersion qui s'est creusée",
+        chiffres: [
+          {
+            valeur: "26 à 184 %",
+            legende:
+              "de hausse depuis janvier : puces mémoire, robots humanoïdes, infrastructure électrique",
+          },
+          {
+            valeur: "-24 %",
+            legende: "pour les éditeurs SaaS depuis novembre 2025",
+          },
+        ],
+        source: "BNP Paribas Wealth Management",
+        explication:
+          "Depuis janvier, la dispersion entre gagnants et perdants de la disruption par l'IA s'est fortement creusée. Fabricants de puces mémoire, robots humanoïdes et infrastructure électrique ont progressé, tandis que les éditeurs de logiciels SaaS, menacés par les nouveaux outils de codage IA — Claude Code, d'Anthropic, est cité nommément —, ont reculé. BNP Paribas recommande l'électricité (production, transport, stockage), le nucléaire, les puces haut de gamme, les métaux et matériaux spéciaux, le refroidissement et l'eau, la cybersécurité, la robotique et l'IA agentique en santé et finance.",
+        risques: [
+          "Une adoption et une monétisation de l'IA plus lentes que prévu.",
+          "Des retours décevants sur l'investissement massif des hyperscalers.",
+          "Une réduction des budgets IA en cas de récession.",
+          "La sécurité, enjeu croissant de tout l'écosystème.",
+        ],
       },
       {
         id: "penuries-ormuz",
         themeId: "rarete",
         texte:
           "La fermeture du détroit d'Ormuz a provoqué pénuries et hausses de prix sur l'énergie, les engrais, le soufre, l'hélium et les métaux stratégiques — des tensions qui persisteront plusieurs mois même après une réouverture rapide.",
+        titre:
+          "« Welcome to the new age of scarcity » : des pénuries qui dureront",
+        chiffres: [
+          {
+            valeur: "200 jours",
+            legende:
+              "de consommation couverts par les réserves stratégiques chinoises",
+          },
+        ],
+        source: "BNP Paribas Wealth Management",
+        explication:
+          "Les restrictions du trafic maritime dans le détroit d'Ormuz ont provoqué pénuries et hausses de prix sur l'énergie, les engrais, le soufre, l'hélium et les métaux industriels stratégiques. Pour BNP Paribas, même une réouverture rapide laisserait des tensions d'approvisionnement pendant plusieurs mois. Aucune région n'est à l'abri de la volatilité énergétique — pas même les États-Unis, exportateurs nets mais dépendants d'importations de bruts plus lourds —, même si certaines étaient mieux préparées : la Chine a porté ses réserves stratégiques de pétrole à 200 jours de consommation domestique.",
       },
       {
         id: "matieres-premieres",
@@ -368,18 +533,39 @@ export const OUTLOOKS: Outlook[] = [
           legende:
             "de hausse en dollars de l'indice Bloomberg de matières premières à parts égales",
         },
+        titre: "Des investisseurs encore sous-exposés aux matières premières",
+        source: "BNP Paribas Wealth Management",
+        explication:
+          "Malgré la forte performance des matières premières depuis 2022 — l'indice Bloomberg pondéré à parts égales a gagné 74 % en dollars, quand les obligations mondiales sont restées globalement négatives même coupons compris —, BNP Paribas juge la plupart des investisseurs encore sous-exposés à cette classe d'actifs sensible à la géopolitique.",
       },
       {
         id: "megatendances-infra",
         themeId: "infra",
         texte:
           "Quatre mégatendances soutiennent l'infrastructure : sécurité énergétique, électrification, digitalisation, croissance du transport aérien et ferroviaire — plus la reconstruction de l'Ukraine et du Moyen-Orient.",
+        titre: "« Infrastructure is the backbone of the modern economy »",
+        source: "BNP Paribas Wealth Management",
+        explication:
+          "Quatre mégatendances soutiennent l'investissement en infrastructure selon BNP Paribas : la sécurité énergétique en Europe et en Asie, l'électrification progressive de l'économie mondiale, les besoins croissants de la digitalisation et la croissance structurelle du transport aérien et ferroviaire. S'y ajoute le besoin urgent de reconstruction en Ukraine et au Moyen-Orient.",
+        risques: [
+          "Le niveau d'endettement des États, qui pourrait limiter les dépenses.",
+          "Une classe d'actifs sensible à l'inflation et aux hausses de taux.",
+        ],
       },
       {
         id: "nasdaq-inefficace",
         themeId: "ia",
         texte:
           "Un indice technologique large comme le Nasdaq 100 devient un véhicule de plus en plus inefficace pour capter le thème IA, qui exige une exposition ciblée sur les sous-thèmes gagnants.",
+        titre:
+          "Le Nasdaq 100, véhicule de moins en moins efficace pour le thème IA",
+        source: "BNP Paribas Wealth Management",
+        explication:
+          "La dispersion entre gagnants et perdants de l'IA conduit BNP Paribas à une conclusion de construction de portefeuille : un indice technologique large comme le Nasdaq 100 mêle les deux camps, et devient un véhicule de plus en plus inefficace pour capter le thème. L'IA exige une exposition ciblée sur les sous-thèmes gagnants.",
+        risques: [
+          "Une adoption et une monétisation de l'IA plus lentes que prévu.",
+          "Des retours décevants sur l'investissement massif des hyperscalers.",
+        ],
       },
     ],
     positionnement: {
@@ -497,6 +683,22 @@ export const OUTLOOKS: Outlook[] = [
         themeId: "croissance",
         texte:
           "Malgré la fermeture du détroit d'Ormuz et le conflit au Moyen-Orient, l'industrie manufacturière mondiale a progressé plus vite en juin qu'en février, avant le début du conflit.",
+        titre: "Une croissance mondiale qui a résisté au choc",
+        chiffres: [
+          {
+            valeur: "92 000",
+            legende:
+              "emplois salariés créés par mois aux États-Unis au 1er semestre",
+          },
+          {
+            valeur: "+15 %",
+            legende:
+              "de commandes de biens d'équipement de base aux États-Unis",
+          },
+        ],
+        source: "Citi Wealth",
+        explication:
+          "Malgré la fermeture temporaire du détroit d'Ormuz et le conflit au Moyen-Orient, l'industrie manufacturière mondiale a progressé plus vite en juin qu'en février, avant le début du conflit. Aux États-Unis, Citi relève des marges bénéficiaires des entreprises non financières à leur plus haut niveau en 60 ans. L'inflation cœur des économies avancées est restée globalement contenue malgré la flambée du pétrole, sans signe de propagation au-delà de l'énergie. Seule la zone euro pâtit davantage du resserrement du crédit bancaire, faute d'un accès aux marchés de capitaux aussi développé.",
       },
       {
         id: "cybersecurite",
@@ -544,6 +746,13 @@ export const OUTLOOKS: Outlook[] = [
         themeId: "taux",
         texte:
           "La Fed, sous son nouveau président Kevin Warsh, juge sa prochaine décision plus probablement une hausse qu'une baisse ; Citi maintient une vue de taux « plus élevés plus longtemps ».",
+        titre: "Une Fed plus proche d'une hausse que d'une baisse",
+        source: "Citi Wealth",
+        explication:
+          "La Fed, sous la présidence de Kevin Warsh, a réaffirmé sans ambiguïté son engagement envers la stabilité des prix. Citi juge sa prochaine décision plus probablement une hausse qu'une baisse, sans l'anticiper à court terme, et maintient une vue de taux « plus élevés plus longtemps ». Malgré ce repricing marqué, la hausse des taux n'a pas déstabilisé les actifs risqués : les marchés ont choisi à plusieurs reprises de regarder au-delà.",
+        risques: [
+          "Une résurgence de pressions inflationnistes plus larges, qui produirait un environnement de stagflation difficile pour les actions comme pour les obligations.",
+        ],
       },
       {
         id: "capex-autofinance",
@@ -555,12 +764,34 @@ export const OUTLOOKS: Outlook[] = [
           legende:
             "de surplus de financement interne des entreprises américaines au T1 2026",
         },
+        titre: "Un capex autofinancé, à l'inverse de la bulle de 2000",
+        chiffres: [
+          {
+            valeur: "635 Md$",
+            legende: "de surplus de financement interne au T1 2026",
+          },
+          {
+            valeur: "6,4 %",
+            legende:
+              "de déficit de financement, en part de la production, en 2000",
+          },
+        ],
+        source: "Citi Wealth",
+        explication:
+          "Le cycle d'investissement continue de se renforcer, porté par la technologie liée à l'IA, ses chaînes d'approvisionnement et les infrastructures critiques. Les entreprises américaines le financent pour l'essentiel sur leurs flux de trésorerie internes : un surplus annualisé au premier trimestre, là où la bulle internet de 2000 reposait sur un déficit de financement. Pour Citi, c'est ce qui distingue ce cycle d'une bulle.",
+        risques: [
+          "Une saison de résultats où des dépenses IA plus timides pèseraient sur les bénéficiaires du capex.",
+        ],
       },
       {
         id: "asie-du-nord",
         themeId: "croissance",
         texte:
           "La croissance sud-coréenne et taïwanaise accélère nettement, portée par les exportations liées à l'IA — les révisions de croissance 2026 sont positives pour l'Asie du Nord, négatives pour les économies avancées.",
+        titre: "L'Asie du Nord accélère avec les exportations liées à l'IA",
+        source: "Citi Wealth",
+        explication:
+          "La croissance sud-coréenne et taïwanaise a nettement accéléré, portée par les exportations liées à l'IA. Citi relève des révisions de croissance 2026 nettement positives pour Taïwan, Hong Kong et la Corée du Sud, à l'inverse des révisions négatives pour les économies avancées.",
       },
       {
         id: "portefeuille",
@@ -572,6 +803,16 @@ export const OUTLOOKS: Outlook[] = [
           { sens: "alleger", libelle: "Duration longue" },
           { sens: "renforcer", libelle: "Crédit de qualité" },
           { sens: "renforcer", libelle: "Or, socle" },
+        ],
+        titre:
+          "Grandes capitalisations américaines, duration courte et or en socle",
+        source: "Citi Wealth",
+        explication:
+          "Citi maintient une surpondération des grandes capitalisations américaines, une sous-pondération de la duration longue et une orientation vers le crédit de meilleure qualité, et recommande l'or face à une corrélation actions-obligations devenue moins fiable depuis la pandémie. La banque voit dans le récent repli des matières premières une opportunité d'entrée ; elle a réduit tactiquement les mines de cuivre avant le conflit, sorti les valeurs énergétiques après le rallye géopolitique et réduit les actions brésiliennes avant les élections. Cette allocation tactique suit la philosophie des « 3 D » : Discipline, Diversification, Dynamisme.",
+        risques: [
+          "Une saison de résultats où des dépenses IA plus timides pèseraient sur les bénéficiaires du capex.",
+          "Une résurgence de pressions inflationnistes plus larges, synonyme de stagflation.",
+          "L'incertitude politique : élections de mi-mandat américaines, changement de premier ministre au Royaume-Uni, élection générale serrée au Brésil.",
         ],
       },
     ],
@@ -671,6 +912,38 @@ export const OUTLOOKS: Outlook[] = [
           valeur: "8 000",
           legende: "objectif de fin d'année pour le S&P 500",
         },
+        titre: "S&P 500 : un objectif relevé à 8 000 points",
+        chiffres: [
+          {
+            valeur: "8 000",
+            legende: "objectif de fin d'année, contre 7 800 précédemment",
+          },
+          {
+            valeur: "8 300",
+            legende: "cible mi-2027, +12 % par rapport au 12 mai",
+          },
+          {
+            valeur: "+6 %",
+            legende: "de résultats du T1 au-dessus des attentes",
+          },
+        ],
+        source: "Morgan Stanley Research",
+        explication:
+          "Morgan Stanley Research relève son objectif de fin d'année pour le S&P 500. Les résultats du premier trimestre ont dépassé les attentes, le meilleur taux de surprise en quatre ans, portés par un effet de levier opérationnel positif, un pouvoir de fixation des prix amélioré et les premiers bénéfices tirés de l'adoption de l'IA. Secteurs américains privilégiés : industrie, hyperscalers, financières et consommation discrétionnaire. Les actions européennes et japonaises devraient aussi en profiter, avec un MSCI Europe attendu en hausse de 11 % et un TOPIX de 12 % d'ici mi-2027.",
+        risques: [
+          "Une accélération de l'inflation à un niveau que la Fed ne pourrait ignorer, entraînant un resserrement des conditions de liquidité.",
+        ],
+        serie: {
+          titre:
+            "S&P 500 : niveau du 12 mai et objectifs de Morgan Stanley Research",
+          unite: "pts",
+          points: [
+            { x: "12 mai 2026", y: 7400 },
+            { x: "Fin 2026", y: 8000 },
+            { x: "Mi-2027", y: 8300 },
+          ],
+          note: "Un niveau observé puis deux objectifs ; le document ne trace aucune trajectoire entre eux.",
+        },
       },
       {
         id: "capex-big-tech",
@@ -682,24 +955,65 @@ export const OUTLOOKS: Outlook[] = [
           legende:
             "de capex attendu des cinq géants technologiques américains en 2027",
         },
+        titre:
+          "Le capex des géants technologiques a presque triplé en un an d'estimations",
+        chiffres: [
+          {
+            valeur: "450 Md$",
+            legende: "estimation d'il y a un an, pour 2026 comme pour 2027",
+          },
+          { valeur: "≈ 800 Md$", legende: "estimation actuelle pour 2026" },
+          { valeur: "1 160 Md$", legende: "estimation actuelle pour 2027" },
+        ],
+        source: "Morgan Stanley Research",
+        explication:
+          "Il y a un an, Morgan Stanley Research anticipait un capex combiné de 450 milliards de dollars pour les cinq plus grandes technologiques américaines, à la fois pour 2026 et pour 2027. Après les résultats et conférences du premier trimestre, ces estimations ont bondi. Cette hausse des investissements en infrastructure IA continue de soutenir la plupart des classes d'actifs.",
+        serie: {
+          titre:
+            "Capex combiné des cinq plus grandes technologiques américaines, estimation actuelle",
+          unite: "Md$",
+          points: [
+            { x: "2026", y: 800 },
+            { x: "2027", y: 1160 },
+          ],
+          note: "Deux estimations citées ; 450 Md$ était l'estimation d'il y a un an pour chacune des deux années.",
+        },
       },
       {
         id: "credit-sous-performe",
         themeId: "ia",
         texte:
           "Le crédit devrait sous-performer à mesure que les entreprises émettent davantage de dette pour financer leurs investissements IA — l'IA soutient les bénéfices mais pèse sur le crédit.",
+        titre: "L'IA soutient les bénéfices, mais pèse sur le crédit",
+        source: "Morgan Stanley",
+        explication:
+          "Le crédit devrait sous-performer les autres classes d'actifs à mesure que les entreprises émettent davantage de dette pour financer leurs investissements liés à l'IA, en particulier parmi les émetteurs américains de qualité. C'est le sens du message central de Morgan Stanley : « être constructif, pas complaisant ».",
       },
       {
         id: "dollar-faible",
         themeId: "fed",
         texte:
           "Le dollar devrait rester faible au second semestre avant un point bas et une reprise en 2027 ; l'élection présidentielle française du printemps prochain pourrait peser sur l'euro.",
+        titre: "Un dollar faible jusqu'à un point bas en 2027",
+        source: "Morgan Stanley",
+        explication:
+          "La faiblesse du dollar devrait persister au second semestre, à mesure que l'inflation cœur américaine ralentit, que les anticipations de hausses de taux reculent et que l'appétit pour le risque reste soutenu. Morgan Stanley attend un point bas et un début de reprise en 2027, une croissance américaine plus forte devant attirer davantage de capitaux. Côté souverains, les obligations européennes devraient surperformer les Treasuries, avec un passage à vide de la croissance et une désinflation en zone euro.",
+        risques: [
+          "L'élection présidentielle française du printemps prochain, qui pourrait raviver le risque politique en Europe et peser sur l'euro.",
+        ],
       },
       {
         id: "ormuz-retablissement",
         themeId: "petrole",
         texte:
           "Scénario central : les exportations via le détroit d'Ormuz commencent à se rétablir début juin, mais le marché pétrolier reste tendu jusqu'au T4 2026, avec des prix du pétrole et du gaz plus élevés.",
+        titre: "Ormuz rouvre début juin, le pétrole reste tendu jusqu'au T4",
+        source: "Morgan Stanley",
+        explication:
+          "Le conflit iranien, et ses implications pour la politique des banques centrales, les prix de l'énergie et les devises, reste central pour les matières premières. Dans le scénario central de Morgan Stanley, les exportations via le détroit d'Ormuz commencent à se rétablir début juin, mais des difficultés logistiques et opérationnelles maintiennent le marché tendu jusqu'au quatrième trimestre. L'or, qui a sous-performé depuis le début du conflit, pourrait se redresser à mesure que les banques centrales et les ETF reprennent leurs achats physiques et que le marché intègre des taux de la Fed plus bas.",
+        risques: [
+          "Des difficultés logistiques et opérationnelles qui maintiennent des prix du pétrole et du gaz plus élevés jusqu'au T4 2026.",
+        ],
       },
       {
         id: "allocation",
@@ -711,6 +1025,13 @@ export const OUTLOOKS: Outlook[] = [
           { sens: "alleger", libelle: "Obligataire cœur" },
           { sens: "neutre", libelle: "Reste de l'obligataire" },
           { sens: "neutre", libelle: "Mat. 1res et cash" },
+        ],
+        titre: "Être constructif, pas complaisant",
+        source: "Morgan Stanley",
+        explication:
+          "Morgan Stanley recommande une surpondération des actions, une sous-pondération de l'obligataire cœur et une pondération neutre sur le reste de l'obligataire, les matières premières et le cash. Une économie américaine stable — ralentissement sans récession — devrait soutenir la demande de Treasuries, mais l'incertitude sur le pétrole et une offre plus abondante interrogent sur la durée de leur performance positive.",
+        risques: [
+          "Une accélération de l'inflation à un niveau que la Fed ne pourrait ignorer, entraînant un resserrement des conditions de liquidité.",
         ],
       },
     ],

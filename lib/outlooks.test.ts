@@ -18,6 +18,17 @@ describe("migration highlights → points", () => {
     }
   });
 
+  it("explique chaque point majeur sur sa page, comme la cybersécurité chez Citi", () => {
+    for (const outlook of OUTLOOKS) {
+      for (const p of outlook.points) {
+        const cle = `${outlook.id}/${p.id}`;
+        expect(p.titre, cle).toBeTruthy();
+        expect(p.explication?.length ?? 0, cle).toBeGreaterThan(80);
+        expect(p.source, cle).toBeTruthy();
+      }
+    }
+  });
+
   it("laisse « n.p. » ce que le document ne tranche pas", () => {
     const jpm = OUTLOOKS.find((o) => o.id === "jpmorgan-mid-2026")!;
     expect(jpm.positionnement.actions).toBeNull();
