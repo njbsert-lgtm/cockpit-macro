@@ -706,6 +706,11 @@ un texte à filet, pour que les deux écrans ne se confondent pas.
   `--tenu`, texte 13.5px `--encre`.
 - **Pastille de thème** (liste et filtres) : `--rp`, contour `--trait`, sans fond. Elle se
   distingue ainsi de la pastille de driver, qui a un fond `--repos`.
+- **Logo de la maison** : fichier SVG de `public/outlooks/logos/`, dans un cadre fond `--page`,
+  bordure `--trait`, rayon `--rc`, de la hauteur du carré (40px en liste, 48px en fiche) et
+  jusqu'à 96px de large : un logotype en longueur garde ses proportions. Sans logo fourni, le
+  monogramme dans le carré `--repos`. La grille des positionnements garde le monogramme : c'est
+  un tableau, pas une vitrine.
 - **Positionnements** : ▲ ● ▼ en `--encre`, « n.p. » en `--tenu` quand le document ne tranche
   pas. On ne déduit jamais une position que la maison n'a pas écrite.
 - **Graphique redessiné** : uniquement à partir des points cités dans le document, sans

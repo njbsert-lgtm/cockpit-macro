@@ -1,3 +1,5 @@
+import { existsSync } from "node:fs";
+import path from "node:path";
 import { describe, expect, it } from "vitest";
 import { OUTLOOKS } from "@/content/outlooks";
 import highlights from "./__fixtures__/outlook-highlights.json";
@@ -26,6 +28,13 @@ describe("migration highlights → points", () => {
         expect(p.explication?.length ?? 0, cle).toBeGreaterThan(80);
         expect(p.source, cle).toBeTruthy();
       }
+    }
+  });
+
+  it("ne déclare que des logos présents dans public/", () => {
+    for (const outlook of OUTLOOKS) {
+      if (!outlook.logo) continue;
+      expect(existsSync(path.join(process.cwd(), "public", outlook.logo)), outlook.id).toBe(true);
     }
   });
 

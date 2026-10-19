@@ -19,6 +19,9 @@ export const OUTLOOKS: Outlook[] = [
     id: "jpmorgan-mid-2026",
     bank: "J.P. Morgan Private Bank",
     bankMonogram: "JPM",
+    // Le seul logo vectoriel disponible sur Wikimedia est celui du groupe (JPMorgan Chase), pas
+    // la marque J.P. Morgan sous laquelle signe la banque privée.
+    logo: "/outlooks/logos/jpmorgan.svg",
     title: "2026 Mid-Year Outlook: Promise and Pressure",
     periodCovered: "Mid-year 2026",
     // La donnée la plus récente citée dans le document ("Data as of April 20, 2026", répétée
@@ -183,6 +186,7 @@ export const OUTLOOKS: Outlook[] = [
     id: "hsbc-mid-2026",
     bank: "HSBC Asset Management",
     bankMonogram: "HSBC",
+    logo: "/outlooks/logos/hsbc.svg",
     title: "2026 Mid-Year Global Investment Outlook: Different Worlds",
     periodCovered: "Mid-year 2026",
     // Aucune date de publication explicite dans le document ; « Source: HSBC AM, June 2026 »
@@ -390,6 +394,7 @@ export const OUTLOOKS: Outlook[] = [
     id: "bnpparibas-mid-2026",
     bank: "BNP Paribas Wealth Management",
     bankMonogram: "BNPP",
+    logo: "/outlooks/logos/bnpparibas.svg",
     title: "Our Investment Themes: 2026 Mid-Year Update",
     periodCovered: "Mid-year 2026",
     // Aucune date de publication explicite dans le document ; l'URL source porte le chemin
@@ -582,6 +587,7 @@ export const OUTLOOKS: Outlook[] = [
     id: "citi-q3-2026",
     bank: "Citi Wealth",
     bankMonogram: "Citi",
+    logo: "/outlooks/logos/citi.svg",
     title: "The Short and Long: 2026 Q3 Macro Investment View",
     // Un rendez-vous trimestriel, pas mi-annuel : le libellé suit le document plutôt que de
     // forcer le format des autres outlooks.
@@ -833,6 +839,7 @@ export const OUTLOOKS: Outlook[] = [
     id: "morganstanley-mid-2026",
     bank: "Morgan Stanley",
     bankMonogram: "MS",
+    logo: "/outlooks/logos/morganstanley.svg",
     title: "Investment Outlook: Midyear 2026",
     periodCovered: "Mid-year 2026",
     // Aucune date de publication explicite ; le 12 mai 2026 est la date la plus précise citée
@@ -912,7 +919,7 @@ export const OUTLOOKS: Outlook[] = [
           valeur: "8 000",
           legende: "objectif de fin d'année pour le S&P 500",
         },
-        titre: "S&P 500 : un objectif relevé à 8 000 points",
+        titre: "S&P 500 : un objectif relevé à 8\u00a0000 points",
         chiffres: [
           {
             valeur: "8 000",
