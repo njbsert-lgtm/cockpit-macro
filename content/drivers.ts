@@ -43,8 +43,10 @@ export const DRIVERS: DriverInput[] = [
     id: "ai",
     label: "Cycle IA",
     question: "Les profits attendus de l'IA justifient-ils les capex ?",
-    // Le cuivre plutôt que la puce : le goulet d'étranglement de l'IA est le mégawatt.
-    instrumentRefs: ["ndx", "spx", "copper"],
+    // Pas le cuivre : son prix suit surtout la Chine et le cycle industriel, et il n'est collecté
+    // qu'en mensuel. Il reste témoin de l'axe « Contrainte physique » (content/axes.ts), où sa
+    // limite est écrite, sans être présenté comme un instrument que le driver pilote.
+    instrumentRefs: ["ndx", "spx"],
     // Question de profits et de capex d'entreprises : aucun indicateur macro suivi n'y répond.
     macroRefs: [],
     trendRefs: ["capex-ia-benefices", "recomposition-flux-hors-chine"],
