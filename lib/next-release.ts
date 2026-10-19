@@ -11,10 +11,9 @@
  * direct au rendu risquerait d'afficher une date fabriquée par une API elle-même bruitée, sur
  * une page consultée en continu plutôt qu'une fois par jour avec relecture.
  *
- * La seule chose qu'on peut garantir sans deviner : ne plus jamais présenter comme « à venir »
- * une date qui ne l'est plus. Une fois la date dépassée, l'affichage retombe sur l'état déjà
- * prévu par les composants appelants — « non communiquée » — jusqu'à ce qu'une correction
- * manuelle, vérifiée, la remplace dans le seed.
+ * Depuis le 19/10/2026, les dates viennent de `config/calendrier-publications.ts`, relevées dans
+ * les calendriers officiels et non plus saisies une par une dans le seed. Ce garde-fou reste : une
+ * date dépassée ne s'affiche jamais comme à venir, quelle que soit son origine.
  */
 export function resolveNextRelease(
   nextRelease: string | null,

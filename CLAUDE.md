@@ -1187,7 +1187,11 @@ du bandeau et le mode comparaison n'affichent que les onze zones réellement sui
   divergences de politique monétaire deviennent visibles.
 
 Chaque indicateur affiche **la prochaine date de publication**. Savoir quand la donnée sort
-compte autant que sa valeur.
+compte autant que sa valeur. Ces dates vivent dans `config/calendrier-publications.ts` : toutes celles que
+l'émetteur publie à l'avance, relevées dans son calendrier officiel (pour un taux directeur, la
+date de décision ; pour une série redistribuée, la publication primaire), jamais extrapolées
+d'un rythme. La prochaine se lit au rendu ; sans date relevée à venir, l'écran dit « non
+communiquée ».
 
 Un clic sur un indicateur — carte en mode zone, ligne en mode comparaison — ouvre sa fiche :
 la série en graphique, avec la même échelle de temps que la fiche instrument, et son historique

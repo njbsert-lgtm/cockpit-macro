@@ -2214,7 +2214,7 @@
       "unit": "percent",
       "frequency": "monthly",
       "seriesKey": "CPIAUCSL",
-      "nextRelease": "2026-10-14"
+      "nextRelease": null
     },
     {
       "id": "us-cpi-core",
@@ -2223,7 +2223,7 @@
       "unit": "percent",
       "frequency": "monthly",
       "seriesKey": "CPILFESL",
-      "nextRelease": "2026-10-14"
+      "nextRelease": null
     },
     {
       "id": "us-gdp",
@@ -2232,7 +2232,7 @@
       "unit": "percent",
       "frequency": "quarterly",
       "seriesKey": "A191RL1Q225SBEA",
-      "nextRelease": "2026-09-30"
+      "nextRelease": null
     },
     {
       "id": "us-unemployment",
@@ -2241,7 +2241,7 @@
       "unit": "percent",
       "frequency": "monthly",
       "seriesKey": "UNRATE",
-      "nextRelease": "2026-10-02"
+      "nextRelease": null
     },
     {
       "id": "us-policy-rate",
@@ -2250,7 +2250,7 @@
       "unit": "percent",
       "frequency": "business-daily",
       "seriesKey": "DFEDTARU",
-      "nextRelease": "2026-10-28"
+      "nextRelease": null
     },
     {
       "id": "us-policy-rate-lower",
@@ -2259,7 +2259,7 @@
       "unit": "percent",
       "frequency": "business-daily",
       "seriesKey": "DFEDTARL",
-      "nextRelease": "2026-10-28"
+      "nextRelease": null
     },
     {
       "id": "us-pmi",
@@ -2268,7 +2268,7 @@
       "unit": "index",
       "frequency": "monthly",
       "seriesKey": "USPMI",
-      "nextRelease": "2026-09-03"
+      "nextRelease": null
     },
     {
       "id": "us-wages",
@@ -2277,7 +2277,7 @@
       "unit": "percent",
       "frequency": "monthly",
       "seriesKey": "CES0500000003",
-      "nextRelease": "2026-10-02"
+      "nextRelease": null
     },
     {
       "id": "us-budget-balance",
@@ -2286,7 +2286,7 @@
       "unit": "percent",
       "frequency": "quarterly",
       "seriesKey": "FYFSGDA188S",
-      "nextRelease": "2026-09-30"
+      "nextRelease": null
     },
     {
       "id": "us-debt-gdp",
@@ -2295,7 +2295,7 @@
       "unit": "percent",
       "frequency": "quarterly",
       "seriesKey": "GFDEGDQ188S",
-      "nextRelease": "2026-09-30"
+      "nextRelease": null
     },
     {
       "id": "us-current-account",
@@ -2304,7 +2304,7 @@
       "unit": "percent",
       "frequency": "quarterly",
       "seriesKey": "IEABC",
-      "nextRelease": "2026-09-24"
+      "nextRelease": null
     },
     {
       "id": "ez-cpi",
@@ -2313,7 +2313,7 @@
       "unit": "percent",
       "frequency": "monthly",
       "seriesKey": "ICP.M.U2.N.000000.4.ANR",
-      "nextRelease": "2026-10-16"
+      "nextRelease": null
     },
     {
       "id": "ez-cpi-core",
@@ -2322,7 +2322,7 @@
       "unit": "percent",
       "frequency": "monthly",
       "seriesKey": "ICP.M.U2.N.XEF000.4.ANR",
-      "nextRelease": "2026-10-16"
+      "nextRelease": null
     },
     {
       "id": "ez-gdp",
@@ -2331,7 +2331,7 @@
       "unit": "percent",
       "frequency": "quarterly",
       "seriesKey": "NAMQ_10_GDP",
-      "nextRelease": "2026-10-30"
+      "nextRelease": null
     },
     {
       "id": "ez-unemployment",
@@ -2340,7 +2340,7 @@
       "unit": "percent",
       "frequency": "monthly",
       "seriesKey": "UNE_RT_M",
-      "nextRelease": "2026-10-01"
+      "nextRelease": null
     },
     {
       "id": "ez-policy-rate",
@@ -2349,7 +2349,7 @@
       "unit": "percent",
       "frequency": "business-daily",
       "seriesKey": "ECBDFR",
-      "nextRelease": "2026-09-11"
+      "nextRelease": null
     },
     {
       "id": "ez-pmi",
@@ -2358,7 +2358,7 @@
       "unit": "index",
       "frequency": "monthly",
       "seriesKey": "EZPMI",
-      "nextRelease": "2026-09-03"
+      "nextRelease": null
     },
     {
       "id": "ez-wages",
@@ -2367,7 +2367,7 @@
       "unit": "percent",
       "frequency": "quarterly",
       "seriesKey": "LCI_LCI_R2_Q",
-      "nextRelease": "2026-10-14"
+      "nextRelease": null
     },
     {
       "id": "ez-budget-balance",
@@ -2376,7 +2376,7 @@
       "unit": "percent",
       "frequency": "quarterly",
       "seriesKey": "GOV_10DD_EDPT1",
-      "nextRelease": "2026-10-21"
+      "nextRelease": null
     },
     {
       "id": "ez-debt-gdp",
@@ -2385,7 +2385,7 @@
       "unit": "percent",
       "frequency": "quarterly",
       "seriesKey": "GOV_10Q_GGDEBT",
-      "nextRelease": "2026-10-21"
+      "nextRelease": null
     },
     {
       "id": "ez-current-account",
@@ -2394,7 +2394,7 @@
       "unit": "percent",
       "frequency": "quarterly",
       "seriesKey": "BOP_C6_Q",
-      "nextRelease": "2026-09-16"
+      "nextRelease": null
     },
     {
       "id": "fr-cpi",
@@ -2403,7 +2403,7 @@
       "unit": "percent",
       "frequency": "monthly",
       "seriesKey": "INSEE.001759970",
-      "nextRelease": "2026-10-16"
+      "nextRelease": null
     },
     {
       "id": "fr-cpi-core",
@@ -2412,7 +2412,7 @@
       "unit": "percent",
       "frequency": "monthly",
       "seriesKey": "INSEE.001759972",
-      "nextRelease": "2026-10-16"
+      "nextRelease": null
     },
     {
       "id": "fr-gdp",
@@ -2421,7 +2421,7 @@
       "unit": "percent",
       "frequency": "quarterly",
       "seriesKey": "INSEE.001688527",
-      "nextRelease": "2026-10-30"
+      "nextRelease": null
     },
     {
       "id": "fr-unemployment",
@@ -2430,7 +2430,7 @@
       "unit": "percent",
       "frequency": "monthly",
       "seriesKey": "INSEE.001688526",
-      "nextRelease": "2026-10-01"
+      "nextRelease": null
     },
     {
       "id": "fr-pmi",
@@ -2439,7 +2439,7 @@
       "unit": "index",
       "frequency": "monthly",
       "seriesKey": "FRPMI",
-      "nextRelease": "2026-09-03"
+      "nextRelease": null
     },
     {
       "id": "fr-wages",
@@ -2448,7 +2448,7 @@
       "unit": "percent",
       "frequency": "quarterly",
       "seriesKey": "INSEE.001769016",
-      "nextRelease": "2026-09-18"
+      "nextRelease": null
     },
     {
       "id": "fr-budget-balance",
@@ -2457,7 +2457,7 @@
       "unit": "percent",
       "frequency": "quarterly",
       "seriesKey": "INSEE.001769020",
-      "nextRelease": "2026-10-21"
+      "nextRelease": null
     },
     {
       "id": "fr-debt-gdp",
@@ -2466,7 +2466,7 @@
       "unit": "percent",
       "frequency": "quarterly",
       "seriesKey": "INSEE.001769025",
-      "nextRelease": "2026-10-21"
+      "nextRelease": null
     },
     {
       "id": "de-cpi",
@@ -2475,7 +2475,7 @@
       "unit": "percent",
       "frequency": "monthly",
       "seriesKey": "DE.CPI",
-      "nextRelease": "2026-10-16"
+      "nextRelease": null
     },
     {
       "id": "de-cpi-core",
@@ -2484,7 +2484,7 @@
       "unit": "percent",
       "frequency": "monthly",
       "seriesKey": "DE.CPI.CORE",
-      "nextRelease": "2026-10-16"
+      "nextRelease": null
     },
     {
       "id": "de-gdp",
@@ -2493,7 +2493,7 @@
       "unit": "percent",
       "frequency": "quarterly",
       "seriesKey": "DE.GDP",
-      "nextRelease": "2026-10-30"
+      "nextRelease": null
     },
     {
       "id": "de-unemployment",
@@ -2502,7 +2502,7 @@
       "unit": "percent",
       "frequency": "monthly",
       "seriesKey": "DE.UNEMPLOYMENT",
-      "nextRelease": "2026-10-01"
+      "nextRelease": null
     },
     {
       "id": "de-pmi",
@@ -2511,7 +2511,7 @@
       "unit": "index",
       "frequency": "monthly",
       "seriesKey": "DEPMI",
-      "nextRelease": "2026-09-03"
+      "nextRelease": null
     },
     {
       "id": "de-wages",
@@ -2520,7 +2520,7 @@
       "unit": "percent",
       "frequency": "quarterly",
       "seriesKey": "DE.WAGES",
-      "nextRelease": "2026-11-26"
+      "nextRelease": null
     },
     {
       "id": "de-current-account",
@@ -2529,7 +2529,7 @@
       "unit": "percent",
       "frequency": "quarterly",
       "seriesKey": "DE.CA",
-      "nextRelease": "2026-09-09"
+      "nextRelease": null
     },
     {
       "id": "uk-cpi",
@@ -2538,7 +2538,7 @@
       "unit": "percent",
       "frequency": "monthly",
       "seriesKey": "ONS.D7G7",
-      "nextRelease": "2026-10-21"
+      "nextRelease": null
     },
     {
       "id": "uk-cpi-core",
@@ -2547,7 +2547,7 @@
       "unit": "percent",
       "frequency": "monthly",
       "seriesKey": "ONS.D7G8",
-      "nextRelease": "2026-10-21"
+      "nextRelease": null
     },
     {
       "id": "uk-gdp",
@@ -2556,7 +2556,7 @@
       "unit": "percent",
       "frequency": "quarterly",
       "seriesKey": "ONS.IHYQ",
-      "nextRelease": "2026-09-30"
+      "nextRelease": null
     },
     {
       "id": "uk-unemployment",
@@ -2565,7 +2565,7 @@
       "unit": "percent",
       "frequency": "monthly",
       "seriesKey": "ONS.MGSX",
-      "nextRelease": "2026-10-20"
+      "nextRelease": null
     },
     {
       "id": "uk-policy-rate",
@@ -2574,7 +2574,7 @@
       "unit": "percent",
       "frequency": "monthly",
       "seriesKey": "BOE.BANKRATE",
-      "nextRelease": "2026-09-17"
+      "nextRelease": null
     },
     {
       "id": "uk-pmi",
@@ -2583,7 +2583,7 @@
       "unit": "index",
       "frequency": "monthly",
       "seriesKey": "UKPMI",
-      "nextRelease": "2026-09-03"
+      "nextRelease": null
     },
     {
       "id": "uk-wages",
@@ -2592,7 +2592,7 @@
       "unit": "percent",
       "frequency": "monthly",
       "seriesKey": "ONS.KAC3",
-      "nextRelease": "2026-10-20"
+      "nextRelease": null
     },
     {
       "id": "uk-budget-balance",
@@ -2601,7 +2601,7 @@
       "unit": "percent",
       "frequency": "quarterly",
       "seriesKey": "ONS.PSAB",
-      "nextRelease": "2026-09-19"
+      "nextRelease": null
     },
     {
       "id": "jp-cpi",
@@ -2610,7 +2610,7 @@
       "unit": "percent",
       "frequency": "monthly",
       "seriesKey": "JP.CPI",
-      "nextRelease": "2026-09-18"
+      "nextRelease": null
     },
     {
       "id": "jp-cpi-core",
@@ -2619,7 +2619,7 @@
       "unit": "percent",
       "frequency": "monthly",
       "seriesKey": "JP.CPI.CORE",
-      "nextRelease": "2026-09-18"
+      "nextRelease": null
     },
     {
       "id": "jp-gdp",
@@ -2628,7 +2628,7 @@
       "unit": "percent",
       "frequency": "quarterly",
       "seriesKey": "JP.GDP",
-      "nextRelease": "2026-11-16"
+      "nextRelease": null
     },
     {
       "id": "jp-wages",
@@ -2637,7 +2637,7 @@
       "unit": "percent",
       "frequency": "monthly",
       "seriesKey": "JP.WAGES",
-      "nextRelease": "2026-11-10"
+      "nextRelease": null
     },
     {
       "id": "jp-unemployment",
@@ -2646,7 +2646,7 @@
       "unit": "percent",
       "frequency": "monthly",
       "seriesKey": "JP.UNEMPLOYMENT",
-      "nextRelease": "2026-09-30"
+      "nextRelease": null
     },
     {
       "id": "jp-policy-rate",
@@ -2655,7 +2655,7 @@
       "unit": "percent",
       "frequency": "monthly",
       "seriesKey": "BOJ.RATE",
-      "nextRelease": "2026-09-19"
+      "nextRelease": null
     },
     {
       "id": "jp-debt-gdp",
@@ -2664,7 +2664,7 @@
       "unit": "percent",
       "frequency": "quarterly",
       "seriesKey": "JP.DEBT",
-      "nextRelease": "2026-09-25"
+      "nextRelease": null
     },
     {
       "id": "jp-current-account",
@@ -2673,7 +2673,7 @@
       "unit": "percent",
       "frequency": "quarterly",
       "seriesKey": "JP.CA",
-      "nextRelease": "2026-09-08"
+      "nextRelease": null
     },
     {
       "id": "cn-cpi",
@@ -2682,7 +2682,7 @@
       "unit": "percent",
       "frequency": "monthly",
       "seriesKey": "CN.CPI",
-      "nextRelease": "2026-09-09"
+      "nextRelease": null
     },
     {
       "id": "cn-gdp",
@@ -2691,7 +2691,7 @@
       "unit": "percent",
       "frequency": "quarterly",
       "seriesKey": "CN.GDP",
-      "nextRelease": "2026-10-18"
+      "nextRelease": null
     },
     {
       "id": "cn-pmi",
@@ -2700,7 +2700,7 @@
       "unit": "index",
       "frequency": "monthly",
       "seriesKey": "CNPMI",
-      "nextRelease": "2026-09-01"
+      "nextRelease": null
     },
     {
       "id": "cn-policy-rate",
@@ -2709,7 +2709,7 @@
       "unit": "percent",
       "frequency": "monthly",
       "seriesKey": "PBOC.LPR1Y",
-      "nextRelease": "2026-09-21"
+      "nextRelease": null
     },
     {
       "id": "cn-current-account",
@@ -2718,7 +2718,7 @@
       "unit": "percent",
       "frequency": "quarterly",
       "seriesKey": "CN.CA",
-      "nextRelease": "2026-09-25"
+      "nextRelease": null
     },
     {
       "id": "es-cpi",
@@ -2727,7 +2727,7 @@
       "unit": "percent",
       "frequency": "monthly",
       "seriesKey": "INE.ES.CPI",
-      "nextRelease": "2026-10-16"
+      "nextRelease": null
     },
     {
       "id": "es-cpi-core",
@@ -2736,7 +2736,7 @@
       "unit": "percent",
       "frequency": "monthly",
       "seriesKey": "ESTAT.prc_hicp_manr.TOT_X_NRG_FOOD.ES",
-      "nextRelease": "2026-10-16"
+      "nextRelease": null
     },
     {
       "id": "es-gdp",
@@ -2745,7 +2745,7 @@
       "unit": "percent",
       "frequency": "quarterly",
       "seriesKey": "INE.ES.GDP",
-      "nextRelease": "2026-10-30"
+      "nextRelease": null
     },
     {
       "id": "es-unemployment",
@@ -2754,7 +2754,7 @@
       "unit": "percent",
       "frequency": "monthly",
       "seriesKey": "INE.ES.UNEMPLOYMENT",
-      "nextRelease": "2026-10-01"
+      "nextRelease": null
     },
     {
       "id": "it-cpi",
@@ -2763,7 +2763,7 @@
       "unit": "percent",
       "frequency": "monthly",
       "seriesKey": "ISTAT.IT.CPI",
-      "nextRelease": "2026-10-16"
+      "nextRelease": null
     },
     {
       "id": "it-cpi-core",
@@ -2772,7 +2772,7 @@
       "unit": "percent",
       "frequency": "monthly",
       "seriesKey": "ESTAT.prc_hicp_manr.TOT_X_NRG_FOOD.IT",
-      "nextRelease": "2026-10-16"
+      "nextRelease": null
     },
     {
       "id": "it-unemployment",
@@ -2781,7 +2781,7 @@
       "unit": "percent",
       "frequency": "monthly",
       "seriesKey": "ESTAT.une_rt_m.IT",
-      "nextRelease": "2026-10-01"
+      "nextRelease": null
     },
     {
       "id": "it-gdp",
@@ -2790,7 +2790,7 @@
       "unit": "percent",
       "frequency": "quarterly",
       "seriesKey": "ISTAT.IT.GDP",
-      "nextRelease": "2026-10-30"
+      "nextRelease": null
     },
     {
       "id": "it-debt-gdp",
@@ -2799,7 +2799,7 @@
       "unit": "percent",
       "frequency": "quarterly",
       "seriesKey": "ISTAT.IT.DEBT",
-      "nextRelease": "2026-10-21"
+      "nextRelease": null
     },
     {
       "id": "in-cpi",
@@ -2808,7 +2808,7 @@
       "unit": "percent",
       "frequency": "monthly",
       "seriesKey": "IN.CPI",
-      "nextRelease": "2026-09-12"
+      "nextRelease": null
     },
     {
       "id": "in-gdp",
@@ -2817,7 +2817,7 @@
       "unit": "percent",
       "frequency": "quarterly",
       "seriesKey": "IN.GDP",
-      "nextRelease": "2026-11-29"
+      "nextRelease": null
     },
     {
       "id": "in-policy-rate",
@@ -2826,7 +2826,7 @@
       "unit": "percent",
       "frequency": "monthly",
       "seriesKey": "RBI.REPO",
-      "nextRelease": "2026-10-07"
+      "nextRelease": null
     }
   ],
   "macroObservations": [
