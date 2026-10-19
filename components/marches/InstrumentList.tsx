@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { FreshnessDot } from "@/components/states/FreshnessDot";
 import { NonCollecteBadge } from "@/components/states/NonCollecteBadge";
+import { ChangePill } from "@/components/states/ChangePill";
 import { formatDateLong, formatDateShort } from "@/lib/format";
 import type { FreshnessTier } from "@/lib/freshness";
 
@@ -31,28 +32,6 @@ const DATE_TONE: Record<FreshnessTier, string> = {
   erreur: "text-doux",
   absente: "text-tenu",
 };
-
-/**
- * La pastille de variation, lue d'un coup d'œil : vert pâle en hausse, rouge pâle en baisse.
- * Le fond porte le signe autant que le texte, mais le signe reste écrit — la couleur seule ne
- * suffit jamais, elle est invisible pour une partie des lecteurs.
- */
-function ChangePill({ change, direction }: { change: string; direction: "up" | "down" | "flat" }) {
-  const tone =
-    direction === "up"
-      ? "bg-hausse/11 text-hausse"
-      : direction === "down"
-        ? "bg-baisse/11 text-baisse"
-        : "bg-trait text-doux";
-
-  return (
-    <span
-      className={`inline-block rounded-rp px-1.5 py-0.5 text-11 font-semibold tabular-nums ${tone}`}
-    >
-      {change}
-    </span>
-  );
-}
 
 export function InstrumentList({ rows }: { rows: InstrumentRow[] }) {
   return (

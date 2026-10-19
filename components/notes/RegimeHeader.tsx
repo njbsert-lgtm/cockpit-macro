@@ -6,21 +6,31 @@ import { AnglesMortsAccueil } from "./AnglesMortsAccueil";
 import type { VueAccueil } from "@/lib/angles-morts";
 import { KeyIndicators } from "./KeyIndicators";
 import { NavLink } from "./NavLink";
+import { DepuisPrecedente } from "./DepuisPrecedente";
+import type { ChiffreVivant } from "@/lib/chiffres-vivants";
+import type { LigneDepuis } from "@/lib/depuis";
 
 /**
- * Couche 1 : le régime en une phrase, les indicateurs clés, puis les cartes de driver.
+ * Couche 1 : le régime en une phrase, ce qui a changé depuis la note précédente, les chiffres
+ * clés vivants, puis les cartes de driver.
  *
- * Plus de bandeau sombre — DESIGN.md ne prévoit aucune surface de ce type : le régime est le
- * titre de page (27px, poids 700), et la hiérarchie tient par la typographie seule.
+ * Le régime est le titre de page, en 24px (exception de DESIGN.md : à 27px, une phrase de 150
+ * signes occupait tout le premier écran et masquait « Depuis S41 »).
  */
 export function RegimeHeader({
   note,
+  chiffres,
+  depuis = [],
   drivers = [],
   pendingVeilleCount,
   pendingRedactionCount,
   anglesMorts,
 }: {
   note: Note;
+  /** Les chiffres clés reliés à leur dernière observation (`lib/chiffres-vivants-load.ts`). */
+  chiffres: ChiffreVivant[];
+  /** Les changements depuis `note.comparesTo` (`lib/depuis.ts`) ; vide, la section disparaît. */
+  depuis?: LigneDepuis[];
   drivers?: DriverWithBranches[];
   /**
    * Omis sur la page d'une note individuelle, qui ne recharge pas la file de veille pour un
@@ -35,15 +45,28 @@ export function RegimeHeader({
   return (
     <div className="mx-auto max-w-colonne px-4.5 pt-6 md:max-w-content md:px-6">
       <p className="text-9-5 font-semibold uppercase tracking-cap text-tenu">
-        Régime au {formatDateLong(note.date)}
+        Régime au {formatDateLong(note.date)} · {note.kind === "hebdo" ? "Hebdo" : "Spéciale"}{" "}
+        {note.isoWeek.replace(/^\d{4}-/, "")}
       </p>
-      <h1 className="mt-1.5 max-w-[28ch] text-27 font-bold leading-[1.2] tracking-titre text-encre">
+      <h1 className="mt-1.5 max-w-[32ch] text-24 font-bold leading-[1.2] tracking-titre text-pretty text-encre">
         {note.regimeStatement}
       </h1>
 
-      <div className="mt-5">
-        <KeyIndicators indicators={note.keyIndicators} />
-      </div>
+      {note.comparesTo && (
+        <DepuisPrecedente lignes={depuis} comparesTo={note.comparesTo} noteSlug={note.slug} />
+      )}
+
+      {chiffres.length > 0 && (
+        <section className="mt-6" aria-label="Chiffres clés">
+          <SectionHeader
+            title="Chiffres clés"
+            count={chiffres.some((c) => c.actuel && !c.actuel.perime && !c.actuel.nonCollecte) ? "collectés ce matin" : undefined}
+          />
+          <div className="mt-3">
+            <KeyIndicators chiffres={chiffres} />
+          </div>
+        </section>
+      )}
 
       {drivers.length > 0 && (
         <div className="mt-7">

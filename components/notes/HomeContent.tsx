@@ -1,4 +1,13 @@
-import { getActiveDriversWithBranches, getLatestNote } from "@/lib/content";
+import {
+  getActiveDriversWithBranches,
+  getDrivers,
+  getLatestNote,
+  getNoteBody,
+  getScenarioVersions,
+} from "@/lib/content";
+import { chargerChiffresVivants } from "@/lib/chiffres-vivants-load";
+import { changementsDepuis } from "@/lib/depuis";
+import { BRANCH_LABELS } from "@/lib/scenario-labels";
 import { getPendingVeilleCount } from "@/lib/veille/queries";
 import { brouillonsDisponibles } from "@/lib/redaction/portail";
 import { getReadClient } from "@/lib/supabase";
@@ -42,10 +51,22 @@ export async function HomeContent() {
     );
   }
 
+  const chiffres = await chargerChiffresVivants(latestNote);
+  const depuis = changementsDepuis({
+    note: latestNote,
+    body: getNoteBody(latestNote.slug),
+    versions: getScenarioVersions(),
+    driverLabels: Object.fromEntries(getDrivers().map((d) => [d.id, d.label])),
+    branchLabels: BRANCH_LABELS,
+    aujourdhui: new Date().toISOString().slice(0, 10),
+  });
+
   return (
     <>
       <RegimeHeader
         note={latestNote}
+        chiffres={chiffres}
+        depuis={depuis}
         drivers={drivers}
         pendingVeilleCount={pendingVeilleCount}
         pendingRedactionCount={pendingRedactionCount}

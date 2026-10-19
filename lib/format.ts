@@ -22,6 +22,11 @@ export function formatDateShort(iso: string): string {
   return shortFormatter.format(new Date(iso + "T00:00:00Z"));
 }
 
+/** « 14/10 » : jour et mois seuls, pour les dates proches qu'on lit d'un coup d'œil. */
+export function formatJourMois(iso: string): string {
+  return `${iso.slice(8, 10)}/${iso.slice(5, 7)}`;
+}
+
 export function formatDateLong(iso: string): string {
   return longFormatter.format(new Date(iso + "T00:00:00Z"));
 }

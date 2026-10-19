@@ -1,62 +1,92 @@
-import Link from "next/link";
-import type { Note } from "@/lib/types";
-import { getMacroIndicator } from "@/lib/data";
-import { resoudreIndicateurCle } from "@/lib/indicateur-cle";
+"use client";
+
+import { useState } from "react";
+import type { ChiffreVivant } from "@/lib/chiffres-vivants";
+import { ChangePill } from "@/components/states/ChangePill";
+import { ChiffreSheet } from "@/components/states/ChiffreSheet";
+import { FreshnessDot } from "@/components/states/FreshnessDot";
+import { NonCollecteBadge } from "@/components/states/NonCollecteBadge";
+import { formatJourMois } from "@/lib/format";
 
 /**
- * Les chiffres clés du régime (DESIGN.md) : une grille de cellules bordées, deux colonnes sur
- * mobile, quatre sur desktop. Une cellule qui désigne un indicateur suivi dans Macro en ouvre la
- * fiche ; les autres (prévisions, chiffres de marché) restent du texte, sans chevron.
+ * Les chiffres clés du régime (DESIGN.md), vivants : chaque cellule porte la dernière valeur
+ * collectée de ce qu'elle désigne, sa variation et sa date (« le 14/10 »). Toutes se touchent et
+ * ouvrent la feuille de chiffre — valeur de la note, valeur du jour, courbe. Une cellule que rien
+ * ne relie au catalogue garde le texte de la note.
  *
  * Les séparateurs sont l'interstice d'1px d'une grille sur fond `--trait` ; la dernière ligne
- * est complétée par des cellules vides au fond de page, différentes sur mobile (2 colonnes) et
- * desktop (4), pour que les traits tombent juste quel que soit le nombre de chiffres.
+ * est complétée par des cellules vides, différentes sur mobile (2 colonnes) et desktop (4).
  */
-export function KeyIndicators({ indicators }: { indicators: Note["keyIndicators"] }) {
-  if (indicators.length === 0) return null;
+export function KeyIndicators({ chiffres }: { chiffres: ChiffreVivant[] }) {
+  const [ouvert, setOuvert] = useState<ChiffreVivant | null>(null);
+  if (chiffres.length === 0) return null;
+
   return (
-    <div className="overflow-hidden rounded-rc border border-trait">
-      <dl className="grid grid-cols-2 gap-px bg-trait md:grid-cols-4">
-        {indicators.map((ind) => {
-          const indicatorId = resoudreIndicateurCle(ind, (id) => getMacroIndicator(id) !== undefined);
-          const contenu = (
-            <>
-              <dt className="text-9-5 font-semibold uppercase tracking-cap text-tenu">
-                {ind.label}
-                {indicatorId && <span aria-hidden> ›</span>}
-              </dt>
-              <dd className="mt-1 text-13 font-semibold leading-tight text-encre">{ind.value}</dd>
-            </>
-          );
-          return (
-            <div key={ind.label} className="bg-page">
-              {indicatorId ? (
-                <Link
-                  href={`/macro/${indicatorId}`}
-                  className="block min-h-11 px-3.5 py-3 transition-colors hover:bg-repos"
-                  aria-label={`${ind.label} : ${ind.value} — ouvrir la fiche de l'indicateur`}
-                >
-                  {contenu}
-                </Link>
-              ) : (
-                <div className="px-3.5 py-3">{contenu}</div>
-              )}
-            </div>
-          );
-        })}
-        {Array.from({ length: 3 }, (_, i) => {
-          const mobile = i < (2 - (indicators.length % 2)) % 2;
-          const desktop = i < (4 - (indicators.length % 4)) % 4;
-          if (!mobile && !desktop) return null;
-          return (
-            <div
-              key={`vide-${i}`}
-              aria-hidden="true"
-              className={`bg-page ${mobile ? "" : "hidden"} ${desktop ? "md:block" : "md:hidden"}`}
-            />
-          );
-        })}
-      </dl>
-    </div>
+    <>
+      <div className="overflow-hidden rounded-rc border border-trait">
+        <ul className="grid grid-cols-2 gap-px bg-trait md:grid-cols-4">
+          {chiffres.map((c) => (
+            <li key={c.label} className="bg-page">
+              <button
+                type="button"
+                onClick={() => setOuvert(c)}
+                className="block min-h-11 w-full px-3.5 py-[11px] text-left transition-colors hover:bg-repos"
+                aria-haspopup="dialog"
+              >
+                <span className="block text-9-5 font-semibold uppercase tracking-cap text-tenu">
+                  {c.label}
+                  <span aria-hidden> ›</span>
+                </span>
+                <Valeur chiffre={c} />
+              </button>
+            </li>
+          ))}
+          {Array.from({ length: 3 }, (_, i) => {
+            const mobile = i < (2 - (chiffres.length % 2)) % 2;
+            const desktop = i < (4 - (chiffres.length % 4)) % 4;
+            if (!mobile && !desktop) return null;
+            return (
+              <li
+                key={`vide-${i}`}
+                aria-hidden="true"
+                className={`bg-page ${mobile ? "" : "hidden"} ${desktop ? "md:block" : "md:hidden"}`}
+              />
+            );
+          })}
+        </ul>
+      </div>
+      <ChiffreSheet chiffre={ouvert} onClose={() => setOuvert(null)} />
+    </>
+  );
+}
+
+function Valeur({ chiffre }: { chiffre: ChiffreVivant }) {
+  const a = chiffre.actuel;
+  if (!a) {
+    return <span className="mt-1 block text-13 font-semibold leading-tight text-encre">{chiffre.valeurNote}</span>;
+  }
+  return (
+    <>
+      <span className="mt-1 block text-15 font-semibold leading-tight text-encre">{a.valeur}</span>
+      <span className="mt-1 flex flex-wrap items-center gap-1.5 text-10-5">
+        {a.nonCollecte ? (
+          <span className="inline-flex items-center gap-1.5 text-tenu">
+            <NonCollecteBadge />
+            le {formatJourMois(a.date)}
+          </span>
+        ) : a.perime ? (
+          <span className="inline-flex items-center gap-1.5 text-k-choc">
+            <FreshnessDot tier="perime" />
+            valeur du {formatJourMois(a.date)}
+          </span>
+        ) : (
+          <>
+            {a.variation && <ChangePill change={a.variation.texte} direction={a.variation.sens} />}
+            {a.mention && <span className="text-tenu">{a.mention}</span>}
+            {!a.mention && <span className="text-tenu">{a.dateLibelle}</span>}
+          </>
+        )}
+      </span>
+    </>
   );
 }

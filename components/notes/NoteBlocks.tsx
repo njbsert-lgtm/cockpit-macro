@@ -11,7 +11,6 @@ import {
   dominantChannel,
 } from "@/lib/channels";
 import { createNoteMdxComponents } from "./mdx-blocks";
-import { KeyIndicators } from "./KeyIndicators";
 
 /**
  * La page de lecture d'une note (DESIGN.md) — filet, pas aplat.
@@ -77,9 +76,6 @@ export async function NoteBlocks({ note }: { note: Note }) {
             — {note.trigger}
           </p>
         )}
-        <div className="mt-5">
-          <KeyIndicators indicators={note.keyIndicators} />
-        </div>
       </header>
 
       <div
