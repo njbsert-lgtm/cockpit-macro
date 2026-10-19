@@ -1,7 +1,17 @@
 import type { NextConfig } from "next";
 
+import { NOTES_PURGEES } from "./config/suivi";
+
 const nextConfig: NextConfig = {
-  /* config options here */
+  // Les notes de développement retirées à la remise à zéro du corpus (config/suivi.ts) : une
+  // adresse partagée ou enregistrée ne doit pas tomber sur un 404 mais sur le fil des notes.
+  async redirects() {
+    return NOTES_PURGEES.map((slug) => ({
+      source: `/notes/${slug}`,
+      destination: "/notes",
+      permanent: false,
+    }));
+  },
 };
 
 export default nextConfig;

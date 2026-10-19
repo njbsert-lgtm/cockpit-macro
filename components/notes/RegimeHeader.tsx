@@ -9,6 +9,7 @@ import { NavLink } from "./NavLink";
 import { DepuisPrecedente } from "./DepuisPrecedente";
 import type { ChiffreVivant } from "@/lib/chiffres-vivants";
 import type { LigneDepuis } from "@/lib/depuis";
+import { estPurgee } from "@/config/suivi";
 
 /**
  * Couche 1 : le régime en une phrase, ce qui a changé depuis la note précédente, les chiffres
@@ -52,7 +53,7 @@ export function RegimeHeader({
         {note.regimeStatement}
       </h1>
 
-      {note.comparesTo && (
+      {note.comparesTo && !estPurgee(note.comparesTo) && (
         <DepuisPrecedente lignes={depuis} comparesTo={note.comparesTo} noteSlug={note.slug} />
       )}
 

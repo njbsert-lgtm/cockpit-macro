@@ -7,6 +7,7 @@ import { formatDateShort } from "@/lib/format";
 import { CHANNEL_BG, dominantChannel } from "@/lib/channels";
 import { blockStates } from "@/lib/notes-archive";
 import type { BlockName } from "@/lib/note-blocks";
+import { estPurgee } from "@/config/suivi";
 
 /**
  * Une pastille ronde de 17px par bloc : pleine verte si le bloc est validé, en pointillés
@@ -118,7 +119,7 @@ export function ArchiveEntry({
               >
                 Ouvrir la note
               </Link>
-              {note.comparesTo && (
+              {note.comparesTo && !estPurgee(note.comparesTo) && (
                 <Link
                   href={`/notes/${note.comparesTo}`}
                   className="inline-flex min-h-11 items-center rounded-rb border border-trait bg-page px-4 text-13 font-medium text-encre transition-colors hover:border-trait-f"
