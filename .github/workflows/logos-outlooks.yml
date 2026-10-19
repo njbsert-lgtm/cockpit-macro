@@ -1,0 +1,87 @@
+# Récupère les logos des maisons dont un outlook est lu (onglet Outlook), lancé à la main.
+#
+# Raison d'être : l'environnement de développement n'a pas d'accès réseau sortant vers
+# Wikimedia. Ce workflow télécharge chaque logo depuis Wikimedia Commons — d'abord l'image de
+# tête de l'article Wikipédia de la maison, puis des noms de fichier candidats —, vérifie que
+# c'est bien une image, et commite le résultat dans `public/outlooks/logos/`. Un logo
+# introuvable n'est pas inventé : la carte garde son monogramme.
+
+name: Logos des outlooks
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  logos:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Télécharger les logos
+        run: |
+          set -u
+          mkdir -p public/outlooks/logos
+          UA="Marguerite/1.0 (cockpit macro personnel; github.com/${GITHUB_REPOSITORY})"
+          echo '## Logos' >> "$GITHUB_STEP_SUMMARY"
+
+          # Une image Commons, par son nom de fichier : Special:FilePath suit la redirection
+          # vers le fichier original.
+          essayer_fichier() {
+            local cible="$1" fichier="$2" ext="${2##*.}"
+            ext=$(echo "$ext" | tr 'A-Z' 'a-z')
+            local sortie="public/outlooks/logos/${cible}.${ext}"
+            if curl -sSfL -A "$UA" --max-time 30 -o "$sortie" \
+              "https://commons.wikimedia.org/wiki/Special:FilePath/${fichier}"; then
+              if file "$sortie" | grep -qiE 'svg|png|image'; then
+                echo "- ${cible} : ${fichier} ($(wc -c < "$sortie") octets)" >> "$GITHUB_STEP_SUMMARY"
+                return 0
+              fi
+            fi
+            rm -f "$sortie"
+            return 1
+          }
+
+          # L'image de tête d'un article Wikipédia, quand c'est un fichier Commons.
+          image_de_tete() {
+            curl -sSf -A "$UA" --max-time 30 \
+              "https://en.wikipedia.org/w/api.php?action=query&format=json&prop=pageimages&piprop=name&titles=$1" \
+              | jq -r '.query.pages[] | .pageimage // empty'
+          }
+
+          recuperer() {
+            local cible="$1" article="$2"; shift 2
+            local tete
+            tete=$(image_de_tete "$article" || true)
+            for f in ${tete:+"$tete"} "$@"; do
+              essayer_fichier "$cible" "$f" && return 0
+            done
+            echo "- ${cible} : **introuvable** (article ${article}, candidats : $*)" >> "$GITHUB_STEP_SUMMARY"
+          }
+
+          recuperer jpmorgan "J.P._Morgan" \
+            "J.P._Morgan_Logo_2008_1.svg" "J.P._Morgan_logo.svg" "JPMorgan_Logo_2008.svg"
+          recuperer hsbc "HSBC" \
+            "HSBC_logo_(2018).svg" "HSBC_logo.svg" "HSBC_Logo.svg"
+          recuperer bnpparibas "BNP_Paribas" \
+            "BNP_Paribas.svg" "Logo_BNP_Paribas.svg" "BNP_Paribas_logo.svg"
+          recuperer citi "Citigroup" \
+            "Citi.svg" "Citi_logo.svg" "Citigroup.svg"
+          recuperer morganstanley "Morgan_Stanley" \
+            "Morgan_Stanley_Logo_1.svg" "Morgan_Stanley_logo.svg" "Morgan_Stanley.svg"
+
+          ls -la public/outlooks/logos
+
+      - name: Commiter
+        run: |
+          git add public/outlooks/logos/
+          if git diff --cached --quiet; then
+            echo "Aucun logo nouveau ou modifié." >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          git config user.name "Marguerite"
+          git config user.email "noreply@users.noreply.github.com"
+          git commit -m "Outlook : logos des maisons, depuis Wikimedia Commons"
+          git push origin HEAD
