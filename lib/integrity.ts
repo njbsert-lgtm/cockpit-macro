@@ -1,4 +1,5 @@
 import { OUTLOOK_EMOJIS } from "./types";
+import { DEBUT_DU_SUIVI } from "@/config/suivi";
 import type {
   DriverInput,
   Note,
@@ -249,12 +250,12 @@ function checkNotes(
 // ---------------------------------------------------------------------------
 
 function checkScenarios(
-  { scenarios }: ContentGraph,
+  graph: ContentGraph,
   refs: { driverIds: ReadonlySet<string>; noteSlugs: ReadonlySet<string> },
 ) {
   const byBranch = new Map<string, ScenarioVersion[]>();
 
-  for (const v of scenarios) {
+  for (const v of graph.scenarios) {
     const where = `content/scenarios.ts (${v.driverId}/${v.branchId} v${v.version})`;
 
     if (!refs.driverIds.has(v.driverId)) {
@@ -278,9 +279,17 @@ function checkScenarios(
 
   // Une trajectoire est une suite : un trou dans les numéros de version signale une révision
   // perdue, donc une trajectoire qui ment sur ce qui s'est passé.
+  //
+  // Une seule exception, celle de la remise à zéro du corpus (config/suivi.ts) : les versions
+  // antérieures au début du suivi ont été retirées, donc une branche peut commencer à une version
+  // supérieure à 1 — à condition que sa première version date du début du suivi ou d'après.
+  // Un trou au milieu de la suite reste refusé.
+  const debut = graph.notes.find((n) => n.slug === DEBUT_DU_SUIVI.slug)?.date ?? null;
   for (const [key, versions] of byBranch) {
     const numbers = versions.map((v) => v.version).sort((a, b) => a - b);
-    const expected = numbers.map((_, i) => i + 1);
+    const first = [...versions].sort((a, b) => a.version - b.version)[0];
+    const start = numbers[0] > 1 && debut !== null && first.date >= debut ? numbers[0] : 1;
+    const expected = numbers.map((_, i) => i + start);
     if (numbers.join(",") !== expected.join(",")) {
       throw new IntegrityError(
         `content/scenarios.ts (${key})`,

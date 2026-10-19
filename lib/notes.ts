@@ -3,6 +3,7 @@ import path from "node:path";
 import matter from "gray-matter";
 import { z } from "zod";
 import type { Note, NoteKind, VeilleChannel, Zone } from "./types";
+import { DEBUT_DU_SUIVI } from "@/config/suivi";
 import { ANGLES_REGIME, REGIME_A_CHOISIR, RETENUS_REGIME, anglesDistincts, propositionDe } from "./regime";
 import {
   BLOCK_NAMES,
@@ -536,7 +537,12 @@ export function validateNoteChain(notes: ParsedNote[]): Note[] {
         ? (previous.filter((e) => e.meta.kind === "hebdo").at(-1)?.meta.slug ?? null)
         : (previous.at(-1)?.meta.slug ?? null);
 
-    if (comparesTo !== expected) {
+    // La première note du suivi se compare à une note retirée à la remise à zéro du corpus
+    // (config/suivi.ts) : accepté pour elle seule, jamais pour une autre note.
+    const debutDuSuivi =
+      expected === null && slug === DEBUT_DU_SUIVI.slug && comparesTo === DEBUT_DU_SUIVI.precedentePurgee;
+
+    if (comparesTo !== expected && !debutDuSuivi) {
       throw new NoteValidationError(
         slug,
         kind === "hebdo"
@@ -545,7 +551,7 @@ export function validateNoteChain(notes: ParsedNote[]): Note[] {
       );
     }
 
-    if (comparesTo && !slugs.has(comparesTo)) {
+    if (comparesTo && !slugs.has(comparesTo) && !debutDuSuivi) {
       throw new NoteValidationError(slug, `« comparesTo » pointe vers ${comparesTo}, qui n'existe pas`);
     }
 
