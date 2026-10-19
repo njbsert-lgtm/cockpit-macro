@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { DEBUT_DU_SUIVI } from "@/config/suivi";
+import { DEBUT_DU_SUIVI, estPurgee } from "@/config/suivi";
 
 /**
  * Le seul test qui lit le corpus réel — et il n'en lit aucune donnée. Il ne nomme ni slug, ni
@@ -19,5 +19,12 @@ describe("le corpus réel", () => {
       const retiree = n.slug === DEBUT_DU_SUIVI.slug && n.comparesTo === DEBUT_DU_SUIVI.precedentePurgee;
       expect(slugs.has(n.comparesTo) || retiree, `${n.slug} → ${n.comparesTo}`).toBe(true);
     }
+  });
+
+  it("ne contient plus aucune note, version de scénario ni entrée d'historique retirées à la remise à zéro", async () => {
+    const { getNotes, getScenarioVersions, getTrends } = await import("./content");
+    expect(getNotes().filter((n) => estPurgee(n.slug))).toEqual([]);
+    expect(getScenarioVersions().filter((v) => estPurgee(v.noteSlug))).toEqual([]);
+    expect(getTrends().flatMap((t) => t.statusHistory).filter((h) => estPurgee(h.noteSlug))).toEqual([]);
   });
 });
