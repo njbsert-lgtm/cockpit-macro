@@ -928,7 +928,7 @@ jobs:
                   --data-urlencode "file_type=json" \
                   --data-urlencode "include_release_dates_with_no_data=true" \
                   --data-urlencode "realtime_start=$TODAY" \
-                  --data-urlencode "limit=5" \
+                  --data-urlencode "limit=15" \
                   "https://api.stlouisfed.org/fred/release/dates")
                 echo "prochaines dates du release $RELEASE_ID :"
                 echo "$DATES" | jq -c '.release_dates[]?.date' 2>/dev/null || echo "$DATES"
