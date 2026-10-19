@@ -50,10 +50,14 @@
   --text-12: 0.75rem; /* compteur de section, ligne de contexte */
   --text-12-5: 0.78125rem; /* corps de carte, ligne de note */
   --text-13: 0.8125rem; /* marque, chips, boutons, nom de branche */
+  --text-13-5: 0.84375rem; /* libellé de ligne « Depuis », texte de carte d'outlook */
   --text-14-5: 0.90625rem; /* titre de tendance */
   --text-15: 0.9375rem; /* corps */
   --text-15-5: 0.96875rem; /* titre de carte */
   --text-17: 1.0625rem; /* titre de section */
+  --text-21: 1.3125rem; /* titre d'un point d'outlook */
+  --text-22: 1.375rem; /* question d'un driver, chiffres d'un point */
+  --text-24: 1.5rem; /* phrase de régime de l'accueil */
   --text-26: 1.625rem; /* titre d'une note, page de lecture */
   --text-27: 1.6875rem; /* titre de page */
 

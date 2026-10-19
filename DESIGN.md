@@ -99,6 +99,9 @@ ou une URL.
 - Corps : 15px, interligne 1.55
 - Titres `h1`–`h4` : poids 600, interligne 1.2, `letter-spacing:-.015em`
 - Titre de page : 27px, poids 700
+  - Exception : la phrase de régime en tête de l'accueil se compose en 24px, poids 700,
+    `text-wrap: pretty`. À 27px, une phrase de 150 signes occupe le premier écran entier et masque
+    « Depuis S41 ».
 - Titre de section : 17px
 - Titre de carte : 15.5px, interligne 1.25
 - Corps de carte : 12.5px, couleur `--doux`
@@ -231,6 +234,10 @@ chevron `›` après le libellé. Les autres (prévisions, chiffres de marché) 
 chevron : le chevron annonce la fiche, il ne se met pas partout. Le rattachement se lit dans le
 libellé (`lib/indicateur-cle.ts`) ; un `indicatorId` dans le frontmatter le force.
 
+La date d'une valeur s'écrit « le 14/10 », et non plus « au 14/10 » — ici comme dans les listes
+d'instruments mobiles. Les mentions « dernière valeur connue du … » et « valeur du … » restent
+inchangées.
+
 ### Carte de driver
 
 Bordure `--trait`, rayon `--rc`, padding 16px. Titre 15.5px avec une étiquette « Driver »
@@ -255,6 +262,10 @@ branche centrale (actions à plat), `--baisse` pour la défavorable (actions en 
 `--hausse` pour la favorable (actions en hausse). La branche la plus vraisemblable n'est donc pas
 la plus colorée : colorer par vraisemblance transformerait la carte en classement et la ferait
 lire comme une prévision, alors qu'un driver sert à tenir plusieurs futurs ouverts.
+
+**Repère de révision.** Quand une branche a changé de cran depuis la note précédente, sa jauge
+porte un **repère** de 2×9px `--encre` à l'ancien cran, et le sous-titre l'écrit (« était faible en
+S41 »). Le repère ne s'utilise pas ailleurs.
 
 Trois branches en pratique, quatre au maximum. Au-delà, l'incertitude n'est pas
 structurée : c'est le signe qu'il faut la scinder en deux drivers.
@@ -631,7 +642,27 @@ Desktop : la colonne de lecture est limitée à 640px.
 
 Ces emoji ne changent jamais d'une note à l'autre : le bénéfice — sauter directement au bloc
 cherché sans lire les libellés — disparaît dès qu'un emoji change de sens. **Aucun autre emoji
-dans une note, aucun emoji ailleurs dans l'application** : ni titre de page, ni carte, ni tableau.
+dans une note.** Hors des notes, un seul autre vocabulaire est permis, celui des **thèmes
+d'outlook** (ci-dessous), et seulement sur les écrans Outlook. Aucun emoji ailleurs : ni titre de
+page, ni carte de driver, ni tableau de marché.
+
+| Thème d'outlook | Emoji |
+| --- | --- |
+| Croissance, marché actions | 📈 |
+| Banques centrales, taux | 🏦 |
+| Énergie, pétrole | 🛢️ |
+| Intelligence artificielle | 🤖 |
+| Investissement, capex | 🏗️ |
+| Cybersécurité | 🔐 |
+| Matières premières, rareté | 🪙 |
+| Infrastructure, électricité | ⚡ |
+| Géopolitique, fragmentation | 🌍 |
+| Industrie, concurrence | 🏭 |
+| Portefeuille, allocation | 🧭 |
+
+Les deux vocabulaires ne se recoupent jamais. Un emoji de bloc de note n'apparaît pas dans un
+outlook, et inversement. Un nouveau thème réutilise l'emoji le plus proche ; un ajout à la table se
+décide ici, pas dans le contenu.
 
 Le nombre de blocs suit `CLAUDE.md` : cinq pour une hebdomadaire, trois pour une spéciale.
 
@@ -652,13 +683,37 @@ Les trois branches : sur mobile, trois lignes-boutons empilées dans une carte `
 par `--trait` — la ligne active passe sur fond `--repos`, chaque ligne porte son nom, sa
 vraisemblance et la jauge sémantique —, le panneau de la branche active dessous ; sur desktop,
 trois colonnes dans une carte `--rc`. La **branche dominante** se dit en toutes lettres
-(« dominante », `--encre` poids 600) et par un filet haut de 2px `--encre`, jamais par une couleur
-de canal.
+(« dominante », `--encre` poids 600) et par deux filets de 2px `--encre`, en haut et en bas de sa
+ligne, sans filet latéral, sur fond `--repos` — jamais par une couleur de canal.
 
 La **trajectoire** trace une ligne par branche à sa couleur sémantique (`--k-pos`, `--hausse`,
 `--baisse`), chacune avec un tiret distinct pour que la couleur ne porte pas seule
 l'information ; axes en `--trait`, graduations en 11px `--tenu` sur trois crans (faible, modérée,
 centrale), dans une carte `--rc`, et la mention des vraisemblances éditoriales en pied.
+
+---
+
+## Page d'un outlook
+
+**Principe : fiches, pas filet.** Une note se lit comme un texte continu. Un outlook se lit comme
+une série de points indépendants. Les points majeurs sont donc des cartes `--rc` séparées, jamais
+un texte à filet, pour que les deux écrans ne se confondent pas.
+
+- **Carte chiffrée** : fond `--repos`, emoji 17px, chiffre en exergue 26px poids 700, légende 12px
+  `--doux`. Le chiffre est en `--encre`. C'est un chiffre éditorial, pas une performance : jamais
+  de vert ni de rouge.
+- **Carte texte** : pastille ronde de 32px `--repos` portant l'emoji, thème en capitales 9.5px
+  `--tenu`, texte 13.5px `--encre`.
+- **Pastille de thème** (liste et filtres) : `--rp`, contour `--trait`, sans fond. Elle se
+  distingue ainsi de la pastille de driver, qui a un fond `--repos`.
+- **Positionnements** : ▲ ● ▼ en `--encre`, « n.p. » en `--tenu` quand le document ne tranche
+  pas. On ne déduit jamais une position que la maison n'a pas écrite.
+- **Graphique redessiné** : uniquement à partir des points cités dans le document, sans
+  interpolation. Il est tracé en `--encre` et `--tenu`, sans couleur de performance ni de canal.
+- **Aucune référence aux drivers ni aux tendances de Marguerite** sur les écrans Outlook : un
+  outlook est prospectif et se lit avec ses propres thèmes.
+- **Âge du document** : il s'écrit en clair (« il y a 3 mois »), jamais en ambre. L'ambre est
+  réservé à la fraîcheur d'une collecte.
 
 ---
 
