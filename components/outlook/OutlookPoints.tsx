@@ -10,15 +10,18 @@ const SYMBOLE = { renforcer: "▲", neutre: "●", alleger: "▼" } as const;
 /**
  * Les points majeurs d'un outlook (maquette 3b) : des fiches, pas un filet. Les cartes chiffrées
  * d'abord, en grille de deux, chiffre en exergue en encre (un chiffre éditorial n'est pas une
- * performance) ; puis les cartes texte, emoji dans une pastille ronde. Les filtres de thème
- * masquent les cartes hors thème ; chaque carte ouvre la page du point.
+ * performance) ; puis les cartes texte, emoji dans une pastille ronde. Un filtre de thème masque
+ * les cartes hors thème et passe toutes celles qui restent en phrase : un chiffre seul se lit en
+ * survol de « Tout », mais une fois le thème choisi on vient lire ce que la maison avance. Chaque
+ * carte ouvre la page du point.
  */
 export function OutlookPoints({ outlook }: { outlook: Outlook }) {
   const [filtre, setFiltre] = useState<string | null>(null);
   const themes = new Map(outlook.themes.map((t) => [t.id, t]));
   const visibles = outlook.points.filter((p) => filtre === null || p.themeId === filtre);
-  const chiffres = visibles.filter((p) => p.chiffre);
-  const textes = visibles.filter((p) => !p.chiffre);
+  const enPhrases = filtre !== null;
+  const chiffres = enPhrases ? [] : visibles.filter((p) => p.chiffre);
+  const textes = enPhrases ? visibles : visibles.filter((p) => !p.chiffre);
   const utilises = outlook.themes.filter((t) => outlook.points.some((p) => p.themeId === t.id));
 
   return (
@@ -46,7 +49,7 @@ export function OutlookPoints({ outlook }: { outlook: Outlook }) {
           </ul>
         )}
         {textes.length > 0 && (
-          <ul className="mt-2 flex flex-col gap-2">
+          <ul className={`${chiffres.length > 0 ? "mt-2" : "mt-3"} flex flex-col gap-2`}>
             {textes.map((p) => (
               <li key={p.id}>
                 <CarteTexte outlook={outlook} point={p} theme={themes.get(p.themeId)!} />

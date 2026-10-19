@@ -704,6 +704,8 @@ un texte à filet, pour que les deux écrans ne se confondent pas.
   de vert ni de rouge.
 - **Carte texte** : pastille ronde de 32px `--repos` portant l'emoji, thème en capitales 9.5px
   `--tenu`, texte 13.5px `--encre`.
+- **Filtre de thème actif** : toutes les cartes du thème passent en carte texte, la phrase du point
+  à la place du chiffre en exergue. Le chiffre seul ne se montre que sous « Tout ».
 - **Pastille de thème** (liste et filtres) : `--rp`, contour `--trait`, sans fond. Elle se
   distingue ainsi de la pastille de driver, qui a un fond `--repos`.
 - **Logo de la maison** : fichier SVG de `public/outlooks/logos/`, dans un cadre fond `--page`,
