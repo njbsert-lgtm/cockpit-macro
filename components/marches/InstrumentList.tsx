@@ -2,7 +2,7 @@ import Link from "next/link";
 import { FreshnessDot } from "@/components/states/FreshnessDot";
 import { NonCollecteBadge } from "@/components/states/NonCollecteBadge";
 import { ChangePill } from "@/components/states/ChangePill";
-import { formatDateLong, formatDateShort } from "@/lib/format";
+import { formatDateLong, formatJourMois } from "@/lib/format";
 import type { FreshnessTier } from "@/lib/freshness";
 
 export type InstrumentRow = {
@@ -86,7 +86,7 @@ export function InstrumentList({ rows }: { rows: InstrumentRow[] }) {
                     {row.nonCollecte ? (
                       <span className="inline-flex items-center gap-1.5 text-10-5 text-tenu">
                         <NonCollecteBadge />
-                        au {formatDateShort(row.date)}
+                        le {formatJourMois(row.date)}
                       </span>
                     ) : row.change !== null && row.direction !== null ? (
                       <>
@@ -96,7 +96,7 @@ export function InstrumentList({ rows }: { rows: InstrumentRow[] }) {
                           title={formatDateLong(row.date)}
                         >
                           {row.tier !== "frais" && <FreshnessDot tier={row.tier} />}
-                          au {formatDateShort(row.date)}
+                          le {formatJourMois(row.date)}
                         </span>
                       </>
                     ) : (
@@ -112,7 +112,7 @@ export function InstrumentList({ rows }: { rows: InstrumentRow[] }) {
                         {/* Le point et le texte disent la même chose : une variation absente est
                             déjà un état dégradé, elle ne se peint jamais en gris neutre. */}
                         <FreshnessDot tier={row.tier === "frais" ? "perime" : row.tier} />
-                        dernière valeur connue du {formatDateShort(row.date)}
+                        dernière valeur connue du {formatJourMois(row.date)}
                       </span>
                     )}
                   </span>

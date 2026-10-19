@@ -44,6 +44,9 @@ export function FreshnessPanel({
   }, [open]);
 
   const oldest = summary[0];
+  // Les sources dont la collecte a pris du retard : dites en clair dans la barre, sur mobile
+  // aussi — la fraîcheur se suit par source, c'est donc elles qu'on compte.
+  const enRetard = summary.filter((s) => s.fetchedAt && s.tier !== "frais").length;
 
   return (
     <div className="relative" ref={containerRef}>
@@ -56,12 +59,14 @@ export function FreshnessPanel({
         <FreshnessDot tier={tier} />
         {/* La date entière n'a pas sa place dans une barre de 47px sur mobile : le point
             porte l'alerte, le panneau porte le détail. */}
-        {oldest?.fetchedAt ? (
+        {enRetard > 0 ? (
+          <span>
+            {enRetard} source{enRetard > 1 ? "s" : ""} en retard
+          </span>
+        ) : oldest?.fetchedAt ? (
           <>
             <span className="hidden sm:inline">Données au {formatDateTime(oldest.fetchedAt)}</span>
-            <span className="sr-only sm:hidden">
-              Fraîcheur des données — {formatDateTime(oldest.fetchedAt)}
-            </span>
+            <span className="sm:hidden">Collecte {formatDateTime(oldest.fetchedAt).slice(-5)}</span>
           </>
         ) : (
           <span>{oldest ? "Jamais collecté" : "Aucune source"}</span>
