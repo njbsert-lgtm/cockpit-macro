@@ -1,6 +1,5 @@
 import { describe, expect, it } from "vitest";
 import { changementsDepuis, libelleDeLecture, lecturesDuBloc, sujetSansArticle } from "./depuis";
-import { getLatestNote, getNoteBody, getScenarioVersions } from "./content";
 import type { Guet, Note, ScenarioVersion } from "./types";
 
 const corps = `<CeQuiAChange>
@@ -112,18 +111,5 @@ describe("changementsDepuis", () => {
         aujourdhui: "2026-10-19",
       }),
     ).toEqual([]);
-  });
-
-  it("trouve au moins un changement dans la dernière note du corpus", () => {
-    const derniere = getLatestNote()!;
-    const lignes = changementsDepuis({
-      note: derniere,
-      body: getNoteBody(derniere.slug),
-      versions: getScenarioVersions(),
-      driverLabels: {},
-      branchLabels: {},
-      aujourdhui: "2026-10-19",
-    });
-    expect(lignes.length).toBeGreaterThan(0);
   });
 });

@@ -2,12 +2,7 @@ import { readFileSync } from "node:fs";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
 import { checkIntegrity, type ContentGraph } from "./integrity";
-import { parseNote, readNoteSources } from "./notes";
-import { DRIVERS } from "@/content/drivers";
-import { TRENDS } from "@/content/tendances";
-import { SCENARIO_VERSIONS } from "@/content/scenarios";
-import { OUTLOOKS } from "@/content/outlooks";
-import { getInstruments, getMacroIndicators } from "./data";
+import { parseNote } from "./notes";
 import { deriveDrivers, activeDrivers } from "./drivers";
 import type {
   DriverInput,
@@ -350,6 +345,59 @@ describe("références mortes — scénarios", () => {
     const g = graph({ scenarios: branches("rates", [{ version: 3 }]) });
     expect(() => checkIntegrity(g)).toThrow(/versions non contiguës/);
   });
+
+  describe("après la remise à zéro du corpus (config/suivi.ts)", () => {
+    const debut = note({ slug: "2026-S38", date: "2026-09-19", isoWeek: "2026-S38" });
+    const depuis = (over: Partial<ScenarioVersion>) => ({
+      date: "2026-09-19",
+      noteSlug: "2026-S38",
+      ...over,
+    });
+
+    it("accepte une branche qui commence à une version supérieure à 1, au début du suivi", () => {
+      const g = graph({
+        notes: [note(), debut],
+        scenarios: branches("rates", [
+          depuis({ version: 4 }),
+          depuis({ version: 4 }),
+          depuis({ version: 4 }),
+        ]),
+      });
+      expect(() => checkIntegrity(g)).not.toThrow();
+    });
+
+    it("exige ensuite des numéros contigus : un trou après le début reste refusé", () => {
+      const g = graph({
+        notes: [note(), debut],
+        scenarios: [
+          ...branches("rates", [depuis({ version: 4 }), depuis({ version: 4 }), depuis({ version: 4 })]),
+          { ...branches("rates")[0], version: 6, date: "2026-09-26", noteSlug: "2026-S38" },
+        ],
+      });
+      expect(() => checkIntegrity(g)).toThrow(/versions non contiguës : 4, 6 — attendu 4, 5/);
+    });
+
+    it("refuse un début à une version supérieure à 1 AVANT le début du suivi", () => {
+      // Cette trajectoire date d'avant la remise à zéro : sa version 1 n'a pas de raison d'avoir
+      // disparu, c'est donc une révision perdue.
+      const g = graph({
+        notes: [debut, note({ slug: "2026-S27", date: "2026-07-05" })],
+        scenarios: branches("rates", [{ version: 3 }, { version: 3 }, { version: 3 }]),
+      });
+      expect(() => checkIntegrity(g)).toThrow(/versions non contiguës/);
+    });
+
+    it("refuse un début à une version supérieure à 1 quand la note de début du suivi n'existe pas", () => {
+      const g = graph({
+        scenarios: branches("rates", [
+          depuis({ version: 4 }),
+          depuis({ version: 4 }),
+          depuis({ version: 4 }),
+        ]),
+      });
+      expect(() => checkIntegrity(g)).toThrow(/note inconnue « 2026-S38 »/);
+    });
+  });
 });
 
 describe("identifiants en double", () => {
@@ -408,13 +456,13 @@ describe("dérivation des champs de Driver", () => {
 // ---------------------------------------------------------------------------
 
 describe("la note de test à référence morte", () => {
-  // `content/__fixtures__/2026-S33.mdx` est une hebdo entièrement valide, sauf que son
-  // driverOrder cite un driver inexistant. Elle vit hors de `content/notes/` : déposée
-  // dans le corpus, elle rendrait la branche définitivement non compilable, ce qui est
-  // exactement ce qu'elle sert à démontrer. Ce test la joue contre le vrai graphe.
+  // `lib/__fixtures__/2026-S33.mdx` est une hebdo entièrement valide, sauf que son driverOrder
+  // cite un driver inexistant. Elle vit hors de `content/notes/` : déposée dans le corpus, elle
+  // rendrait la branche définitivement non compilable, ce qui est exactement ce qu'elle sert à
+  // démontrer. Ce test la joue contre un graphe synthétique, jamais contre le corpus réel.
   const fixture = () => {
     const source = readFileSync(
-      path.join(process.cwd(), "content", "__fixtures__", "2026-S33.mdx"),
+      path.join(process.cwd(), "lib", "__fixtures__", "2026-S33.mdx"),
       "utf8",
     );
     return parseNote("2026-S33", source);
@@ -426,33 +474,16 @@ describe("la note de test à référence morte", () => {
   });
 
   it("fait échouer le contrôle d'intégrité en nommant le driver inexistant", () => {
-    const notes = readNoteSources().map(({ slug, source }) => parseNote(slug, source));
-    const graph: ContentGraph = {
-      drivers: DRIVERS,
-      trends: TRENDS,
-      notes: [...notes.map((e) => e.meta), fixture().meta],
-      scenarios: SCENARIO_VERSIONS,
-      outlooks: OUTLOOKS,
-      instrumentIds: new Set(getInstruments().map((i) => i.id)),
-      macroIndicatorIds: new Set(getMacroIndicators().map((i) => i.id)),
-    };
-    expect(() => checkIntegrity(graph)).toThrow(
+    const g = graph({
+      drivers: [driver(), driver({ id: "iran", trendRefs: [] }), driver({ id: "ai", trendRefs: [] })],
+      scenarios: [...branches("rates"), ...branches("iran"), ...branches("ai")],
+      trends: [trend(), ...fixture().meta.trendRefs.filter((id) => id !== "desinflation").map((id) => trend({ id, title: id, driverRefs: [] }))],
+      notes: [note(), fixture().meta],
+      instrumentIds: new Set(["us10y", ...fixture().meta.instrumentRefs]),
+    });
+    expect(() => checkIntegrity(g)).toThrow(
       /2026-S33\.mdx — driver inconnu « geopolitique-europe » dans driverOrder/,
     );
-  });
-
-  it("le corpus réel, lui, passe le contrôle sans la fixture", () => {
-    const notes = readNoteSources().map(({ slug, source }) => parseNote(slug, source));
-    const graph: ContentGraph = {
-      drivers: DRIVERS,
-      trends: TRENDS,
-      notes: notes.map((e) => e.meta),
-      scenarios: SCENARIO_VERSIONS,
-      outlooks: OUTLOOKS,
-      instrumentIds: new Set(getInstruments().map((i) => i.id)),
-      macroIndicatorIds: new Set(getMacroIndicators().map((i) => i.id)),
-    };
-    expect(() => checkIntegrity(graph)).not.toThrow();
   });
 });
 

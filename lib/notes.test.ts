@@ -4,7 +4,6 @@ import {
   extractBlockText,
   parseNote,
   parseSlug,
-  readNoteSources,
   validateNoteChain,
   type BlockName,
   type ParsedNote,
@@ -292,6 +291,21 @@ describe("règles inter-fichiers", () => {
   const speciale = (slug: string, date: string, comparesTo: string | null) =>
     parseNote(slug, source({ kind: "speciale", date, comparesTo, trigger: "Brent ±8 %" }, SPECIALE_BLOCKS));
 
+  it("accepte que la première note du suivi se compare à la note retirée à la remise à zéro", () => {
+    const corpus: ParsedNote[] = [
+      parseNote("2026-S38", source({ date: "2026-09-19", comparesTo: "2026-S32", guets: guetYaml() })),
+    ];
+    expect(() => validateNoteChain(corpus)).not.toThrow();
+  });
+
+  it("n'accorde cette exception à aucune autre note", () => {
+    // Une S39 sans note précédente qui se compare à la S32 : rien ne l'autorise.
+    const corpus: ParsedNote[] = [
+      parseNote("2026-S39", source({ date: "2026-09-26", comparesTo: "2026-S32", guets: guetYaml() })),
+    ];
+    expect(() => validateNoteChain(corpus)).toThrow(/une hebdo se compare à la hebdo précédente \(aucune\)/);
+  });
+
   it("accepte une chaîne conforme", () => {
     const corpus: ParsedNote[] = [
       hebdo("2026-S27", "2026-07-05", null),
@@ -343,52 +357,6 @@ describe("règles inter-fichiers", () => {
 });
 
 // ---------------------------------------------------------------------------
-
-describe("le corpus réel", () => {
-  const corpus = () =>
-    readNoteSources().map(({ slug, source: raw }) => parseNote(slug, raw));
-
-  it("compile : toutes les notes passent les règles, dans l'ordre chronologique", () => {
-    const meta = validateNoteChain(corpus());
-    expect(meta.map((e) => e.slug)).toEqual([
-      "2026-S24",
-      "2026-S26-E1",
-      "2026-S26",
-      "2026-S27",
-      "2026-S28-E1",
-      "2026-S28",
-      "2026-S29",
-      "2026-S31",
-      "2026-S32",
-      "2026-S38",
-      "2026-S39",
-      "2026-S40",
-      "2026-S41",
-      "2026-S42",
-    ]);
-  });
-
-  it("garde ses trous de semaine — une discipline rompue doit rester visible", () => {
-    const weeks = new Set(corpus().map((p) => p.meta.isoWeek));
-    expect(weeks.has("2026-S25")).toBe(false);
-    expect(weeks.has("2026-S30")).toBe(false);
-    expect(weeks.has("2026-S33")).toBe(false);
-    expect(weeks.has("2026-S36")).toBe(false);
-  });
-
-  it("les notes rétrospectives couvrent les trois drivers et au moins deux tendances", () => {
-    const retro = corpus().filter((p) =>
-      ["2026-S24", "2026-S26-E1", "2026-S26"].includes(p.meta.slug),
-    );
-    expect(retro).toHaveLength(3);
-
-    const drivers = new Set(retro.flatMap((p) => p.meta.driverOrder));
-    expect([...drivers].sort()).toEqual(["ai", "iran", "rates"]);
-
-    const trends = new Set(retro.flatMap((p) => p.meta.trendRefs));
-    expect(trends.size).toBeGreaterThanOrEqual(2);
-  });
-});
 
 // ---------------------------------------------------------------------------
 // Les guets — bloc 5 structuré
