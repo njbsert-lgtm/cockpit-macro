@@ -7,29 +7,36 @@ import { branchSemantic, type BranchSemantic } from "@/lib/branch-semantics";
 // est ce qui rend les croisements lisibles : une branche qui monte pendant qu'une autre
 // descend, c'est une lecture qui a basculé.
 const ROW_Y: Record<ScenarioLikelihood, number> = {
-  central: 40,
-  moderee: 90,
-  faible: 140,
+  central: 18,
+  moderee: 54,
+  faible: 90,
 };
 const ROWS: ScenarioLikelihood[] = ["central", "moderee", "faible"];
 
-const LEFT = 96;
-const STEP = 150;
-const RIGHT_PAD = 32;
-const HEIGHT = 190;
+// Environ 324×128 pour cinq notes (maquette 1e) : la carte tient dans la colonne mobile sans
+// défiler ; au-delà, le graphique s'allonge et défile horizontalement.
+const LEFT = 76;
+const STEP = 56;
+const RIGHT_PAD = 24;
+const MIN_WIDTH = 324;
+const HEIGHT = 128;
 
 // La couleur d'une branche vient de son sens, comme sur la carte de driver (DESIGN.md) :
 // `--k-pos` pour la centrale, `--hausse` et `--baisse` pour la favorable et la défavorable.
-// Chaque branche a en plus son propre tiret, pour que la couleur ne porte jamais seule
-// l'information — et pour distinguer deux branches de même sens.
-const SEMANTIC_STROKE: Record<BranchSemantic, string> = {
-  neutre: "var(--color-k-pos)",
-  hausse: "var(--color-hausse)",
-  baisse: "var(--color-baisse)",
+// Chaque sens a en plus son propre tiret, pour que la couleur ne porte jamais seule
+// l'information : plein pour la centrale, `5 4` pour la hausse, pointillé arrondi pour la baisse.
+const SEMANTIC_STROKE: Record<BranchSemantic, { color: string; dash?: string; width: number }> = {
+  neutre: { color: "var(--color-k-pos)", width: 2 },
+  hausse: { color: "var(--color-hausse)", dash: "5 4", width: 1.75 },
+  baisse: { color: "var(--color-baisse)", dash: "1.5 3.5", width: 1.75 },
 };
-const DASHES = [undefined, "6 4", "2 4", "10 3 2 3"];
 
-type Point = { x: number; y: number; revised: boolean };
+/** « 2026-S41 » → « S41 » ; « 2026-S41-E1 » → « S41·E1 ». */
+export function semaineDeNote(slug: string): string {
+  return slug.split("-").slice(1).join("·");
+}
+
+type Point = { x: number; y: number };
 
 export function ScenarioTrajectory({
   versions,
@@ -49,10 +56,15 @@ export function ScenarioTrajectory({
   }
 
   const xOf = (date: string) => LEFT + dates.indexOf(date) * STEP;
-  const width = LEFT + (dates.length - 1) * STEP + RIGHT_PAD;
+  const width = Math.max(MIN_WIDTH, LEFT + (dates.length - 1) * STEP + RIGHT_PAD);
+  // L'abscisse se lit en semaines de note, pas en dates : c'est le rythme du fil.
+  const etiquette = (date: string) => {
+    const slug = versions.find((v) => v.date === date)?.noteSlug;
+    return slug ? semaineDeNote(slug) : formatDateShort(date);
+  };
 
   const lines = branchOrder
-    .map((branchId, i) => {
+    .map((branchId) => {
       const branchVersions = versions
         .filter((v) => v.branchId === branchId)
         .sort((a, b) => a.date.localeCompare(b.date));
@@ -66,19 +78,14 @@ export function ScenarioTrajectory({
         const revision = branchVersions.find((v) => v.date === date);
         if (revision) current = revision.likelihood;
         if (current === null) continue; // la branche n'existe pas encore à cette date
-        points.push({ x: xOf(date), y: ROW_Y[current], revised: Boolean(revision) });
+        points.push({ x: xOf(date), y: ROW_Y[current] });
       }
       if (points.length === 0) return null;
 
-      // Tracé en escalier : la vraisemblance tient jusqu'à la révision suivante, puis saute.
-      const d = points
-        .map((p, idx) => (idx === 0 ? `M ${p.x} ${p.y}` : `L ${p.x} ${points[idx - 1].y} L ${p.x} ${p.y}`))
-        .join(" ");
-
-      const stroke = {
-        color: SEMANTIC_STROKE[branchSemantic(branchVersions.at(-1)!)],
-        dash: DASHES[i % DASHES.length],
-      };
+      // D'une note à l'autre, la ligne joint les deux crans : la pente dit qu'une révision a
+      // eu lieu entre les deux, le palier qu'elle a été maintenue.
+      const d = points.map((p, idx) => `${idx === 0 ? "M" : "L"} ${p.x} ${p.y}`).join(" ");
+      const stroke = SEMANTIC_STROKE[branchSemantic(branchVersions.at(-1)!)];
       return { branchId, points, d, stroke };
     })
     .filter((l): l is NonNullable<typeof l> => l !== null);
@@ -92,24 +99,23 @@ export function ScenarioTrajectory({
     .join(" ; ");
 
   return (
-    <div className="rounded-rc border border-trait bg-page p-4">
-      <ul className="mb-3 flex flex-wrap gap-x-5 gap-y-2">
+    <div className="rounded-rc border border-trait bg-page p-3.5">
+      <ul className="mb-2.5 flex flex-wrap gap-x-4 gap-y-1.5">
         {lines.map((l) => (
           <li key={l.branchId} className="flex items-center gap-2">
-            <svg width="26" height="8" aria-hidden="true" className="shrink-0">
+            <svg width="22" height="8" aria-hidden="true" className="shrink-0">
               <line
-                x1="0"
+                x1="1"
                 y1="4"
-                x2="26"
+                x2="21"
                 y2="4"
                 stroke={l.stroke.color}
-                strokeWidth="2.5"
+                strokeWidth={l.stroke.width}
                 strokeDasharray={l.stroke.dash}
+                strokeLinecap={l.stroke.dash ? "round" : undefined}
               />
             </svg>
-            <span className="text-11 text-doux">
-              {BRANCH_LABELS[l.branchId] ?? l.branchId}
-            </span>
+            <span className="text-11 text-doux">{BRANCH_LABELS[l.branchId] ?? l.branchId}</span>
           </li>
         ))}
       </ul>
@@ -120,76 +126,58 @@ export function ScenarioTrajectory({
           width={width}
           height={HEIGHT}
           role="img"
-          aria-label={`Trajectoire des vraisemblances. État au dernier point — ${summary}. Le détail daté suit sous le graphique.`}
+          aria-label={`Trajectoire des vraisemblances. État à la dernière note — ${summary}.`}
           className="max-w-none"
         >
           {ROWS.map((row) => (
             <g key={row}>
               <line
-                x1={LEFT - 12}
+                x1={LEFT - 8}
                 y1={ROW_Y[row]}
                 x2={width - RIGHT_PAD + 12}
                 y2={ROW_Y[row]}
                 stroke="var(--color-trait)"
                 strokeWidth="1"
               />
-              <text
-                x={LEFT - 20}
-                y={ROW_Y[row] + 4}
-                textAnchor="end"
-                className="fill-tenu"
-                fontSize="11"
-              >
-                {LIKELIHOOD_SHORT[row]}
+              <text x={0} y={ROW_Y[row] + 4} className="fill-tenu" fontSize="11">
+                {LIKELIHOOD_SHORT[row].toLowerCase()}
               </text>
             </g>
           ))}
 
-          {dates.map((date) => (
-            <text
-              key={date}
-              x={xOf(date)}
-              y={HEIGHT - 14}
-              textAnchor="middle"
-              className="fill-tenu"
-              fontSize="11"
-            >
-              {formatDateShort(date)}
-            </text>
-          ))}
+          {dates.map((date, i) => {
+            const derniere = i === dates.length - 1;
+            return (
+              <text
+                key={date}
+                x={xOf(date)}
+                y={HEIGHT - 10}
+                textAnchor="middle"
+                className={derniere ? "fill-encre" : "fill-tenu"}
+                fontWeight={derniere ? 600 : undefined}
+                fontSize="11"
+              >
+                {etiquette(date)}
+              </text>
+            );
+          })}
 
           {lines.map((l) => (
-            <g key={l.branchId}>
-              <path
-                d={l.d}
-                fill="none"
-                stroke={l.stroke.color}
-                strokeWidth="2.5"
-                strokeDasharray={l.stroke.dash}
-                strokeLinejoin="round"
-              />
-              {l.points
-                .filter((p) => p.revised)
-                .map((p) => (
-                  <circle
-                    key={`${p.x}-${p.y}`}
-                    cx={p.x}
-                    cy={p.y}
-                    r="4.5"
-                    fill="var(--color-page)"
-                    stroke={l.stroke.color}
-                    strokeWidth="2.5"
-                  />
-                ))}
-            </g>
+            <path
+              key={l.branchId}
+              d={l.d}
+              fill="none"
+              stroke={l.stroke.color}
+              strokeWidth={l.stroke.width}
+              strokeDasharray={l.stroke.dash}
+              strokeLinecap={l.stroke.dash ? "round" : undefined}
+              strokeLinejoin="round"
+            />
           ))}
         </svg>
       </div>
 
-      <p className="mt-2 text-11 text-tenu">
-        Un cercle marque une révision ; entre deux cercles, la vraisemblance a été maintenue.
-        Vraisemblances éditoriales, non implicites de marché.
-      </p>
+      <p className="mt-2 text-11 text-tenu">Vraisemblances éditoriales, non implicites de marché.</p>
     </div>
   );
 }

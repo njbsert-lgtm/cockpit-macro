@@ -4,6 +4,8 @@ import {
   getDriver,
   getDrivers,
   getCurrentBranches,
+  getNote,
+  getNotes,
   getNotesRevising,
   getScenarioVersionsByDriver,
   getTrend,
@@ -14,12 +16,16 @@ import { getAlertsForInstrument } from "@/lib/alerts";
 import { getReadClient } from "@/lib/supabase";
 import { lireAnglesMorts, vueDriver } from "@/lib/angles-morts";
 import { AnglesMortsDriver } from "@/components/notes/AnglesMortsDriver";
-import { formatInstrumentValue } from "@/lib/marches";
-import { formatDateLong, formatSignedPct } from "@/lib/format";
+import { formatDailyChange, formatInstrumentValue } from "@/lib/marches";
+import { dailyChange } from "@/lib/performance";
+import { estNonCollectee } from "@/lib/provenance";
+import { expirer } from "@/lib/guets";
+import { formatDateLong, formatJourMois, formatSignedPct } from "@/lib/format";
 import { BRANCH_LABELS, BRANCH_ORDER, LIKELIHOOD_LABELS } from "@/lib/scenario-labels";
-import { DriverBranches } from "@/components/notes/DriverBranches";
-import { ScenarioTrajectory } from "@/components/notes/ScenarioTrajectory";
-import { DataValue } from "@/components/states/DataValue";
+import { DriverBranches, type AncienCran } from "@/components/notes/DriverBranches";
+import { ScenarioTrajectory, semaineDeNote } from "@/components/notes/ScenarioTrajectory";
+import { GuetLine } from "@/components/notes/GuetLine";
+import { SectionHeader } from "@/components/notes/SectionHeader";
 import { NonCollecteBadge } from "@/components/states/NonCollecteBadge";
 import { TREND_STATUS_CLASS, TREND_STATUS_LABEL, TREND_TRAJECTORY } from "@/lib/trend-labels";
 
@@ -39,12 +45,6 @@ export function generateStaticParams() {
  */
 export const revalidate = 3600;
 
-function SectionTitle({ children }: { children: React.ReactNode }) {
-  return (
-    <h2 className="mt-7 text-17 font-semibold tracking-titre text-encre">{children}</h2>
-  );
-}
-
 export default async function DriverPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const driver = getDriver(id);
@@ -57,6 +57,27 @@ export default async function DriverPage({ params }: { params: Promise<{ id: str
     .map((b) => current.find((c) => c.branchId === b))
     .filter((b): b is NonNullable<typeof b> => Boolean(b));
 
+  // La dernière révision garde la trace de l'ancien cran de chaque branche qu'elle a déplacée :
+  // « était faible en S41 », et un repère sur la jauge.
+  const anciensCrans: Record<string, AncienCran> = {};
+  for (const b of current) {
+    if (!b.likelihoodChangedFrom || b.noteSlug !== driver.lastRevisedIn) continue;
+    const reference = getNote(b.noteSlug)?.comparesTo;
+    if (reference) anciensCrans[b.branchId] = { from: b.likelihoodChangedFrom, semaine: semaineDeNote(reference) };
+  }
+
+  // Les guets encore ouverts sur ce driver, toutes notes confondues : la question à trancher se
+  // lit à côté du prix. Un guet remonté n'apparaît qu'une fois, sous sa note d'origine.
+  const aujourdhui = new Date().toISOString().slice(0, 10);
+  const guetsOuverts = [
+    ...new Map(
+      getNotes()
+        .flatMap((n) => expirer(n.guets, aujourdhui))
+        .filter((g) => g.driverId === driver.id && g.statut === "ouvert")
+        .map((g) => [g.id, g]),
+    ).values(),
+  ].sort((a, b) => a.noteSlug.localeCompare(b.noteSlug));
+
   const revisions = getNotesRevising(driver.id);
   // Chargé avant le rendu : la liste des instruments pilotés est construite dans le JSX, où
   // l'on ne peut pas attendre une promesse par ligne.
@@ -65,35 +86,29 @@ export default async function DriverPage({ params }: { params: Promise<{ id: str
 
   return (
     <div className="mx-auto max-w-colonne md:max-w-content px-4.5 py-7 md:px-6">
-      <Link
-        href="/notes"
-        className="mb-4 inline-flex min-h-11 items-center text-12 text-encre underline decoration-trait underline-offset-4 hover:decoration-encre"
-      >
-        ← Notes
-      </Link>
+      <div className="mb-3 flex items-center justify-between gap-3">
+        <Link
+          href="/notes"
+          className="inline-flex min-h-11 items-center text-12 text-encre underline decoration-trait underline-offset-4 hover:decoration-encre"
+        >
+          ← Notes
+        </Link>
+        <Link
+          href={`/notes/${driver.lastRevisedIn}`}
+          className="inline-flex min-h-11 items-center text-11 text-tenu hover:text-encre"
+        >
+          révisé le {formatJourMois(driver.lastRevisedAt)} · {semaineDeNote(driver.lastRevisedIn)}
+        </Link>
+      </div>
 
-      {/* 1 — La question et la branche dominante */}
-      <p className="text-11 uppercase tracking-cap text-tenu">
+      {/* 1 — La question et la branche dominante (nommée dans la carte des branches) */}
+      <p className="text-9-5 font-semibold uppercase tracking-cap text-tenu">
         Driver · {driver.label}
         {driver.retiredAt && " · retiré"}
       </p>
-      <h1 className="mt-1.5 max-w-[28ch] text-27 font-bold leading-tight text-encre">
+      <h1 className="mt-1.5 max-w-[28ch] text-22 font-bold leading-[1.2] tracking-titre text-pretty text-encre">
         {driver.question}
       </h1>
-      <p className="mt-3 text-15 text-doux">
-        Aujourd&rsquo;hui, la branche dominante est{" "}
-        <strong className="font-semibold text-encre">
-          {BRANCH_LABELS[driver.dominantBranchId] ?? driver.dominantBranchId}
-        </strong>
-        {" — "}
-        <Link
-          href={`/notes/${driver.lastRevisedIn}`}
-          className="text-encre underline decoration-trait underline-offset-4"
-        >
-          révisée le {formatDateLong(driver.lastRevisedAt)}
-        </Link>
-        .
-      </p>
       {driver.retiredAt && (
         <p className="mt-3 border-l-3 border-trait-f bg-repos px-3.5 py-2.5 text-13 text-doux">
           Ce driver a été retiré le {formatDateLong(driver.retiredAt)} : il ne figure plus en
@@ -103,100 +118,131 @@ export default async function DriverPage({ params }: { params: Promise<{ id: str
       )}
 
       {/* 2 — Les trois branches */}
-      <SectionTitle>Les trois branches</SectionTitle>
-      <p className="mt-1 max-w-[64ch] text-15 text-doux">
-        Comparables côte à côte : la thèse, les impacts par classe d&rsquo;actifs, et ce qui
-        confirmerait ou infirmerait chacune.
-      </p>
       <div className="mt-4">
-        <DriverBranches branches={ordered} dominantBranchId={driver.dominantBranchId} />
+        <DriverBranches
+          branches={ordered}
+          dominantBranchId={driver.dominantBranchId}
+          anciensCrans={anciensCrans}
+        />
       </div>
 
       {/* 3 — La trajectoire */}
-      <SectionTitle>Trajectoire</SectionTitle>
-      <p className="mt-1 max-w-[64ch] text-15 text-doux">
-        Comment la vraisemblance de chaque branche a évolué — la vue qui montre si la lecture a
-        suivi les données ou couru derrière les prix.
-      </p>
-      <div className="mt-4">
+      <div className="mt-7">
+        <SectionHeader title="Trajectoire" count={`${new Set(versions.map((v) => v.noteSlug)).size} notes`} />
+      </div>
+      <div className="mt-3">
         <ScenarioTrajectory versions={versions} branchOrder={branchOrder} />
       </div>
 
       {/* 4 — Les instruments pilotés */}
-      <SectionTitle>Les instruments qu&rsquo;il pilote</SectionTitle>
-      <ul className="mt-4 flex flex-col divide-y divide-trait rounded-rc border border-trait bg-page">
-        {driver.instrumentRefs.map((instrumentId) => {
-          const instrument = getInstrument(instrumentId)!;
-          const obs = [...observationsOf(bySeries, instrumentId)].sort((a, b) =>
-            a.date.localeCompare(b.date),
-          );
-          const latest = obs.at(-1) ?? null;
-          const alerts = getAlertsForInstrument(instrumentId);
-
-          return (
-            <li key={instrumentId} className="px-4 py-3">
-              <div className="flex flex-wrap items-start justify-between gap-3">
+      <div className="mt-7">
+        <SectionHeader title="Instruments pilotés" count="séance" />
+      </div>
+      <div className="mt-3 overflow-hidden rounded-rc border border-trait">
+        <ul className="grid grid-cols-3 gap-px bg-trait">
+          {driver.instrumentRefs.map((instrumentId) => {
+            const instrument = getInstrument(instrumentId)!;
+            const obs = observationsOf(bySeries, instrumentId);
+            const latest = [...obs].sort((a, b) => a.date.localeCompare(b.date)).at(-1) ?? null;
+            const nonCollecte = estNonCollectee(latest ?? undefined);
+            const change = nonCollecte ? null : dailyChange(obs);
+            return (
+              <li key={instrumentId} className="bg-page">
                 <Link
                   href={`/marches/${instrument.assetClass}/${instrumentId}`}
-                  className="text-14-5 font-semibold text-encre underline-offset-4 hover:underline"
+                  className="block min-h-11 px-3 py-2.5 transition-colors hover:bg-repos"
                 >
-                  {instrument.label}
-                </Link>
-                {latest ? (
-                  <DataValue
-                    value={formatInstrumentValue(instrument, latest.value)}
-                    date={latest.date}
-                    fetchedAt={latest.fetchedAt}
-                    source={latest.source}
-                    size="sm"
-                  />
-                ) : (
-                  <span className="text-13 italic text-tenu">aucun relevé</span>
-                )}
-              </div>
-              {alerts.length > 0 && (
-                <ul className="mt-2 flex flex-col gap-1">
-                  {alerts.map(({ rule, event, nonCollecte }) => (
-                    <li
-                      key={`${event.ruleId}-${event.firedAt}`}
-                      className="border-l-3 border-k-choc bg-k-choc/11 px-3 py-1.5 text-13 text-doux"
+                  <span className="block truncate text-9-5 font-semibold uppercase tracking-cap text-tenu">
+                    {instrument.label}
+                  </span>
+                  {change ? (
+                    <span
+                      className={`mt-1 block text-13 font-semibold tabular-nums ${
+                        change.direction === "up" ? "text-hausse" : change.direction === "down" ? "text-baisse" : "text-tenu"
+                      }`}
                     >
-                      <span className="text-10-5 font-semibold uppercase tracking-cap text-k-choc">
-                        Alerte
-                      </span>{" "}
-                      {nonCollecte && (
-                        <>
-                          <NonCollecteBadge />{" "}
-                        </>
-                      )}
-                      {rule.label} — {event.direction === "up" ? "hausse" : "baisse"} de{" "}
-                      {rule.measure === "percent"
-                        ? formatSignedPct(event.direction === "up" ? event.observed : -event.observed)
-                        : `${event.observed} bps`}{" "}
-                      le {formatDateLong(event.toDate)}
-                      {event.noteSlug && (
-                        <>
-                          {" · "}
-                          <Link
-                            href={`/notes/${event.noteSlug}`}
-                            className="text-encre underline decoration-trait underline-offset-4"
-                          >
-                            {event.noteSlug}
-                          </Link>
-                        </>
-                      )}
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </li>
-          );
-        })}
-      </ul>
+                      {formatDailyChange(instrument, change)}
+                    </span>
+                  ) : latest ? (
+                    <>
+                      <span className="mt-1 block text-13 font-semibold tabular-nums text-encre">
+                        {formatInstrumentValue(instrument, latest.value)}
+                      </span>
+                      <span className="mt-0.5 flex items-center gap-1 text-10-5 text-tenu">
+                        {nonCollecte && <NonCollecteBadge />}
+                        le {formatJourMois(latest.date)}
+                      </span>
+                    </>
+                  ) : (
+                    <span className="mt-1 block text-13 italic text-tenu">aucun relevé</span>
+                  )}
+                </Link>
+              </li>
+            );
+          })}
+          {Array.from({ length: (3 - (driver.instrumentRefs.length % 3)) % 3 }, (_, i) => (
+            <li key={`vide-${i}`} aria-hidden="true" className="bg-page" />
+          ))}
+        </ul>
+      </div>
+      {driver.instrumentRefs.flatMap((id) => getAlertsForInstrument(id)).length > 0 && (
+        <ul className="mt-2 flex flex-col gap-1">
+          {driver.instrumentRefs.flatMap((instrumentId) =>
+            getAlertsForInstrument(instrumentId).map(({ rule, event, nonCollecte }) => (
+              <li
+                key={`${event.ruleId}-${event.firedAt}`}
+                className="border-l-3 border-k-choc bg-k-choc/11 px-3 py-1.5 text-13 text-doux"
+              >
+                <span className="text-10-5 font-semibold uppercase tracking-cap text-k-choc">Alerte</span>{" "}
+                {nonCollecte && (
+                  <>
+                    <NonCollecteBadge />{" "}
+                  </>
+                )}
+                {rule.label} — {event.direction === "up" ? "hausse" : "baisse"} de{" "}
+                {rule.measure === "percent"
+                  ? formatSignedPct(event.direction === "up" ? event.observed : -event.observed)
+                  : `${event.observed} bps`}{" "}
+                le {formatDateLong(event.toDate)}
+                {event.noteSlug && (
+                  <>
+                    {" · "}
+                    <Link
+                      href={`/notes/${event.noteSlug}`}
+                      className="text-encre underline decoration-trait underline-offset-4"
+                    >
+                      {event.noteSlug}
+                    </Link>
+                  </>
+                )}
+              </li>
+            )),
+          )}
+        </ul>
+      )}
+
+      {/* 4bis — Le guet ouvert : la question à trancher, lue avec le prix */}
+      {guetsOuverts.length > 0 && (
+        <>
+          <div className="mt-7">
+            <SectionHeader
+              title={guetsOuverts.length > 1 ? "Guets ouverts" : "Guet ouvert"}
+              count={`depuis ${semaineDeNote(guetsOuverts[0].noteSlug)}`}
+            />
+          </div>
+          <ul className="mt-3 rounded-rc border border-trait bg-page px-4 py-3.5">
+            {guetsOuverts.map((g) => (
+              <GuetLine key={g.id} guet={g} />
+            ))}
+          </ul>
+        </>
+      )}
 
       {/* 5 — Les tendances de fond */}
-      <SectionTitle>Les tendances qu&rsquo;il touche</SectionTitle>
-      <ul className="mt-4 flex flex-col gap-2">
+      <div className="mt-7">
+        <SectionHeader title="Les tendances qu’il touche" />
+      </div>
+      <ul className="mt-3 flex flex-col gap-2">
         {driver.trendRefs.map((trendId) => {
           const trend = getTrend(trendId)!;
           const canInvalidate = trend.driverRefs.includes(driver.id);
@@ -233,8 +279,10 @@ export default async function DriverPage({ params }: { params: Promise<{ id: str
       </ul>
 
       {/* 6 — Les notes qui l'ont révisé */}
-      <SectionTitle>Les notes qui l&rsquo;ont révisé</SectionTitle>
-      <ol className="mt-4 flex flex-col gap-2">
+      <div className="mt-7">
+        <SectionHeader title="Les notes qui l’ont révisé" />
+      </div>
+      <ol className="mt-3 flex flex-col gap-2">
         {revisions.map((note) => {
           const revised = versions.filter((v) => v.noteSlug === note.slug);
           return (

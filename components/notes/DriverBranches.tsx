@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import type { ScenarioVersion } from "@/lib/types";
-import { BRANCH_LABELS, IMPACT_LABELS, LIKELIHOOD_LABELS } from "@/lib/scenario-labels";
+import type { ScenarioLikelihood, ScenarioVersion } from "@/lib/types";
+import { BRANCH_LABELS, IMPACT_LABELS, LIKELIHOOD_LABELS, LIKELIHOOD_SHORT } from "@/lib/scenario-labels";
 import { branchSemantic, LIKELIHOOD_FILL, SEMANTIC_FILL } from "@/lib/branch-semantics";
 
 /**
@@ -68,42 +68,80 @@ function BranchBody({ branch }: { branch: ScenarioVersion }) {
   );
 }
 
-/** La jauge de vraisemblance, à trois crans, à la couleur sémantique de la branche. */
-function Gauge({ branch }: { branch: ScenarioVersion }) {
+/** Ce qu'une révision récente a déplacé : l'ancien cran, et la note où il valait encore. */
+export type AncienCran = { from: ScenarioLikelihood; semaine: string };
+
+const CRAN_POSITION: Record<ScenarioLikelihood, string> = {
+  central: "calc(100% - 2px)",
+  moderee: "calc(66.667% - 1px)",
+  faible: "calc(33.333% - 1px)",
+};
+
+/**
+ * La jauge de vraisemblance, à trois crans, à la couleur sémantique de la branche. Une branche
+ * révisée garde un repère de 2×9px `--encre` à son ancien cran (même motif que « Depuis » à
+ * l'accueil) : la révision se voit sans lire la légende.
+ */
+function Gauge({ branch, ancien }: { branch: ScenarioVersion; ancien?: AncienCran }) {
   return (
     <div
-      className="mt-1.5 h-[5px] w-full overflow-hidden rounded-rp bg-repos"
+      className="relative mt-1.5"
       role="img"
-      aria-label={`Vraisemblance ${LIKELIHOOD_LABELS[branch.likelihood].toLowerCase()}`}
+      aria-label={`Vraisemblance ${LIKELIHOOD_LABELS[branch.likelihood].toLowerCase()}${
+        ancien ? `, ${LIKELIHOOD_LABELS[ancien.from].toLowerCase()} en ${ancien.semaine}` : ""
+      }`}
     >
-      <div
-        className={`h-full rounded-rp ${LIKELIHOOD_FILL[branch.likelihood]} ${SEMANTIC_FILL[branchSemantic(branch)]}`}
-      />
+      <div className="h-[5px] w-full overflow-hidden rounded-rp bg-repos">
+        <div
+          className={`h-full rounded-rp ${LIKELIHOOD_FILL[branch.likelihood]} ${SEMANTIC_FILL[branchSemantic(branch)]}`}
+        />
+      </div>
+      {ancien && (
+        <span
+          aria-hidden="true"
+          className="absolute -top-0.5 h-[9px] w-0.5 bg-encre"
+          style={{ left: CRAN_POSITION[ancien.from] }}
+        />
+      )}
     </div>
   );
 }
 
+const SENS_ACTIONS: Record<string, string> = {
+  up: "Actions en hausse",
+  down: "Actions en baisse",
+  flat: "Actions à plat",
+};
+
 /**
- * Le nom de la branche, sa vraisemblance écrite, et la mention « dominante » en toutes lettres —
- * jamais une couleur de canal pour dire la dominance (DESIGN.md, page d'un driver).
+ * Le nom de la branche, sa vraisemblance écrite à droite, et la mention « dominante » en toutes
+ * lettres — jamais une couleur de canal pour dire la dominance (DESIGN.md, page d'un driver).
  */
 function BranchHeading({
   branch,
   dominant,
+  ancien,
 }: {
   branch: ScenarioVersion;
   dominant: boolean;
+  ancien?: AncienCran;
 }) {
   return (
     <>
-      <span className="block text-14-5 font-semibold leading-[1.25] tracking-titre text-encre">
-        {BRANCH_LABELS[branch.branchId] ?? branch.branchId}
+      <span className="flex items-baseline justify-between gap-3">
+        <span className="text-14-5 leading-[1.25] tracking-titre text-encre">
+          {BRANCH_LABELS[branch.branchId] ?? branch.branchId}
+          {dominant && <span className="font-semibold"> · dominante</span>}
+        </span>
+        <span className="shrink-0 text-13 font-semibold text-encre">
+          {LIKELIHOOD_SHORT[branch.likelihood]}
+        </span>
       </span>
       <span className="mt-0.5 block text-11 text-tenu">
-        {LIKELIHOOD_LABELS[branch.likelihood]}
-        {dominant && <span className="font-semibold text-encre"> · dominante</span>}
+        {SENS_ACTIONS[branch.impacts.eq.direction]}
+        {ancien && ` · était ${LIKELIHOOD_SHORT[ancien.from].toLowerCase()} en ${ancien.semaine}`}
       </span>
-      <Gauge branch={branch} />
+      <Gauge branch={branch} ancien={ancien} />
     </>
   );
 }
@@ -117,9 +155,11 @@ function BranchHeading({
 export function DriverBranches({
   branches,
   dominantBranchId,
+  anciensCrans = {},
 }: {
   branches: ScenarioVersion[];
   dominantBranchId: string;
+  anciensCrans?: Record<string, AncienCran>;
 }) {
   const [selected, setSelected] = useState(dominantBranchId);
   const active = branches.find((b) => b.branchId === selected) ?? branches[0];
@@ -152,11 +192,15 @@ export function DriverBranches({
                 setSelected(next.branchId);
                 document.getElementById(`branche-${next.branchId}`)?.focus();
               }}
-              className={`min-h-11 px-4 py-3 text-left transition-colors focus-visible:-outline-offset-3 ${
+              className={`min-h-11 px-3.5 py-[11px] text-left transition-colors focus-visible:-outline-offset-3 ${
                 b.branchId === active.branchId ? "bg-repos" : "bg-page"
-              }`}
+              } ${b.branchId === dominantBranchId ? "relative z-[1] border-y-2 border-encre [&:not(:first-child)]:-mt-px" : ""}`}
             >
-              <BranchHeading branch={b} dominant={b.branchId === dominantBranchId} />
+              <BranchHeading
+                branch={b}
+                dominant={b.branchId === dominantBranchId}
+                ancien={anciensCrans[b.branchId]}
+              />
             </button>
           ))}
         </div>
@@ -180,7 +224,11 @@ export function DriverBranches({
             }`}
           >
             <header className="border-b border-trait pb-3">
-              <BranchHeading branch={b} dominant={b.branchId === dominantBranchId} />
+              <BranchHeading
+                branch={b}
+                dominant={b.branchId === dominantBranchId}
+                ancien={anciensCrans[b.branchId]}
+              />
             </header>
             <div className="mt-3">
               <BranchBody branch={b} />
