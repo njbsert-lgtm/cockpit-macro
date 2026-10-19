@@ -1,3 +1,5 @@
+import { ChiffreCite } from "./ChiffreCite";
+import type { ChiffreVivant } from "@/lib/chiffres-vivants";
 import { BLOCK_TITLES, type BlockName } from "@/lib/notes";
 import { BLOCK_EMOJI } from "@/lib/note-blocks";
 import type { Guet, Note, VeilleItem } from "@/lib/types";
@@ -52,7 +54,8 @@ function BlockSources({ sources }: { sources: NoteSource[] }) {
       <span className="font-semibold uppercase tracking-cap">Sources</span>
       {sources.map((s) => (
         <a
-          key={s.url}
+          // Plusieurs émetteurs se résolvent vers la même fiche : l'URL seule ne suffit pas.
+          key={`${s.label}|${s.url}`}
           href={s.url}
           target="_blank"
           rel="noreferrer"
@@ -114,7 +117,7 @@ function Block({
   children?: React.ReactNode;
 }) {
   return (
-    <section className="mt-7 first:mt-0">
+    <section id={name} className="mt-7 first:mt-0">
       <BlockHeading name={name} tone={tone} />
       <div className={TEXTE_BLOC}>{children}</div>
       <EvidencePills items={evidence} />
@@ -156,7 +159,7 @@ function CeQueJeSurveilleBlock({
   }
 
   return (
-    <section className="mt-7 first:mt-0">
+    <section id="CeQueJeSurveille" className="mt-7 first:mt-0">
       <BlockHeading name="CeQueJeSurveille" tone={tone} />
       {children && <div className={TEXTE_BLOC}>{children}</div>}
       <ul className="mt-3" aria-label="Guets posés par cette note">
@@ -197,7 +200,7 @@ function LeFilDeLaSemaineBlock({
   const chronological = sortChronologically(items);
 
   return (
-    <section className="mt-7 first:mt-0">
+    <section id="LeFilDeLaSemaine" className="mt-7 first:mt-0">
       <BlockHeading name="LeFilDeLaSemaine" tone={tone} />
       {redige ? (
         <div className={TEXTE_BLOC}>{children}</div>
@@ -237,6 +240,10 @@ export function createNoteMdxComponents(
   noteSlug = "",
   /** La classe de texte du canal dominant ; `text-tenu` pour une note sans canal. */
   tone = "text-tenu",
+  /** Les chiffres clés vivants, que `<ChiffreCite i="n">` désigne par leur rang. */
+  chiffres: ChiffreVivant[] = [],
+  /** Fond et soulignement d'un chiffre cité, au canal dominant. */
+  classeCite = "bg-repos border-trait-f",
 ) {
   const byBlock = groupEvidenceByBlock(veilleItems);
   const evidenceFor = (name: BlockName) => byBlock.get(name) ?? [];
@@ -248,6 +255,15 @@ export function createNoteMdxComponents(
   });
 
   return {
+    // Attribut en chaîne : l'évaluation d'expressions JS est coupée dans le MDX compilé.
+    ChiffreCite: ({ i, children }: { i: string; children?: React.ReactNode }) =>
+      chiffres[Number(i)] ? (
+        <ChiffreCite chiffre={chiffres[Number(i)]} classe={classeCite}>
+          {children}
+        </ChiffreCite>
+      ) : (
+        <>{children}</>
+      ),
     CeQuiAChange: (p: BlockProps) => <Block name="CeQuiAChange" {...props("CeQuiAChange")} {...p} />,
     CeQuiSestConfirme: (p: BlockProps) => (
       <Block name="CeQuiSestConfirme" {...props("CeQuiSestConfirme")} {...p} />

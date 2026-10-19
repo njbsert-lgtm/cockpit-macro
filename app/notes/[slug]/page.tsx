@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { getNote, getNotes } from "@/lib/content";
+import { getNote, getNoteBody, getNotes } from "@/lib/content";
 import { NoteBlocks } from "@/components/notes/NoteBlocks";
 
 /**
@@ -25,14 +25,23 @@ export default async function NotePage({
   const note = getNote(slug);
   if (!note) notFound();
 
+  // Temps de lecture à 200 mots par minute, balises retirées : une indication, pas une mesure.
+  const mots = (getNoteBody(slug) ?? "").replace(/<[^>]+>/g, " ").split(/\s+/).filter(Boolean).length;
+  const minutes = Math.max(1, Math.round(mots / 200));
+
   return (
-    <div className="mx-auto max-w-colonne px-4.5 py-6 md:max-w-lecture md:px-6">
-      <Link
-        href="/notes"
-        className="mb-4 inline-flex min-h-11 items-center text-12 text-encre underline decoration-trait underline-offset-4 hover:decoration-encre"
-      >
-        ← Notes
-      </Link>
+    <div className="mx-auto max-w-colonne px-4.5 pb-6 md:max-w-lecture md:px-6">
+      <div className="flex items-center justify-between gap-3">
+        <Link
+          href="/notes"
+          className="inline-flex min-h-11 items-center text-12 text-doux hover:text-encre"
+        >
+          ← Notes
+        </Link>
+        <span className="text-11 text-tenu">
+          {note.isoWeek.replace(/^\d{4}-/, "")} · {minutes} min
+        </span>
+      </div>
       <NoteBlocks note={note} />
     </div>
   );

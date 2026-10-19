@@ -11,6 +11,22 @@ import {
   dominantChannel,
 } from "@/lib/channels";
 import { createNoteMdxComponents } from "./mdx-blocks";
+import { BarreAncres } from "./BarreAncres";
+import { chargerChiffresVivants } from "@/lib/chiffres-vivants-load";
+import { balisageChiffresCites, sujetsDuBloc, valeurCitee } from "@/lib/chiffres-cites";
+import { BLOCK_EMOJI, BLOCK_NAMES, type BlockName } from "@/lib/note-blocks";
+import { CHANNEL_BG, CHANNEL_CITE } from "@/lib/channels";
+
+/** Le libellé court d'un bloc dans la barre d'ancres. */
+const ANCRE_LIBELLE: Record<BlockName, string> = {
+  CeQuiAChange: "Changé",
+  CeQuiSestConfirme: "Confirmé",
+  RevisionDesScenarios: "Scénarios",
+  CeQueJavaisMalLu: "Mal lu",
+  CeQueJeSurveille: "Surveille",
+  RecapDesSpeciales: "Récap",
+  LeFilDeLaSemaine: "Fil",
+};
 
 /**
  * La page de lecture d'une note (DESIGN.md) — filet, pas aplat.
@@ -28,17 +44,38 @@ export async function NoteBlocks({ note }: { note: Note }) {
   const dominant = dominantChannel(note.channels);
   const tone = dominant ? CHANNEL_TEXT[dominant] : "text-tenu";
 
+  const chiffres = await chargerChiffresVivants(note);
+  const source = balisageChiffresCites(
+    body ?? "",
+    chiffres.map((c) => (c.actuel ? valeurCitee(c.valeurNote) : null)),
+  );
+  const ancres = BLOCK_NAMES.filter((b) => new RegExp(`<${b}[\\s>/]`).test(body ?? "")).map((b) => ({
+    id: b,
+    emoji: BLOCK_EMOJI[b],
+    libelle: ANCRE_LIBELLE[b],
+    sujets: sujetsDuBloc(body ?? "", b),
+  }));
+
   // Le corps est validé au chargement du corpus : s'il manque ici, c'est une incohérence
   // interne, pas une note mal écrite.
   const { content } = await compileMDX({
-    source: body ?? "",
-    components: createNoteMdxComponents(veilleItems, note.sources, note.guets, note.slug, tone),
+    source,
+    components: createNoteMdxComponents(
+      veilleItems,
+      note.sources,
+      note.guets,
+      note.slug,
+      tone,
+      chiffres,
+      dominant ? CHANNEL_CITE[dominant] : undefined,
+    ),
     options: { parseFrontmatter: false },
   });
 
   return (
     <article>
-      <header>
+      <BarreAncres ancres={ancres} filet={dominant ? CHANNEL_BG[dominant] : "bg-trait-f"} />
+      <header className="mt-5">
         <p className="flex flex-wrap items-baseline gap-x-2 text-11 text-tenu">
           <span className="text-9-5 font-semibold uppercase tracking-cap">
             {note.kind === "hebdo" ? "Hebdo" : "Spéciale"}

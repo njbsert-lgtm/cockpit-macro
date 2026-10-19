@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useId, useRef } from "react";
+import { createPortal } from "react-dom";
 import type { ChiffreVivant } from "@/lib/chiffres-vivants";
 import { formatJourMois } from "@/lib/format";
 import { ChangePill } from "./ChangePill";
@@ -12,7 +13,8 @@ import { ChangePill } from "./ChangePill";
  * page de lecture (chiffre cité).
  *
  * Une feuille qui flotte a droit à l'ombre (DESIGN.md). Elle se ferme au glissement vers le
- * bas, au toucher du voile et à Échap ; le focus y reste piégé tant qu'elle est ouverte.
+ * bas, au toucher du voile et à Échap ; le focus y reste piégé tant qu'elle est ouverte. Rendue
+ * dans un portail : ouverte depuis un chiffre cité, elle vivrait sinon dans un paragraphe.
  */
 export function ChiffreSheet({ chiffre, onClose }: { chiffre: ChiffreVivant | null; onClose: () => void }) {
   const feuille = useRef<HTMLDivElement>(null);
@@ -45,11 +47,11 @@ export function ChiffreSheet({ chiffre, onClose }: { chiffre: ChiffreVivant | nu
     };
   }, [chiffre, onClose]);
 
-  if (!chiffre) return null;
+  if (!chiffre || typeof document === "undefined") return null;
   const { actuel, dansLaNote } = chiffre;
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center">
+  return createPortal(
+    <div className="fixed inset-0 z-50 flex items-end justify-center text-left">
       <button
         type="button"
         aria-label="Fermer"
@@ -126,7 +128,8 @@ export function ChiffreSheet({ chiffre, onClose }: { chiffre: ChiffreVivant | nu
           )}
         </div>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }
 
