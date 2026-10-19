@@ -29,6 +29,7 @@ on:
           - sonder-page
           - sonder-brut
           - sonder-supabase
+          - sonder-pdf
           - sonder-twelvedata
           - twelve-data
           - alphavantage
@@ -330,6 +331,26 @@ jobs:
             | grep -iE "$PATTERN" \
             | head -100 | tee -a "$GITHUB_STEP_SUMMARY"
           echo '```' | tee -a "$GITHUB_STEP_SUMMARY"
+
+      - name: Sonder un PDF
+        # Calendriers de publication (Eurostat, BoJ…) diffusés en PDF : texte extrait par
+        # pdftotext en conservant la mise en page, filtré par « URL||motif-grep ».
+        if: ${{ inputs.source == 'sonder-pdf' }}
+        env:
+          RAW: ${{ inputs.series }}
+        run: |
+          set +e -o pipefail
+          URL="${RAW%%||*}"
+          if [ "$RAW" != "$URL" ]; then PATTERN="${RAW#*||}"; else PATTERN="."; fi
+          command -v pdftotext >/dev/null || sudo apt-get install -y -qq poppler-utils >/dev/null
+          {
+            echo "## $URL"
+            echo '```'
+            curl -sL -m 30 -A "Mozilla/5.0" -o /tmp/doc.pdf "$URL"
+            file /tmp/doc.pdf
+            pdftotext -layout /tmp/doc.pdf - | grep -iE "$PATTERN" | head -c 12000
+            echo '```'
+          } | tee -a "$GITHUB_STEP_SUMMARY"
 
       - name: Sonder brut
         # Sans tag-stripping : nécessaire pour une réponse SDMX (JSON de structure ou XML), dont
