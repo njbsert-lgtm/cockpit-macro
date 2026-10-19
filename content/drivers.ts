@@ -16,7 +16,7 @@ export const DRIVERS: DriverInput[] = [
   {
     id: "rates",
     label: "Taux directeurs",
-    question: "La Fed reprend-elle son cycle de hausse ?",
+    question: "Quelle est l'orientation de la Fed ?",
     // Le 10 ans US porte la fonction de réaction ; le spread transatlantique et l'EUR/USD en
     // sont la traduction directe en devises et en flux de capitaux.
     instrumentRefs: ["us10y", "spread-us10y-bund10y", "eurusd", "dxy"],
@@ -30,7 +30,7 @@ export const DRIVERS: DriverInput[] = [
   {
     id: "iran",
     label: "Conflit iranien",
-    question: "Ormuz rouvre-t-il ?",
+    question: "Quelle évolution pour la guerre en Iran ?",
     // La variable maîtresse : elle entre dans le modèle avant toutes les autres.
     instrumentRefs: ["brent", "wti", "gold"],
     // Purement géopolitique : aucun indicateur macro ne répond directement à la question.
@@ -42,7 +42,7 @@ export const DRIVERS: DriverInput[] = [
   {
     id: "ai",
     label: "Cycle IA",
-    question: "Les profits justifient-ils le capex ?",
+    question: "Les profits attendus de l'IA justifient-ils les capex ?",
     // Le cuivre plutôt que la puce : le goulet d'étranglement de l'IA est le mégawatt.
     instrumentRefs: ["ndx", "spx", "copper"],
     // Question de profits et de capex d'entreprises : aucun indicateur macro suivi n'y répond.

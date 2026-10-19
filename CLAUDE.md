@@ -1126,9 +1126,9 @@ toujours la réponse à la question d'un driver.
 
 | Driver | Question | Branches |
 |---|---|---|
-| **Taux directeurs** | La Fed reprend-elle son cycle de hausse ? | Hausse · Statu quo prolongé · Retour aux baisses |
-| **Conflit iranien** | Ormuz rouvre-t-il ? | Fin du conflit · Enlisement · Durcissement |
-| **Cycle IA** | Les profits justifient-ils le capex ? | Profits et capex accélèrent · Profits tiennent, capex plafonne · Profits déçoivent |
+| **Taux directeurs** | Quelle est l'orientation de la Fed ? | Hausse · Statu quo prolongé · Retour aux baisses |
+| **Conflit iranien** | Quelle évolution pour la guerre en Iran ? | Fin du conflit · Enlisement · Durcissement |
+| **Cycle IA** | Les profits attendus de l'IA justifient-ils les capex ? | Profits et capex accélèrent · Profits tiennent, capex plafonne · Profits déçoivent |
 
 Chaque branche : la thèse, la grille d'impacts par classe d'actifs (direction + explication),
 les signaux de confirmation ou d'alerte.
