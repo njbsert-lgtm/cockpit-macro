@@ -23,13 +23,13 @@ const ICON = {
       <path d="M8.5 13h7M8.5 16.5h4.5" />
     </>
   ),
-  macro: (
+  courbe: (
     <>
       <path d="M4 4v16h16" />
       <path d="M7.5 15.5 11 11l3 2.5 4.5-6" />
     </>
   ),
-  marches: (
+  barres: (
     <>
       <path d="M4 19.5h16" />
       <path d="M6.5 19.5v-5.5M11 19.5V8.5M15.5 19.5v-8M20 19.5V5" />
@@ -46,8 +46,8 @@ const ICON = {
 
 const TABS: Tab[] = [
   { href: "/", label: "Notes", icon: ICON.notes },
-  { href: "/macro", label: "Macro", icon: ICON.macro },
-  { href: "/marches", label: "Marchés", icon: ICON.marches },
+  { href: "/macro", label: "Macro", icon: ICON.barres },
+  { href: "/marches", label: "Marchés", icon: ICON.courbe },
   { href: "/outlook", label: "Outlook", icon: ICON.outlook },
 ];
 
