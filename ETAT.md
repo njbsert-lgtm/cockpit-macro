@@ -81,15 +81,42 @@ Iran : enlisement).
 `japon-anomalie` et `recomposition-flux-hors-chine`. Les trois autres (désinflation, capex IA,
 prime de risque) ont des passages S39, S40 et S42.
 
-**Consigne éditoriale pour la S43 (samedi 24/10, 8 h UTC) : réviser en priorité le driver IA.**
-Constat à garder en tête en l'appliquant : la dernière version du driver IA date de la S42 ;
-c'est Iran qui n'a pas été révisé depuis le plus longtemps. Et les versions réelles de l'IA
-(v2/v4/v2, S42) affichent « était modérée / faible / … en S41 » par rapport à des versions v1
-retirées : ce repère se lit comme un état de la S41 alors qu'il vient d'une version fictive.
-C'est le coût assumé de l'option A (on ne réécrit aucune version validée). Le paquet de
-contexte de la S43, construit hors ligne, ne contient plus aucune référence à S24–S32 (ni dans
-le JSON ni dans les prompts) ; il ne marque aucun driver « à réviser » — cette notion
-n'existe pas dans le paquet.
+**Consigne pour la S43 (samedi 24/10, 8 h UTC) : réviser en priorité le driver Iran**, dernière
+révision S39 — le plus ancien des trois (IA : S42, Taux : S40). Corrige la consigne précédente, qui
+visait l'IA : celle-ci a été révisée en S42, la veille de la remise à zéro. Le paquet de contexte
+de la S43, construit hors ligne, ne contient plus aucune référence à S24–S32 ; il ne marque aucun
+driver « à réviser » (cette notion n'existe pas dans le paquet).
+
+### Errata et renvois à la fiction (20/10/2026)
+
+La remise à zéro a retiré des notes que du texte publié cite encore. **On ne réécrit jamais un
+texte publié ni une version validée : on ajoute un erratum** et on corrige l'affichage.
+- **Mécanisme** : champ facultatif `erratum` (date + texte, schéma Zod dans `lib/erratum.ts`) au
+  frontmatter d'une note et sur une `ScenarioVersion`. Rendu discret (petit corps, couleur
+  secondaire, « Erratum du JJ/MM/AAAA ») tout en bas de la note, et sous la version concernée sur
+  la page d'un driver. Absent du paquet de contexte et du contrôle des chiffres.
+- **Errata posés** : S38 (note d'août, note précédente du 13 août, « ouverts en août », « première
+  note sur ce dossier », « la semaine dernière ») ; version taux S38 `rates-baisses`
+  (« la même raison qu'en août »). **Pas d'erratum S39** : les mentions « ouvert en août » et
+  « documenté en août » ne s'y trouvent pas (la seule occurrence est dans la S38).
+- **Non couverts, à décider** : des renvois implicites à un état antérieur dans la S38 (« la
+  branche dominante était statu quo prolongé », « le risque IA n'est plus “les profits
+  viendront-ils” », « l'axe contournement n'existait pas ») et les « Inchangé… » des impacts des
+  versions taux S38. Ils parlent d'un état qui n'existe plus mais ne citent pas de note.
+- **Repères de révision** : une version n'est datée que de la note qui l'a produite ; sans version
+  précédente suivie (retirée, ou d'avant la S38), la page dit « Première version suivie » et ne
+  trace pas l'ancien cran (`lib/revision.ts`). Vaut sur la page d'un driver et dans « Depuis ».
+- **Règle de rédaction** : le prompt interdit d'invoquer une note ou une analyse antérieure à la S38
+  (un fait de marché daté reste permis) ; un renvoi à une note retirée (« S32 », « la note d'août »,
+  « la note du 13 août ») est refusé à la réception (renvoyé au modèle une fois) et bloque la
+  publication s'il est réintroduit à la main (`lib/redaction/renvois.ts`). Le prompt n'affiche plus
+  que la version en vigueur de chaque branche sous « Scénarios courants ».
+
+### À relire dans la S38
+
+Le bloc « Ce que j'avais mal lu » de la S38 est **publié avec son texte d'attente** (« Bloc à
+compléter — il ne peut pas être rédigé pour vous… »), deux pistes comprises, qui citent « la note
+d'août ». Non corrigé : un humain seul l'écrit. À remplacer par une vraie saisie.
 
 ## Passation de design mobile (Claude Design) — entièrement faite
 
@@ -137,10 +164,7 @@ trajectoire compacte, instruments en cellules, guets ouverts), **2a/3a/3b/3c** O
     écrits à la main, affichés « non collecté » sur les fiches Nasdaq 100 et spread OAT-Bund. Leur
     lien vers des notes S32 inexistantes a été retiré (statut ramené à « nouveau ») ; elles
     disparaîtront avec le moteur d'alertes réel.
-12. **Prompt de rédaction** : la section « Scénarios courants » liste *toutes* les versions de
-    chaque driver (v4, v5, v6…), pas seulement la courante, sans les distinguer. Existait avant la
-    remise à zéro ; à reprendre avant la S43 si le modèle s'y trompe.
-13. **Données manquantes** : 12 indicateurs non suivis (six PMI propriétaires, balances
+12. **Données manquantes** : 12 indicateurs non suivis (six PMI propriétaires, balances
     courantes US/JP/CN, solde budgétaire UK, salaires JP et zone euro) ; Bund/OAT et donc les
     spreads seulement en mensuel ; points à 10 ans Inde/Chine au seed ; Hang Seng sans source ;
     INSEE non branchée.
