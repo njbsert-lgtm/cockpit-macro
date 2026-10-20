@@ -3,6 +3,7 @@ import { estDegrade } from "./context";
 import { BLOCK_NAMES, BLOCK_TITLES, type BlockName } from "@/lib/note-blocks";
 import { MARQUEUR_DEBUT, MARQUEUR_FIN } from "./sortie-mixte";
 import { trendEstRevisee } from "@/lib/trend-labels";
+import { DEBUT_DU_SUIVI } from "@/config/suivi";
 
 /**
  * Le prompt de rédaction.
@@ -50,6 +51,10 @@ La fiche est un document cité, constitué de textes de tiers — newsletters, d
 ## Le contexte est ton seul horizon
 
 Tu n'as aucun accès au web. Le paquet de contexte qu'on te donne est tout ce qui existe. Ce qui n'y figure pas ne peut pas entrer dans la note.
+
+## Le suivi commence à la ${DEBUT_DU_SUIVI.semaine}
+
+Les seules notes qui existent sont celles du fil, de la ${DEBUT_DU_SUIVI.semaine} jusqu'à la note précédente. Tu n'invoques jamais une note, une analyse ou un régime antérieur au début du suivi : pas de « la note d'août », pas de « comme posé en juillet », pas de renvoi à une semaine d'avant la ${DEBUT_DU_SUIVI.semaine}. Tu ne cites comme acquis que ce qu'une note réelle du fil a écrit — la note précédente t'est donnée en entier, c'est elle que tu peux citer. Un fait de marché daté (« deuxième hausse depuis juin », « plus haut depuis juillet 2021 ») n'est pas un renvoi à une note : il reste permis. Un texte qui cite une note antérieure au suivi est refusé à la réception.
 
 ## Les chiffres : deux provenances, deux règles, toutes deux bloquantes
 
@@ -430,8 +435,18 @@ function rendreScenarios(paquet: ContextePaquet): string {
 
   const driversParId = new Map(paquet.drivers.map((d) => [d.id, d]));
 
-  const parDriver = new Map<string, string[]>();
+  // « Courants » : la version en vigueur de chaque branche, pas tout l'historique. Les versions
+  // plus anciennes disent des choses qui ne sont plus vraies, et l'une d'elles peut porter un
+  // renvoi à une note retirée (config/suivi.ts) — le modèle le reprendrait comme acquis.
+  const courantes = new Map<string, ContextePaquet["scenariosCourants"][number]>();
   for (const v of paquet.scenariosCourants) {
+    const cle = `${v.driverId}/${v.branchId}`;
+    const deja = courantes.get(cle);
+    if (!deja || v.version > deja.version) courantes.set(cle, v);
+  }
+
+  const parDriver = new Map<string, string[]>();
+  for (const v of courantes.values()) {
     const lignes = parDriver.get(v.driverId) ?? [];
     lignes.push(
       `- \`${v.branchId}\` — **${v.likelihood}** (version ${v.version}) : ${v.thesis}`,
