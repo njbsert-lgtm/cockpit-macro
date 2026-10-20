@@ -4,7 +4,6 @@ import {
   getDriver,
   getDrivers,
   getCurrentBranches,
-  getNote,
   getNotes,
   getNotesRevising,
   getScenarioVersionsByDriver,
@@ -22,8 +21,9 @@ import { estNonCollectee } from "@/lib/provenance";
 import { expirer } from "@/lib/guets";
 import { formatDateLong, formatJourMois, formatSignedPct } from "@/lib/format";
 import { BRANCH_LABELS, BRANCH_ORDER, DRIVER_NON_REVISE, LIKELIHOOD_LABELS } from "@/lib/scenario-labels";
-import { DriverBranches, type AncienCran } from "@/components/notes/DriverBranches";
-import { ScenarioTrajectory, semaineDeNote } from "@/components/notes/ScenarioTrajectory";
+import { DriverBranches } from "@/components/notes/DriverBranches";
+import { ScenarioTrajectory } from "@/components/notes/ScenarioTrajectory";
+import { repereDeRevision, semaineDeNote, type RepereRevision } from "@/lib/revision";
 import { GuetLine } from "@/components/notes/GuetLine";
 import { Erratum } from "@/components/notes/Erratum";
 import { SectionHeader } from "@/components/notes/SectionHeader";
@@ -66,11 +66,14 @@ export default async function DriverPage({ params }: { params: Promise<{ id: str
 
   // La dernière révision garde la trace de l'ancien cran de chaque branche qu'elle a déplacée :
   // « était faible en S41 », et un repère sur la jauge.
-  const anciensCrans: Record<string, AncienCran> = {};
+  const reperes: Record<string, RepereRevision> = {};
   for (const b of current) {
-    if (!b.likelihoodChangedFrom || b.noteSlug !== driver.lastRevisedIn) continue;
-    const reference = getNote(b.noteSlug)?.comparesTo;
-    if (reference) anciensCrans[b.branchId] = { from: b.likelihoodChangedFrom, semaine: semaineDeNote(reference) };
+    const repere = repereDeRevision(versions, b);
+    // Une révision ne se signale que sur les branches de la dernière note ; « Première version
+    // suivie » vaut pour toute branche dont rien d'antérieur n'est suivi.
+    if (repere && (repere.type === "premiere" || b.noteSlug === driver.lastRevisedIn)) {
+      reperes[b.branchId] = repere;
+    }
   }
 
   // Les guets encore ouverts sur ce driver, toutes notes confondues : la question à trancher se
@@ -134,7 +137,7 @@ export default async function DriverPage({ params }: { params: Promise<{ id: str
           <DriverBranches
             branches={ordered}
             dominantBranchId={driver.dominantBranchId}
-            anciensCrans={anciensCrans}
+            reperes={reperes}
           />
         ) : (
           <div className="rounded-rc bg-repos p-4">

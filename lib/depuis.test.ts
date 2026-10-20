@@ -90,14 +90,40 @@ describe("changementsDepuis", () => {
     const lignes = changementsDepuis({
       note,
       body: corps,
-      versions: [version({}), version({ likelihoodChangedFrom: null, branchId: "autre" }), version({ noteSlug: "2026-S41" })],
+      versions: [
+        // La version précédente de la branche existe et date d'une note du suivi : la révision se lit.
+        version({ version: 1, noteSlug: "2026-S40", likelihood: "faible", likelihoodChangedFrom: null }),
+        version({}),
+        version({ likelihoodChangedFrom: null, branchId: "autre" }),
+        version({ noteSlug: "2026-S41" }),
+      ],
       driverLabels: { ai: "Cycle IA", rates: "Taux" },
       branchLabels: { "ai-decoit": "Déception" },
       aujourdhui: "2026-10-19",
     });
     expect(lignes.map((l) => l.type)).toEqual(["revision", "guet", "lecture", "lecture"]);
-    expect(lignes[0]).toMatchObject({ branche: "Déception", avant: "faible", apres: "moderee", semantique: "baisse" });
+    expect(lignes[0]).toMatchObject({
+      branche: "Déception",
+      avant: "faible",
+      semaineAvant: "S40",
+      apres: "moderee",
+      semantique: "baisse",
+    });
     expect(lignes[1]).toMatchObject({ driverLabel: "Taux", echeance: "2026-10-17" });
+  });
+
+  it("ne dit pas « de X à Y » quand la version précédente n'est plus suivie : première version suivie", () => {
+    const lignes = changementsDepuis({
+      note,
+      body: null,
+      // Version 2, mais aucune version 1 dans le corpus : elle a été retirée à la remise à zéro.
+      versions: [version({})],
+      driverLabels: {},
+      branchLabels: {},
+      aujourdhui: "2026-10-19",
+    });
+    const revision = lignes.find((l) => l.type === "revision");
+    expect(revision).toMatchObject({ avant: null, semaineAvant: null, apres: "moderee" });
   });
 
   it("rend une liste vide quand rien n'a changé", () => {

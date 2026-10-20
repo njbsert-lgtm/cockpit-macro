@@ -1,6 +1,7 @@
 import type { Note, ScenarioLikelihood, ScenarioVersion } from "./types";
 import { extractBlockSource } from "./notes";
 import { branchSemantic, type BranchSemantic } from "./branch-semantics";
+import { repereDeRevision } from "./revision";
 
 /**
  * « Depuis S41 » : ce qui a changé entre la note courante et celle à laquelle elle se compare,
@@ -21,7 +22,13 @@ export type LigneDepuis =
       driverId: string;
       driverLabel: string;
       branche: string;
-      avant: ScenarioLikelihood;
+      /**
+       * L'état précédent et la semaine de la version qui le portait — `null` quand cette version
+       * n'est plus suivie (`lib/revision.ts`) : la ligne dit alors « Première version suivie »,
+       * jamais « de X à Y » depuis un état que plus aucune note ne porte.
+       */
+      avant: ScenarioLikelihood | null;
+      semaineAvant: string | null;
       apres: ScenarioLikelihood;
       semantique: BranchSemantic;
     }
@@ -81,15 +88,19 @@ export function changementsDepuis({
 }): LigneDepuis[] {
   const revisions: LigneDepuis[] = versions
     .filter((v) => v.noteSlug === note.slug && v.likelihoodChangedFrom !== null)
-    .map((v) => ({
-      type: "revision" as const,
-      driverId: v.driverId,
-      driverLabel: driverLabels[v.driverId] ?? v.driverId,
-      branche: branchLabels[v.branchId] ?? v.branchId,
-      avant: v.likelihoodChangedFrom as ScenarioLikelihood,
-      apres: v.likelihood,
-      semantique: branchSemantic(v),
-    }));
+    .map((v) => {
+      const repere = repereDeRevision(versions, v);
+      return {
+        type: "revision" as const,
+        driverId: v.driverId,
+        driverLabel: driverLabels[v.driverId] ?? v.driverId,
+        branche: branchLabels[v.branchId] ?? v.branchId,
+        avant: repere?.type === "revision" ? repere.avant : null,
+        semaineAvant: repere?.type === "revision" ? repere.semaine : null,
+        apres: v.likelihood,
+        semantique: branchSemantic(v),
+      };
+    });
 
   const guets: LigneDepuis[] = note.guets
     .filter((g) => g.statut === "ouvert" && g.echeance !== null && g.echeance <= aujourdhui)

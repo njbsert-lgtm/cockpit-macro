@@ -3,6 +3,7 @@ import { formatDateShort } from "@/lib/format";
 import { BRANCH_LABELS, LIKELIHOOD_LABELS, LIKELIHOOD_SHORT } from "@/lib/scenario-labels";
 import { branchSemantic, type BranchSemantic } from "@/lib/branch-semantics";
 import { DEBUT_DU_SUIVI } from "@/config/suivi";
+import { semaineDeNote } from "@/lib/revision";
 
 // Trois niveaux de vraisemblance, du plus probable au moins probable. La position verticale
 // est ce qui rend les croisements lisibles : une branche qui monte pendant qu'une autre
@@ -31,11 +32,6 @@ const SEMANTIC_STROKE: Record<BranchSemantic, { color: string; dash?: string; wi
   hausse: { color: "var(--color-hausse)", dash: "5 4", width: 1.75 },
   baisse: { color: "var(--color-baisse)", dash: "1.5 3.5", width: 1.75 },
 };
-
-/** « 2026-S41 » → « S41 » ; « 2026-S41-E1 » → « S41·E1 ». */
-export function semaineDeNote(slug: string): string {
-  return slug.split("-").slice(1).join("·");
-}
 
 type Point = { x: number; y: number };
 

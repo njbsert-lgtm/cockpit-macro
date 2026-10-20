@@ -3,6 +3,7 @@ import type { LigneDepuis } from "@/lib/depuis";
 import { formatJourMois } from "@/lib/format";
 import { LIKELIHOOD_SHORT } from "@/lib/scenario-labels";
 import { SEMANTIC_FILL } from "@/lib/branch-semantics";
+import { PREMIERE_VERSION_SUIVIE } from "@/lib/revision";
 import type { ScenarioLikelihood } from "@/lib/types";
 import { SectionHeader } from "./SectionHeader";
 
@@ -35,7 +36,7 @@ export function DepuisPrecedente({
       <ul className="mt-3 overflow-hidden rounded-rc border border-trait">
         {lignes.map((ligne, i) => (
           <li key={i} className="border-b border-trait last:border-b-0">
-            <Ligne ligne={ligne} semaine={semaine} noteSlug={noteSlug} />
+            <Ligne ligne={ligne} noteSlug={noteSlug} />
           </li>
         ))}
       </ul>
@@ -43,7 +44,7 @@ export function DepuisPrecedente({
   );
 }
 
-function Ligne({ ligne, semaine, noteSlug }: { ligne: LigneDepuis; semaine: string; noteSlug: string }) {
+function Ligne({ ligne, noteSlug }: { ligne: LigneDepuis; noteSlug: string }) {
   const surtitre = (texte: string) => (
     <span className="block text-9-5 font-semibold uppercase tracking-cap text-tenu">{texte}</span>
   );
@@ -60,22 +61,25 @@ function Ligne({ ligne, semaine, noteSlug }: { ligne: LigneDepuis; semaine: stri
         <span className="min-w-0">
           {surtitre(`Révision · ${ligne.driverLabel}`)}
           <span className="mt-0.5 block text-13-5 font-medium text-encre">
-            {ligne.branche} : {LIKELIHOOD_SHORT[ligne.avant].toLowerCase()} →{" "}
-            {LIKELIHOOD_SHORT[ligne.apres].toLowerCase()}
+            {ligne.avant
+              ? `${ligne.branche} : ${LIKELIHOOD_SHORT[ligne.avant].toLowerCase()} → ${LIKELIHOOD_SHORT[ligne.apres].toLowerCase()}`
+              : `${ligne.branche} : ${LIKELIHOOD_SHORT[ligne.apres].toLowerCase()}`}
           </span>
           <span className="relative mt-2 block h-[5px] rounded-rp bg-repos" aria-hidden="true">
             <span
               className={`block h-full rounded-rp ${SEMANTIC_FILL[ligne.semantique]}`}
               style={{ width: `${CRAN[ligne.apres]}%` }}
             />
-            <span
-              className="absolute -top-0.5 h-[9px] w-0.5 bg-encre"
-              style={{ left: `calc(${CRAN[ligne.avant]}% - 1px)` }}
-            />
+            {ligne.avant && (
+              <span
+                className="absolute -top-0.5 h-[9px] w-0.5 bg-encre"
+                style={{ left: `calc(${CRAN[ligne.avant]}% - 1px)` }}
+              />
+            )}
           </span>
           <span className="mt-1.5 flex justify-between gap-2 text-10-5 text-tenu">
             <span>Vraisemblance éditoriale · faible, modérée, centrale</span>
-            <span>▏ {semaine}</span>
+            <span>{ligne.semaineAvant ? `▏ ${ligne.semaineAvant}` : PREMIERE_VERSION_SUIVIE}</span>
           </span>
         </span>
         {chevron}

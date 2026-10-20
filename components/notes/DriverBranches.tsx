@@ -3,6 +3,7 @@
 import { useState } from "react";
 import type { ScenarioLikelihood, ScenarioVersion } from "@/lib/types";
 import { Erratum } from "./Erratum";
+import { PREMIERE_VERSION_SUIVIE, type RepereRevision } from "@/lib/revision";
 import { BRANCH_LABELS, IMPACT_LABELS, LIKELIHOOD_LABELS, LIKELIHOOD_SHORT } from "@/lib/scenario-labels";
 import { branchSemantic, LIKELIHOOD_FILL, SEMANTIC_FILL } from "@/lib/branch-semantics";
 
@@ -70,9 +71,6 @@ function BranchBody({ branch }: { branch: ScenarioVersion }) {
   );
 }
 
-/** Ce qu'une révision récente a déplacé : l'ancien cran, et la note où il valait encore. */
-export type AncienCran = { from: ScenarioLikelihood; semaine: string };
-
 const CRAN_POSITION: Record<ScenarioLikelihood, string> = {
   central: "calc(100% - 2px)",
   moderee: "calc(66.667% - 1px)",
@@ -84,13 +82,14 @@ const CRAN_POSITION: Record<ScenarioLikelihood, string> = {
  * révisée garde un repère de 2×9px `--encre` à son ancien cran (même motif que « Depuis » à
  * l'accueil) : la révision se voit sans lire la légende.
  */
-function Gauge({ branch, ancien }: { branch: ScenarioVersion; ancien?: AncienCran }) {
+function Gauge({ branch, repere }: { branch: ScenarioVersion; repere?: RepereRevision }) {
+  const ancien = repere?.type === "revision" ? repere : undefined;
   return (
     <div
       className="relative mt-1.5"
       role="img"
       aria-label={`Vraisemblance ${LIKELIHOOD_LABELS[branch.likelihood].toLowerCase()}${
-        ancien ? `, ${LIKELIHOOD_LABELS[ancien.from].toLowerCase()} en ${ancien.semaine}` : ""
+        ancien ? `, ${LIKELIHOOD_LABELS[ancien.avant].toLowerCase()} en ${ancien.semaine}` : ""
       }`}
     >
       <div className="h-[5px] w-full overflow-hidden rounded-rp bg-repos">
@@ -102,7 +101,7 @@ function Gauge({ branch, ancien }: { branch: ScenarioVersion; ancien?: AncienCra
         <span
           aria-hidden="true"
           className="absolute -top-0.5 h-[9px] w-0.5 bg-encre"
-          style={{ left: CRAN_POSITION[ancien.from] }}
+          style={{ left: CRAN_POSITION[ancien.avant] }}
         />
       )}
     </div>
@@ -122,11 +121,11 @@ const SENS_ACTIONS: Record<string, string> = {
 function BranchHeading({
   branch,
   dominant,
-  ancien,
+  repere,
 }: {
   branch: ScenarioVersion;
   dominant: boolean;
-  ancien?: AncienCran;
+  repere?: RepereRevision;
 }) {
   return (
     <>
@@ -141,9 +140,11 @@ function BranchHeading({
       </span>
       <span className="mt-0.5 block text-11 text-tenu">
         {SENS_ACTIONS[branch.impacts.eq.direction]}
-        {ancien && ` · était ${LIKELIHOOD_SHORT[ancien.from].toLowerCase()} en ${ancien.semaine}`}
+        {repere?.type === "revision" &&
+          ` · était ${LIKELIHOOD_SHORT[repere.avant].toLowerCase()} en ${repere.semaine}`}
+        {repere?.type === "premiere" && ` · ${PREMIERE_VERSION_SUIVIE}`}
       </span>
-      <Gauge branch={branch} ancien={ancien} />
+      <Gauge branch={branch} repere={repere} />
     </>
   );
 }
@@ -157,11 +158,11 @@ function BranchHeading({
 export function DriverBranches({
   branches,
   dominantBranchId,
-  anciensCrans = {},
+  reperes = {},
 }: {
   branches: ScenarioVersion[];
   dominantBranchId: string;
-  anciensCrans?: Record<string, AncienCran>;
+  reperes?: Record<string, RepereRevision>;
 }) {
   const [selected, setSelected] = useState(dominantBranchId);
   const active = branches.find((b) => b.branchId === selected) ?? branches[0];
@@ -201,7 +202,7 @@ export function DriverBranches({
               <BranchHeading
                 branch={b}
                 dominant={b.branchId === dominantBranchId}
-                ancien={anciensCrans[b.branchId]}
+                repere={reperes[b.branchId]}
               />
             </button>
           ))}
@@ -229,7 +230,7 @@ export function DriverBranches({
               <BranchHeading
                 branch={b}
                 dominant={b.branchId === dominantBranchId}
-                ancien={anciensCrans[b.branchId]}
+                repere={reperes[b.branchId]}
               />
             </header>
             <div className="mt-3">
