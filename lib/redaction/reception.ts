@@ -1,6 +1,8 @@
 import matter from "gray-matter";
 import type { Brouillon } from "./schema";
 import { extraireSortieMixte, validerReponse, type Vivier } from "./sortie-mixte";
+import { renvoiAUneNoteRetiree } from "./renvois";
+import { DEBUT_DU_SUIVI } from "@/config/suivi";
 import { BLOCS_SANS_LISTE, BLOCS_SOUS_TITRES, premiereListe, signalementsDuBloc } from "./style";
 
 /**
@@ -44,6 +46,26 @@ export function recevoir(brut: string, vivier: Vivier): ResultatReception {
 
   const blocs = extraireBlocs(fichier.content, vivier.blocsAttendus);
   if (!blocs.ok) return { ok: false, raison: blocs.raison };
+
+  // Aucun renvoi à une note antérieure au début du suivi, dans le corps comme dans la section
+  // JSON (justifications de révision, guets, phrases de régime). Refusé comme une liste : renvoyé
+  // au modèle une seule fois, avec ce message. Les notes retirées n'existent plus ; ce qu'elles
+  // disaient ne peut pas être cité comme acquis.
+  const textes: Array<[string, string]> = [
+    ...Object.entries(blocs.blocs).map(([nom, texte]): [string, string] => [`bloc « <${nom}> »`, texte]),
+    ["la section JSON", extrait.jsonBrut],
+  ];
+  for (const [ou, texte] of textes) {
+    const renvoi = renvoiAUneNoteRetiree(texte);
+    if (renvoi) {
+      return {
+        ok: false,
+        raison:
+          `${ou} : renvoi à une note antérieure au début du suivi (« ${renvoi} ») — ces notes n'existent plus. ` +
+          `Ne cite comme acquis que ce qu'une note du fil, de la ${DEBUT_DU_SUIVI.semaine} à la note précédente, a écrit`,
+      };
+    }
+  }
 
   const { frontmatter: fm, structure } = valide;
   return {

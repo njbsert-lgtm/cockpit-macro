@@ -1,5 +1,6 @@
 import matter from "gray-matter";
-import { parseNote, type ParsedNote } from "@/lib/notes";
+import { extractBlockSource, parseNote, type ParsedNote } from "@/lib/notes";
+import { renvoiAUneNoteRetiree } from "./renvois";
 import { BLOCK_TITLES, type BlockName } from "@/lib/note-blocks";
 import type {
   Authorship,
@@ -190,6 +191,21 @@ export function conditionsManquantes(
       manquantes.push({
         code: `bloc:${bloc}`,
         message: `Le bloc « ${BLOCK_TITLES[bloc]} » n'a pas été relu.`,
+      });
+    }
+  }
+
+  // Condition : aucun bloc ne renvoie à une note antérieure au début du suivi. Le contrôle de la
+  // réception ne voit que ce que le modèle a écrit ; un texte retouché à la main dans le portail
+  // peut en réintroduire un. Le texte considéré est le texte final — la décision, sinon la
+  // proposition du modèle.
+  for (const bloc of blocsAAuthorshipDirecte(blocsPresents)) {
+    const texte = decisions.blocs[bloc]?.texte ?? extractBlockSource(note.body, bloc) ?? "";
+    const renvoi = renvoiAUneNoteRetiree(texte);
+    if (renvoi) {
+      manquantes.push({
+        code: `renvoi:${bloc}`,
+        message: `Le bloc « ${BLOCK_TITLES[bloc]} » renvoie à une note retirée (« ${renvoi} ») : la reformuler sans ce renvoi.`,
       });
     }
   }

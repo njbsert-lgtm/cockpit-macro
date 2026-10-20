@@ -256,6 +256,15 @@ describe("conditionsManquantes", () => {
     expect(conditionsManquantes(note, brouillonPropose(), noteToutesDecisionsPrises())).toEqual([]);
   });
 
+  it("bloque la publication quand un bloc retouché renvoie à une note retirée", () => {
+    const note = parseNote("2026-S36", BROUILLON_MDX);
+    const decisions = noteToutesDecisionsPrises();
+    decisions.blocs.CeQuiAChange = { authorship: "ia-corrigee", texte: "Comme posé dans la note d'août." };
+    const manquantes = conditionsManquantes(note, brouillonPropose(), decisions);
+    expect(manquantes.map((m) => m.code)).toContain("renvoi:CeQuiAChange");
+    expect(manquantes.find((m) => m.code === "renvoi:CeQuiAChange")?.message).toContain("note d'août");
+  });
+
   it("exige une décision explicite sur chaque révision de scénario proposée", () => {
     const note = parseNote("2026-S36", BROUILLON_MDX);
     const propose = brouillonPropose({

@@ -84,6 +84,30 @@ describe("recevoir — de la réponse brute au brouillon", () => {
     expect(res.raison).toContain("une liste");
   });
 
+  it("refuse un renvoi à une note retirée dans un bloc, avec le message de réparation", () => {
+    const corps =
+      "<CeQuiAChange>\n### Sujet\n\n**Gras.** La chaîne, posée dès la note d'août, se vérifie.\n</CeQuiAChange>\n\n<CeQueJeSurveille>\nTexte.\n</CeQueJeSurveille>";
+    const res = recevoir(reponse(corps), vivier());
+    expect(res.ok).toBe(false);
+    if (res.ok) return;
+    expect(res.raison).toMatch(/bloc « <CeQuiAChange> » : renvoi à une note antérieure au début du suivi \(« note d'août »\)/);
+    expect(res.raison).toContain("S38");
+  });
+
+  it("refuse aussi ce renvoi dans la section JSON", () => {
+    const structure = { ...STRUCTURE, scenarioRevisions: [], guets: [], redactionNotes: "Reprend la S32." };
+    const res = recevoir(reponse(undefined, structure), vivier());
+    expect(res.ok).toBe(false);
+    if (res.ok) return;
+    expect(res.raison).toMatch(/section JSON : renvoi à une note antérieure/);
+  });
+
+  it("laisse passer un fait de marché daté et une source tierce", () => {
+    const corps =
+      "<CeQuiAChange>\n### Sujet\n\n**Gras.** Deuxième hausse depuis juin, selon une note de Goldman Sachs publiée en août.\n</CeQuiAChange>\n\n<CeQueJeSurveille>\nTexte.\n</CeQueJeSurveille>";
+    expect(recevoir(reponse(corps), vivier()).ok).toBe(true);
+  });
+
   it("refuse aussi une liste numérotée", () => {
     const corps =
       "<CeQuiAChange>\n### Sujet\n\n1. un\n2. deux\n</CeQuiAChange>\n\n<CeQueJeSurveille>\nTexte.\n</CeQueJeSurveille>";
