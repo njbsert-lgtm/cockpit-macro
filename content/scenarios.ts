@@ -90,6 +90,11 @@ export const SCENARIO_VERSIONS: ScenarioVersion[] = [
     date: "2026-09-19",
     noteSlug: "2026-S38",
     likelihood: "faible",
+    erratum: {
+      date: "2026-10-19",
+      texte:
+        "« La même raison qu'en août » renvoie à une version de développement, retirée le 19/10/2026.",
+    },
     thesis:
       "Inchangée, et pour la même raison qu'en août : le canal qui déclencherait cette branche est un choc de demande, pas une détente de l'inflation. Un cycle de hausse qui commence l'éloigne mécaniquement sans rien changer à sa mécanique.",
     impacts: {
