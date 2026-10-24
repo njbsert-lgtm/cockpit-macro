@@ -1,6 +1,7 @@
 import matter from "gray-matter";
 import { extractBlockSource, parseNote, type ParsedNote } from "@/lib/notes";
 import { renvoiAUneNoteRetiree } from "./renvois";
+import { texteDAttente } from "./texte-attente";
 import { BLOCK_TITLES, type BlockName } from "@/lib/note-blocks";
 import type {
   Authorship,
@@ -201,6 +202,14 @@ export function conditionsManquantes(
   // proposition du modèle.
   for (const bloc of blocsAAuthorshipDirecte(blocsPresents)) {
     const texte = decisions.blocs[bloc]?.texte ?? extractBlockSource(note.body, bloc) ?? "";
+    // Un texte d'attente destiné au rédacteur ne se publie pas, quel que soit le bloc.
+    const attente = texteDAttente(texte);
+    if (attente) {
+      manquantes.push({
+        code: `attente:${bloc}`,
+        message: `Le bloc « ${BLOCK_TITLES[bloc]} » porte encore un texte d'attente (« ${attente} ») : le remplacer par son contenu, ou par « Bloc non rédigé à la publication. ».`,
+      });
+    }
     const renvoi = renvoiAUneNoteRetiree(texte);
     if (renvoi) {
       manquantes.push({

@@ -265,6 +265,21 @@ describe("conditionsManquantes", () => {
     expect(manquantes.find((m) => m.code === "renvoi:CeQuiAChange")?.message).toContain("note d'août");
   });
 
+  it("bloque la publication tant qu'un bloc contient le texte d'attente destiné au rédacteur", () => {
+    const note = parseNote("2026-S36", BROUILLON_MDX);
+    const decisions = noteToutesDecisionsPrises();
+    decisions.blocs.CeQueJavaisMalLu = {
+      authorship: "humaine",
+      texte: "> **Bloc à compléter — il ne peut pas être rédigé pour vous.**\n>\n> Deux pistes…",
+    };
+    const manquantes = conditionsManquantes(note, brouillonPropose(), decisions);
+    expect(manquantes.map((m) => m.code)).toContain("attente:CeQueJavaisMalLu");
+
+    // Remplacé par la mention de sa non-rédaction, le bloc passe.
+    decisions.blocs.CeQueJavaisMalLu = { authorship: "humaine", texte: "Bloc non rédigé à la publication." };
+    expect(conditionsManquantes(note, brouillonPropose(), decisions)).toEqual([]);
+  });
+
   it("exige une décision explicite sur chaque révision de scénario proposée", () => {
     const note = parseNote("2026-S36", BROUILLON_MDX);
     const propose = brouillonPropose({
