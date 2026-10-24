@@ -40,7 +40,7 @@ prolonge les dates.
 `note-hebdo.yml` **planifié** (samedi 8 h UTC) puis `publier-note.yml`, fiche Notion comme
 matière principale, contrôle des chiffres à deux régimes. Notes réelles publiées : S38 à S42.
 
-**Remise à zéro du corpus (Étape 6.6, faite le 19/10/2026).** Les neuf notes de développement
+**Remise à zéro du corpus (Étape 6.6) — entièrement soldée le 24/10/2026** (purge du 19/10, errata du 20/10 et du 24/10, voir plus bas). Les neuf notes de développement
 S24, S26, S26-E1, S27, S28, S28-E1, S29, S31, S32 et tout ce qui en dérivait ont été retirés :
 20 versions de scénario (`content/scenarios.ts`), 13 entrées d'historique de tendance
 (`content/tendances.ts`), les liens « promue en note » de deux alertes d'exemple du seed.
@@ -95,14 +95,18 @@ texte publié ni une version validée : on ajoute un erratum** et on corrige l'a
   frontmatter d'une note et sur une `ScenarioVersion`. Rendu discret (petit corps, couleur
   secondaire, « Erratum du JJ/MM/AAAA ») tout en bas de la note, et sous la version concernée sur
   la page d'un driver. Absent du paquet de contexte et du contrôle des chiffres.
-- **Errata posés** : S38 (note d'août, note précédente du 13 août, « ouverts en août », « première
-  note sur ce dossier », « la semaine dernière ») ; version taux S38 `rates-baisses`
-  (« la même raison qu'en août »). **Pas d'erratum S39** : les mentions « ouvert en août » et
-  « documenté en août » ne s'y trouvent pas (la seule occurrence est dans la S38).
-- **Non couverts, à décider** : des renvois implicites à un état antérieur dans la S38 (« la
-  branche dominante était statu quo prolongé », « le risque IA n'est plus “les profits
-  viendront-ils” », « l'axe contournement n'existait pas ») et les « Inchangé… » des impacts des
-  versions taux S38. Ils parlent d'un état qui n'existe plus mais ne citent pas de note.
+- **Errata posés** :
+  - S38 (20/10, élargi le 24/10) : « note d'août », « note précédente » du 13 août, « ouverts en
+    août », « première note sur ce dossier », « la semaine dernière » ; les états antérieurs que la
+    note décrit (branche dominante précédente, axes présentés comme nouveaux) ; le texte d'attente
+    du bloc « Ce que j'avais mal lu ».
+  - S39 (24/10) : « ouvert en août » (théâtre élargi), « documenté en août » (statu quo) et
+    l'axe « acceptabilité politique » « ouvert en août ». *Correction d'une erreur de cette
+    section* : la version du 20/10 affirmait à tort que la S39 ne contenait pas ces mentions.
+  - Version taux S38 `rates-baisses` (20/10) : « la même raison qu'en août ».
+  Rien dans `content/generated/`, les tendances ni les notes S40 à S42.
+- **Non couverts par un erratum** : les « Inchangé… » des impacts des versions taux S38 — la mention
+  « Première version suivie » les couvre déjà.
 - **Repères de révision** : une version n'est datée que de la note qui l'a produite ; sans version
   précédente suivie (retirée, ou d'avant la S38), la page dit « Première version suivie » et ne
   trace pas l'ancien cran (`lib/revision.ts`). Vaut sur la page d'un driver et dans « Depuis ».
@@ -112,11 +116,13 @@ texte publié ni une version validée : on ajoute un erratum** et on corrige l'a
   publication s'il est réintroduit à la main (`lib/redaction/renvois.ts`). Le prompt n'affiche plus
   que la version en vigueur de chaque branche sous « Scénarios courants ».
 
-### À relire dans la S38
+### Bloc « Ce que j'avais mal lu » de la S38 (soldé le 24/10/2026)
 
-Le bloc « Ce que j'avais mal lu » de la S38 est **publié avec son texte d'attente** (« Bloc à
-compléter — il ne peut pas être rédigé pour vous… »), deux pistes comprises, qui citent « la note
-d'août ». Non corrigé : un humain seul l'écrit. À remplacer par une vraie saisie.
+La S38 avait été publiée avec un **texte d'attente** destiné au rédacteur (« Bloc à compléter — il
+ne peut pas être rédigé pour vous… », deux pistes comprises). Il est remplacé par « Bloc non rédigé
+à la publication. » — **seule modification autorisée du corps d'une note publiée**, mentionnée dans
+l'erratum de la S38. Pour qu'elle ne se reproduise pas, la publication est bloquée tant qu'un bloc
+porte encore un texte d'attente (`lib/redaction/texte-attente.ts`, condition `attente:<bloc>`).
 
 ## Passation de design mobile (Claude Design) — entièrement faite
 
