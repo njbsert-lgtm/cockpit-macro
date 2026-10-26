@@ -9,15 +9,17 @@ documents de cadrage plus anciens (début octobre) : utiles pour l'historique, p
 
 Donnée par le propriétaire le 26/10, recopiée ici pour qu'une session sache où on en est. **Elle
 remplace la numérotation précédente** : l'accès administrateur, appelé « J1.1 » plus tôt dans la
-journée, est désormais **J2.1** ; J1 est le chantier « marchés par driver ». Légende : [x] faite,
+journée, est désormais **J2.1** ; J1 est le chantier « marchés par driver ». **Ordre retenu le
+26/10 : J2.1 d'abord** (les routes d'administration sont publiques), puis J1 ; le reste de J2 après. Légende : [x] faite,
 [~] en cours, [ ] à faire. Une case ne se coche qu'une fois le travail poussé et vérifié.
 
-### J0 Assainir (2/5)
+### J0 Assainir (5/5)
 - [x] J0.1 Remise à zéro du corpus (Étape 6.6)
 - [x] J0.2 Contrôler trajectoires et historiques après la purge
-- [ ] J0.3 Cuivre dans l'axe « Contrainte physique » : garder ou retirer — à trancher
-- [ ] J0.4 Réécriture de l'historique Git (commit `4602cd8`, ~12 Mo) — à trancher
-- [ ] J0.5 Logo J.P. Morgan : fournir le fichier ou acter le logo groupe — à trancher
+- [x] J0.3 Cuivre dans l'axe « Contrainte physique » : **gardé comme témoin** (décidé le 26/10) ;
+  il reste hors des instruments pilotés du driver IA
+- [x] J0.4 Historique Git (commit `4602cd8`, ~12 Mo) : **pas de réécriture** (décidé le 26/10)
+- [x] J0.5 Logo J.P. Morgan : **logo du groupe acté** (décidé le 26/10)
 
 ### J1 Les marchés par driver (0/6)
 - [ ] J1.1 Spécifier le bloc — à trancher
@@ -302,14 +304,9 @@ Chaque point porte entre crochets la ligne de la feuille de route qui le reprend
 **Ouvert dans la dernière session (19/10)**
 1. **[J7.3] Source du Brent à terme (ICE).** Proposé : sonder Twelve Data / Alpha Vantage ; à défaut un
    ETF (BNO) — en $/part, donc une approximation à signaler. Non commencé.
-2. **[J0.3] Cuivre dans l'axe « Contrainte physique »** : le garder comme témoin ou le retirer aussi ?
-   Question posée, sans réponse.
-3. **[J0.4] Historique Git** : le premier passage de `logos-outlooks.yml` a commité ~12 Mo de photos
-   (commit `4602cd8`), retirées ensuite mais présentes dans l'historique de `main`. Réécriture
-   proposée, **en attente d'accord** — ne pas la faire sans.
-4. **[J0.5] Logo J.P. Morgan** : c'est celui du groupe (JPMorganChase) ; la marque « J.P. Morgan » de
-   la banque privée n'existe pas en SVG sur Commons. À remplacer si l'utilisateur fournit le
-   fichier.
+2. ~~Cuivre dans l'axe « Contrainte physique »~~ — soldé (J0.3) : gardé comme témoin.
+3. ~~Historique Git~~ — soldé (J0.4) : pas de réécriture, `4602cd8` reste dans l'historique.
+4. ~~Logo J.P. Morgan~~ — soldé (J0.5) : le logo du groupe (JPMorganChase) est acté.
 5. [J7.8] Outlook : aucune capture de graphique original (`imageGraphique`) fournie ; explications
    limitées au contenu des condensés (pour aller plus loin, relire les PDF).
 
