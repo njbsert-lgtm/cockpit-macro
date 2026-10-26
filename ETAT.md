@@ -30,7 +30,8 @@ journée, est désormais **J2.1** ; J1 est le chantier « marchés par driver »
 - [ ] J1.6 Bilan automatique des guets échus
 
 ### J2 Back-office /admin (0/7)
-- [ ] J2.1 Accès administrateur protégé — plan ci-dessous, en attente de validation
+- [~] J2.1 Accès administrateur protégé — commits 1 à 4 faits le 26/10, sur la branche de session ;
+  réglages Supabase et fusion dans `main` à faire (voir ci-dessous)
 - [ ] J2.2 Accueil /admin : santé des sources et files d'attente
 - [ ] J2.3 /redaction → /admin/redaction
 - [ ] J2.4 /triage → /admin/veille
@@ -104,7 +105,38 @@ journée, est désormais **J2.1** ; J1 est le chantier « marchés par driver »
 passe 2 (veille), mais `Guet.axeLibelle` n'est pas rattaché (J3.1). Aucune case n'est cochée au-delà
 de ce que la feuille de route donne.
 
-## J2.1 — accès administrateur protégé (plan à valider)
+## J2.1 — accès administrateur protégé (en cours)
+
+**Fait le 26/10** sur `claude/roadmap-tracking-mr00y4`, **pas encore dans `main`**. Les trois
+décisions sont prises selon les choix par défaut : `/diagnostic` protégé, boutons de l'accueil
+retirés (commit 5, pas encore fait), tout côté serveur.
+- (1) `89f7f82` session serveur (`lib/auth/session.ts`, `server-only`), règles pures
+  (`lib/auth/regles.ts`), contournement local verrouillé, build en échec si `ADMIN_LOCAL` hors dev.
+  **Écart au plan** : `server-only` n'est pas dans `lib/supabase.ts`, que les scripts `tsx` et les
+  workflows importent (le paquet lève hors de Next) ; le test de frontière
+  (`lib/auth/frontiere.test.ts`) couvre le risque à sa place.
+- (2) `466d65b` `middleware.ts` + tests (404 sans session, matcher limité aux trois routes).
+- (3) `fbbd479` gardes dans les layouts, les pages et les 13 Server Actions ; le test parcourt
+  toutes les actions exportées sans les nommer.
+- (4) `87e504e` `/connexion`, `/auth/confirmer` (`token_hash` ou `code`), déconnexion.
+- Vérifié sur un build de production : `/redaction`, `/triage`, `/diagnostic` → 404 au corps
+  identique à une adresse inconnue ; `/`, `/notes` → 200 ; `/api/cron/collect` non intercepté.
+  En dev avec `ADMIN_LOCAL=1` : 200 sur `localhost`, 404 avec un hôte forgé.
+
+**Reste, dans l'ordre :**
+1. **Réglages Supabase par le propriétaire** (hors dépôt) : inscriptions fermées, compte créé,
+   rôle posé par SQL, Site URL et Redirect URLs (`https://<projet>.vercel.app/auth/confirmer`),
+   gabarit « Magic Link » en `{{ .SiteURL }}/auth/confirmer?token_hash={{ .TokenHash }}&type=email`.
+   Vérifier sur `/diagnostic` **avant la fusion** que `SUPABASE_URL` et `SUPABASE_ANON_KEY` sont
+   posées sur Vercel : après la fusion, la page est derrière la connexion.
+2. Fusion dans `main` — **pas avant le point 1**, sinon `/redaction` devient inaccessible au
+   propriétaire lui-même.
+3. Commit 5 : retrait des boutons « Triage » et « Brouillon à réviser » de l'accueil public.
+4. Commit 6 : `CLAUDE.md` (le « mot de passe Vercel » n'est plus la protection), `.env.example`
+   (`ADMIN_LOCAL`, `SITE_URL` facultative), SQL du rôle dans `supabase/`.
+
+### Plan initial (validé le 26/10)
+
 
 **Demande (26/10).** Supabase Auth, un rôle admin, un middleware Next sur les routes
 d'administration. Un seul compte, lien magique. `/redaction` et `/triage` protégés **dès
@@ -144,9 +176,8 @@ n'est pas en place). Plan avant le code, commits séparés.
   (5) retrait des entrées publiques de l'accueil ; (6) `CLAUDE.md`, `.env.example`, SQL du rôle,
   `ETAT.md`.
 
-**Trois décisions attendues avant de coder :** protéger aussi `/diagnostic` ? retirer de
-l'accueil public les boutons « Triage » et « Brouillon à réviser » (ils signalent la surface que
-le 404 cache) ? accepter le montage tout serveur sans `NEXT_PUBLIC_` ?
+**Trois décisions (prises le 26/10) :** `/diagnostic` protégé ; boutons « Triage » et « Brouillon
+à réviser » retirés de l'accueil public ; montage tout serveur sans `NEXT_PUBLIC_`.
 
 **À faire dans le tableau de bord Supabase (hors dépôt), avant le commit 4** : Site URL et
 `https://<domaine>/auth/confirmer` dans les Redirect URLs ; inscriptions par e-mail fermées ;
@@ -157,7 +188,7 @@ rôle admin posé par le SQL fourni.
 - Travail directement sur **`main`** (les sessions précédentes y poussent ; la branche
   `claude/nextjs-tabs-skeleton-np68r6` est ancienne et très en retard, ne pas s'y fier).
 - Commits atomiques en français. Avant de pousser : `npx tsc --noEmit`, `npx vitest run`
-  (1158 tests verts), `npm run lint` (0 erreur, 7 avertissements anciens).
+  (1230 tests verts), `npm run lint` (0 erreur, 7 avertissements anciens).
 - **L'environnement de développement n'a pas d'accès réseau sortant** vers les sources (FRED,
   Wikimedia…) ni vers Supabase. Tout passe par le workflow **`verification-sources.yml`**
   (déclenché via les outils GitHub) : `sonder-supabase` (lire une table, ex.
