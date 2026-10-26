@@ -94,5 +94,25 @@ export const GENERATED_TREND_DELTAS: TrendDelta[] = [
       "noteSlug": "2026-S42",
       "why": "La concentration des bénéfices sur les fournisseurs d'infrastructure se confirme (rachats d'actions reportés vers l'infrastructure IA selon Goldman Sachs Research), tandis que les entreprises utilisatrices documentent pour la première fois une compression de marge liée au coût de l'adoption."
     }
+  },
+  {
+    "trendId": "prime-risque-permanente",
+    "status": "renforce",
+    "entry": {
+      "date": "2026-10-26",
+      "status": "renforce",
+      "noteSlug": "2026-S43",
+      "why": "L'OAT 10 ans franchit son plus haut niveau depuis 2002 selon brief.eco (21/10), la dette publique atteint 119,1 % du PIB au 01/04, et Goldman Sachs Research (23/10) recommande une allocation structurelle aux matières premières précisément pour couvrir le risque d'escalade géopolitique."
+    }
+  },
+  {
+    "trendId": "desinflation-terminee",
+    "status": "renforce",
+    "entry": {
+      "date": "2026-10-26",
+      "status": "renforce",
+      "noteSlug": "2026-S43",
+      "why": "L'inflation française ressort à 3,4 % en septembre selon l'Insee, tirée par l'accélération des prix de l'énergie, au moment où l'EIA (22/10) documente des marges de raffinage américaines au plus haut depuis 1998 et où JP Morgan Private Bank signale des prix du diesel à des niveaux historiques."
+    }
   }
 ];
