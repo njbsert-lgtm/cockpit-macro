@@ -504,6 +504,33 @@ lecture.
 Entrée : un bouton compteur discret sur l'accueil de Notes quand un brouillon existe, comme
 celui de `/triage`. Aucune notification.
 
+#### Portail à gestes : frise, relecture dans la note, chiffres par valeur
+
+Le compteur `0/6` n'est plus un dépliant par bloc : c'est une **frise** de segments, un pour la
+phrase de régime puis un par bloc (avec son emoji de bloc). Fait en `--hausse`, en cours en
+`--encre`, à faire en `--trait`, avec un point `--k-choc` s'il reste des chiffres à trancher dans le
+geste. **L'état informe, il ne verrouille jamais** : segments en `role="tab"` (`aria-selected`,
+libellé « Ce qui a changé, à faire, 7 chiffres à trancher »), « ‹ Précédent » et « Suivant › »
+toujours actifs, la saisie d'un geste laissé en cours survit au changement de segment. Seul « Publier
+la note » reste conditionné.
+
+- **Tableau (4a)** : surtitre, compteur, « N gestes avant publication », frise, ligne « Bloque la
+  publication » (bordure `--k-choc`, rayon `--rc`, seulement si les chiffres bloquent), puis « À faire
+  maintenant » — le geste ouvert, sans dépliant — et « Ensuite », la liste des autres gestes.
+- **Relire dans la note (4b)** : un bloc se relit avec la mise en page de la page de lecture — filet de
+  canal de 3px, emoji dans la marge, sous-titres en 700, gras d'attaque neutralisé. Les chiffres non
+  conformes sont surlignés (`bg-k-choc/25`, poids 600) ; les toucher ouvre une bulle sous le
+  paragraphe (verdict, régime, rang « 1 sur 7 dans ce bloc », « Garder tel quel » et « Corriger la
+  phrase », un nombre à la fois). Barre d'emoji collante en lecture continue, puce active suivie à
+  l'`IntersectionObserver` ; barre basse collante au-dessus de la barre d'onglets mobile. « Valider
+  le bloc » reste grisé tant qu'un chiffre du bloc n'est pas tranché, raison écrite — et **cela ne
+  bloque jamais la navigation**. « Aperçu publié » masque surlignages, badges et pastilles.
+- **Chiffres par valeur (4c)** : en tête, le nombre à trancher, une barre `--hausse` / `--k-choc`
+  (conformes / non conformes), les totaux par régime. « Par valeur » regroupe les occurrences d'une
+  même valeur et d'une même série — la valeur en 19px 700 (`--text-19`), le reproche, le nombre
+  d'occurrences, un encadré « Pour trancher » tiré des seules données existantes, puis **un geste par
+  occurrence**, jamais un geste de groupe. « Par bloc » garde la liste d'origine.
+
 #### Choix de la phrase de régime, et signalements de style
 
 Deux éléments du portail, sans composant nouveau.

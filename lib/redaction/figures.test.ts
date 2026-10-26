@@ -621,3 +621,142 @@ describe("controlerChiffres — les trois propositions de phrase de régime", ()
     expect(r.bloque).toBe(true);
   });
 });
+
+describe("grouperParValeur", () => {
+  const v = (over: Partial<import("./figures").VerdictChiffre>): import("./figures").VerdictChiffre => ({
+    ecrit: "4,96",
+    valeur: 4.96,
+    bloc: "CeQuiAChange",
+    regime: "B",
+    source: null,
+    verdict: "introuvable",
+    dateRetenue: null,
+    valeurBase: null,
+    phrase: "Il clôture à 4,96 % au 22/10.",
+    ...over,
+  });
+
+  it("regroupe les occurrences d'une même valeur, sans geste de groupe", async () => {
+    const { grouperParValeur } = await import("./figures");
+    const groupes = grouperParValeur([
+      v({}),
+      v({ bloc: "RevisionDesScenarios", phrase: "Le repli à 4,96 % au 22/10." }),
+      v({ bloc: "CeQuiSestConfirme", phrase: "À 4,96 % au 22/10." }),
+    ]);
+    expect(groupes).toHaveLength(1);
+    expect(groupes[0].valeur).toBe("4,96");
+    expect(groupes[0].occurrences).toHaveLength(3);
+    expect(groupes[0].restantes).toBe(3);
+  });
+
+  it("rattache à la série d'un verdict conforme de même valeur ailleurs", async () => {
+    const { grouperParValeur } = await import("./figures");
+    const groupes = grouperParValeur([
+      v({ bloc: "keyIndicators/US 10 ans", verdict: "conforme", regime: "A", source: "us10y au 22/10" }),
+      v({}),
+    ]);
+    expect(groupes).toHaveLength(1);
+    expect(groupes[0].serie).toBe("US 10 ans");
+  });
+
+  it("n'invente pas de série : sans verdict conforme de même valeur, elle reste null", async () => {
+    const { grouperParValeur } = await import("./figures");
+    expect(grouperParValeur([v({})])[0].serie).toBeNull();
+  });
+
+  it("une fourchette compte pour une valeur, avec une seule occurrence par phrase", async () => {
+    const { grouperParValeur } = await import("./figures");
+    const phrase = "La Fed laisse son taux entre 3,75-4,00 %.";
+    const groupes = grouperParValeur([
+      v({ ecrit: "3,75", valeur: 3.75, phrase }),
+      v({ ecrit: "4,00", valeur: 4, phrase }),
+    ]);
+    expect(groupes).toHaveLength(1);
+    expect(groupes[0].valeur).toBe("3,75-4,00");
+    expect(groupes[0].occurrences).toHaveLength(1);
+    expect(groupes[0].occurrences[0].verdicts).toHaveLength(2);
+  });
+
+  it("deux nombres sans lien dans une même phrase restent deux valeurs", async () => {
+    const { grouperParValeur } = await import("./figures");
+    const phrase = "Le taux passe de 3,75 % à un niveau voisin de 4,96 %.";
+    const groupes = grouperParValeur([
+      v({ ecrit: "3,75", valeur: 3.75, phrase }),
+      v({ ecrit: "4,96", valeur: 4.96, phrase }),
+    ]);
+    expect(groupes).toHaveLength(2);
+  });
+
+  it("ignore les conformes et compte les gardés comme tranchés", async () => {
+    const { grouperParValeur } = await import("./figures");
+    const groupes = grouperParValeur([
+      v({ verdict: "conforme", regime: "A" }),
+      v({ garde: true, phrase: "Une autre phrase à 4,96 %." }),
+      v({ phrase: "Encore 4,96 % ici." }),
+    ]);
+    expect(groupes).toHaveLength(1);
+    expect(groupes[0].occurrences).toHaveLength(2);
+    expect(groupes[0].restantes).toBe(1);
+  });
+
+  it("des valeurs écrites différemment font des groupes différents", async () => {
+    const { grouperParValeur } = await import("./figures");
+    const groupes = grouperParValeur([
+      v({}),
+      v({ ecrit: "5,10", valeur: 5.1, phrase: "Contre 5,10 %." }),
+    ]);
+    expect(groupes.map((g) => g.valeur)).toEqual(["4,96", "5,10"]);
+  });
+});
+
+describe("elementsDeDecision", () => {
+  it("n'utilise que les données existantes : conforme ailleurs, base, note précédente", async () => {
+    const { grouperParValeur, elementsDeDecision } = await import("./figures");
+    const base = {
+      ecrit: "125,44",
+      valeur: 125.44,
+      bloc: "CeQuiAChange",
+      regime: "A" as const,
+      source: "brent",
+      verdict: "ecart" as const,
+      dateRetenue: "2026-10-20",
+      valeurBase: "115,22",
+      phrase: "Le Brent à 125,44 $ au 20/10.",
+    };
+    const tous = [base];
+    const groupes = grouperParValeur(tous);
+    const el = elementsDeDecision(groupes[0], tous, {
+      slug: "2026-S42",
+      regimeStatement: "x",
+      blocs: { CeQuiAChange: "Le Brent cotait 125,44 $ au 06/10." },
+      driverOrder: [],
+    });
+    expect(el.base).toEqual({ dateRetenue: "2026-10-20", valeurBase: "115,22" });
+    expect(el.notePrecedente).toBe("2026-S42");
+    expect(el.conformeAilleurs).toBeNull();
+  });
+
+  it("ne cite pas la note précédente si le nombre n'y figure pas", async () => {
+    const { grouperParValeur, elementsDeDecision } = await import("./figures");
+    const tous = [
+      {
+        ecrit: "4,96",
+        valeur: 4.96,
+        bloc: "CeQuiAChange",
+        regime: "B" as const,
+        source: null,
+        verdict: "introuvable" as const,
+        dateRetenue: null,
+        valeurBase: null,
+        phrase: "À 4,96 %.",
+      },
+    ];
+    const el = elementsDeDecision(grouperParValeur(tous)[0], tous, {
+      slug: "2026-S42",
+      regimeStatement: "x",
+      blocs: { CeQuiAChange: "Le taux valait 14,96 %." },
+      driverOrder: [],
+    });
+    expect(el.notePrecedente).toBeNull();
+  });
+});

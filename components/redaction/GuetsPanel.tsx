@@ -16,14 +16,32 @@ export function GuetsPanel({
   decisions,
   authorship,
   echeances,
+  plat = false,
 }: {
   slug: string;
   guets: Guet[];
   decisions: Decisions["guets"];
   authorship: Authorship;
   echeances: Echeance[];
+  /** Sans dépliant : le portail à gestes en fournit l'en-tête (frise, mise en page de la note). */
+  plat?: boolean;
 }) {
   const valide = authorship !== "ia";
+  const contenu = (
+    <>
+      <CalendarReminder echeances={echeances} />
+      {guets.length === 0 ? (
+        <p className="text-12-5 text-doux">Aucun guet cette semaine.</p>
+      ) : (
+        <ul>
+          {guets.map((g) => (
+            <GuetDecisionLine key={g.id} slug={slug} guet={g} decision={decisions[g.id]} />
+          ))}
+        </ul>
+      )}
+    </>
+  );
+  if (plat) return <div className="flex flex-col gap-3 rounded-rc bg-repos px-4 py-3">{contenu}</div>;
   return (
     <details className="rounded-rc border border-trait bg-page">
       <summary className="flex min-h-11 cursor-pointer list-none items-center justify-between gap-3 px-4 py-3 [&::-webkit-details-marker]:hidden">
@@ -35,18 +53,7 @@ export function GuetsPanel({
         </span>
         <AuthorshipBadge authorship={authorship} />
       </summary>
-      <div className="flex flex-col gap-3 border-t border-trait bg-repos px-4 py-3">
-        <CalendarReminder echeances={echeances} />
-        {guets.length === 0 ? (
-          <p className="text-12-5 text-doux">Aucun guet cette semaine.</p>
-        ) : (
-          <ul>
-            {guets.map((g) => (
-              <GuetDecisionLine key={g.id} slug={slug} guet={g} decision={decisions[g.id]} />
-            ))}
-          </ul>
-        )}
-      </div>
+      <div className="flex flex-col gap-3 border-t border-trait bg-repos px-4 py-3">{contenu}</div>
     </details>
   );
 }

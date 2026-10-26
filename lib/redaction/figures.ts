@@ -718,3 +718,161 @@ export function rendreRapport(rapport: RapportChiffres): string {
 
   return [entete, ...lignes, ...remarque].join("\n");
 }
+
+// --- Regroupement par valeur (portail, écran « Chiffres à trancher ») ---------------------------
+
+/** Une occurrence d'une valeur à trancher : un nombre dans sa phrase, ou une fourchette de deux. */
+export type OccurrenceValeur = {
+  bloc: string;
+  phrase: string;
+  /** Un verdict, ou deux pour une fourchette (« 3,75-4,00 ») : une seule décision à lire. */
+  verdicts: VerdictChiffre[];
+  /** Tous les nombres de l'occurrence sont gardés. */
+  garde: boolean;
+};
+
+export type GroupeValeur = {
+  /** Stable d'un rendu à l'autre : valeur écrite + série. */
+  cle: string;
+  /** La valeur telle qu'écrite — « 4,96 », ou « 3,75-4,00 » pour une fourchette. */
+  valeur: string;
+  /** La série à laquelle la valeur se rattache, quand les verdicts permettent de la nommer. */
+  serie: string | null;
+  verdict: VerdictNom;
+  reproche: string;
+  occurrences: OccurrenceValeur[];
+  /** Occurrences pas encore gardées. */
+  restantes: number;
+};
+
+const SEPARATEUR_FOURCHETTE = "(?:\\s*[-–—]\\s*|\\s+(?:à|et)\\s+)";
+
+/** Le nom de série d'un verdict, tel que les données existantes le portent. */
+function serieDe(v: VerdictChiffre): string | null {
+  if (v.bloc.startsWith("keyIndicators/")) return v.bloc.slice("keyIndicators/".length);
+  if (v.source) return v.source.replace(/\s+au\s+\d{1,2}\/\d{1,2}.*$/, "").trim() || null;
+  return null;
+}
+
+/**
+ * Regroupe les verdicts non conformes par **valeur écrite et série** : dix-neuf lignes qui ne
+ * portent que huit valeurs se lisent comme huit décisions. Rien ne se décide en bloc pour autant —
+ * chaque occurrence garde son propre geste, le groupe n'en a aucun.
+ *
+ * - Une **fourchette** (« 3,75-4,00 », « entre 3,75 et 4,00 ») compte pour une valeur : ses deux
+ *   bornes, toutes deux non conformes dans la même phrase, forment une seule occurrence.
+ * - La **série** d'une valeur vient de son verdict ; à défaut, d'un verdict conforme de même valeur
+ *   ailleurs dans la note — c'est ce qui rattache le « 4,96 » du texte au « US 10 ans » des chiffres
+ *   clés. Aucune série n'est inventée : sans l'un ni l'autre, elle reste `null`.
+ *
+ * `tous` est la liste complète des verdicts (conformes compris), pour résoudre les séries.
+ */
+export function grouperParValeur(tous: VerdictChiffre[]): GroupeValeur[] {
+  const fautifs = tous.filter((v) => v.verdict !== "conforme");
+
+  const serieConforme = (valeur: number): string | null => {
+    for (const v of tous) {
+      if (v.verdict === "conforme" && v.valeur === valeur) {
+        const s = serieDe(v);
+        if (s) return s;
+      }
+    }
+    return null;
+  };
+
+  // 1. Occurrences : on fusionne deux bornes d'une fourchette de la même phrase.
+  type Brute = { verdicts: VerdictChiffre[]; valeur: string };
+  const utilises = new Set<VerdictChiffre>();
+  const occurrences: Brute[] = [];
+  for (const a of fautifs) {
+    if (utilises.has(a)) continue;
+    let partenaire: VerdictChiffre | undefined;
+    for (const b of fautifs) {
+      if (b === a || utilises.has(b) || b.bloc !== a.bloc || b.phrase !== a.phrase) continue;
+      if (b.ecrit === a.ecrit) continue;
+      const motif = new RegExp(`${echapper(a.ecrit)}${SEPARATEUR_FOURCHETTE}${echapper(b.ecrit)}`);
+      if (motif.test(a.phrase)) {
+        partenaire = b;
+        break;
+      }
+    }
+    utilises.add(a);
+    if (partenaire) {
+      utilises.add(partenaire);
+      occurrences.push({ verdicts: [a, partenaire], valeur: `${a.ecrit}-${partenaire.ecrit}` });
+    } else {
+      occurrences.push({ verdicts: [a], valeur: a.ecrit });
+    }
+  }
+
+  // 2. Groupes : même valeur écrite, même série.
+  const groupes = new Map<string, GroupeValeur>();
+  for (const o of occurrences) {
+    const premier = o.verdicts[0];
+    const serie = serieDe(premier) ?? serieConforme(premier.valeur);
+    const cle = `${o.valeur}|${serie ?? ""}`;
+    let groupe = groupes.get(cle);
+    if (!groupe) {
+      groupe = {
+        cle,
+        valeur: o.valeur,
+        serie,
+        verdict: premier.verdict,
+        reproche: reproche(premier),
+        occurrences: [],
+        restantes: 0,
+      };
+      groupes.set(cle, groupe);
+    }
+    const garde = o.verdicts.every((v) => v.garde === true);
+    groupe.occurrences.push({ bloc: premier.bloc, phrase: premier.phrase, verdicts: o.verdicts, garde });
+    if (!garde) groupe.restantes += 1;
+  }
+
+  return [...groupes.values()];
+}
+
+/** Ce qui aide à trancher une valeur, tiré **uniquement** des données déjà dans le rapport et le paquet. */
+export type ElementsDeDecision = {
+  /** Le même nombre, conforme ailleurs dans la note. */
+  conformeAilleurs: { bloc: string; source: string | null; dateRetenue: string | null; valeurBase: string | null } | null;
+  /** La date retenue par le contrôle et la valeur de la base à cette date (régime A). */
+  base: { dateRetenue: string; valeurBase: string } | null;
+  /** Le slug de la note précédente, si le nombre s'y trouve littéralement. */
+  notePrecedente: string | null;
+};
+
+export function elementsDeDecision(
+  groupe: GroupeValeur,
+  tous: VerdictChiffre[],
+  notePrecedente: ContextePaquet["notePrecedente"],
+): ElementsDeDecision {
+  const premier = groupe.occurrences[0].verdicts[0];
+
+  const conforme = tous.find((v) => v.verdict === "conforme" && v.valeur === premier.valeur);
+  const avecBase = groupe.occurrences
+    .flatMap((o) => o.verdicts)
+    .find((v) => v.dateRetenue && v.valeurBase);
+
+  let dansPrecedente: string | null = null;
+  if (notePrecedente) {
+    const textes = [notePrecedente.regimeStatement, ...Object.values(notePrecedente.blocs)];
+    const bornes = groupe.occurrences[0].verdicts.map((v) => v.ecrit);
+    if (textes.some((t) => bornes.every((b) => litteralementDansLaFiche(b, t)))) {
+      dansPrecedente = notePrecedente.slug;
+    }
+  }
+
+  return {
+    conformeAilleurs: conforme
+      ? {
+          bloc: conforme.bloc,
+          source: conforme.source,
+          dateRetenue: conforme.dateRetenue,
+          valeurBase: conforme.valeurBase,
+        }
+      : null,
+    base: avecBase ? { dateRetenue: avecBase.dateRetenue!, valeurBase: avecBase.valeurBase! } : null,
+    notePrecedente: dansPrecedente,
+  };
+}

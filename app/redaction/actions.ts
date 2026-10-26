@@ -269,6 +269,23 @@ export async function garderChiffre(slug: string, cle: string, formData: FormDat
  * texte proposé : la correction est le geste qui relâche le contrôle, exactement comme une
  * édition du bloc entier.
  */
+/**
+ * Garde les deux bornes d'une fourchette (« 3,75-4,00 ») d'un seul geste : c'est une seule valeur à
+ * lire, mais deux décisions `chiffre` — clé = bloc + nombre + phrase, comme pour tout nombre.
+ * Chaque clé est vérifiée comme `garderChiffre` le fait ; ce n'est pas un geste de groupe, il ne
+ * couvre jamais qu'une phrase.
+ */
+export async function garderChiffres(slug: string, formData: FormData): Promise<void> {
+  const cles = formData.getAll("cle").filter((c): c is string => typeof c === "string" && c !== "");
+  if (cles.length === 0) throw new Error("aucun chiffre à garder");
+  const reprendre = stringField(formData, "action") === "examiner";
+  for (const cle of cles) {
+    await verdictFautif(slug, cle);
+    await sauvegarderDecision(slug, "chiffre", cle, { action: reprendre ? "examiner" : "garder" });
+  }
+  revalidateApresDecision(slug);
+}
+
 export async function corrigerPhrase(slug: string, cle: string, formData: FormData): Promise<void> {
   const { etat, verdict } = await verdictFautif(slug, cle);
   const bloc = verdict.bloc;
