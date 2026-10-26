@@ -1,7 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
   contournementLocal,
-  destinationApresConnexion,
   estAdmin,
   estRouteProtegee,
   verifierContournementAuBuild,
@@ -66,7 +65,7 @@ describe("estAdmin", () => {
   });
 });
 
-describe("estRouteProtegee et destinationApresConnexion", () => {
+describe("estRouteProtegee", () => {
   it("couvre les routes d'administration et leurs sous-pages, rien d'autre", () => {
     expect(estRouteProtegee("/redaction")).toBe(true);
     expect(estRouteProtegee("/redaction/2026-S43")).toBe(true);
@@ -75,14 +74,5 @@ describe("estRouteProtegee et destinationApresConnexion", () => {
     expect(estRouteProtegee("/redactions")).toBe(false);
     expect(estRouteProtegee("/")).toBe(false);
     expect(estRouteProtegee("/notes")).toBe(false);
-  });
-
-  it("ne renvoie jamais hors des routes d'administration", () => {
-    expect(destinationApresConnexion("/triage")).toBe("/triage");
-    expect(destinationApresConnexion("/redaction/2026-S43")).toBe("/redaction/2026-S43");
-    expect(destinationApresConnexion("//evil.example/redaction")).toBe("/redaction");
-    expect(destinationApresConnexion("https://evil.example")).toBe("/redaction");
-    expect(destinationApresConnexion("/notes")).toBe("/redaction");
-    expect(destinationApresConnexion(null)).toBe("/redaction");
   });
 });

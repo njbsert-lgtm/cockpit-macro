@@ -1,3 +1,4 @@
+import { BarreAdmin } from "@/components/admin/BarreAdmin";
 import { exigerAdminPage } from "@/lib/auth/session";
 
 /**
@@ -6,6 +7,11 @@ import { exigerAdminPage } from "@/lib/auth/session";
  * administrateur, le même 404 qu'une adresse inconnue.
  */
 export default async function Layout({ children }: { children: React.ReactNode }) {
-  await exigerAdminPage();
-  return children;
+  const session = await exigerAdminPage();
+  return (
+    <>
+      {children}
+      <BarreAdmin session={session} />
+    </>
+  );
 }

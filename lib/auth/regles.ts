@@ -31,18 +31,6 @@ export function estRouteProtegee(chemin: string): boolean {
   return ROUTES_PROTEGEES.some((route) => chemin === route || chemin.startsWith(`${route}/`));
 }
 
-/**
- * La destination d'après connexion, bornée aux routes d'administration : un paramètre `suite`
- * qui pointerait ailleurs — autre site, `//evil.example` — retombe sur `/redaction`. Sans ce
- * filtre, le lien de connexion deviendrait une redirection ouverte.
- */
-export function destinationApresConnexion(suite: string | null | undefined): string {
-  if (suite && suite.startsWith("/") && !suite.startsWith("//") && estRouteProtegee(suite)) {
-    return suite;
-  }
-  return "/redaction";
-}
-
 type Env = Record<string, string | undefined>;
 
 const HOTES_LOCAUX = new Set(["localhost", "127.0.0.1"]);
