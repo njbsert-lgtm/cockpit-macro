@@ -108,8 +108,12 @@ export function normalizedSupabaseUrl(): string | undefined {
   return raw.replace(/\/+$/, "").replace(/\/rest\/v1$/, "");
 }
 
-/** Les identifiants de lecture, partagés par `getReadClient` et `getFreshReadClient`. */
-function readClientCredentials(): { url: string; key: string } | null {
+/**
+ * Les identifiants de lecture, partagés par `getReadClient`, `getFreshReadClient` et le client
+ * de session de `lib/auth/` (même clé anonyme : c'est la session de l'utilisateur, en cookie,
+ * qui porte le droit, jamais la clé).
+ */
+export function readClientCredentials(): { url: string; key: string } | null {
   const url = normalizedSupabaseUrl();
   // `SUPABASE_PUBLISHABLE_KEY` : le nom que Supabase donne désormais à la clé anonyme sur les
   // projets récents. Les deux désignent la même chose, une clé de lecture bornée par RLS.
