@@ -1,16 +1,68 @@
-# État du projet — au 19/10/2026 (remise à zéro du corpus faite)
+# État du projet — au 26/10/2026
 
 Point d'entrée pour reprendre le travail. **`CLAUDE.md` (cahier des charges) et `DESIGN.md`
 (charte) font autorité** ; ce fichier dit où on en est par rapport à eux, et ce qui a été discuté
 sans être fait. `CHAINE-REACTION.md`, `couche-intelligence.md` et `newsletters-veille.md` sont des
 documents de cadrage plus anciens (début octobre) : utiles pour l'historique, pas à jour.
 
+## Prochain chantier : J1.1 — accès administrateur protégé (plan validé à demander)
+
+**La feuille de route J0 / J1 (« assainissement », J1.1, J1.3…) n'est pas dans le dépôt.** Elle a
+été donnée en conversation le 26/10 ; tant qu'elle n'est pas recopiée ici, une session ne sait pas
+où en est J0. À compléter par le propriétaire du projet.
+
+**Demande (26/10).** Supabase Auth, un rôle admin, un middleware Next sur les routes
+d'administration. Un seul compte, lien magique. `/redaction` et `/triage` protégés **dès
+maintenant** (aujourd'hui ouverts à qui connaît l'URL ; le « mot de passe Vercel » de `CLAUDE.md`
+n'est pas en place). Plan avant le code, commits séparés.
+
+**Plan proposé (non encore validé) :**
+- **Tout côté serveur, aucune variable `NEXT_PUBLIC_`** : Server Action `signInWithOtp`
+  (`shouldCreateUser: false`), route `/auth/confirmer` (`exchangeCodeForSession`), session en
+  cookie `httpOnly` via `@supabase/ssr`. La clé anonyme lit `brouillons_contexte` et
+  `redaction_decisions` : l'exposer au navigateur ouvrirait les brouillons.
+- **Rôle** : `app_metadata.role = "admin"`, posé à la main par SQL (adresse hors dépôt) ;
+  inscriptions fermées dans Supabase.
+- **Middleware à liste positive** : `matcher: ['/redaction/:path*', '/triage/:path*',
+  '/diagnostic/:path*']`. Jamais d'exclusion à maintenir : `/api/cron/collect` (protégé par
+  `Bearer CRON_SECRET`) ne peut pas être intercepté. Les workflows GitHub n'appellent jamais le
+  site (ils écrivent dans Supabase avec la clé de service, ou commitent).
+- **Non autorisé → 404** (réécriture vers une page inexistante, corps identique au 404 du site).
+  Échec fermé si Supabase est injoignable.
+- **Garde aussi dans chaque `layout.tsx` protégé et dans chaque Server Action**
+  (`app/redaction/actions.ts`, `app/triage/actions.ts`) : Next les rend appelables par POST
+  direct, le middleware seul ne suffit pas.
+- **Contournement local** : `ADMIN_LOCAL=1` **et** `NODE_ENV === "development"` **et** `VERCEL`
+  absent **et** hôte `localhost`/`127.0.0.1`. `next.config.ts` fait échouer le build si
+  `ADMIN_LOCAL` est posé en production ou sur Vercel. Tests des trois refus.
+- **Clés** : `SUPABASE_URL` et `SUPABASE_ANON_KEY` côté serveur sur Vercel (la seconde existe
+  dans les secrets GitHub ; sur Vercel, à vérifier sur `/diagnostic`). `import "server-only"` dans
+  `lib/supabase.ts` et le module d'auth ; test qui refuse tout fichier `"use client"` important
+  ces modules ou nommant `SERVICE_ROLE`.
+- **Écran `/connexion`** avec les seuls motifs de `DESIGN.md` ; captures à 390px (initial,
+  envoyé, erreur). Message identique que l'adresse soit connue ou non.
+- **Tests minimum** : requête non authentifiée → 404 sur chaque route protégée ; matcher ne
+  correspond ni à `/api/cron/collect`, ni à `/`, ni à `/notes` ; le cron passe avec le bon
+  `Bearer` et sans session ; chaque Server Action refuse sans session et n'écrit rien.
+- **Commits** : (1) session serveur, garde, contournement verrouillé ; (2) middleware + tests ;
+  (3) gardes des layouts et des actions ; (4) `/connexion`, `/auth/confirmer`, déconnexion ;
+  (5) retrait des entrées publiques de l'accueil ; (6) `CLAUDE.md`, `.env.example`, SQL du rôle,
+  `ETAT.md`.
+
+**Trois décisions attendues avant de coder :** protéger aussi `/diagnostic` ? retirer de
+l'accueil public les boutons « Triage » et « Brouillon à réviser » (ils signalent la surface que
+le 404 cache) ? accepter le montage tout serveur sans `NEXT_PUBLIC_` ?
+
+**À faire dans le tableau de bord Supabase (hors dépôt), avant le commit 4** : Site URL et
+`https://<domaine>/auth/confirmer` dans les Redirect URLs ; inscriptions par e-mail fermées ;
+rôle admin posé par le SQL fourni.
+
 ## Pratique
 
 - Travail directement sur **`main`** (les sessions précédentes y poussent ; la branche
   `claude/nextjs-tabs-skeleton-np68r6` est ancienne et très en retard, ne pas s'y fier).
 - Commits atomiques en français. Avant de pousser : `npx tsc --noEmit`, `npx vitest run`
-  (1088 tests verts), `npm run lint` (0 erreur, 7 avertissements anciens).
+  (1158 tests verts), `npm run lint` (0 erreur, 7 avertissements anciens).
 - **L'environnement de développement n'a pas d'accès réseau sortant** vers les sources (FRED,
   Wikimedia…) ni vers Supabase. Tout passe par le workflow **`verification-sources.yml`**
   (déclenché via les outils GitHub) : `sonder-supabase` (lire une table, ex.
@@ -131,6 +183,16 @@ vivants, `ChiffreSheet`), **1b** lecture (barre d'ancres, chiffres cités toucha
 **1c** Marchés « Par driver » (`?vue=drivers`), **1d** Macro (« Cette semaine », liste dense
 mobile, lien vers le driver), **1e** page d'un driver (dominante encadrée, repère de révision,
 trajectoire compacte, instruments en cellules, guets ouverts), **2a/3a/3b/3c** Outlook.
+
+## Portail de rédaction à gestes (26/10/2026)
+
+`/redaction/[slug]` refondu d'après les maquettes 4a/4b/4c : frise de segments (régime puis un
+par bloc) où **rien ne verrouille la navigation** ; relecture d'un bloc dans la mise en page de la
+note, chiffres non conformes surlignés avec bulle (garder / corriger), barre d'emoji collante,
+« Aperçu publié » ; écran « Chiffres à trancher » regroupé par valeur (`grouperParValeur`), un
+geste par occurrence. Seule la publication reste conditionnée. Faux positifs du contrôle des
+chiffres relevés sur la S43 : issue #2, non corrigés. Brouillon S43 : état présent en base
+(`brouillons_contexte`, 24/10), aucune décision prise.
 
 ## Décisions récentes (19/10/2026)
 
