@@ -1,3 +1,4 @@
+import { exigerAdminPage } from "@/lib/auth/session";
 import Link from "next/link";
 import { getPendingVeilleItems } from "@/lib/veille/queries";
 import { groupByDay, isCollapsedByDefault } from "@/lib/veille/grouping";
@@ -5,6 +6,8 @@ import { EmptyState } from "@/components/states/EmptyState";
 import { TriageDayGroup } from "@/components/triage/TriageDayGroup";
 
 export default async function TriagePage() {
+  // Le layout ne suffit pas : Next rend page et layout en parallèle.
+  await exigerAdminPage();
   const items = await getPendingVeilleItems();
   const now = new Date();
   const groups = groupByDay(items);

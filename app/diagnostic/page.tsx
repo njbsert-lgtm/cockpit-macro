@@ -1,3 +1,4 @@
+import { exigerAdminPage } from "@/lib/auth/session";
 import Link from "next/link";
 import { runDiagnostic } from "@/lib/diagnostic";
 
@@ -15,6 +16,8 @@ export const dynamic = "force-dynamic";
 export const metadata = { title: "Diagnostic — Marguerite" };
 
 export default async function DiagnosticPage() {
+  // Le layout ne suffit pas : Next rend page et layout en parallèle.
+  await exigerAdminPage();
   const { checks, verdict } = await runDiagnostic();
   const tout = checks.every((c) => c.ok);
 

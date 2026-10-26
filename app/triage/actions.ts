@@ -1,5 +1,6 @@
 "use server";
 
+import { exigerAdminAction } from "@/lib/auth/session";
 import { revalidatePath } from "next/cache";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { getWriteClient } from "@/lib/supabase";
@@ -30,6 +31,7 @@ function stringField(formData: FormData, name: string): string {
 
 /** Verse un item dans l'un des cinq blocs analytiques de la note en préparation. */
 export async function verserItem(itemId: string, formData: FormData): Promise<void> {
+  await exigerAdminAction();
   const block = stringField(formData, "block");
   const draftNoteSlug = stringField(formData, "draftNoteSlug");
 
@@ -49,11 +51,13 @@ export async function verserItem(itemId: string, formData: FormData): Promise<vo
 }
 
 export async function archiverItem(itemId: string): Promise<void> {
+  await exigerAdminAction();
   await writeClient().from("veille_items").update({ status: "archive" }).eq("id", itemId);
   revalidateAfterAction();
 }
 
 export async function ignorerItem(itemId: string): Promise<void> {
+  await exigerAdminAction();
   await writeClient().from("veille_items").update({ status: "ignore" }).eq("id", itemId);
   revalidateAfterAction();
 }

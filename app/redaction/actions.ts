@@ -1,5 +1,6 @@
 "use server";
 
+import { exigerAdminAction } from "@/lib/auth/session";
 import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { revalidatePath } from "next/cache";
@@ -61,6 +62,7 @@ async function sauvegarderDecision(
 }
 
 export async function corrigerBloc(slug: string, bloc: string, formData: FormData): Promise<void> {
+  await exigerAdminAction();
   if (!(BLOCK_NAMES as readonly string[]).includes(bloc)) {
     throw new Error(`bloc inconnu : « ${bloc} »`);
   }
@@ -90,6 +92,7 @@ export async function corrigerBloc(slug: string, bloc: string, formData: FormDat
  * `conditionsManquantes` interdit la publication.
  */
 export async function retenirRegime(slug: string, formData: FormData): Promise<void> {
+  await exigerAdminAction();
   const choix = stringField(formData, "choix");
   if (!(RETENUS_REGIME as readonly string[]).includes(choix)) {
     throw new Error(`choix de phrase de régime inconnu : « ${choix} »`);
@@ -125,6 +128,7 @@ const CHAMPS_CORRECTION: Array<keyof Guet> = [
 
 /** Tranche un guet proposé ou remonté — jamais en bloc, un à la fois. */
 export async function trancherGuet(slug: string, guetId: string, formData: FormData): Promise<void> {
+  await exigerAdminAction();
   const action = stringField(formData, "action");
   if (!(ACTIONS_GUET as readonly string[]).includes(action)) {
     throw new Error(`action de guet inconnue : « ${action} »`);
@@ -167,6 +171,7 @@ export async function trancherRevision(
   driverId: string,
   formData: FormData,
 ): Promise<void> {
+  await exigerAdminAction();
   await sauvegarderDecision(slug, "revision", driverId, { action: actionProposition(formData) });
   revalidateApresDecision(slug);
 }
@@ -177,6 +182,7 @@ export async function trancherTendance(
   trendId: string,
   formData: FormData,
 ): Promise<void> {
+  await exigerAdminAction();
   await sauvegarderDecision(slug, "tendance", trendId, { action: actionProposition(formData) });
   revalidateApresDecision(slug);
 }
@@ -198,6 +204,7 @@ export async function publierBrouillon(
   _precedent: RetourPublication,
   _formData: FormData,
 ): Promise<RetourPublication> {
+  await exigerAdminAction();
   try {
     if (existsSync(path.join(process.cwd(), "content", "notes", `${slug}.mdx`))) {
       return { statut: "ok", message: `La note ${slug} est déjà publiée — rien à relancer.` };
@@ -233,6 +240,7 @@ export async function publierBrouillon(
  * brouillon, jamais un texte du formulaire : on ne tranche que ce que le modèle a réellement proposé.
  */
 export async function trancherTheme(slug: string, themeId: string, formData: FormData): Promise<void> {
+  await exigerAdminAction();
   const propositions = (await chargerPortail(slug))?.brouillonPropose.themesProposes ?? [];
   if (!propositions.some((t) => idTheme(t.libelle) === themeId)) {
     throw new Error(`aucun thème « ${themeId} » dans ce brouillon`);
@@ -258,6 +266,7 @@ async function verdictFautif(slug: string, cle: string) {
  * continue de le montrer (« gardé ») : la décision se relit, elle ne fait pas disparaître le verdict.
  */
 export async function garderChiffre(slug: string, cle: string, formData: FormData): Promise<void> {
+  await exigerAdminAction();
   await verdictFautif(slug, cle);
   const reprendre = stringField(formData, "action") === "examiner";
   await sauvegarderDecision(slug, "chiffre", cle, { action: reprendre ? "examiner" : "garder" });
@@ -276,6 +285,7 @@ export async function garderChiffre(slug: string, cle: string, formData: FormDat
  * couvre jamais qu'une phrase.
  */
 export async function garderChiffres(slug: string, formData: FormData): Promise<void> {
+  await exigerAdminAction();
   const cles = formData.getAll("cle").filter((c): c is string => typeof c === "string" && c !== "");
   if (cles.length === 0) throw new Error("aucun chiffre à garder");
   const reprendre = stringField(formData, "action") === "examiner";
@@ -287,6 +297,7 @@ export async function garderChiffres(slug: string, formData: FormData): Promise<
 }
 
 export async function corrigerPhrase(slug: string, cle: string, formData: FormData): Promise<void> {
+  await exigerAdminAction();
   const { etat, verdict } = await verdictFautif(slug, cle);
   const bloc = verdict.bloc;
   if (!(BLOCK_NAMES as readonly string[]).includes(bloc)) {
