@@ -32,7 +32,22 @@ Si l'automatisation des données casse, l'analyse doit rester lisible et le site
 - **Zod** pour valider toute réponse d'API externe avant insertion
 - **Recharts** pour les graphiques de séries, rien de plus lourd
 
-Pas d'authentification en v1 : protection par mot de passe Vercel.
+**Accès administrateur** (J2.1, mis en service le 28/10/2026). `/redaction`, `/triage` et
+`/diagnostic` sont derrière Supabase Auth : un seul compte, lien magique, rôle `admin` posé à la
+main dans `app_metadata` — jamais dans `user_metadata`, que l'utilisateur peut modifier. Le reste
+du site est public : le « mot de passe Vercel » prévu à l'origine n'a jamais été mis en place.
+- `middleware.ts` à **liste positive** (les seules trois routes), jamais d'exclusions : le cron
+  `/api/cron/collect`, protégé par son `Bearer`, ne peut pas être intercepté.
+- Non autorisé → **404** au corps identique à une adresse inconnue ; échec fermé si Supabase est
+  injoignable. Garde aussi dans chaque `layout.tsx` protégé et en première ligne de chaque Server
+  Action (Next les rend appelables par POST direct) ; un test les parcourt toutes.
+- Tout côté serveur, **aucune variable `NEXT_PUBLIC_`** : la clé anonyme lit les brouillons.
+  Un test refuse tout composant `"use client"` important Supabase ou la session.
+- `ADMIN_LOCAL=1` n'ouvre que `localhost` en développement ; posée en production ou sur Vercel,
+  elle fait **échouer le build**.
+- Limite connue : avec le modèle d'e-mail par défaut de Supabase (flux PKCE), le lien ne
+  s'ouvre que dans le navigateur qui l'a demandé. À lever avant toute ouverture au public (J9.3b),
+  avec la connexion Google (J9.3a).
 
 ---
 
