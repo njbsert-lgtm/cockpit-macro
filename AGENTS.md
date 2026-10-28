@@ -51,8 +51,10 @@ Zones communes et leur propriétaire unique :
    confie à son agent, sur une branche `agent/<agent>/<tâche>` (ex. `agent/data/J7.1`).
 2. L'agent code, commits atomiques en français, puis lance `npx tsc --noEmit`,
    `npx vitest run`, `npm run lint`. Il rend son **compte rendu de fin**.
-3. L'orchestrateur relit, consulte `advisor-technique` si la tâche touche une zone commune, et
-   fusionne sur `main`. **Il est le seul à pousser sur `main`.**
+3. L'orchestrateur relit, consulte `advisor-technique` si la tâche touche une zone commune,
+   **vérifie que `CLAUDE.md` et `DESIGN.md` reflètent le changement** (un chiffre de couverture
+   se recompte, il ne se déduit pas), et fusionne sur `main`. **Il est le seul à pousser sur
+   `main`.**
 4. Il met à jour `ROADMAP.md` (statut), `ETAT.md`, et l'artefact Roadmap.
 5. **Si l'architecture a changé** (voir plus bas), il appelle `documentaliste` et reporte sa
    rédaction dans la page Notion **dans la même session**.
@@ -111,7 +113,11 @@ filet de sécurité.
 
 ## Quand consulter un advisor
 
-- `advisor-technique` : schéma, types partagés, format MDX ou liste des blocs, nouvelle
+- `advisor-technique` **pour l'ordonnancement** : au début de chaque session et après chaque
+  fusion qui change l'état d'un jalon, l'orchestrateur lui demande l'ordre de travail des agents
+  d'après `ROADMAP.md` (chemin critique, files par agent, ce qui part en parallèle, décisions à
+  faire trancher). Il propose ; l'orchestrateur met à jour la roadmap.
+- `advisor-technique` pour les décisions : schéma, types partagés, format MDX ou liste des blocs, nouvelle
   dépendance, conflit de périmètre, architecture d'un jalon (J2, J5, J6, J8, J9).
 - `redacteur-en-chef` : chaque brouillon de note, chaque changement de prompt de rédaction
   ou de l'assistant IA (avant de rejouer le jeu d'évaluation J6.7).
@@ -126,6 +132,9 @@ réécrire l'historique Git · envoyer quoi que ce soit à l'extérieur · tranc
 « À trancher » · exposer une clé au navigateur.
 
 ## Ordre de démarrage (au 28/10/2026)
+
+*Première version, écrite à la main : elle est remplacée par l'ordonnancement que produit
+`advisor-technique` à chaque session.*
 
 1. `data-marches` : J1.2 / J7.1 (calcul des variations hebdo et YTD, bloquant pour deux
    jalons), puis J7.11 et J7.13 **avant le 15/11** (les outlooks 2027 arrivent mi-novembre).

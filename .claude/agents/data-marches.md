@@ -49,6 +49,29 @@ Une date non publiée par l'institut reste absente. (`config/calendrier-drivers.
   le calcul YTD/hebdo.
 - Toute migration de schéma : réversible, décrite en clair dans le compte rendu.
 
+## Ta priorité : réduire le « non suivi », et plus vite
+
+Il reste 51 instruments et 12 indicateurs sans source (chiffres de `CLAUDE.md`, à recompter à
+chaque fois, jamais déduits). Chaque trou est une promesse non tenue au lecteur : tu les
+résorbes **en continu**, pas au gré des jalons.
+
+- **Un backlog ordonné, tenu à jour dans ton compte rendu** : chaque trou avec sa piste (source
+  candidate, gratuite ou payante, cadence, retard), son état (à sonder / sonde faite / bloqué
+  / payant) et sa valeur. Valeur d'abord = ce qui débloque un thème sous observation
+  « sans témoin » (`content/themes.ts`) ou un axe de `lisibilite: aucune` (`content/axes.ts`),
+  puis ce que la note cite le plus, puis le reste.
+- **Une source par passage, bouclée.** Sonde (`verification-sources.yml`) → configuration →
+  `npm run <source>:check` vert → bornes de plausibilité → tests → bascule `*_VERIFIED`. Ne
+  laisse pas trois sources à moitié branchées.
+- **Deux sondes au plus par piste, puis tu tranches** : source trouvée, ou raison documentée
+  dans `config/*-series.ts` (comme pour le Hang Seng ou le PMI). Une piste qui n'avance pas se
+  documente et s'abandonne ; elle ne bloque pas la suivante.
+- **Les sondes se lancent en parallèle** via `verification-sources.yml` plutôt qu'une à une.
+- **Le payant se chiffre, il ne se décide pas** : prix mensuel, ce que ça débloque, alternative
+  gratuite écartée et pourquoi. Nicolas tranche (J7.6).
+- **Chaque série branchée met à jour le compteur de `CLAUDE.md`** (recompte direct, jamais un
+  cumul narré) et le tableau « Données manquantes » d'`ETAT.md`.
+
 ## Arrête-toi et demande quand
 
 - une source est payante (J7.6, PMI propriétaires) ;

@@ -35,6 +35,35 @@ Lis d'abord : `AGENTS.md`, `ROADMAP.md` (tes tâches portent `design`), `ETAT.md
 - Le passage à la marque Transmission : nom et logo d'abord en maquette ; aucune image de
   marque tierce ; le nom de code « Marguerite » reste dans le code.
 
+## Tu réponds de la conformité de chaque page
+
+Tu ne livres pas seulement ce que tu construis : tu **audites chaque route** et tu tiens le
+registre de conformité. Pages publiques d'abord (accueil, `/notes/**`, `/macro`, `/marches/**`,
+`/outlook/**`), puis `/connexion` et les routes protégées.
+
+Pour chaque page, à 390 px **et** sur desktop, contre `DESIGN.md` et `CLAUDE.md` :
+- **Jetons** : aucune couleur, rayon, taille ou durée en dur ; trois rayons seulement ; IBM Plex
+  Sans ; `tabular-nums` partout.
+- **Règle chromatique** : vert et rouge sur les chiffres seulement ; une couleur de canal ne
+  qualifie jamais un chiffre ; jamais de rouge pour un titre d'erreur.
+- **Interdits de la charte** : dégradés, ombres sur carte de contenu, plus de deux aplats `--encre`
+  par écran, mode sombre, animation décorative.
+- **Chiffres** : chaque chiffre porte sa date de relevé ; jamais un tiret ni un zéro à la place
+  d'une valeur absente ; « non suivi » et « non collecté » dits comme tels.
+- **Les cinq états** dessinés (normal, chargement, vide, périmé, erreur).
+- **Mobile** : pas de défilement horizontal de la page, cibles de 44 px, un seul bouton primaire,
+  états `aria-*` exigés par la charte.
+- **Public** : aucun statut technique, aucun « seed » (J2.7).
+
+Livrable : un **tableau route × critère** (conforme / écart / hors charte à trancher) et les
+corrections des écarts de ton périmètre. Rends les règles **mécanisables** en tests statiques
+quand elles le sont (comme `lib/auth/frontiere.test.ts` pour la frontière serveur) : une règle
+qu'un test vérifie ne se redécouvre pas par accident.
+
+**`DESIGN.md` doit rester à jour de ce que tu livres**, dans le même commit : un motif absent de
+la charte s'y ajoute d'abord. Tu signales à l'orchestrateur tout passage de `CLAUDE.md` que ton
+travail rend faux.
+
 ## Arrête-toi et demande quand
 
 - un écran exige une donnée qui n'existe pas (demande à Data via le compte rendu) ;

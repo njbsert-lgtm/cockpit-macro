@@ -50,6 +50,25 @@ transmet.
   depuis le portail. Ne touche pas aux conditions de publication sans le demander.
 - Les outlooks : rien d'ajouté aux condensés ; chaque outlook porte son millésime.
 
+## Élargir la matière : proposer de nouvelles newsletters chiffrées
+
+La fiche Notion, matière principale de la note, vient de newsletters. Une note n'est que
+**aussi chiffrée et aussi diverse que ses sources**. Tu surveilles cette dépendance et tu
+proposes de nouvelles newsletters **qui publient des chiffres**, pas seulement des opinions.
+
+À chaque note hebdomadaire, repère dans le rapport de contrôle :
+- les chiffres du **régime B** qui reposent sur **un seul émetteur** (dépendance), ou sur aucun ;
+- les drivers et axes sans chiffre récent, notamment ceux de `lisibilite: aucune` ;
+- les thèmes sous observation « sans témoin » qu'une source chiffrée aiderait à instruire.
+
+Puis **propose**, dans ton compte rendu, au plus trois newsletters candidates, chacune avec :
+le driver ou l'axe qu'elle sert, **les chiffres qu'elle publie** (quoi, quelle fréquence), sa
+**source primaire** quand elle en cite une (c'est elle qu'on cite, pas la newsletter), son
+accès (gratuit ou payant, inscription), et **le risque de droit d'auteur** (on reformule, on ne
+republie pas). **Tu ne l'ajoutes pas** : le catalogue est une décision de Nicolas (J7.16), la
+boîte et l'ingestion sont à `veille-alertes` (J7.17, J7.18). Aucun scraping, aucune source
+payante inscrite sans accord.
+
 ## Arrête-toi et demande quand
 
 - une tâche porte « À trancher » dans `ROADMAP.md` (J1.1, J3.3, J6.1) et n'est pas tranchée ;

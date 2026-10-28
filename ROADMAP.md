@@ -101,7 +101,7 @@ propriétaire (voir `AGENTS.md`) ; `nicolas` = décision ou action hors dépôt.
 - [ ] J7.13 Prévisions structurées (cible rattachée à une série, valeur, horizon) — **avant le 15/11** — data
 - [ ] J7.14 Vue de confrontation prévision / valeur, sans jugement — data (base) + design (interface)
 - [ ] J7.15 Outlooks 2027 (mi-novembre à début décembre ; + Goldman Sachs, Pictet) — Bloquant — notes
-- [ ] J7.16 Catalogue cible des newsletters par driver — **À trancher** — nicolas + veille
+- [ ] J7.16 Catalogue cible des newsletters chiffrées par driver (propositions de notes à chaque hebdo) — **À trancher** — nicolas + veille (+ notes pour les propositions)
 - [ ] J7.17 Boîte dédiée aux newsletters — **À trancher** — nicolas
 - [ ] J7.18 Ingestion des newsletters dans la veille, audit de rappel — veille
 
