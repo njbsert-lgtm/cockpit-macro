@@ -1,15 +1,34 @@
-# État du projet — au 26/10/2026
+# État du projet — au 28/10/2026
 
 Point d'entrée pour reprendre le travail. **`CLAUDE.md` (cahier des charges) et `DESIGN.md`
-(charte) font autorité** ; ce fichier dit où on en est par rapport à eux, et ce qui a été discuté
+(charte) font autorité** ; **`ROADMAP.md`** dit ce qui reste à faire et qui le fait,
+**`AGENTS.md`** dit comment on travaille ; ce fichier dit où on en est par rapport à eux, et ce qui a été discuté
 sans être fait. `CHAINE-REACTION.md`, `couche-intelligence.md` et `newsletters-veille.md` sont des
 documents de cadrage plus anciens (début octobre) : utiles pour l'historique, pas à jour.
 
-## Prochain chantier : J1.1 — accès administrateur protégé (plan validé à demander)
+## Organisation en agents (28/10/2026)
 
-**La feuille de route J0 / J1 (« assainissement », J1.1, J1.3…) n'est pas dans le dépôt.** Elle a
-été donnée en conversation le 26/10 ; tant qu'elle n'est pas recopiée ici, une session ne sait pas
-où en est J0. À compléter par le propriétaire du projet.
+Le travail est désormais réparti entre cinq agents exécutants (`notes-analyse`,
+`data-marches`, `veille-alertes`, `design`, `plateforme`), deux advisors en lecture seule
+(`advisor-technique`, `redacteur-en-chef`) et un `documentaliste`, sous la conduite de la
+session principale. Règles, propriété des fichiers et circuit de livraison : **`AGENTS.md`**.
+Feuille de route versionnée, avec l'agent de chaque tâche : **`ROADMAP.md`** (elle était
+jusqu'ici seulement dans l'artefact). Points clés :
+- **Seul l'orchestrateur pousse sur `main`** ; chaque agent travaille sur `agent/<agent>/<tâche>`.
+- **Le rédacteur en chef relit chaque brouillon ; son avis est consultatif. Nicolas est le seul
+  à publier.**
+- **La cartographie Notion est mise à jour à chaque fusion qui change l'architecture**, pas
+  seulement à la revue mensuelle (liste des déclencheurs dans `AGENTS.md`).
+
+### Cartographie Notion à reporter
+
+Rien en attente. (Une session sans accès Notion consigne ici ce qu'elle n'a pas pu reporter.)
+
+## Prochain chantier : J2.1 — accès administrateur protégé (plan validé à demander)
+
+*Numérotation alignée sur `ROADMAP.md` : ce chantier s'appelait « J1.1 » dans la version du
+26/10 de ce fichier ; dans la roadmap, J1.1 est la spécification du bloc « marchés par
+driver ». Agent : `plateforme`.*
 
 **Demande (26/10).** Supabase Auth, un rôle admin, un middleware Next sur les routes
 d'administration. Un seul compte, lien magique. `/redaction` et `/triage` protégés **dès
@@ -59,8 +78,8 @@ rôle admin posé par le SQL fourni.
 
 ## Pratique
 
-- Travail directement sur **`main`** (les sessions précédentes y poussent ; la branche
-  `claude/nextjs-tabs-skeleton-np68r6` est ancienne et très en retard, ne pas s'y fier).
+- **Branches par agent, fusion sur `main` par l'orchestrateur seul** (voir `AGENTS.md`). La
+  branche `claude/nextjs-tabs-skeleton-np68r6` est ancienne et très en retard, ne pas s'y fier.
 - Commits atomiques en français. Avant de pousser : `npx tsc --noEmit`, `npx vitest run`
   (1158 tests verts), `npm run lint` (0 erreur, 7 avertissements anciens).
 - **L'environnement de développement n'a pas d'accès réseau sortant** vers les sources (FRED,
@@ -209,7 +228,7 @@ chiffres relevés sur la S43 : issue #2, non corrigés. Brouillon S43 : état pr
 1. **Source du Brent à terme (ICE).** Proposé : sonder Twelve Data / Alpha Vantage ; à défaut un
    ETF (BNO) — en $/part, donc une approximation à signaler. Non commencé.
 2. **Cuivre dans l'axe « Contrainte physique »** : le garder comme témoin ou le retirer aussi ?
-   Question posée, sans réponse.
+   Question posée, sans réponse (J0.3).
 3. **Historique Git** : le premier passage de `logos-outlooks.yml` a commité ~12 Mo de photos
    (commit `4602cd8`), retirées ensuite mais présentes dans l'historique de `main`. Réécriture
    proposée, **en attente d'accord** — ne pas la faire sans.
