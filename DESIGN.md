@@ -589,6 +589,27 @@ puis dans le corps la thèse, les témoins, les deux seuils. Deux boutons de 44p
 autre proposition. Le bloc s'intitule « Thèmes proposés à l'observation » et n'est dessiné que si
 le modèle en a proposé.
 
+### Connexion et pied d'administration
+
+Écran `/connexion` et pied des routes protégées. Aucun lien n'y mène depuis le site public.
+
+- Colonne de 520px. Surtitre « Back-office » en capitales 11px `--tenu`, titre 27px poids 700,
+  chapeau 15px `--doux`.
+- Un champ (`--rb`, bordure `--trait`, 44px de haut, 15px) et **un seul bouton primaire**.
+- Le retour d'état (lien envoyé, adresse illisible, service injoignable, lien inutilisable) est
+  un panneau `--repos` au rayon `--rc` (`role="status"`) : titre 14.5px poids 600, phrase 12.5px
+  `--doux`. **Le titre reste en `--encre`, même pour une erreur** — le rouge est réservé aux
+  chiffres. Le message est identique que l'adresse soit connue ou non.
+- **Bouton « Se connecter »**, deux emplacements, le même pour tous (la barre est en cache, elle
+  ne lit jamais la session) ; il se masque sur `/connexion` et sur les routes protégées.
+  - **Barre persistante, à partir de 768px** : variante compacte du bouton secondaire (rayon
+    `--rb`, bordure `--trait`, 12px poids 500) pour tenir dans les 47px, zone tactile de 44px.
+  - **Pied de page, sur toutes les largeurs** : bouton secondaire ordinaire. Sur mobile il n'est
+    pas dans la barre : celle de Macro porte déjà la marque, le sélecteur de zone et
+    l'indicateur de fraîcheur, et un quatrième élément réduit le sélecteur à quelques pixels.
+- Pied d'administration, sous le contenu : « Connecté · adresse » en 11px `--tenu` et un bouton
+  secondaire « Se déconnecter » à 44px. En contournement local, il le dit et n'offre pas de bouton.
+
 ### Barre d'onglets
 
 `position:fixed` en bas, fond blanc à 95 % avec `blur(16px)`, bordure haute `--trait`,
