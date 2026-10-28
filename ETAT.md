@@ -95,6 +95,15 @@ journée, est désormais **J2.1** ; J1 est le chantier « marchés par driver »
 - [ ] J9.1 Cadre réglementaire et employeur
 - [ ] J9.2 Stratégie freemium — à trancher
 - [ ] J9.3 Authentification des utilisateurs
+- [ ] J9.3a Connexion par Google à l'ouverture au public (fournisseur OAuth Supabase + client Google
+  Cloud). Le rôle admin reste posé à la main dans `app_metadata` : une inscription publique ne
+  doit jamais le donner. Lève `shouldCreateUser: false` et la déconnexion des non-admins de
+  `lib/auth/connexion.ts`, écrits pour un compte unique.
+- [ ] J9.3b Lien magique utilisable depuis tous les navigateurs. Aujourd'hui (modèle par défaut de
+  Supabase, flux PKCE) il ne s'ouvre que dans le navigateur qui l'a demandé. Correctif : SMTP
+  personnalisé (même chantier que J8.3 / J8.4), puis modèle d'e-mail
+  `{{ .SiteURL }}/auth/confirmer?token_hash={{ .TokenHash }}&type=email` — déjà accepté par
+  `/auth/confirmer`. Bloquant avant toute ouverture au public.
 - [ ] J9.4 Droits par niveau
 - [ ] J9.5 Paiement et abonnements
 - [ ] J9.6 CGU, mentions légales, confidentialité, avertissement
@@ -124,7 +133,11 @@ retirés (commit 5, pas encore fait), tout côté serveur.
   En dev avec `ADMIN_LOCAL=1` : 200 sur `localhost`, 404 avec un hôte forgé.
 
 **Reste, dans l'ordre :**
-1. **Réglages Supabase par le propriétaire** (hors dépôt) : inscriptions fermées, compte créé,
+1. ~~**Réglages Supabase par le propriétaire**~~ **faits le 28/10** (inscriptions fermées, compte,
+   rôle admin vérifié, Site URL et Redirect URL). **Le modèle d'e-mail n'a pas été changé** : Supabase
+   l'interdit sans SMTP personnalisé ; on garde le modèle par défaut (flux `code`, lien à ouvrir dans
+   le navigateur qui l'a demandé) jusqu'à J9.3b. `/diagnostic` du 28/10 : 5 variables, lecture et
+   écriture en base vertes. Rappel de la liste d'origine : : inscriptions fermées, compte créé,
    rôle posé par SQL, Site URL et Redirect URLs (`https://<projet>.vercel.app/auth/confirmer`),
    gabarit « Magic Link » en `{{ .SiteURL }}/auth/confirmer?token_hash={{ .TokenHash }}&type=email`.
    Vérifier sur `/diagnostic` **avant la fusion** que `SUPABASE_URL` et `SUPABASE_ANON_KEY` sont
