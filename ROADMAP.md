@@ -127,6 +127,8 @@ propriétaire (voir `AGENTS.md`) ; `nicolas` = décision ou action hors dépôt.
 - [ ] J9.1 Cadre réglementaire et employeur (MAR, CIF, conflits d'intérêts, contrat de travail) — Bloquant — nicolas, **conseil humain**
 - [ ] J9.2 Stratégie freemium — **À trancher** — nicolas
 - [ ] J9.3 Authentification des utilisateurs (lien magique) — plateforme
+- [ ] J9.3a Connexion par Google à l'ouverture au public ; le rôle admin reste posé à la main, une inscription publique ne le donne jamais — plateforme
+- [ ] J9.3b Lien magique utilisable depuis tous les navigateurs : SMTP personnalisé (avec J8.3 / J8.4) puis modèle d'e-mail `token_hash`, déjà accepté par `/auth/confirmer` — Bloquant avant l'ouverture au public — plateforme
 - [ ] J9.4 Droits par niveau (RLS, paywall) — plateforme
 - [ ] J9.5 Paiement et abonnements (Stripe) — plateforme
 - [ ] J9.6 CGU, mentions légales, confidentialité, avertissement — plateforme + nicolas
