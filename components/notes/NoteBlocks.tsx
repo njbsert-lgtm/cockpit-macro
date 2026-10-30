@@ -99,7 +99,7 @@ export async function NoteBlocks({ note }: { note: Note }) {
             Comparée à{" "}
             <Link
               href={`/notes/${comparesTo.slug}`}
-              className="underline decoration-trait underline-offset-4 hover:text-encre"
+              className="relative underline decoration-trait underline-offset-4 before:absolute before:inset-x-0 before:-inset-y-3.5 before:content-[''] hover:text-encre"
             >
               {comparesTo.slug}
             </Link>{" "}
