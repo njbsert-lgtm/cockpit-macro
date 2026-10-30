@@ -13,6 +13,21 @@ samedi (voir `AGENTS.md`) ne donnent aucun délai, seulement l'ordre et la charg
 des tâches : S, M, L, ajoutée par `advisor-technique` à la première passe et calibrée sur la
 consommation réelle (JA.4).
 
+**Tailles (JA.4) — calibrage provisoire, sur deux mesures seulement** (J1.2 ≈ 140 000 tokens d'agent,
+J4.1 ≈ 166 000) : **S** < 80 000 (un module ou une config, ses tests, ni interface ni migration) ·
+**M** 80 000 à 200 000 (un module et ses tests, un audit, ou une interface sur un seul couloir) ·
+**L** > 200 000 (plusieurs couloirs, migration avec interface, prompt avec contrôle des chiffres).
+S : J7.11, J3.2, J2.4, J2.7 (réduit), J7.12, J1.5 · M : J7.13, J7.1, J1.7, J3.1, J2.3, J2.6, J4.2,
+J4.3, J1.4 · L : J1.3, J5.2, J7.15. À recaler après deux rapports hebdomadaires.
+
+**Ordre de travail (advisor-technique, 30/10).** Trois agents exécutants au plus à la fois, deux si
+l'un est en L ; aucune tâche L le vendredi soir. Chaînes à livrer **en série**, un seul auteur :
+`lib/types.ts` et `supabase/schema.sql` (data) : J7.11 → J7.13 → J2.6 → J3.1 → J5.2 ; `middleware.ts`
+(plateforme) : J2.2 → J2.3 → J2.4. Prochaines tâches : data J7.11, J7.13, J7.1 (calcul) · notes J1.7,
+J3.1, J3.2 · plateforme J2.3, J2.4, J2.6 · design J2.7 réduit, J4.2, J4.3, J7.12 · veille saisie de
+`config/calendrier-drivers.ts`, rejeu des seuils (matière de J5.1).
+Bloqué par une décision : J1.1 → J1.3, J1.4, J1.5 ; J5.1 → J5.2 à J5.5 ; J6.1 → J6.2 à J6.7 ; JT.1 → JT.2.
+
 ## Socle livré
 
 - [x] S.1 Collecte quotidienne (Étape 3) — cron 4 h UTC, 13 modules, `series_health`
