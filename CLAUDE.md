@@ -563,6 +563,11 @@ Vérifié mécaniquement, pas par le prompt :
 - **Citer une source absente de la fiche.** Les émetteurs cités dans la note se rattachent aux
   sources que la fiche porte, jamais à une autorité que le modèle ajoute de lui-même. C'est le
   pendant éditorial de la seconde condition du régime B.
+- **Écrire le bloc « Les marchés par driver », ou une cause que la fiche n'établit pas** (J1.3). Le
+  corps du bloc est écrit par le code ; un `<LesMarchesParDriver>` rédigé par le modèle est refusé
+  à la réception. Il ne propose que des causes, validées contre le paquet : instrument hors de
+  `Driver.instrumentRefs` du driver, cause sans émetteur ni canal, émetteur absent de la fiche,
+  cause sur un instrument sans variation — tout est renvoyé au modèle, une seule fois.
 - **Écrire au conditionnel généralisé.** Une note qui multiplie « pourrait », « semblerait »
   et « il conviendra de surveiller » n'a pas tranché. Un contrôle de style signale les
   formules d'atténuation au-delà d'un seuil par bloc. Signalement, pas blocage.

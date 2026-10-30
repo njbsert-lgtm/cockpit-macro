@@ -77,7 +77,7 @@ export async function executerRun(
   const aujourdhui = options.aujourdhui ?? new Date().toISOString().slice(0, 10);
   const blocs = blocsARediger(paquet);
   const vivier = construireVivier(paquet, blocs);
-  const system = construirePromptSysteme(blocs, vivier.driverIds);
+  const system = construirePromptSysteme(blocs, vivier.driverIds, { marches: Boolean(vivier.marches) });
   const user = construirePromptUtilisateur(paquet, blocs);
 
   const notes: string[] = [];

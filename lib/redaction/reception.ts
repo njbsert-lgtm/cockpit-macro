@@ -68,6 +68,20 @@ export function recevoir(brut: string, vivier: Vivier): ResultatReception {
     }
   }
 
+  // « Les marchés par driver » est écrit par le code : un modèle qui y met du texte y met, par
+  // construction, des chiffres que personne n'a calculés. Refusé comme le bloc 4 pré-rempli.
+  if (vivier.marches) {
+    const ecrit = /<LesMarchesParDriver>([\s\S]*?)<\/LesMarchesParDriver>/.exec(fichier.content);
+    if (ecrit && ecrit[1].trim().length > 0) {
+      return {
+        ok: false,
+        raison:
+          "« LesMarchesParDriver » a été rédigé : ce bloc est écrit par le code depuis les variations de la semaine. " +
+          "Retire-le du corps et ne propose que des causes dans `marchesParDriver`",
+      };
+    }
+  }
+
   const { frontmatter: fm, structure } = valide;
   return {
     ok: true,
