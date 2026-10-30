@@ -67,7 +67,7 @@ journée, est désormais **J2.1** ; J1 est le chantier « marchés par driver »
   réglages Supabase et fusion dans `main` à faire (voir ci-dessous)
 - [ ] J2.2 Accueil /admin : santé des sources et files d'attente
 - [ ] J2.3 /redaction → /admin/redaction
-- [ ] J2.4 /triage → /admin/veille
+- [x] J2.4 /triage → /admin/veille (à fusionner)
 - [ ] J2.5 Guets et angles morts côté admin
 - [ ] J2.6 File « À trancher »
 - [ ] J2.7 Audit des pages publiques

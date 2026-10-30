@@ -40,7 +40,7 @@ Zones communes et leur propriétaire unique :
 | `config/calendrier-publications.ts` | `data-marches` | Dates officielles des instituts |
 | `config/calendrier-drivers.ts` | `veille-alertes` | Échéances qui ancrent les guets et révèlent une collecte en défaut |
 | `app/redaction/actions.ts` / interface du portail | `notes-analyse` / `design` | Logique d'un côté, rendu de l'autre |
-| `app/triage/actions.ts` / interface de la file | `veille-alertes` / `design` | Idem |
+| `app/admin/veille/actions.ts` / interface de la file | `veille-alertes` / `design` | Idem |
 | `package.json`, `next.config.ts`, `middleware.ts` | `plateforme` | Dépendances et sécurité |
 | `CLAUDE.md` | chaque agent amende **sa** section ; l'orchestrateur arbitre | Le cahier des charges reste unique |
 | `ETAT.md`, `ROADMAP.md`, `AGENTS.md` | orchestrateur | Une seule voix sur l'état du projet |

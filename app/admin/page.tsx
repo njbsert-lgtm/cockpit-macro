@@ -71,7 +71,7 @@ export default async function AdminPage() {
 
       <h2 className="mt-6 text-11 uppercase tracking-cap text-tenu">Files d&rsquo;attente</h2>
       <ul className="mt-2 flex flex-col gap-2">
-        <File titre="Veille à trier" compte={aTrier} href="/triage" lien="Triage" />
+        <File titre="Veille à trier" compte={aTrier} href="/admin/veille" lien="Veille" />
         <File titre="Brouillons à relire" compte={brouillons} href="/redaction" lien="Rédaction" />
       </ul>
     </div>
