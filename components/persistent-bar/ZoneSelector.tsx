@@ -1,35 +1,54 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { MACRO_ZONES, ZONE_LABELS } from "@/lib/zones";
 import { DEFAULT_ZONE, ZONE_PARAM, parseZone } from "@/lib/zone-param";
 
 /**
- * Le segment de zone de la barre collante (DESIGN.md) : fond `--repos`, rayon `--rp`,
- * padding 3px, bouton actif en `--encre` sur texte blanc.
+ * Le sélecteur de zone de la barre collante (DESIGN.md, « sélecteur de zone à panneau ») : un
+ * seul bouton « Zone : France ▾ » de 44px, qui ouvre sous la barre un panneau portant les onze
+ * zones en boutons de 44px. Onze boutons dans la barre elle-même débordaient à 390px.
  *
- * L'onglet Macro compte onze zones là où la maquette n'en montre que quelques-unes : le segment
- * **défile horizontalement**, sans barre visible, et la zone active est amenée dans le champ
- * au chargement — sans quoi une zone choisie en fin de liste serait invisible au retour sur
- * la page.
+ * La zone active se lit sans ouvrir le panneau. L'état reste dans l'URL (`?zone=`) : partageable
+ * et rechargeable. Fermeture à l'Échap (le focus revient au bouton) et au clic extérieur ; à
+ * l'ouverture, le focus va sur la zone active. Le panneau se positionne contre la barre
+ * (`header`, collante), pas contre ce composant.
  */
 export function ZoneSelector() {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const zone = parseZone(searchParams.get(ZONE_PARAM));
-  const activeRef = useRef<HTMLButtonElement>(null);
+  const [open, setOpen] = useState(false);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => setOpen(false), [pathname]);
 
   useEffect(() => {
-    // `nearest` en bloc : amener la zone active dans le champ ne doit jamais faire défiler
-    // la page verticalement, seulement le segment lui-même.
-    activeRef.current?.scrollIntoView({ block: "nearest", inline: "center" });
-  }, [zone]);
+    if (!open) return;
+    panelRef.current?.querySelector<HTMLButtonElement>('[aria-pressed="true"]')?.focus();
+    function onPointerDown(e: PointerEvent) {
+      const t = e.target as Node;
+      if (!panelRef.current?.contains(t) && !triggerRef.current?.contains(t)) setOpen(false);
+    }
+    function onKeyDown(e: KeyboardEvent) {
+      if (e.key === "Escape") {
+        setOpen(false);
+        triggerRef.current?.focus();
+      }
+    }
+    document.addEventListener("pointerdown", onPointerDown);
+    document.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.removeEventListener("pointerdown", onPointerDown);
+      document.removeEventListener("keydown", onKeyDown);
+    };
+  }, [open]);
 
-  // La zone ne pilote plus que Macro : Marchés a sa propre rangée de zones (le même état,
-  // affiché autrement, à l'intérieur de l'écran), et Notes ne se filtre plus par zone du
-  // tout. Le sélecteur du bandeau n'a donc rien à faire — ni à afficher — ailleurs.
+  // La zone ne pilote plus que Macro : Marchés a sa propre rangée de zones, et Notes ne se
+  // filtre plus par zone du tout.
   if (pathname !== "/macro") return null;
 
   function select(z: string) {
@@ -38,32 +57,56 @@ export function ZoneSelector() {
     else params.set(ZONE_PARAM, z);
     const qs = params.toString();
     router.push(`${pathname}${qs ? `?${qs}` : ""}`, { scroll: false });
+    setOpen(false);
+    triggerRef.current?.focus();
   }
 
   return (
-    <div
-      role="tablist"
-      aria-label="Zone"
-      className="sans-barre -mr-1 flex max-w-[62vw] gap-0.5 overflow-x-auto rounded-rp bg-repos p-[3px] md:max-w-none"
-    >
-      {MACRO_ZONES.map((z) => {
-        const active = z === zone;
-        return (
-          <button
-            key={z}
-            ref={active ? activeRef : undefined}
-            type="button"
-            role="tab"
-            aria-selected={active}
-            onClick={() => select(z)}
-            className={`shrink-0 whitespace-nowrap rounded-rp px-2.5 py-1.5 text-12 font-medium transition-colors ${
-              active ? "bg-encre text-white" : "text-doux hover:text-encre"
-            }`}
-          >
-            {ZONE_LABELS[z]}
-          </button>
-        );
-      })}
-    </div>
+    <>
+      <button
+        ref={triggerRef}
+        type="button"
+        onClick={() => setOpen((o) => !o)}
+        aria-expanded={open}
+        aria-controls="panneau-zone"
+        className="flex min-h-11 min-w-0 shrink items-center whitespace-nowrap text-12 font-medium text-encre"
+      >
+        <span className="flex items-center gap-1 rounded-rp bg-repos px-2.5 py-1.5">
+          <span className="text-doux">Zone&nbsp;:</span>
+          <span>{ZONE_LABELS[zone]}</span>
+          <span aria-hidden className="text-doux">
+            {open ? "▴" : "▾"}
+          </span>
+        </span>
+      </button>
+      {open && (
+        <div
+          id="panneau-zone"
+          ref={panelRef}
+          role="group"
+          aria-label="Zone"
+          className="absolute inset-x-0 top-full border-b border-trait bg-page"
+        >
+          <div className="mx-auto grid max-w-colonne grid-cols-3 gap-2 px-4.5 py-3 md:max-w-content md:grid-cols-6 md:px-6">
+            {MACRO_ZONES.map((z) => {
+              const active = z === zone;
+              return (
+                <button
+                  key={z}
+                  type="button"
+                  aria-pressed={active}
+                  onClick={() => select(z)}
+                  className={`min-h-11 rounded-rp px-2 text-12 font-medium transition-colors ${
+                    active ? "bg-encre text-white" : "bg-repos text-doux hover:text-encre"
+                  }`}
+                >
+                  {ZONE_LABELS[z]}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      )}
+    </>
   );
 }
