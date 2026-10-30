@@ -20,6 +20,7 @@ import {
 } from "@/lib/guets";
 import { isoWeekOf, isoWeekBounds } from "@/lib/iso-week";
 import type { MarcheContexte } from "./marches";
+import { structureMarchesParDriver } from "@/config/suivi";
 
 /**
  * Le paquet de contexte — **seul horizon du modèle**.
@@ -240,6 +241,8 @@ export function construireContexte(input: {
   /** Optionnel : les tests qui n'éprouvent pas les thèmes n'en fournissent pas. */
   themes?: ThemeObserve[];
   estCollecte?: EstCollecte;
+  /** Voir `construireMarchesParDriver` : calculé par l'appelant, qui détient les clôtures. */
+  marchesParDriver?: MarcheContexte[];
 }): ContextePaquet {
   const { slug, isoWeek, comparesTo, specialesDeLaSemaine } = champsStructurels(
     input.notes,
@@ -282,6 +285,9 @@ export function construireContexte(input: {
     budgetGuets: budgetDisponible(remontes),
     echeancesSemaine: echeancesEntre(input.dateCible, semaineSuivante),
     trigger: input.trigger ?? null,
+    // Seule une hebdo de la nouvelle structure a ce bloc ; ailleurs, `null` : le modèle n'y écrit rien.
+    marchesParDriver:
+      input.kind === "hebdo" && structureMarchesParDriver(isoWeek) ? (input.marchesParDriver ?? []) : null,
   };
 }
 

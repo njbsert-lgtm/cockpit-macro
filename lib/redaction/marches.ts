@@ -1,6 +1,6 @@
 import { z } from "zod";
-import type { VeilleChannel } from "@/lib/types";
-import type { WeeklyResult } from "@/lib/performance";
+import type { Driver, Instrument, Observation, VeilleChannel } from "@/lib/types";
+import { weeklyChanges, type WeeklyResult } from "@/lib/performance";
 
 /**
  * « Les marchés par driver » — le bloc qui remplace « Ce que j'avais mal lu » à partir de la S45
@@ -176,6 +176,42 @@ export function invariantsMarches(
       }
     }
   }
+}
+
+/**
+ * Le bloc du paquet : pour chaque driver actif, les instruments qu'il pilote
+ * (`Driver.instrumentRefs`, dans cet ordre) avec leur variation de la semaine.
+ *
+ * **`weeklyChange` fait le calcul, pas ce module** (`lib/performance.ts`, propriété de Data) :
+ * recalculée depuis les clôtures de début et de fin, avec leurs deux dates, en points de base pour
+ * les taux et les spreads, en pourcentage pour le reste. Un instrument non collecté ou dont une
+ * clôture manque revient déjà « non suivi » / « donnée absente au JJ/MM » — transmis tel quel.
+ * `dateFin` est la date de la note : une série dont la dernière clôture est trop ancienne ne
+ * produit pas une variation qui aurait l'air de dater de la semaine.
+ *
+ * Tous les drivers actifs, et non ceux de `driverOrder` : l'ordre est un jugement du modèle, écrit
+ * après le paquet.
+ */
+export function construireMarchesParDriver(
+  drivers: Array<Pick<Driver, "id" | "label" | "instrumentRefs" | "retiredAt">>,
+  instruments: Array<Pick<Instrument, "id" | "label" | "unit">>,
+  observations: Record<string, Observation[]>,
+  options: { dateFin?: string; collecte?: (id: string) => boolean } = {},
+): MarcheContexte[] {
+  const catalogue = new Map(instruments.map((i) => [i.id, i]));
+  return drivers
+    .filter((d) => d.retiredAt === null)
+    .map((d) => {
+      const connus = d.instrumentRefs
+        .map((id) => catalogue.get(id))
+        .filter((i): i is NonNullable<typeof i> => Boolean(i));
+      const mesures = weeklyChanges(connus, observations, options);
+      return {
+        driverId: d.id,
+        label: d.label,
+        instruments: connus.map((i, k) => ({ instrumentId: i.id, label: i.label, mesure: mesures[k] })),
+      };
+    });
 }
 
 /**
