@@ -3,6 +3,7 @@ import type { RegimeProposition } from "@/lib/types";
 import type { ContextePaquet } from "./context";
 import type { ThemePropose, Vivier } from "./sortie-mixte";
 import { cleLigne, type MarcheDriver } from "./marches";
+import { avecMarchesParDriver } from "./marches-rendu";
 
 /**
  * La forme interne du brouillon, et le vivier qui borne ce que le modèle peut citer.
@@ -128,10 +129,10 @@ export function construireVivier(paquet: ContextePaquet, blocsAttendus: string[]
  * proposer), et les émetteurs de la fiche. `null` si la note n'a pas ce bloc.
  */
 function vivierMarches(paquet: ContextePaquet): Vivier["marches"] {
-  if (!paquet.marchesParDriver) return null;
+  if (!avecMarchesParDriver(paquet)) return null;
   const instrumentsParDriver = new Map<string, string[]>();
   const sansMesure = new Set<string>();
-  for (const d of paquet.marchesParDriver) {
+  for (const d of paquet.marchesParDriver ?? []) {
     instrumentsParDriver.set(d.driverId, d.instruments.map((i) => i.instrumentId));
     for (const i of d.instruments) {
       if (i.mesure.status !== "ok") sansMesure.add(cleLigne(d.driverId, i.instrumentId));
