@@ -1,4 +1,5 @@
 import type { NoteKind } from "./types";
+import { structureMarchesParDriver } from "@/config/suivi";
 
 /**
  * Le vocabulaire des blocs analytiques, **sans accès disque** : `lib/notes.ts` lit le corpus
@@ -13,6 +14,7 @@ export const BLOCK_NAMES = [
   "CeQuiSestConfirme",
   "RevisionDesScenarios",
   "CeQueJavaisMalLu",
+  "LesMarchesParDriver",
   "CeQueJeSurveille",
   "RecapDesSpeciales",
   "LeFilDeLaSemaine",
@@ -25,6 +27,7 @@ export const BLOCK_TITLES: Record<BlockName, string> = {
   CeQuiSestConfirme: "Ce qui s'est confirmé",
   RevisionDesScenarios: "Révision des scénarios",
   CeQueJavaisMalLu: "Ce que j'avais mal lu",
+  LesMarchesParDriver: "Les marchés par driver",
   CeQueJeSurveille: "Ce que je surveille",
   RecapDesSpeciales: "Ce que les spéciales de la semaine ont établi",
   LeFilDeLaSemaine: "Le fil de la semaine",
@@ -40,6 +43,8 @@ export const BLOCK_EMOJI: Record<BlockName, string> = {
   CeQuiSestConfirme: "✅",
   RevisionDesScenarios: "🔀",
   CeQueJavaisMalLu: "✏️",
+  // Provisoire (J1.3) : l'emoji définitif relève de DESIGN.md (J1.4).
+  LesMarchesParDriver: "📊",
   CeQueJeSurveille: "👁️",
   RecapDesSpeciales: "📎",
   LeFilDeLaSemaine: "🧵",
@@ -61,6 +66,24 @@ export const REQUIRED_BLOCKS: Record<NoteKind, BlockName[]> = {
   ],
   speciale: ["CeQuiAChange", "RevisionDesScenarios", "CeQueJeSurveille"],
 };
+
+/**
+ * Les blocs obligatoires **d'une note donnée** : ils dépendent de sa semaine ISO. Une hebdo
+ * antérieure à `MARCHES_PAR_DRIVER_A_PARTIR_DE` porte « Ce que j'avais mal lu » ; à partir de
+ * cette semaine, « Les marchés par driver » le remplace au même rang. Une spéciale ne change pas.
+ *
+ * `REQUIRED_BLOCKS` ci-dessus garde l'ancienne structure : il n'a de sens que pour qui n'a pas de
+ * semaine sous la main. Tout code qui valide, rend ou publie une note passe par cette fonction.
+ */
+export function requiredBlocks(kind: NoteKind, isoWeek: string): BlockName[] {
+  if (kind === "speciale" || !structureMarchesParDriver(isoWeek)) return REQUIRED_BLOCKS[kind];
+  return REQUIRED_BLOCKS.hebdo.map((b) => (b === "CeQueJavaisMalLu" ? "LesMarchesParDriver" : b));
+}
+
+/** Le bloc d'une hebdo qui s'écrit à la main (S38 à S44), ou celui que le code reconstruit. */
+export function blocMarchesOuMalLu(isoWeek: string): "CeQueJavaisMalLu" | "LesMarchesParDriver" {
+  return structureMarchesParDriver(isoWeek) ? "LesMarchesParDriver" : "CeQueJavaisMalLu";
+}
 
 /**
  * La frontière du régime des guets, en semaine ISO.

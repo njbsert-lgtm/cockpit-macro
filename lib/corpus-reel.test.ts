@@ -21,6 +21,20 @@ describe("le corpus réel", () => {
     }
   });
 
+  it("chaque note du corpus valide avec les blocs obligatoires de sa propre structure", async () => {
+    const { parseNote, readNoteSources } = await import("./notes");
+    const { requiredBlocks } = await import("./note-blocks");
+    const sources = readNoteSources();
+    expect(sources.length).toBeGreaterThan(0);
+    for (const { slug, source } of sources) {
+      // Lève si la note ne valide plus : c'est ce que ce test garde, quelle que soit la bascule.
+      const note = parseNote(slug, source);
+      for (const bloc of requiredBlocks(note.meta.kind, note.meta.isoWeek)) {
+        expect(note.blocks, `${slug} → ${bloc}`).toContain(bloc);
+      }
+    }
+  });
+
   it("ne contient plus aucune note, version de scénario ni entrée d'historique retirées à la remise à zéro", async () => {
     const { getNotes, getScenarioVersions, getTrends } = await import("./content");
     expect(getNotes().filter((n) => estPurgee(n.slug))).toEqual([]);

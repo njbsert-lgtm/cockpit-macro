@@ -274,6 +274,11 @@ export function createNoteMdxComponents(
     CeQueJavaisMalLu: (p: BlockProps) => (
       <Block name="CeQueJavaisMalLu" {...props("CeQueJavaisMalLu")} {...p} />
     ),
+    // Rendu provisoire (J1.3) : le bloc est du texte rédigé par le code ; sa présentation en
+    // tableau relève de J1.4 (design).
+    LesMarchesParDriver: (p: BlockProps) => (
+      <Block name="LesMarchesParDriver" {...props("LesMarchesParDriver")} {...p} />
+    ),
     CeQueJeSurveille: (p: BlockProps) => (
       <CeQueJeSurveilleBlock
         guets={guets}

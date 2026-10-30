@@ -283,6 +283,7 @@ const CONSIGNE_BLOC: Record<BlockName, string> = {
   RevisionDesScenarios:
     "En prose : pour chaque driver touché, la vraisemblance a-t-elle bougé, et pourquoi ? La forme structurée est dans la section JSON, plus bas. Décliner une révision est une réponse valide, à condition de l'écrire.",
   CeQueJavaisMalLu: "",
+  LesMarchesParDriver: "",
   CeQueJeSurveille:
     "Le texte des guets — ce que tu surveilles et pourquoi. Leur forme structurée est dans la section JSON.",
   RecapDesSpeciales:

@@ -38,3 +38,21 @@ export const NOTES_PURGEES: readonly string[] = [
 export function estPurgee(slug: string): boolean {
   return NOTES_PURGEES.includes(slug);
 }
+
+/**
+ * La première semaine de la nouvelle structure d'une hebdo (CLAUDE.md, « Les marchés par driver »,
+ * décidé le 30/10/2026).
+ *
+ * Les notes S38 à S44 portent « Ce que j'avais mal lu » (`CeQueJavaisMalLu`) et ne sont pas
+ * réécrites. À partir d'ici, une hebdo porte « Les marchés par driver » (`LesMarchesParDriver`) à
+ * la place, au même rang. **Une seule constante** : les blocs obligatoires, l'ordre canonique, la
+ * validation au chargement, la rédaction et les conditions de publication en dérivent tous, par
+ * `structureMarchesParDriver` — jamais par une comparaison de semaine écrite ailleurs. Les
+ * spéciales n'ont jamais eu ce bloc et n'en ont pas.
+ */
+export const MARCHES_PAR_DRIVER_A_PARTIR_DE = "2026-S45";
+
+/** La note de cette semaine ISO (`AAAA-Sxx`) suit-elle la structure « marchés par driver » ? */
+export function structureMarchesParDriver(isoWeek: string): boolean {
+  return isoWeek >= MARCHES_PAR_DRIVER_A_PARTIR_DE;
+}
