@@ -155,15 +155,20 @@ en dessous. `--baisse` et les cinq couleurs de canal passent le seuil de 4.5:1.
 `position:sticky; top:0`, fond blanc à 95 % avec `backdrop-filter: blur(14px)`,
 bordure basse `--trait`.
 
-À gauche la marque **Marguerite** en 13px poids 700. À droite un **segment** :
-fond `--repos`, rayon `--rp`, padding 3px. Chaque bouton en 12px poids 500, couleur `--doux` ;
-l'actif prend fond `--encre` et texte blanc.
+À gauche la marque **Marguerite** en 13px poids 700. À droite, sur Macro, le **sélecteur de zone
+à panneau** (voir plus bas) puis le point de fraîcheur.
 
-Le projet compte plus de zones que la maquette n'en montre : le segment défile
-horizontalement, sans barre de défilement visible, et la zone active reste amenée dans
-le champ au chargement.
+**Sélecteur de zone à panneau.** Onze boutons dans la barre débordaient à 390px (14 boutons de
+31px dans 47px). La barre ne porte donc qu'**un bouton « Zone : France ▾ »** : zone active toujours
+lisible sans ouvrir, pastille `--repos` rayon `--rp` en 12px poids 500, zone tactile de 44px (même
+construction que le bouton de fraîcheur), `aria-expanded` et `aria-controls`. Il ouvre un **panneau
+sous la barre**, pleine largeur, fond `--page`, bordure basse `--trait`, sans ombre : les onze
+zones (`MACRO_ZONES`) en boutons de 44px au rayon `--rp`, grille de 3 colonnes (6 dès 768px), fond
+`--repos` / texte `--doux`, l'actif en `--encre` sur blanc, `aria-pressed` sur chacun. Fermeture à
+l'Échap (le focus revient au bouton), au clic extérieur, au choix d'une zone et au changement de
+page ; à l'ouverture le focus va sur la zone active. L'état reste dans l'URL (`?zone=`).
 
-**Le segment n'apparaît que sur Macro** (`CLAUDE.md`) : Marchés a sa propre rangée de zones,
+**Le sélecteur n'apparaît que sur Macro** (`CLAUDE.md`) : Marchés a sa propre rangée de zones,
 Notes n'a pas de notion de zone. Sur les autres écrans, la barre ne porte que la marque, les
 onglets (desktop) et le point de fraîcheur.
 
@@ -874,7 +879,8 @@ est le même pour une adresse inconnue et une route protégée refusée.
   la pastille est dessinée dedans. Un en-tête de section qui mène ailleurs est cliquable sur toute sa
   ligne, 44px de haut.
 - Rôles ARIA : `role="tablist"` et `aria-selected` sur les segments
-  et la barre d'onglets, `aria-current` sur les chips d'ancre, `aria-expanded` sur les
+  et la barre d'onglets (le sélecteur de zone de la barre n'en est plus un : `aria-pressed` sur
+  ses boutons), `aria-current` sur les chips d'ancre, `aria-expanded` sur les
   dépliants.
 
 ---
