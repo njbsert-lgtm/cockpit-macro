@@ -421,6 +421,29 @@ transmission est un outil de validation (portail), pas une information de lectur
 Le tableau est dessiné d'après le texte du bloc que le code écrit (`lecture-marches.ts`) ; une ligne
 qu'il ne reconnaît pas fait revenir tout le bloc à la liste Markdown, jamais à une ligne tronquée.
 
+### Ligne de proposition (marchés par driver, portail)
+
+Le segment « Marchés » de la frise (📊) ouvre, dans la mise en page de la note (filet de canal,
+emoji dans la marge, badge d'authorship à droite du titre), le même tableau que la note publiée,
+**une ligne par instrument où le modèle propose une cause**, chaque ligne étant un dépliant
+(`<details>`) : libellé, deux dates, variation écrite par le code, **badge d'authorship de la ligne**
+(`IA` tant qu'elle n'est pas tranchée, `IA relue`, `IA corrigée`, `Humaine` pour une cause ajoutée à
+la main). Replié, il montre la cause sur deux lignes ; **seule la première ligne non tranchée est
+ouverte**, ce qui garde un seul bouton primaire visible à la fois.
+
+Ouvert : la cause en 12.5px `--doux`, l'émetteur et la **pastille de canal** (contour `currentColor`,
+couleur du canal — elle qualifie la cause, jamais le chiffre), puis trois boutons de 44px :
+**Refuser** (secondaire), **Corriger** (secondaire, `aria-expanded`, ouvre en place un champ de cause
+et la liste des émetteurs que la fiche cite), **Accepter** (primaire). Aucun n'est coché par défaut ;
+aucun bouton ne tranche plusieurs lignes. Refuser écarte la cause, pas le mouvement : la ligne
+reste, « Sans lien clair ». Un chiffre non conforme dans la cause s'écrit sur la ligne (ligne d'alerte,
+« Chiffre à trancher »).
+
+**Sans cause proposée (N)** : les lignes que le modèle laisse sans cause (non suivi, donnée absente,
+« Sans lien clair ») sont **repliées** dans un panneau `--repos`, ne bloquent pas la publication, et
+offrent « Ajouter une cause » (même formulaire, vide). La ligne devient alors `Humaine` et rejoint
+les lignes tranchées. Décision d'orchestrateur du 30/10, valable jusqu'à contre-ordre de Nicolas.
+
 ### Badge d'authorship
 
 L'**étiquette** de la carte de driver : fond `--repos`, rayon `--rp`, capitales 9.5px poids

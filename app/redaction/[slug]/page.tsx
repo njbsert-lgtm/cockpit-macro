@@ -38,6 +38,8 @@ import { PortailGestes, type GesteVue } from "@/components/redaction/PortailGest
 import { BasculeDeuxVues } from "@/components/redaction/BasculeDeuxVues";
 import { ChiffresParValeur } from "@/components/redaction/ChiffresParValeur";
 import { GuetsPanel } from "@/components/redaction/GuetsPanel";
+import { etatMarches, MarchesPanel } from "@/components/redaction/MarchesPanel";
+import { authorshipBlocMarches, lignesDuBloc, ligneEffective } from "@/lib/redaction/marches-rendu";
 import { RegimePanel } from "@/components/redaction/RegimePanel";
 import { PropositionCard } from "@/components/redaction/PropositionCard";
 import { PublishButton } from "@/components/redaction/PublishButton";
@@ -91,9 +93,13 @@ export default async function RedactionSlugPage({
     chiffresParAngle[angle] = (chiffresParAngle[angle] ?? 0) + 1;
   }
 
+  const avecMarches = note.blocks.includes("LesMarchesParDriver");
+  const lignesMarches = brouillonPropose.marchesParDriver ?? [];
+
   const ids = [
     ...(regimeAttendu ? ["regime"] : []),
     ...blocsTexte,
+    ...(avecMarches ? ["LesMarchesParDriver"] : []),
     ...(note.blocks.includes("CeQueJeSurveille") && authorshipGuets ? ["CeQueJeSurveille"] : []),
   ];
   const chiffres = chiffresParGeste(verdicts, ids);
@@ -155,6 +161,42 @@ export default async function RedactionSlugPage({
           valide={valide}
           signalements={signalementsDuBloc(bloc, texteInitial)}
           humain={bloc === "CeQueJavaisMalLu"}
+        />
+      ),
+    });
+  }
+
+  if (avecMarches) {
+    // Le bloc est écrit par le code ; seules les causes que le modèle a proposées se tranchent, une
+    // à une. Une ligne dont la cause porte un chiffre à trancher le dit sur elle-même.
+    const sansPoint = (t: string) => t.trim().replace(/[.;:\s]+$/, "");
+    const chiffresParLigne = new Set<string>();
+    for (const { cle, ligne } of lignesDuBloc(lignesMarches)) {
+      const cause = ligneEffective(ligne, decisions.lignes[cle]).cause;
+      if (cause && nonTranches.some((v) => v.bloc === "LesMarchesParDriver" && v.phrase.startsWith(sansPoint(cause)))) {
+        chiffresParLigne.add(cle);
+      }
+    }
+    const authorshipMarches = authorshipBlocMarches(lignesMarches, decisions.lignes);
+    gestes.push({
+      id: "LesMarchesParDriver",
+      titre: BLOCK_TITLES.LesMarchesParDriver,
+      emoji: BLOCK_EMOJI.LesMarchesParDriver,
+      fait: etatMarches(lignesMarches, decisions.lignes).restantes === 0,
+      chiffres: chiffres.LesMarchesParDriver ?? 0,
+      type: "marches",
+      sujets: lignesMarches.filter((m) => m.lignes.length > 0).length,
+      authorship: authorshipMarches,
+      panel: (
+        <MarchesPanel
+          slug={slug}
+          marches={lignesMarches}
+          contexte={paquet.marchesParDriver ?? []}
+          decisions={decisions.lignes}
+          sources={paquet.ficheNotion?.sources ?? []}
+          chiffresParLigne={chiffresParLigne}
+          ton={ton}
+          authorship={authorshipMarches}
         />
       ),
     });
