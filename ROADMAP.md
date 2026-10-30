@@ -42,9 +42,10 @@ zone de Macro).
 ## JA · Organisation en agents
 
 - [x] JA.1 Agents, advisors, `AGENTS.md`, `ROADMAP.md` versionnée — orchestrateur
-- [ ] JA.2 Section « Organisation du développement » dans la cartographie Notion — orchestrateur
+- [ ] JA.2 Section « Organisation du développement » dans la cartographie Notion — orchestrateur — **prévu samedi 31/10, après la réinitialisation de 10 h, avec la resynchronisation de l'artefact de la roadmap (accord de Nicolas)**
 - [ ] JA.3 Rapport hebdomadaire des agents, chaque samedi à 11 h (Paris) : fait, situation, reste, délais — routine planifiée à créer **sur accord de Nicolas** (coût en tokens chaque semaine) — orchestrateur + advisor
 - [ ] JA.4 Budget de tokens hebdomadaire et tailles S/M/L de chaque tâche, pour que les délais se calculent — **À trancher** (le budget) — nicolas + advisor
+  - *Première calibration, 30/10 (Claude Pro) :* environ 900 000 tokens d'agents (J7.11, J7.13, J7.12, J1.3, E8/E9/E12 et le début de J1.4) ont fait passer la **limite de 5 heures de 38 % à 80 %** et la **limite hebdomadaire de 48 % à 53 %**. Si ces lectures sont bien celles de ces deux jauges, **le facteur limitant est la fenêtre de 5 heures**, pas la semaine : ≈ 21 000 tokens d'agent par point de la fenêtre, soit une fenêtre pleine ≈ 2 millions. Les premières lectures de la journée (« 60 % », « 72 % ») étaient peut-être celles de la fenêtre de 5 heures ; à confirmer au prochain relevé.
 
 ## J0 · Assainir
 
