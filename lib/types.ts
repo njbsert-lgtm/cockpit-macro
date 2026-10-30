@@ -262,6 +262,10 @@ export type Echeance = {
   driverId: string;
   libelle: string;
   source: string; // 'FED:communique', 'EIA:STEO' — même vocabulaire que Guet.sourceAttendue
+  /** Page officielle de l'émetteur où la date a été lue. Jamais une page tierce. */
+  url: string;
+  /** Jour où la date a été relevée sur cette page (AAAA-MM-JJ). */
+  releveLe: string;
 };
 
 /**
