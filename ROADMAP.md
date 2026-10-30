@@ -84,7 +84,7 @@ Débloqué le 30/10 : J5.2 à J5.5 (J5.1 tranché ; J5.2 attend la chaîne `sche
 
 - [x] J4.1 Audit de densité à 390 px — fait le 30/10 : `rapports/conformite-2026-10-30.md` (17 routes ; 4 écarts hauts, 7 moyens, 3 bas, 2 à trancher) — design
 - [ ] J4.2 Nouvelle hiérarchie : thèse, ce qui a bougé, mécanisme, marchés par driver, guets — design + notes
-- [~] J4.3 Maquette Claude Design et amendement `DESIGN.md`, avant tout code — maquette livrée le 30/10 (`rapports/maquette-notes-J4.md`, branche `agent/design/J4.3`). **Décisions de Nicolas le 30/10 : texte justifié partout (y compris mobile) ; « Ce qui a bougé » et « Ce qui s'est confirmé » jamais repliés ; Nicolas suit l'avis de l'orchestrateur sur le reste (ordre des blocs, panneau « Le mécanisme », trois chiffres clés proposés par le modèle et validés par lui).** Reste : appliquer ces choix dans `DESIGN.md` puis J4.2 — design
+- [~] J4.3 Maquette Claude Design et amendement `DESIGN.md`, avant tout code — maquette livrée le 30/10 (`rapports/maquette-notes-J4.md`, branche `agent/design/J4.3`). **Décisions de Nicolas le 30/10 : texte justifié partout (y compris mobile) ; « Ce qui a bougé » et « Ce qui s'est confirmé » jamais repliés ; Nicolas suit l'avis de l'orchestrateur sur le reste (ordre des blocs, panneau « Le mécanisme », trois chiffres clés proposés par le modèle et validés par lui).** Amendement de `DESIGN.md` fait le 30/10 (« Hiérarchie de lecture (J4.3) ») ; reste J4.2 (code), après le gel de samedi, et J4.4 (remesure de la longueur de page, motif de l'emoji sur section repliable) — design
 - [ ] J4.4 Intégration : sections repliables, barre d'ancres allégée — design
 - [ ] J4.5 Liste des notes : filtres driver et axe, recherche — design
 - [ ] J4.6 Export PDF d'une note — design
