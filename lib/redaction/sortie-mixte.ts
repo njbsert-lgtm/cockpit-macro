@@ -2,6 +2,7 @@ import { z } from "zod";
 import { ANGLES_REGIME, anglesDistincts } from "@/lib/regime";
 import { THEMES } from "@/config/themes";
 import { estChiffre } from "@/lib/themes";
+import { invariantsMarches, marcheDriverSchema, type VivierMarches } from "./marches";
 
 /**
  * Le contrat de sortie du modèle, depuis l'abandon de la sortie structurée.
@@ -66,6 +67,11 @@ export type Vivier = {
   placesThemes: number;
   /** Les thèmes déjà suivis : le modèle n'en propose pas un second sur le même sujet. */
   themesExistantsIds: string[];
+  /**
+   * « Les marchés par driver » : absent (ou `null`) pour une note qui n'a pas ce bloc — avant la
+   * S45, ou une spéciale. Le modèle n'y écrit alors rien.
+   */
+  marches?: VivierMarches | null;
 };
 
 // ---------------------------------------------------------------------------
@@ -193,6 +199,12 @@ const structureSchema = z.object({
   /** Facultatif : la plupart des semaines n'en proposent aucun. */
   themesProposes: z.array(themeSchema).default([]),
   sources: z.array(sourceSchema),
+  /**
+   * Les causes du bloc « Les marchés par driver », une ligne par instrument. Le modèle n'y tape
+   * aucun chiffre : la variation est écrite par le code (`weeklyChange`). Absent pour une note
+   * qui n'a pas ce bloc.
+   */
+  marchesParDriver: z.array(marcheDriverSchema).default([]),
   /** Texte libre : la création d'un driver reste une décision humaine, jamais un objet émis. */
   driverCandidate: z.string().nullable().default(null),
   redactionNotes: z.string().default(""),
@@ -305,6 +317,8 @@ function invariants(
       }
     }
   }
+
+  invariantsMarches(s.marchesParDriver, vivier.marches ?? null, fm.driverOrder, ctx);
 
   if (s.guets.length > vivier.budgetGuets) {
     ctx.addIssue({

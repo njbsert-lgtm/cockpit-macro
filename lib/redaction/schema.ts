@@ -2,6 +2,7 @@ import { getInstruments } from "@/lib/data";
 import type { RegimeProposition } from "@/lib/types";
 import type { ContextePaquet } from "./context";
 import type { ThemePropose, Vivier } from "./sortie-mixte";
+import { cleLigne, type MarcheDriver } from "./marches";
 
 /**
  * La forme interne du brouillon, et le vivier qui borne ce que le modèle peut citer.
@@ -71,6 +72,12 @@ export type Brouillon = {
     echeance: string | null;
     sourceAttendue: string[];
   }>;
+  /**
+   * Les causes du bloc « Les marchés par driver » (hebdos à partir de la S45), déjà complétées par
+   * le code : une entrée par driver de `driverOrder` qui pilote un instrument, une ligne par
+   * instrument. Absent d'un brouillon antérieur ou d'une note qui n'a pas ce bloc.
+   */
+  marchesParDriver?: MarcheDriver[];
   driverCandidate: string | null;
   redactionNotes: string;
 };
@@ -111,5 +118,24 @@ export function construireVivier(paquet: ContextePaquet, blocsAttendus: string[]
     catalogueInstrumentIds: getInstruments().map((i) => i.id),
     placesThemes: paquet.placesThemes,
     themesExistantsIds: paquet.themesExistants.map((t) => t.id),
+    marches: vivierMarches(paquet),
   };
+}
+
+/**
+ * Ce que le modèle peut dire dans « Les marchés par driver » : les instruments de chaque driver
+ * (`Driver.instrumentRefs`), ceux qui n'ont pas de variation cette semaine (aucune cause à
+ * proposer), et les émetteurs de la fiche. `null` si la note n'a pas ce bloc.
+ */
+function vivierMarches(paquet: ContextePaquet): Vivier["marches"] {
+  if (!paquet.marchesParDriver) return null;
+  const instrumentsParDriver = new Map<string, string[]>();
+  const sansMesure = new Set<string>();
+  for (const d of paquet.marchesParDriver) {
+    instrumentsParDriver.set(d.driverId, d.instruments.map((i) => i.instrumentId));
+    for (const i of d.instruments) {
+      if (i.mesure.status !== "ok") sansMesure.add(cleLigne(d.driverId, i.instrumentId));
+    }
+  }
+  return { instrumentsParDriver, sansMesure, emetteurs: paquet.ficheNotion?.sources ?? [] };
 }

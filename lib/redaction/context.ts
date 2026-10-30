@@ -19,6 +19,7 @@ import {
   type BilanGuets,
 } from "@/lib/guets";
 import { isoWeekOf, isoWeekBounds } from "@/lib/iso-week";
+import type { MarcheContexte } from "./marches";
 
 /**
  * Le paquet de contexte — **seul horizon du modèle**.
@@ -115,6 +116,14 @@ export type ContextePaquet = {
   /** Le calendrier de la semaine à venir — on ne pose pas un guet sur un événement oublié. */
   echeancesSemaine: Echeance[];
   trigger: string | null;
+  /**
+   * « Les marchés par driver » : pour chaque driver, les instruments qu'il pilote avec leur
+   * variation de la semaine (`weeklyChange`, déjà calculée — jamais recalculée ici) et les deux
+   * dates de clôture. Tous les drivers actifs : `driverOrder` est écrit par le modèle, après le
+   * paquet. `null` pour une note qui n'a pas ce bloc (avant la S45, ou une spéciale) ; absent d'un
+   * paquet persisté avant J1.3.
+   */
+  marchesParDriver?: MarcheContexte[] | null;
 };
 
 /**
