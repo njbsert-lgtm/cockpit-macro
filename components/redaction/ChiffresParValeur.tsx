@@ -28,7 +28,7 @@ function Phrase({ occurrence }: { occurrence: OccurrenceValeur }) {
     <>
       {morceaux.map((m, i) =>
         m.marque ? (
-          <mark key={i} className="rounded-sm bg-k-choc/25 px-0.5 font-semibold text-encre">
+          <mark key={i} className="rounded-rb bg-k-choc/25 px-0.5 font-semibold text-encre">
             {m.texte}
           </mark>
         ) : (

@@ -83,6 +83,9 @@ Trois rayons, aucune exception.
 - `--rb` pour ce qui **déclenche une action** : boutons, champs.
 - `--rc` pour ce qui **contient** : cartes, blocs, panneaux.
 
+- **Surlignage en ligne** (un chiffre cité, un `<mark>` du portail) : `--rb`. Il désigne un nombre
+  que l'on ouvre ou que l'on tranche, il ne contient rien et ne change pas de vue.
+
 Un lecteur apprend ce code sans qu'on le lui explique, à condition qu'il ne souffre
 aucune exception. N'introduisez pas de quatrième rayon — un angle droit en est un.
 
