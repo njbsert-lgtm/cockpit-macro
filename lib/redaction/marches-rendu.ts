@@ -25,7 +25,12 @@ export const SANS_LIEN_CLAIR = "Sans lien clair avec ce driver";
  * parmi ceux de la fiche).
  */
 export type DecisionLigne = {
-  action: "accepter" | "corriger" | "refuser";
+  /**
+   * `retirer` ne vaut que pour une ligne **sans cause proposée** à laquelle une cause a été ajoutée
+   * de la main : elle revient à « Sans lien clair ». Le magasin ne sait pas effacer, c'est donc une
+   * décision enregistrée — qui ne compte pour rien : ni ligne tranchée, ni pièce de l'authorship.
+   */
+  action: "accepter" | "corriger" | "refuser" | "retirer";
   cause?: string;
   emetteur?: string;
   /** Le canal de transmission de la cause corrigée ; absent : celui de la proposition. */
@@ -46,6 +51,8 @@ export function lignesDuBloc(marches: MarcheDriver[]): Array<{ cle: string; driv
  * du modèle — c'est ce que montre le brouillon, et ce qui bloque tant que rien n'est tranché.
  */
 export function ligneEffective(ligne: LigneMarche, decision: DecisionLigne | undefined): LigneMarche {
+  // « Retirer » ne défait que l'ajout d'un humain : une cause du modèle ne s'écarte que par « refuser ».
+  if (decision?.action === "retirer") return ligne;
   if (decision?.action === "refuser") return { ...ligne, cause: null, emetteur: null, canal: null };
   if (decision?.action === "corriger" && decision.cause?.trim()) {
     const emetteur = decision.emetteur?.trim() || ligne.emetteur;
@@ -66,9 +73,22 @@ export function ligneEffective(ligne: LigneMarche, decision: DecisionLigne | und
 export function authorshipBlocMarches(marches: MarcheDriver[], decisions: DecisionsLignes): Authorship {
   // Une ligne sans cause du modèle n'a aucun texte du modèle à relire (décision d'orchestrateur,
   // J1.4) : elle ne compte que si un humain y a ajouté la sienne.
-  const lignes = lignesDuBloc(marches).filter((l) => l.ligne.cause !== null || decisions[l.cle] !== undefined);
+  //
+  // Cas limites, fixés par `marches-rendu.test.ts` :
+  //  - aucune ligne à cause, aucune décision : `ia-relue` (rien d'écrit par le modèle à relire) ;
+  //  - toutes les causes refusées : `ia-relue` (examinées, écartées) ;
+  //  - une cause ajoutée de la main (décision `corriger` sur une ligne sans cause) : la ligne compte
+  //    et pèse `ia-corrigee` — y compris si elle est seule, le bloc n'étant alors fait que de ce
+  //    qu'un humain a ajouté à un bloc écrit par le code (cas non tranché par le cahier : voir le
+  //    compte rendu J1.4) ;
+  //  - cette cause ajoutée puis retirée (`retirer`) : comme si de rien n'était.
+  const lignes = lignesDuBloc(marches).filter((l) => {
+    const decision = decisions[l.cle];
+    if (decision?.action === "retirer") return l.ligne.cause !== null; // ne défait que l'ajout d'un humain
+    return l.ligne.cause !== null || decision !== undefined;
+  });
   if (lignes.length === 0) return "ia-relue";
-  const actions = lignes.map((l) => decisions[l.cle]?.action);
+  const actions = lignes.map((l) => (decisions[l.cle]?.action === "retirer" ? undefined : decisions[l.cle]?.action));
   if (actions.some((a) => a === undefined)) return "ia";
   if (actions.some((a) => a === "corriger")) return "ia-corrigee";
   return "ia-relue";
@@ -76,7 +96,7 @@ export function authorshipBlocMarches(marches: MarcheDriver[], decisions: Decisi
 
 /** L'authorship d'une ligne seule (pour le portail) : `ia` tant qu'elle n'est pas tranchée. */
 export function authorshipLigne(decision: DecisionLigne | undefined): Authorship {
-  if (!decision) return "ia";
+  if (!decision || decision.action === "retirer") return "ia";
   return decision.action === "corriger" ? "ia-corrigee" : "ia-relue";
 }
 

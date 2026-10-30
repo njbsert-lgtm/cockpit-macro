@@ -105,6 +105,34 @@ describe("les décisions par ligne", () => {
     expect(authorshipBlocMarches([], {})).toBe("ia-relue");
   });
 
+  it("retirer une cause ajoutée de la main : la ligne revient à « Sans lien clair » et ne pèse plus", () => {
+    const sans = MARCHES[0].lignes[1];
+    const ajout = { action: "corriger", cause: "Ma cause.", emetteur: "Zonebourse", canal: "dollar" } as const;
+    expect(ligneEffective(sans, ajout)).toMatchObject({ cause: "Ma cause.", emetteur: "Zonebourse", canal: "dollar" });
+    expect(ligneEffective(sans, { action: "retirer" })).toMatchObject({ cause: null, emetteur: null, canal: null });
+    const t = rendreBlocMarches(MARCHES, CONTEXTE, { "rates/spx": { action: "retirer" } });
+    expect(t).toContain("- **S&P 500** : −2,3 % sur la semaine (du 23/10 au 30/10) ; Sans lien clair avec ce driver.");
+    expect(causesAControler(MARCHES, { "rates/spx": { action: "retirer" } }).corrigees).toBe("");
+    // Sur une cause du modèle, « retirer » ne défait rien (seul « refuser » l'écarte).
+    expect(ligneEffective(ligne, { action: "retirer" })).toEqual(ligne);
+  });
+
+  it("authorship du bloc, cas limites", () => {
+    const sansCause: MarcheDriver[] = [{ driverId: "rates", lignes: MARCHES[0].lignes.map((l) => ({ ...l, cause: null, emetteur: null, canal: null })) }];
+    const ajout = { action: "corriger", cause: "Ma cause.", emetteur: "Zonebourse" } as const;
+    // Aucune ligne à cause, aucune décision : rien à relire.
+    expect(authorshipBlocMarches(sansCause, {})).toBe("ia-relue");
+    // Toutes les causes refusées : examinées, donc relues.
+    expect(authorshipBlocMarches(MARCHES, { "rates/us10y": { action: "refuser" } })).toBe("ia-relue");
+    // Une cause ajoutée de la main compte, même seule ; une fois retirée, plus du tout.
+    expect(authorshipBlocMarches(sansCause, { "rates/spx": ajout })).toBe("ia-corrigee");
+    expect(authorshipBlocMarches(sansCause, { "rates/spx": { action: "retirer" } })).toBe("ia-relue");
+    // Ajout sur une ligne sans cause + cause du modèle non encore tranchée : bloque.
+    expect(authorshipBlocMarches(MARCHES, { "rates/spx": ajout })).toBe("ia");
+    expect(authorshipBlocMarches(MARCHES, { "rates/spx": ajout, "rates/us10y": { action: "accepter" } })).toBe("ia-corrigee");
+    expect(authorshipBlocMarches(MARCHES, { "rates/spx": { action: "retirer" }, "rates/us10y": { action: "accepter" } })).toBe("ia-relue");
+  });
+
   it("le canal corrigé est repris par la ligne effective, sinon celui de la proposition", () => {
     expect(ligneEffective(ligne, { action: "corriger", cause: "Autre.", canal: "dollar" }).canal).toBe("dollar");
     expect(ligneEffective(ligne, { action: "corriger", cause: "Autre." }).canal).toBe("fonction-reaction");

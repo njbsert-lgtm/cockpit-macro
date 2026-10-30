@@ -70,6 +70,16 @@ describe("trancherLigneMarche — une ligne à la fois", () => {
     expect(sauvegarder).toHaveBeenLastCalledWith("2026-S45", "bloc", "ligne:iran/brent", { action: "accepter" });
   });
 
+  it("« retirer » ne vaut que pour une ligne sans cause proposée ; accepter/refuser que pour une cause proposée", async () => {
+    await trancherLigneMarche("2026-S45", "iran/gold", formulaire({ action: "retirer" }));
+    expect(sauvegarder).toHaveBeenLastCalledWith("2026-S45", "bloc", "ligne:iran/gold", { action: "retirer" });
+    sauvegarder.mockClear();
+    await expect(trancherLigneMarche("2026-S45", "iran/brent", formulaire({ action: "retirer" }))).rejects.toThrow(/cause ajoutée à la main/);
+    await expect(trancherLigneMarche("2026-S45", "iran/gold", formulaire({ action: "accepter" }))).rejects.toThrow(/aucune cause/);
+    await expect(trancherLigneMarche("2026-S45", "iran/gold", formulaire({ action: "refuser" }))).rejects.toThrow(/aucune cause/);
+    expect(sauvegarder).not.toHaveBeenCalled();
+  });
+
   it("le canal est corrigeable, validé contre les cinq canaux ; le changer seul est une correction", async () => {
     await expect(
       trancherLigneMarche("2026-S45", "iran/brent", formulaire({ action: "corriger", cause: "Une cause.", canal: "magie" })),

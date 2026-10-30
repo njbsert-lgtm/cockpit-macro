@@ -328,7 +328,7 @@ export async function corrigerPhrase(slug: string, cle: string, formData: FormDa
   revalidateApresDecision(slug);
 }
 
-const ACTIONS_LIGNE = ["accepter", "corriger", "refuser"] as const;
+const ACTIONS_LIGNE = ["accepter", "corriger", "refuser", "retirer"] as const;
 
 /**
  * Tranche **une** ligne du bloc « Les marchés par driver » : accepter la cause proposée, la
@@ -352,6 +352,15 @@ export async function trancherLigneMarche(slug: string, cle: string, formData: F
   if (!etat) throw new Error(`aucun brouillon chargeable pour « ${slug} »`);
   const propose = lignesDuBloc(etat.brouillonPropose.marchesParDriver ?? []).find((l) => l.cle === cle);
   if (!propose) throw new Error(`aucune ligne « ${cle} » dans ce brouillon`);
+
+  // « Retirer » défait l'ajout d'une cause de la main sur une ligne que le modèle laissait sans
+  // cause ; accepter ou refuser n'ont de sens que sur une cause proposée.
+  if (action === "retirer" && propose.ligne.cause !== null) {
+    throw new Error("« retirer » ne vaut que pour une cause ajoutée à la main ; une cause proposée par le modèle se refuse");
+  }
+  if ((action === "accepter" || action === "refuser") && propose.ligne.cause === null) {
+    throw new Error("le modèle n'a proposé aucune cause pour cette ligne : rien à accepter ni à refuser");
+  }
 
   let decision: DecisionLigne = { action: action as DecisionLigne["action"] };
   if (action === "corriger") {
