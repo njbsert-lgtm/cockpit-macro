@@ -69,7 +69,7 @@ Débloqué le 30/10 : J5.2 à J5.5 (J5.1 tranché ; J5.2 attend la chaîne `sche
 - [x] J2.1 Accès administrateur protégé — **en service le 28/10, accueil public nettoyé le 30/10** (Supabase Auth, middleware, gardes, `/connexion`, bouton « Se connecter », liens d'administration déplacés dans le pied des routes protégées). Reste hors dépôt : J9.3a et J9.3b — plateforme
 - [x] J2.2 Accueil /admin : santé des sources et files d'attente — fait le 30/10 (`app/admin`, `lib/admin/files.ts`, lecture seule, « Non mesuré » jamais zéro) — plateforme
 - [ ] J2.3 /redaction → /admin/redaction, avec redirection — plateforme
-- [x] J2.4 /triage → /admin/veille — plateforme (branche `agent/plateforme/J2.4`)
+- [x] J2.4 /triage → /admin/veille — plateforme — fait le 30/10 (`/triage` redirige derrière la garde)
 - [ ] J2.5 Guets et angles morts côté admin ; décider ce qui reste public — plateforme
 - [ ] J2.6 File « À trancher » (table `decisions`) — plateforme
 - [~] J2.7 Audit des pages publiques — **en grande partie fait le 30/10** : E5, E6, E2/E3, E1, puis E8 (retours des fiches), E9 (chiffres cités), E12 (jeton `--voile`), cibles de 44 px par pseudo-élément sans changer la hauteur de page. **E7 fait le 30/10** (sélecteur de zone à panneau : bouton « Zone : France ▾ » de 44 px, onze zones en grille, état dans `?zone=`). Reste : E10 (échelle typographique), E11 (ordre de l'accueil), E13 (emoji : à repérer au rendu, ils viennent des données), E14, T1 — design
@@ -111,7 +111,7 @@ Débloqué le 30/10 : J5.2 à J5.5 (J5.1 tranché ; J5.2 attend la chaîne `sche
 
 ## J7 · Sources et outlooks
 
-- [ ] J7.1 Vue YTD multi-actifs dans Marchés (« non suivi » ligne par ligne) — Bloquant — data (+ design)
+- [x] J7.1 Vue YTD multi-actifs dans Marchés (« non suivi » ligne par ligne) — fait le 30/10 : `/marches?vue=ytd`, `lib/performance-ytd.ts`, aucune moyenne par classe. Reste : validation du bouton « YTD » et de la ligne à deux bornes par design (DESIGN.md) ; base du 31/12 déduite du dernier relevé (pas de `ytdBasisYear`) — data (+ design)
 - [ ] J7.2 Bund et OAT quotidiens, donc spreads quotidiens — data
 - [ ] J7.3 Brent à terme ICE (Twelve Data, à défaut Alpha Vantage, puis ETF BNO signalé) — data
 - [ ] J7.4 10 ans Inde et Chine, Hang Seng — data
