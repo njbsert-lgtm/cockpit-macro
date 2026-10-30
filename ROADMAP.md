@@ -65,12 +65,12 @@ Bloqué par une décision : J1.1 → J1.3, J1.4, J1.5 ; J5.1 → J5.2 à J5.5 ; 
 ## J2 · Back-office /admin
 
 - [x] J2.1 Accès administrateur protégé — **en service le 28/10, accueil public nettoyé le 30/10** (Supabase Auth, middleware, gardes, `/connexion`, bouton « Se connecter », liens d'administration déplacés dans le pied des routes protégées). Reste hors dépôt : J9.3a et J9.3b — plateforme
-- [ ] J2.2 Accueil /admin : santé des sources et files d'attente — plateforme (+ design)
+- [x] J2.2 Accueil /admin : santé des sources et files d'attente — fait le 30/10 (`app/admin`, `lib/admin/files.ts`, lecture seule, « Non mesuré » jamais zéro) — plateforme
 - [ ] J2.3 /redaction → /admin/redaction, avec redirection — plateforme
 - [ ] J2.4 /triage → /admin/veille — plateforme
 - [ ] J2.5 Guets et angles morts côté admin ; décider ce qui reste public — plateforme
 - [ ] J2.6 File « À trancher » (table `decisions`) — plateforme
-- [ ] J2.7 Audit des pages publiques : aucun « non collecté », seed ou statut technique — design
+- [~] J2.7 Audit des pages publiques — **en partie fait le 30/10** : E5 (« Non mesuré » seul), E6 (rayons), E2/E3 (cibles de 44 px), E1 (`loading`, `error`, `not-found` publics). Reste : E7 (sélecteur de zone de Macro, proposition : un bouton « Zone : France ▾ » + panneau), E8 à E13, T1 — design
 
 ## J3 · Modèle analytique
 

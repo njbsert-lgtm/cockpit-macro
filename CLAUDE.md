@@ -32,11 +32,11 @@ Si l'automatisation des données casse, l'analyse doit rester lisible et le site
 - **Zod** pour valider toute réponse d'API externe avant insertion
 - **Recharts** pour les graphiques de séries, rien de plus lourd
 
-**Accès administrateur** (J2.1, mis en service le 28/10/2026). `/redaction`, `/triage` et
-`/diagnostic` sont derrière Supabase Auth : un seul compte, lien magique, rôle `admin` posé à la
+**Accès administrateur** (J2.1, mis en service le 28/10/2026). `/admin`, `/redaction`,
+`/triage` et `/diagnostic` sont derrière Supabase Auth : un seul compte, lien magique, rôle `admin` posé à la
 main dans `app_metadata` — jamais dans `user_metadata`, que l'utilisateur peut modifier. Le reste
 du site est public : le « mot de passe Vercel » prévu à l'origine n'a jamais été mis en place.
-- `middleware.ts` à **liste positive** (les seules trois routes), jamais d'exclusions : le cron
+- `middleware.ts` à **liste positive** (les seules quatre routes), jamais d'exclusions : le cron
   `/api/cron/collect`, protégé par son `Bearer`, ne peut pas être intercepté.
 - Non autorisé → **404** au corps identique à une adresse inconnue ; échec fermé si Supabase est
   injoignable. Garde aussi dans chaque `layout.tsx` protégé et en première ligne de chaque Server
