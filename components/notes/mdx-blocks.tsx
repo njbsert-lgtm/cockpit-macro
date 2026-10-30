@@ -4,6 +4,8 @@ import { BLOCK_TITLES, type BlockName } from "@/lib/notes";
 import { BLOCK_EMOJI } from "@/lib/note-blocks";
 import type { Guet, Note, VeilleItem } from "@/lib/types";
 import { GuetLine } from "./GuetLine";
+import { lireBlocMarches } from "./lecture-marches";
+import { TableauMarches } from "./TableauMarches";
 import { formatDateShort } from "@/lib/format";
 
 type NoteSource = { label: string; url: string };
@@ -274,11 +276,16 @@ export function createNoteMdxComponents(
     CeQueJavaisMalLu: (p: BlockProps) => (
       <Block name="CeQueJavaisMalLu" {...props("CeQueJavaisMalLu")} {...p} />
     ),
-    // Rendu provisoire (J1.3) : le bloc est du texte rédigé par le code ; sa présentation en
-    // tableau relève de J1.4 (design).
-    LesMarchesParDriver: (p: BlockProps) => (
-      <Block name="LesMarchesParDriver" {...props("LesMarchesParDriver")} {...p} />
-    ),
+    // Le bloc est du texte écrit par le code ; on le lit pour le dessiner en tableau. Une forme
+    // qu'on ne reconnaît pas retombe sur le rendu en liste, jamais sur une ligne tronquée.
+    LesMarchesParDriver: (p: BlockProps) => {
+      const groupes = lireBlocMarches(p.children);
+      return (
+        <Block name="LesMarchesParDriver" {...props("LesMarchesParDriver")}>
+          {groupes ? <TableauMarches groupes={groupes} /> : p.children}
+        </Block>
+      );
+    },
     CeQueJeSurveille: (p: BlockProps) => (
       <CeQueJeSurveilleBlock
         guets={guets}

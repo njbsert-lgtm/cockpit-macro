@@ -15,7 +15,7 @@ import { PortailContexte } from "./PortailContexte";
 import { ValidationPill } from "./ValidationPill";
 
 export type GesteVue = Geste & {
-  type: "regime" | "texte" | "guets";
+  type: "regime" | "texte" | "marches" | "guets";
   /** Nombre de sujets (sous-titres) du bloc, quand il en a. */
   sujets: number | null;
   authorship: Authorship | null;

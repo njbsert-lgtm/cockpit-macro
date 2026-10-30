@@ -98,8 +98,10 @@ describe("les décisions par ligne", () => {
     const toutes = { "rates/us10y": { action: "accepter" }, "rates/spx": { action: "refuser" }, "rates/bund": { action: "accepter" } } as const;
     expect(authorshipBlocMarches(MARCHES, { ...toutes })).toBe("ia-relue");
     expect(authorshipBlocMarches(MARCHES, { ...toutes, "rates/spx": { action: "corriger", cause: "x", emetteur: "Eurostat" } })).toBe("ia-corrigee");
-    // Une ligne jamais ouverte : le bloc reste `ia`, donc la publication est bloquée.
-    expect(authorshipBlocMarches(MARCHES, { "rates/us10y": { action: "accepter" } })).toBe("ia");
+    // Une cause proposée jamais ouverte : le bloc reste `ia`, donc la publication est bloquée.
+    expect(authorshipBlocMarches(MARCHES, {})).toBe("ia");
+    // Les lignes sans cause du modèle n'ont rien à relire : elles ne comptent pas (J1.4).
+    expect(authorshipBlocMarches(MARCHES, { "rates/us10y": { action: "accepter" } })).toBe("ia-relue");
     expect(authorshipBlocMarches([], {})).toBe("ia-relue");
   });
 

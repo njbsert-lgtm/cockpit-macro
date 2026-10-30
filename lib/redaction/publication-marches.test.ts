@@ -119,21 +119,21 @@ function note(b: Brouillon) {
 const CAUSE = "La frappe sur le terminal réduit l'offre disponible";
 
 describe("conditions de publication — chaque ligne du bloc marchés est tranchée", () => {
-  it("le bloc 4 n'est plus une condition ; chaque ligne jamais ouverte bloque", () => {
+  it("le bloc 4 n'est plus une condition ; chaque ligne où le modèle propose une cause bloque", () => {
     const b = brouillon(CAUSE);
     const codes = conditionsManquantes(note(b), b, decisionsVides()).map((m) => m.code);
     expect(codes).not.toContain("bloc4");
     expect(codes).toContain("ligne:iran/brent");
-    // Même la ligne qui dit déjà « Sans lien clair » se tranche : la validation coûte à chaque ligne.
-    expect(codes).toContain("ligne:iran/gold");
+    // Une ligne sans cause (« donnée absente », « Sans lien clair ») ne porte aucun texte du modèle :
+    // elle ne bloque pas (décision d'orchestrateur, J1.4).
+    expect(codes).not.toContain("ligne:iran/gold");
   });
 
   it("tranchée, une ligne ne bloque plus — et les autres conditions ne changent pas", () => {
     const b = brouillon(CAUSE);
     const d: Decisions = { ...decisionsVides(), lignes: { "iran/brent": { action: "accepter" } } };
     const codes = conditionsManquantes(note(b), b, d).map((m) => m.code);
-    expect(codes).not.toContain("ligne:iran/brent");
-    expect(codes).toContain("ligne:iran/gold");
+    expect(codes.filter((c) => c.startsWith("ligne:"))).toEqual([]);
     expect(codes).toContain("regime");
     expect(codes).toContain("guet:2026-s45-g1");
   });
@@ -204,8 +204,23 @@ describe("la note finale", () => {
     const b = brouillon(CAUSE);
     const relues = decisionsCompletes({ "iran/brent": { action: "accepter" }, "iran/gold": { action: "accepter" } });
     expect(matter(assemblerNoteFinale(note(b), relues, "2026-11-08", { brouillon: b, paquet: PAQUET }).mdx).data.authorship.LesMarchesParDriver).toBe("ia-relue");
-    const ouverte = decisionsCompletes({ "iran/brent": { action: "accepter" } });
+    // Une ligne sans cause du modèle (l'or) n'a rien à relire : elle ne change pas l'authorship.
+    const sansLaLigneVide = decisionsCompletes({ "iran/brent": { action: "accepter" } });
+    expect(matter(assemblerNoteFinale(note(b), sansLaLigneVide, "2026-11-08", { brouillon: b, paquet: PAQUET }).mdx).data.authorship.LesMarchesParDriver).toBe("ia-relue");
+    // Une cause proposée, jamais ouverte : le bloc reste `ia`.
+    const ouverte = decisionsCompletes({});
     expect(matter(assemblerNoteFinale(note(b), ouverte, "2026-11-08", { brouillon: b, paquet: PAQUET }).mdx).data.authorship.LesMarchesParDriver).toBe("ia");
+  });
+
+  it("une cause ajoutée à la main sur une ligne sans cause est publiée, et le bloc devient ia-corrigee", () => {
+    const b = brouillon(CAUSE);
+    const d = decisionsCompletes({
+      "iran/brent": { action: "accepter" },
+      "iran/gold": { action: "corriger", cause: "Les achats des banques centrales soutiennent l'or", emetteur: "Eurostat" },
+    });
+    const fichier = matter(assemblerNoteFinale(note(b), d, "2026-11-08", { brouillon: b, paquet: PAQUET }).mdx);
+    expect(fichier.data.authorship.LesMarchesParDriver).toBe("ia-corrigee");
+    expect(fichier.content).toContain("cause : Les achats des banques centrales soutiennent l'or (Eurostat).");
   });
 
   it("refuse de reconstruire le bloc sans le brouillon proposé ni le paquet", () => {
