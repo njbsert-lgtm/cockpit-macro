@@ -177,8 +177,10 @@ chaque bloc force un jugement. Le gabarit MDX doit refuser de compiler si un blo
    on ne retient que les surprises et on surestime le changement.
 3. **Révision des scénarios.** Pour chaque famille, la vraisemblance a-t-elle bougé, et
    pourquoi ? Une révision sans justification écrite est interdite.
-4. **Ce que j'avais mal lu.** Bloc obligatoire, même vide. C'est ce qui transforme le fil
-   en instrument d'apprentissage plutôt qu'en pile de notes.
+4. **Ce que j'avais mal lu** *(S38 à S44)* — **remplacé à partir de la S45 par « Les marchés par
+   driver »** (voir plus bas, décision du 30/10/2026). Bloc obligatoire, même vide, jusque-là. C'est
+   ce qui transformait le fil en instrument d'apprentissage plutôt qu'en pile de notes ; les notes
+   déjà publiées le gardent, rien n'est réécrit.
 5. **Ce que je surveille d'ici la prochaine note.** Trois éléments maximum, chacun avec
    le signal précis qui le validerait ou l'invaliderait.
 
@@ -201,6 +203,62 @@ donnée automatique n'est plus là, exactement le principe directeur du cahier.
 carte « nom de bloc → sources » : on doit pouvoir savoir de quelle source vient telle
 affirmation, ce qu'une liste unique en pied de note ne dit pas. La validation refuse une source
 rattachée à un bloc que la note ne porte pas — elle ne s'afficherait nulle part.
+
+### Les marchés par driver — le bloc qui remplace « Ce que j'avais mal lu » (J1, décidé le 30/10/2026)
+
+**Décision de Nicolas, contre l'avis de l'advisor et de l'orchestrateur, qui proposaient de garder
+une ligne obligatoire de sa main.** La note n'a donc plus de bloc entièrement écrit à la main.
+Le principe « la validation doit coûter quelque chose » ne disparaît pas : il se déplace sur
+**chaque ligne** du nouveau bloc, qui se tranche une à une, jamais en bloc (voir plus bas).
+
+**Transition.** Les notes S38 à S44 portent « Ce que j'avais mal lu » (`whatIGotWrong`) ; elles ne
+sont pas réécrites. Le brouillon de la S44, produit le samedi 31/10, garde l'ancienne structure. Le
+nouveau bloc s'applique **à partir de la S45** : jusque-là, le code, le portail et les conditions de
+publication restent ceux décrits dans la suite de ce cahier. Une note hebdomadaire a toujours cinq
+blocs obligatoires, plus `specialsRecap` et `leFilDeLaSemaine` quand ils s'appliquent ; une spéciale
+garde ses trois blocs.
+
+**Ce que le bloc dit.** Pour chaque driver touché par la note (`driverOrder`), ce que les marchés ont
+fait **cette semaine** sur les instruments que ce driver pilote (`Driver.instrumentRefs`), et **ce qui,
+dans la fiche, l'explique** — ou l'aveu qu'aucun lien n'est établi. Un tableau lisible en dix secondes,
+pas un texte : « Taux directeurs — US 10 ans : +12 bps sur la semaine (du 23/10 au 30/10) ; cause :
+… (émetteur) ».
+
+**Qui écrit quoi — la frontière qui compte.**
+- **Le chiffre est écrit par le code, jamais par le modèle.** Sens et ampleur viennent de
+  `weeklyChange` (`lib/performance.ts`) : recalculés depuis les clôtures de début et de fin en base,
+  avec leurs deux dates, en **points de base pour les taux et les spreads**, en pourcentage pour le
+  reste. Le modèle ne tape aucun nombre de ce bloc : il ne peut donc pas en reprendre un de la fiche
+  ni en altérer un.
+- **Le modèle propose, pour chaque instrument, une cause** — une phrase tirée de la fiche — **ou
+  « Sans lien clair avec ce driver »**, qui est une réponse admise et préférable à un lien forcé. Une
+  cause porte **l'émetteur nommé** (régime B : attribution obligatoire) et passe par l'un des cinq
+  canaux de transmission ; un nombre qu'elle citerait reste soumis au contrôle des chiffres. Aucune
+  cause n'est inventée : sans fiche pour la semaine, toutes les lignes disent « Sans lien clair ».
+- **Aucune moyenne ni agrégat par classe d'actifs** : la liste est instrument par instrument. Une
+  classe sans instrument collecté pour ce driver ne produit pas de ligne inventée ; un instrument
+  non collecté ou dont une clôture manque est écrit « non suivi » ou « donnée absente au JJ/MM » —
+  jamais un tiret ni un zéro.
+- **Hors périmètre** : aucune recommandation d'investissement, aucune prévision.
+
+**Forme de données.** Le bloc n'est pas du texte libre : le modèle remplit, dans la section JSON de sa
+réponse, `marchesParDriver: [{ driverId, lignes: [{ instrumentId, cause: string | null, emetteur:
+string | null, canal: VeilleChannel | null }] }]`, validé par Zod contre le paquet (un identifiant
+inconnu bloque). Le corps MDX du bloc est **reconstruit par le code** depuis ces lignes et
+`weeklyChange`, comme l'ordre canonique du reste de la note. Le sous-titre de chaque driver est son
+nom (« ### Taux directeurs »).
+
+**Validation, ligne par ligne.** Dans `/redaction`, chaque ligne s'accepte, se corrige (la cause) ou
+se refuse **individuellement** ; aucune n'est cochée par défaut, aucun bouton ne les accepte toutes.
+Une ligne acceptée telle quelle porte `ia-relue`, corrigée `ia-corrigee` ; l'`authorship` du bloc
+s'en déduit comme pour les guets, et une ligne jamais ouverte (`ia`) bloque la publication. **La
+condition « le bloc 4 est renseigné » est remplacée par « chaque ligne du bloc marchés a été
+tranchée »** ; les autres conditions de publication ne changent pas.
+
+**Ce que ce bloc ne remplace pas.** « Ce qui a changé » compare la lecture ; ce bloc compare les
+prix. Il ne dit pas si Nicolas avait raison — c'est ce que perd la note en abandonnant « Ce que j'avais
+mal lu ». Les guets et la trajectoire des scénarios restent les instruments de ce retour sur soi ; si
+le manque se fait sentir, c'est ici qu'on le rétablira, par une décision écrite.
 
 ### Rédaction assistée : ce que le modèle écrit, ce qui reste humain
 
