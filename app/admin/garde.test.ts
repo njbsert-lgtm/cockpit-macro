@@ -77,3 +77,18 @@ describe("garde de /admin/veille (ex-/triage)", () => {
     expect(() => lire("../triage/actions.ts")).toThrow();
   });
 });
+
+describe("garde de /admin/decisions", () => {
+  it("la page garde avant toute lecture, le layout /admin aussi", () => {
+    expect(lire("layout.tsx")).toMatch(/await exigerAdminPage\(\)/);
+    const source = lire("decisions/page.tsx");
+    const garde = source.indexOf("await exigerAdminPage()");
+    expect(garde).toBeGreaterThan(-1);
+    expect(garde).toBeLessThan(source.indexOf("await lireDecisions()"));
+  });
+
+  it("la page n'est pas un composant client et le pied d'administration y mène", () => {
+    expect(lire("decisions/page.tsx")).not.toMatch(/["']use client["']/);
+    expect(lire("../../components/admin/BarreAdmin.tsx")).toMatch(/href="\/admin\/decisions"/);
+  });
+});
