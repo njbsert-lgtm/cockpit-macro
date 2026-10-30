@@ -67,6 +67,8 @@ describe("estAdmin", () => {
 
 describe("estRouteProtegee", () => {
   it("couvre les routes d'administration et leurs sous-pages, rien d'autre", () => {
+    expect(estRouteProtegee("/admin")).toBe(true);
+    expect(estRouteProtegee("/administration")).toBe(false);
     expect(estRouteProtegee("/redaction")).toBe(true);
     expect(estRouteProtegee("/redaction/2026-S43")).toBe(true);
     expect(estRouteProtegee("/triage")).toBe(true);

@@ -14,6 +14,7 @@ export function BarreAdmin({ session }: { session: SessionAdmin }) {
   return (
     <div className="mx-auto max-w-colonne px-4.5 pb-7 md:max-w-content md:px-6">
       <nav aria-label="Administration" className="flex flex-wrap items-center gap-2">
+        <NavLink href="/admin">Accueil</NavLink>
         <NavLink href="/redaction">Rédaction</NavLink>
         <NavLink href="/triage">Triage</NavLink>
         <NavLink href="/diagnostic">Diagnostic</NavLink>

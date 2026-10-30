@@ -22,7 +22,7 @@ import { contournementLocal, estAdmin, ROUTE_INTROUVABLE } from "@/lib/auth/regl
  */
 
 export const config = {
-  matcher: ["/redaction/:path*", "/triage/:path*", "/diagnostic/:path*"],
+  matcher: ["/admin/:path*", "/redaction/:path*", "/triage/:path*", "/diagnostic/:path*"],
 };
 
 const AUTH_TIMEOUT_MS = 8_000;
