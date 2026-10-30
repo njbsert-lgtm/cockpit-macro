@@ -56,7 +56,7 @@ Bloqué par une décision : J1.1 → J1.3, J1.4, J1.5 ; J5.1 → J5.2 à J5.5 ; 
 
 - [x] J1.1 Spécifier le bloc — **tranché le 30/10 par Nicolas** : « Les marchés par driver » **remplace** « Ce que j'avais mal lu » à partir de la S45 ; chiffres écrits par le code (`weeklyChange`), cause proposée par le modèle avec émetteur, « sans lien clair » admis, validation ligne par ligne. Spécification dans `CLAUDE.md` — nicolas
 - [x] J1.2 Variations hebdo par classe d'actifs (même calcul que J7.1) — fait le 30/10 : `weeklyChange` / `weeklyChanges` dans `lib/performance.ts`, par instrument, sans agrégat de classe ; J7.1 et J1.3 les réutilisent, sans second calcul — data
-- [ ] J1.3 Pipeline de rédaction : prompt, paquet de contexte, contrôle des chiffres — notes
+- [x] J1.3 Pipeline de rédaction du bloc « Les marchés par driver » — fait le 30/10 (six paliers, `agent/notes/J1.3`) : structure d'une hebdo versionnée par semaine ISO (`MARCHES_PAR_DRIVER_A_PARTIR_DE = 2026-S45`, notes S38 à S44 inchangées, prompt système S44 identique à l'octet près), schéma Zod, paquet, prompt, rendu MDX par le code, logique de validation ligne par ligne. **Jamais exercé sur une vraie fiche** : `note:draft --dry-run` sur la S45 reste à faire (J1.5) — notes
 - [ ] J1.4 Composant de note et rendu mobile ; amender `CLAUDE.md` et `DESIGN.md` — design
 - [ ] J1.5 Bascule à partir de la note suivante (S38–S43 gardent l'ancien bloc) — notes
 - [~] J1.6 Bilan automatique des guets échus — **noyau fait le 30/10** (`bilanGuets` dans `lib/guets.ts`, champ `bilanGuets` du paquet, absent du prompt et du MDX publié). Reste : l'affichage dans le portail (en tête du bloc 5), à valider par Nicolas — notes + design
