@@ -793,6 +793,7 @@ des **seuils objectifs**, écrits dans la configuration, pas à une impression.
 | **Brent** | ±8 % | 2 séances glissantes |
 | **Inflation sous-jacente publiée** | écart ≥ 0,3 pt au consensus | à la publication |
 | **Banque centrale majeure** | décision non anticipée ou changement de biais explicite | à l'annonce |
+| **Taux directeur Fed, BCE, BoE, BoJ** | toute variation du taux collecté (un palier franchi, quel que soit son sens et sa taille) *(décidé le 30/10)* | à la collecte suivant la décision |
 | **Scénarios** | bascule de la branche dominante d'un driver | à la révision |
 | **Géopolitique** | début ou fin d'une guerre, cessez-le-feu majeur, ou modification d'un flux physique : fermeture, embargo appliqué, saisie | à l'événement |
 | **Résultats d'une des dix premières capitalisations mondiales** | publication des résultats, avec réaction du titre ≥ 5 % à la séance suivante **ou** résolution d'un guet ouvert *(critère proposé le 30/10, à valider)* | à la publication |
@@ -806,6 +807,7 @@ précisions de mise en œuvre :
   **dormantes** jusqu'à ce qu'une source existe (J7.6). Le Hang Seng n'a aucune source collectée, et les
   trois indices européens passent par un ETF de repli : la règle s'évalue sur ce qui est collecté, et
   le dit.
+- **Les décisions des banques centrales sont surveillées au-delà de la Fed** *(Nicolas, 30/10)*. Les quatre taux directeurs sont des indicateurs macro collectés en palier (le moteur d'alertes cible aujourd'hui des instruments : l'étendre aux indicateurs est le travail de J5.8) (`us-policy-rate`, `ez-policy-rate`, `uk-policy-rate`, `jp-policy-rate`) : un changement de palier se détecte sans consensus, donc sans règle dormante, et déclenche l'annonce. Les dates des réunions vont dans `config/calendrier-drivers.ts`. Tant qu'aucun driver ne porte BCE, BoE et BoJ, ces échéances sont rattachées à `rates` — un compromis, à remplacer par un driver « banques centrales » via le circuit J3.3.
 - **Un instrument sans driver n'a pas d'alerte.** Euro Stoxx 50, FTSE 100, CAC 40, Nikkei 225, Hang Seng
   et le spread OAT − Bund ne sont piloté par aucun driver : un franchissement n'aurait aucun driver
   auquel s'attacher (« un guet sans driver n'a pas de sens »). Ils s'activent quand un driver les porte
