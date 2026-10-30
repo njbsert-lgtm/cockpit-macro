@@ -225,6 +225,30 @@ alter table redaction_decisions drop constraint if exists redaction_decisions_ki
 alter table redaction_decisions add constraint redaction_decisions_kind_check
   check (kind in ('bloc', 'guet', 'revision', 'tendance', 'bloc4', 'regime', 'theme', 'chiffre'));
 
+-- `ligne` : une ligne du bloc « Les marchés par driver » (J1.3), tranchée une à une. Même
+-- patron : on retire la contrainte puis on la repose élargie ; rejouable sans effet.
+-- Retour arrière (seulement si aucune ligne `ligne` n'existe) : rejouer la contrainte
+-- ci-dessus sans `'ligne'`, après `delete from redaction_decisions where kind = 'ligne';`.
+alter table redaction_decisions drop constraint if exists redaction_decisions_kind_check;
+alter table redaction_decisions add constraint redaction_decisions_kind_check
+  check (kind in ('bloc', 'guet', 'revision', 'tendance', 'bloc4', 'regime', 'theme', 'chiffre', 'ligne'));
+
+-- File « À trancher » (J2.6) : les décisions que Nicolas doit prendre, formulées pour un non-
+-- développeur. `id` est la référence de la feuille de route (ex. 'J3.3'). `bloque` liste les
+-- tâches qui attendent la réponse. Contrairement à `redaction_decisions`, la table n'est PAS
+-- lisible par la clé anonyme : lecture et écriture par la clé de service seulement (voir plus bas).
+create table if not exists decisions (
+  id          text primary key,
+  question    text not null,
+  recommandation text,
+  bloque      text[] not null default '{}',
+  statut      text not null default 'ouverte' check (statut in ('ouverte', 'tranchee', 'abandonnee')),
+  reponse     text,
+  tranchee_le timestamptz,
+  created_at  timestamptz not null default now(),
+  updated_at  timestamptz not null default now()
+);
+
 -- ---------------------------------------------------------------------------
 -- Sécurité
 -- ---------------------------------------------------------------------------
@@ -241,6 +265,8 @@ alter table veille_cursor      enable row level security;
 alter table veille_health      enable row level security;
 alter table brouillons_contexte  enable row level security;
 alter table redaction_decisions  enable row level security;
+-- `decisions` : RLS activé et AUCUNE politique, donc fermée à la clé anonyme.
+alter table decisions            enable row level security;
 
 drop policy if exists observations_read       on observations;
 drop policy if exists macro_observations_read on macro_observations;
@@ -285,6 +311,11 @@ grant usage on schema public to anon, authenticated, service_role;
 grant select on observations, macro_observations, macro_indicators, series_health, veille_items,
   brouillons_contexte, redaction_decisions
   to anon, authenticated;
+
+-- `decisions` n'est jamais lisible par la clé anonyme. Les réglages par défaut de Supabase
+-- accordent des droits aux rôles anon et authenticated sur toute nouvelle table : on les retire
+-- explicitement (sans effet si déjà retirés).
+revoke all privileges on decisions from anon, authenticated;
 
 -- La clé de service écrit : c'est elle, et elle seule, que le cron utilise.
 grant all privileges on all tables in schema public to service_role;

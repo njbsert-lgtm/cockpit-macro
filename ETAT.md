@@ -364,6 +364,44 @@ note, chiffres non conformes surlignés avec bulle (garder / corriger), barre d'
 geste par occurrence. Seule la publication reste conditionnée. Faux positifs du contrôle des
 chiffres relevés sur la S43 : issue #2, non corrigés. La S43 a été publiée depuis ce portail le 26/10 (commit `754eea8`).
 
+## À faire par Nicolas dans Supabase — table `decisions` et type `ligne` (J2.6, 30/10/2026)
+
+Deux changements de base de données sont prêts dans `supabase/schema.sql` ; **rien ne change tant
+que ce bloc n'est pas exécuté**. Il est sans risque : on peut le rejouer autant de fois qu'on veut,
+il ne supprime aucune donnée.
+
+1. Ouvrir le projet sur supabase.com, puis, dans le menu de gauche, **SQL Editor** (icône `>_`).
+2. Cliquer sur **New query** (nouvelle requête).
+3. Copier le bloc ci-dessous en entier (du premier `create` au dernier `;`) et le coller dans la zone de texte.
+4. Cliquer sur **Run** (en bas à droite, ou Ctrl+Entrée).
+5. Attendre « Success. No rows returned » : c'est le message attendu. Une erreur en rouge : ne rien
+   modifier, copier son texte à l'orchestrateur.
+6. Vérifier : menu **Table Editor** ; la table `decisions` doit apparaître, vide, avec un cadenas
+   (RLS actif).
+
+```sql
+create table if not exists decisions (
+  id          text primary key,
+  question    text not null,
+  recommandation text,
+  bloque      text[] not null default '{}',
+  statut      text not null default 'ouverte' check (statut in ('ouverte', 'tranchee', 'abandonnee')),
+  reponse     text,
+  tranchee_le timestamptz,
+  created_at  timestamptz not null default now(),
+  updated_at  timestamptz not null default now()
+);
+alter table decisions enable row level security;
+revoke all privileges on decisions from anon, authenticated;
+grant all privileges on decisions to service_role;
+
+alter table redaction_decisions drop constraint if exists redaction_decisions_kind_check;
+alter table redaction_decisions add constraint redaction_decisions_kind_check
+  check (kind in ('bloc', 'guet', 'revision', 'tendance', 'bloc4', 'regime', 'theme', 'chiffre', 'ligne'));
+```
+
+Retour arrière si besoin : `drop table if exists decisions;` (la contrainte `ligne` est inoffensive).
+
 ## Décisions récentes (19/10/2026)
 
 - **Brent → « Brent physique ».** FRED `DCOILBRENTEU` est le spot physique de l'EIA, pas le
