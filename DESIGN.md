@@ -398,6 +398,29 @@ concerné en pastille. Panneau `--repos`.
 N'apparaît que dans le portail, au-dessus du bloc 5. Ce n'est pas un contenu de lecture :
 c'est un rappel au moment d'écrire, pour qu'on ne pose pas un guet sur un événement oublié.
 
+### Tableau de marché d'un driver
+
+Le bloc « Les marchés par driver » (à partir de la S45). **Une carte par driver** — rayon `--rc`,
+bordure `--trait`, fond `--page`, lignes séparées par `--trait` — précédée de son sous-titre `###`
+(le nom du driver, 15.5px poids 700 : le motif des blocs de jugement). Aucun aplat, aucune bande.
+
+Une ligne = un instrument, padding 10px 14px :
+1. à gauche le **libellé** (14.5px poids 600, `--encre`), à droite la **variation** : signe écrit
+   (`+12 bps`, `−2,3 %`), 15px poids 600, `--hausse` / `--baisse` — **la couleur est sur le chiffre
+   seulement**, un mouvement nul reste en `--encre` ;
+2. les **deux dates de clôture** (« du 23/10 au 30/10 », 11px `--tenu`) : tout chiffre affiche sa date ;
+3. la **cause** en corps de carte (12.5px `--doux`) et son **émetteur nommé** après un tiret
+   (11px `--tenu`) ; sans cause, « Sans lien clair avec ce driver » en 11px `--tenu`, **sur la ligne
+   des dates** pour ne pas allonger la carte.
+
+Un instrument sans variation écrit sa raison à la place du chiffre, 12px `--doux` : « non suivi »
+ou « donnée absente au 30/10 ». **Jamais un tiret, jamais un zéro.** Aucune moyenne, aucun total,
+aucun agrégat par classe d'actifs. Pas de pastille de canal sur la note publiée : le canal de
+transmission est un outil de validation (portail), pas une information de lecture.
+
+Le tableau est dessiné d'après le texte du bloc que le code écrit (`lecture-marches.ts`) ; une ligne
+qu'il ne reconnaît pas fait revenir tout le bloc à la liste Markdown, jamais à une ligne tronquée.
+
 ### Badge d'authorship
 
 L'**étiquette** de la carte de driver : fond `--repos`, rayon `--rp`, capitales 9.5px poids
@@ -691,10 +714,14 @@ Desktop : la colonne de lecture est limitée à 640px.
 | Ce qui s'est confirmé | ✅ |
 | Révision des scénarios | 🔀 |
 | Ce que j'avais mal lu | ✏️ |
+| Les marchés par driver | 📊 |
 | Ce que je surveille | 👁️ |
 | Récap des spéciales | 📎 |
 | Le fil de la semaine | 🧵 |
 | Infirmé si (guet) | ⚠️ |
+
+📊 (J1.4) : aucun emoji du vocabulaire ne dit « prix » — ✏️ appartient au bloc que celui-ci remplace
+et reste réservé aux notes S38 à S44 —, et 📊 n'est ni dans le vocabulaire des outlooks ni ailleurs.
 
 Ces emoji ne changent jamais d'une note à l'autre : le bénéfice — sauter directement au bloc
 cherché sans lire les libellés — disparaît dès qu'un emoji change de sens. **Aucun autre emoji

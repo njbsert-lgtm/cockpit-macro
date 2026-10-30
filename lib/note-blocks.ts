@@ -43,7 +43,6 @@ export const BLOCK_EMOJI: Record<BlockName, string> = {
   CeQuiSestConfirme: "✅",
   RevisionDesScenarios: "🔀",
   CeQueJavaisMalLu: "✏️",
-  // Provisoire (J1.3) : l'emoji définitif relève de DESIGN.md (J1.4).
   LesMarchesParDriver: "📊",
   CeQueJeSurveille: "👁️",
   RecapDesSpeciales: "📎",
