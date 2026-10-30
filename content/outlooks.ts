@@ -24,6 +24,7 @@ export const OUTLOOKS: Outlook[] = [
     logo: "/outlooks/logos/jpmorgan.svg",
     title: "2026 Mid-Year Outlook: Promise and Pressure",
     periodCovered: "Mid-year 2026",
+    millesime: 2026,
     // La donnée la plus récente citée dans le document ("Data as of April 20, 2026", répétée
     // sur plusieurs graphiques) — le document ne porte pas de date de publication explicite.
     publishedAt: "2026-04-20",
@@ -189,6 +190,7 @@ export const OUTLOOKS: Outlook[] = [
     logo: "/outlooks/logos/hsbc.svg",
     title: "2026 Mid-Year Global Investment Outlook: Different Worlds",
     periodCovered: "Mid-year 2026",
+    millesime: 2026,
     // Aucune date de publication explicite dans le document ; « Source: HSBC AM, June 2026 »
     // est répété en pied de chaque page. Le fichier porte "Content ID: D073083_v1.0".
     publishedAt: "2026-06-01",
@@ -397,6 +399,7 @@ export const OUTLOOKS: Outlook[] = [
     logo: "/outlooks/logos/bnpparibas.svg",
     title: "Our Investment Themes: 2026 Mid-Year Update",
     periodCovered: "Mid-year 2026",
+    millesime: 2026,
     // Aucune date de publication explicite dans le document ; l'URL source porte le chemin
     // "june-2026" et le copyright interne indique "© BNP Paribas (2026)".
     publishedAt: "2026-06-01",
@@ -592,6 +595,7 @@ export const OUTLOOKS: Outlook[] = [
     // Un rendez-vous trimestriel, pas mi-annuel : le libellé suit le document plutôt que de
     // forcer le format des autres outlooks.
     periodCovered: "Q3 2026",
+    millesime: 2026,
     // Aucune date de publication explicite ; « as of July 7, 2026 » revient sur plusieurs
     // graphiques, la donnée la plus récente citée dans le document.
     publishedAt: "2026-07-07",
@@ -842,6 +846,7 @@ export const OUTLOOKS: Outlook[] = [
     logo: "/outlooks/logos/morganstanley.svg",
     title: "Investment Outlook: Midyear 2026",
     periodCovered: "Mid-year 2026",
+    millesime: 2026,
     // Aucune date de publication explicite ; le 12 mai 2026 est la date la plus précise citée
     // dans le texte (niveau du S&P 500 servant de base à l'objectif à 12 mois).
     publishedAt: "2026-05-12",

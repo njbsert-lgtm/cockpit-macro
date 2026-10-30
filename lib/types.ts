@@ -481,6 +481,8 @@ export type Outlook = {
   auteur?: string;
   title: string; // 'Mid-Year Outlook 2026'
   periodCovered: string; // libellé humain, ex. 'Mid-year 2026' — pas une date ISO stricte
+  /** Année de l'horizon couvert (entier, ex. 2027) : permet de comparer et de trier ; une chaîne ne se trie pas. */
+  millesime: number;
   publishedAt: string; // date ISO de publication, saisie à la main
   summary: string; // le condensé, un ou plusieurs paragraphes
   themes: OutlookTheme[]; // les thèmes de la maison, lus dans le document

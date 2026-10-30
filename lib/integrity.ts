@@ -316,8 +316,27 @@ function checkOutlooks(
   { outlooks }: ContentGraph,
   refs: { driverIds: ReadonlySet<string>; trendIds: ReadonlySet<string> },
 ) {
+  const vus = new Map<string, string>();
   for (const outlook of outlooks) {
     const where = `content/outlooks.ts (${outlook.id})`;
+
+    if (!Number.isInteger(outlook.millesime) || outlook.millesime < 2000 || outlook.millesime > 2100) {
+      throw new IntegrityError(
+        where,
+        `millesime obligatoire : une année entière (ex. 2027), reçu « ${String(outlook.millesime)} »`,
+      );
+    }
+    // Un 2026 et un 2027 d'une même banque coexistent ; deux outlooks de même banque, millésime
+    // et période se mélangeraient dans la liste et la grille des positionnements.
+    const cle = `${outlook.bank}|${outlook.millesime}|${outlook.periodCovered}`;
+    const autre = vus.get(cle);
+    if (autre) {
+      throw new IntegrityError(
+        where,
+        `doublon : « ${outlook.bank} », millésime ${outlook.millesime}, « ${outlook.periodCovered} » existe déjà (${autre})`,
+      );
+    }
+    vus.set(cle, outlook.id);
 
     for (const id of outlook.driverRefs) {
       if (!refs.driverIds.has(id)) {

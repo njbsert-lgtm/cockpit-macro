@@ -109,6 +109,7 @@ function outlook(over: Partial<Outlook> = {}): Outlook {
     bankMonogram: "JPM",
     title: "Mid-Year Outlook 2026",
     periodCovered: "Mid-year 2026",
+    millesime: 2026,
     publishedAt: "2026-07-01",
     summary: "…",
     themes: [{ id: "ia", emoji: "🤖", label: "IA" }],
@@ -512,6 +513,24 @@ describe("la note de test à référence morte", () => {
 });
 
 // ---------------------------------------------------------------------------
+
+describe("millésime — outlook", () => {
+  it("accepte un outlook millésimé", () => {
+    expect(() => checkIntegrity(graph({ outlooks: [outlook()] }))).not.toThrow();
+  });
+  it("refuse un outlook sans millésime", () => {
+    const sans = { ...outlook(), millesime: undefined } as unknown as Outlook;
+    expect(() => checkIntegrity(graph({ outlooks: [sans] }))).toThrow(/millesime obligatoire/);
+  });
+  it("refuse deux outlooks de même banque, millésime et période", () => {
+    const g = graph({ outlooks: [outlook(), outlook({ id: "jpmorgan-bis" })] });
+    expect(() => checkIntegrity(g)).toThrow(/doublon/);
+  });
+  it("accepte un 2026 et un 2027 d'une même banque", () => {
+    const g = graph({ outlooks: [outlook(), outlook({ id: "jpmorgan-mid-2027", millesime: 2027 })] });
+    expect(() => checkIntegrity(g)).not.toThrow();
+  });
+});
 
 describe("références mortes — outlook", () => {
   it("refuse un identifiant en double", () => {
