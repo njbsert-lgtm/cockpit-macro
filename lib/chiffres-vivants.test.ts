@@ -9,6 +9,7 @@ const instruments = [
   { id: "dxy", label: "ETF Indice dollar (DXY)" },
   { id: "brent", label: "Brent" },
   { id: "ndx", label: "Nasdaq 100" },
+  { id: "acwi", label: "MSCI ACWI" },
 ];
 
 describe("instrumentDepuisLibelle", () => {
@@ -125,7 +126,7 @@ describe("socleManquant (J7.19)", () => {
 
   it("ajoute le taux BCE et l'inflation US, en « non suivi » tant que rien n'est collecté", () => {
     const ajoutes = socleManquant([], SOCLE_CHIFFRES_CLES, { instrumentRefs: [] }, catalogue);
-    expect(ajoutes.map((c) => c.indicatorId)).toEqual(["ez-policy-rate", "us-cpi"]);
+    expect(ajoutes.map((c) => c.indicatorId ?? c.label)).toEqual(["ez-policy-rate", "us-cpi", "MSCI ACWI"]);
     expect(ajoutes.every((c) => c.value === "non suivi")).toBe(true);
     const c = construireChiffre({
       chiffre: ajoutes[0],
@@ -146,10 +147,11 @@ describe("socleManquant (J7.19)", () => {
       { instrumentRefs: [] },
       catalogue,
     );
-    expect(ajoutes.map((c) => c.indicatorId)).toEqual(["us-cpi"]);
+    expect(ajoutes.map((c) => c.indicatorId ?? c.label)).toEqual(["us-cpi", "MSCI ACWI"]);
   });
 
-  it("ne porte aucun MSCI World : seul l'ACWI est collecté", () => {
+  it("porte l'ACWI sous son nom, jamais sous celui de MSCI World", () => {
+    expect(SOCLE_CHIFFRES_CLES.some((c) => c.label === "MSCI ACWI" && c.cible.id === "acwi")).toBe(true);
     expect(JSON.stringify(SOCLE_CHIFFRES_CLES).toLowerCase()).not.toContain("world");
   });
 });
