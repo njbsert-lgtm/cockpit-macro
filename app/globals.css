@@ -28,6 +28,9 @@
   /* Point de canal éteint — la seule valeur de gris propre aux pastilles de pied de carte. */
   --color-eteint: #e0e3e5;
 
+  /* Voile d'une feuille modale — encre à 16 %, seul usage : le fond derrière ChiffreSheet. */
+  --color-voile: rgba(18, 22, 26, 0.16);
+
   /* IBM Plex Sans exclusivement — plus de Bricolage Grotesque, plus d'Inter, plus de mono. */
   --font-sans: var(--font-plex-sans), system-ui, -apple-system, sans-serif;
 

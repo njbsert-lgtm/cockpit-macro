@@ -56,7 +56,7 @@ export function ChiffreSheet({ chiffre, onClose }: { chiffre: ChiffreVivant | nu
         type="button"
         aria-label="Fermer"
         tabIndex={-1}
-        className="absolute inset-0 cursor-default bg-[rgba(18,22,26,.16)]"
+        className="absolute inset-0 cursor-default bg-voile"
         onClick={onClose}
       />
       <div

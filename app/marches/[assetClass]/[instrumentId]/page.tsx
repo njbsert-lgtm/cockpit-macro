@@ -56,7 +56,7 @@ export default async function InstrumentPage({
     <div className="mx-auto max-w-colonne md:max-w-content px-4.5 py-7 md:px-6">
       <Link
         href={`/marches?${ASSET_CLASS_PARAM}=${rawClass}&${ZONE_PARAM}=${zone}`}
-        className="mb-4 inline-block text-12 text-encre underline decoration-trait underline-offset-4 hover:decoration-encre"
+        className="relative mb-4 inline-block text-12 text-encre before:absolute before:inset-x-0 before:-inset-y-3.5 before:content-[''] underline decoration-trait underline-offset-4 hover:decoration-encre"
       >
         ← {ASSET_CLASS_LABELS[rawClass]}
       </Link>

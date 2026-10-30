@@ -25,7 +25,7 @@ export function ChiffreCite({
         type="button"
         onClick={() => setOuvert(true)}
         aria-haspopup="dialog"
-        className={`inline rounded-rb border-b-[1.5px] px-0.5 font-semibold text-encre ${classe}`}
+        className={`relative inline rounded-rb before:absolute before:inset-x-0 before:-inset-y-2.5 before:content-['']  border-b-[1.5px] px-0.5 font-semibold text-encre ${classe}`}
       >
         {children}
       </button>
