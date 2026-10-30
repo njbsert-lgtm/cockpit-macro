@@ -41,6 +41,7 @@ du site est public : le « mot de passe Vercel » prévu à l'origine n'a jamais
 - Non autorisé → **404** au corps identique à une adresse inconnue ; échec fermé si Supabase est
   injoignable. Garde aussi dans chaque `layout.tsx` protégé et en première ligne de chaque Server
   Action (Next les rend appelables par POST direct) ; un test les parcourt toutes.
+- `/admin/decisions` (J2.6) : la file « À trancher », table `decisions`, lisible par la seule clé de service — jamais publique.
 - Tout côté serveur, **aucune variable `NEXT_PUBLIC_`** : la clé anonyme lit les brouillons.
   Un test refuse tout composant `"use client"` important Supabase ou la session.
 - `ADMIN_LOCAL=1` n'ouvre que `localhost` en développement ; posée en production ou sur Vercel,

@@ -71,7 +71,7 @@ Débloqué le 30/10 : J5.2 à J5.5 (J5.1 tranché ; J5.2 attend la chaîne `sche
 - [ ] J2.3 /redaction → /admin/redaction, avec redirection — plateforme
 - [x] J2.4 /triage → /admin/veille — plateforme — fait le 30/10 (`/triage` redirige derrière la garde)
 - [ ] J2.5 Guets et angles morts côté admin ; décider ce qui reste public — plateforme
-- [~] J2.6 File « À trancher » (table `decisions`) — table et `'ligne'` dans `redaction_decisions_kind_check` faits le 30/10 (`supabase/schema.sql`) ; **Nicolas doit exécuter le bloc SQL de `ETAT.md`** ; reste l'interface (plateforme) — liste visible une fois connecté seulement (accepté par Nicolas) — plateforme/data
+- [~] J2.6 File « À trancher » (table `decisions`) — table et `'ligne'` dans `redaction_decisions_kind_check` faits le 30/10 (`supabase/schema.sql`) ; **Nicolas doit exécuter le bloc SQL de `ETAT.md`** ; **interface faite le 30/10** (`/admin/decisions`, trancher ou abandonner une décision à la fois, historique replié) ; reste à exécuter le SQL et à l'amorcer (bloc dans `ETAT.md`) — liste visible une fois connecté seulement (accepté par Nicolas) — plateforme/data
 - [~] J2.7 Audit des pages publiques — **en grande partie fait le 30/10** : E5, E6, E2/E3, E1, puis E8 (retours des fiches), E9 (chiffres cités), E12 (jeton `--voile`), cibles de 44 px par pseudo-élément sans changer la hauteur de page. **E7 fait le 30/10** (sélecteur de zone à panneau : bouton « Zone : France ▾ » de 44 px, onze zones en grille, état dans `?zone=`). Reste : E10 (échelle typographique), E11 (ordre de l'accueil), E13 (emoji : à repérer au rendu, ils viennent des données), E14, T1 — design
 
 ## J3 · Modèle analytique

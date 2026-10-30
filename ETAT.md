@@ -441,3 +441,22 @@ Chaque point porte entre crochets la ligne de la feuille de route qui le reprend
     courantes US/JP/CN, solde budgétaire UK, salaires JP et zone euro) ; Bund/OAT et donc les
     spreads seulement en mensuel ; points à 10 ans Inde/Chine au seed ; Hang Seng sans source ;
     INSEE non branchée.
+
+### Remplir la file « À trancher » (facultatif, après le bloc ci-dessus)
+
+Même méthode : SQL Editor, New query, coller, Run. Les questions sont résumées de `ROADMAP.md` ; le champ `bloque` est vide là où je n'ai pas la liste des tâches débloquées. Rejouable sans risque (`on conflict do nothing`). Puis ouvrir `/admin/decisions`.
+
+```sql
+insert into decisions (id, question, recommandation, bloque) values
+ ('JA.4', 'Quel budget de tokens hebdomadaire retenir ?', null, '{}'),
+ ('J3.3', 'Quel circuit de promotion d''un driver (candidat, observation, actif) ?', null, '{}'),
+ ('J6.1', 'Quel périmètre pour l''assistant (explique le mécanisme, refuse le conseil) ?', null, '{J6.2,J6.3,J6.4,J6.5,J6.6,J6.7}'),
+ ('J7.6', 'Que faire des 12 indicateurs non suivis : accepter le trou ou payer ?', null, '{}'),
+ ('J7.16', 'Quel catalogue cible de newsletters chiffrées par driver ?', null, '{}'),
+ ('J7.17', 'Faut-il une boîte dédiée aux newsletters ?', null, '{}'),
+ ('JT.1', 'Quel nom et quel logo en maquette ?', null, '{JT.2}'),
+ ('J8.1', 'Quelle stratégie newsletter ?', null, '{}'),
+ ('J8.3', 'Quel outil d''envoi (UE, API) ?', null, '{}'),
+ ('J9.2', 'Quelle stratégie freemium ?', null, '{}')
+on conflict (id) do nothing;
+```
