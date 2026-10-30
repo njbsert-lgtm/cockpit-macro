@@ -794,6 +794,12 @@ un texte à filet, pour que les deux écrans ne se confondent pas.
 5. **Erreur** — la valeur en `--encre`, puis le point `--baisse` et « dernière valeur connue du
    … · source : … » en 11px. Jamais un tiret, jamais un zéro.
 
+**Au niveau de la route** (`app/loading.tsx`, `app/error.tsx`, `app/not-found.tsx`) : chargement en
+blocs `--repos` à la forme d'une page (titre, cartes) ; erreur et adresse inconnue en panneau vide
+(`--repos`, `--rc`), titre en `--encre`, un seul bouton secondaire (« Réessayer », « Retour aux
+notes »). Côté public, ni message d'exception, ni identifiant, ni statut technique. Le corps du 404
+est le même pour une adresse inconnue et une route protégée refusée.
+
 ---
 
 ## Interaction
