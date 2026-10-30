@@ -11,7 +11,13 @@ import type {
 import { echeancesEntre } from "@/config/calendrier-drivers";
 import type { ThemeObserve } from "@/lib/types";
 import { placesRestantes, type EstCollecte } from "@/lib/themes";
-import { guetsARemonter, partitionnerRemontes, budgetDisponible } from "@/lib/guets";
+import {
+  guetsARemonter,
+  partitionnerRemontes,
+  budgetDisponible,
+  bilanGuets,
+  type BilanGuets,
+} from "@/lib/guets";
 import { isoWeekOf, isoWeekBounds } from "@/lib/iso-week";
 
 /**
@@ -98,6 +104,8 @@ export type ContextePaquet = {
   guetsOuverts: Guet[];
   /** Échéance passée sans résolution. Remontent aussi, avec leur note d'origine. */
   guetsExpires: Guet[];
+  /** Bilan des guets échus depuis la dernière note. Pour le portail ; absent du prompt. */
+  bilanGuets?: BilanGuets;
   /** Combien de guets neufs le modèle peut proposer : trois moins ce qui remonte. */
   budgetGuets: number;
   /** Combien de thèmes neufs le modèle peut proposer sous le plafond de cinq. */
@@ -257,6 +265,11 @@ export function construireContexte(input: {
     guetsExpires: expires,
     placesThemes: placesRestantes(input.themes ?? [], input.estCollecte ?? (() => true), input.dateCible),
     themesExistants: (input.themes ?? []).map((t) => ({ id: t.id, libelle: t.libelle, statut: t.statut })),
+    bilanGuets: bilanGuets(
+      input.notePrecedente?.guets ?? [],
+      input.notePrecedente?.date ?? null,
+      input.dateCible,
+    ),
     budgetGuets: budgetDisponible(remontes),
     echeancesSemaine: echeancesEntre(input.dateCible, semaineSuivante),
     trigger: input.trigger ?? null,
