@@ -8,6 +8,7 @@ import type {
   DriverInput,
   Note,
   Outlook,
+  Prevision,
   ScenarioVersion,
   Trend,
 } from "./types";
@@ -556,5 +557,64 @@ describe("références mortes — outlook", () => {
   it("accepte un outlook qui cite un driver et une tendance réels", () => {
     const g = graph({ outlooks: [outlook({ driverRefs: ["rates"], trendRefs: ["desinflation"] })] });
     expect(() => checkIntegrity(g)).not.toThrow();
+  });
+});
+
+describe("prévisions d'outlook (J7.13)", () => {
+  const base = {
+    id: "p1",
+    outlookId: "jpmorgan-mid-2026",
+    cible: "us10y",
+    unite: "percent" as const,
+    periode: "2026",
+    periodeDeduite: true,
+    pointId: "un",
+    nature: "ponctuelle" as const,
+    valeur: 4.25,
+  };
+  const g = (previsions: Prevision[]) =>
+    graph({
+      outlooks: [outlook({ previsions })],
+      instrumentUnits: new Map([["us10y", "percent"]]),
+      macroUnits: new Map(),
+    });
+
+  it("accepte un outlook sans prévision", () => {
+    expect(() => checkIntegrity(graph({ outlooks: [outlook()] }))).not.toThrow();
+  });
+  it("accepte une prévision valide, ponctuelle ou en fourchette", () => {
+    const fourchette: Prevision = {
+      id: "p2", outlookId: base.outlookId, cible: "us10y", unite: "percent", periode: "2027",
+      periodeDeduite: false, pointId: "un", nature: "fourchette", bas: 4, haut: 4.5,
+    };
+    expect(() => checkIntegrity(g([base, fourchette]))).not.toThrow();
+  });
+  it("refuse une cible inconnue du catalogue", () => {
+    expect(() => checkIntegrity(g([{ ...base, cible: "inconnu" }]))).toThrow(/cible inconnue/);
+  });
+  it("refuse une unité incohérente avec la cible", () => {
+    expect(() => checkIntegrity(g([{ ...base, unite: "index" }]))).toThrow(/unité/);
+  });
+  it("refuse une fourchette inversée", () => {
+    const p: Prevision = {
+      id: "p1", outlookId: base.outlookId, cible: "us10y", unite: "percent", periode: "2026",
+      periodeDeduite: true, pointId: "un", nature: "fourchette", bas: 5, haut: 4,
+    };
+    expect(() => checkIntegrity(g([p]))).toThrow(/inversée/);
+  });
+  it("accepte une cible hors catalogue assumée, la refuse sans libellé", () => {
+    const hors = { ...base, cible: null, cibleLibelle: "Rendement du Bund à 10 ans" };
+    expect(() => checkIntegrity(g([hors]))).not.toThrow();
+    expect(() => checkIntegrity(g([{ ...hors, cibleLibelle: undefined }]))).toThrow(/cibleLibelle/);
+  });
+  it("refuse un point source inexistant", () => {
+    expect(() => checkIntegrity(g([{ ...base, pointId: "absent" }]))).toThrow(/point source inexistant/);
+  });
+  it("refuse un doublon outlook + cible + période", () => {
+    expect(() => checkIntegrity(g([base, { ...base, id: "p2" }]))).toThrow(/doublon/);
+  });
+  it("refuse un outlookId étranger et une période mal formée", () => {
+    expect(() => checkIntegrity(g([{ ...base, outlookId: "autre" }]))).toThrow(/outlookId/);
+    expect(() => checkIntegrity(g([{ ...base, periode: "fin 2026" }]))).toThrow(/période/);
   });
 });

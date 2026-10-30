@@ -47,6 +47,8 @@ export type GrapheInjecte = {
   outlooks: typeof OUTLOOKS;
   instrumentIds: ReadonlySet<string>;
   macroIndicatorIds: ReadonlySet<string>;
+  instrumentUnits?: ReadonlyMap<string, string>;
+  macroUnits?: ReadonlyMap<string, string>;
   /**
    * Les deltas produits par les publications réelles. Injectables pour la même raison que le
    * reste : un graphe de test qui n'injecterait que ses propres scénarios se mélangerait aux
@@ -80,6 +82,8 @@ export function validerBrouillon(input: {
     outlooks: OUTLOOKS,
     instrumentIds: new Set(getInstruments().map((i) => i.id)),
     macroIndicatorIds: new Set(getMacroIndicators().map((i) => i.id)),
+    instrumentUnits: new Map(getInstruments().map((i) => [i.id, i.unit])),
+    macroUnits: new Map(getMacroIndicators().map((i) => [i.id, i.unit])),
   };
 
   try {
@@ -103,6 +107,8 @@ export function validerBrouillon(input: {
       },
       instrumentIds: graphe.instrumentIds,
       macroIndicatorIds: graphe.macroIndicatorIds,
+      instrumentUnits: graphe.instrumentUnits,
+      macroUnits: graphe.macroUnits,
     });
   } catch (error) {
     return { ok: false, raison: (error as Error).message };

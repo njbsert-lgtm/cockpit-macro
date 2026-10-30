@@ -35,6 +35,8 @@ export type ContentInputs = {
   generated: { scenarios: ScenarioVersion[]; trendDeltas: TrendDelta[] };
   instrumentIds: ReadonlySet<string>;
   macroIndicatorIds: ReadonlySet<string>;
+  instrumentUnits?: ReadonlyMap<string, string>;
+  macroUnits?: ReadonlyMap<string, string>;
 };
 
 export type AssembledContent = {
@@ -93,6 +95,8 @@ export function assembleContent(inputs: ContentInputs): AssembledContent {
     outlooks: inputs.outlooks,
     instrumentIds: inputs.instrumentIds,
     macroIndicatorIds: inputs.macroIndicatorIds,
+    instrumentUnits: inputs.instrumentUnits,
+    macroUnits: inputs.macroUnits,
   });
 
   return {

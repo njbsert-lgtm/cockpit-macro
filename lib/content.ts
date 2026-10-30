@@ -26,6 +26,8 @@ function loadContent() {
     generated: { scenarios: GENERATED_SCENARIO_VERSIONS, trendDeltas: GENERATED_TREND_DELTAS },
     instrumentIds: new Set(getInstruments().map((i) => i.id)),
     macroIndicatorIds: new Set(getMacroIndicators().map((i) => i.id)),
+    instrumentUnits: new Map(getInstruments().map((i) => [i.id, i.unit])),
+    macroUnits: new Map(getMacroIndicators().map((i) => [i.id, i.unit])),
   });
 }
 

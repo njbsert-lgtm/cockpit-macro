@@ -472,6 +472,37 @@ export type OutlookPoint = {
   imageGraphique?: string; // /outlooks/<id>/<point>.png, facultatif
 };
 
+/**
+ * Une prévision chiffrée d'un outlook, rattachée à une série du catalogue (J7.13). Saisie à la main
+ * depuis le document lu, jamais extraite des condensés ni inventée ; sert à la confrontation
+ * prévision / valeur collectée (J7.14), sans jugement. Une fourchette n'est pas une valeur : deux
+ * champs, jamais une moyenne.
+ */
+export type PrevisionUnite = "percent" | "index" | "level" | "usd" | "ratio" | "eur" | "gbx";
+
+type PrevisionBase = {
+  id: string; // unique dans l'outlook
+  outlookId: string; // → Outlook.id (celui qui la porte)
+  /** Identifiant du catalogue (instrument ou indicateur macro) ; `null` si la série n'y est pas. */
+  cible: string | null;
+  /** Obligatoire quand `cible` est `null` : on dit ce qui manque au catalogue, on ne le force pas. */
+  cibleLibelle?: string;
+  unite: PrevisionUnite; // doit être celle de la cible quand elle est au catalogue
+  /**
+   * Période visée : AAAA, AAAA-Tn, AAAA-Sn, AAAA-MM ou AAAA-MM-JJ. Déduite du `millesime` de
+   * l'outlook (année entière) quand le document ne dit rien de plus précis : `periodeDeduite` le dit.
+   */
+  periode: string;
+  periodeDeduite: boolean;
+  /** → OutlookPoint.id : le point de l'outlook qui porte la prévision (obligatoire). */
+  pointId: string;
+  page?: string; // page du document original, si connue
+};
+
+export type Prevision =
+  | (PrevisionBase & { nature: "ponctuelle"; valeur: number })
+  | (PrevisionBase & { nature: "fourchette"; bas: number; haut: number });
+
 export type Outlook = {
   id: string; // 'jpmorgan-mid-2026'
   bank: string; // 'J.P. Morgan'
@@ -497,6 +528,8 @@ export type Outlook = {
   driverRefs: string[];
   trendRefs: string[];
   sourceUrl: string; // lien vers le document original
+  /** Prévisions chiffrées lues dans le document (J7.13) ; absent = aucune saisie. */
+  previsions?: Prevision[];
 };
 
 /**

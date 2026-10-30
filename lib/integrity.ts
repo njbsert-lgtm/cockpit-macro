@@ -35,6 +35,9 @@ export type ContentGraph = {
   outlooks: Outlook[];
   instrumentIds: ReadonlySet<string>;
   macroIndicatorIds: ReadonlySet<string>;
+  /** Unités du catalogue, pour contrôler celle d'une prévision ; absentes = contrôle d'unité sauté. */
+  instrumentUnits?: ReadonlyMap<string, string>;
+  macroUnits?: ReadonlyMap<string, string>;
 };
 
 const BRANCHES_PER_DRIVER = 3;
@@ -50,6 +53,7 @@ export function checkIntegrity(graph: ContentGraph): void {
   checkNotes(graph, { driverIds, trendIds });
   checkScenarios(graph, { driverIds, noteSlugs });
   checkOutlooks(graph, { driverIds, trendIds });
+  checkPrevisions(graph);
 }
 
 // ---------------------------------------------------------------------------
@@ -375,6 +379,61 @@ function checkOutlooks(
       if (point.serie && point.serie.points.length < 2) {
         throw new IntegrityError(where, `la série du point « ${point.id} » doit citer au moins deux points`);
       }
+    }
+  }
+}
+
+// ---------------------------------------------------------------------------
+
+const PERIODE_PREVISION = /^\d{4}(-(0[1-9]|1[0-2])(-\d{2})?|-T[1-4]|-S[12])?$/;
+
+/** Les prévisions d'un outlook (J7.13) : rattachées au catalogue ou assumées hors catalogue. */
+function checkPrevisions(graph: ContentGraph) {
+  for (const outlook of graph.outlooks) {
+    const pointIds = new Set(outlook.points.map((p) => p.id));
+    const vus = new Set<string>();
+    for (const p of outlook.previsions ?? []) {
+      const where = `content/outlooks.ts (${outlook.id}, prévision « ${p.id} »)`;
+      if (p.outlookId !== outlook.id) {
+        throw new IntegrityError(where, `outlookId « ${p.outlookId} » différent de l'outlook qui la porte`);
+      }
+      if (!pointIds.has(p.pointId)) {
+        throw new IntegrityError(where, `point source inexistant « ${p.pointId} » : une prévision cite un point de son outlook`);
+      }
+      if (!PERIODE_PREVISION.test(p.periode)) {
+        throw new IntegrityError(where, `période invalide « ${p.periode} » (AAAA, AAAA-Tn, AAAA-Sn, AAAA-MM ou AAAA-MM-JJ)`);
+      }
+      const nombres = p.nature === "ponctuelle" ? [p.valeur] : [p.bas, p.haut];
+      if (!nombres.every((n) => typeof n === "number" && Number.isFinite(n))) {
+        throw new IntegrityError(where, "valeur non numérique");
+      }
+      if (p.nature === "fourchette" && p.bas > p.haut) {
+        throw new IntegrityError(where, `fourchette inversée : bas ${p.bas} > haut ${p.haut}`);
+      }
+
+      let cleCible: string;
+      if (p.cible === null) {
+        if (!p.cibleLibelle?.trim()) {
+          throw new IntegrityError(where, "cible hors catalogue : cibleLibelle obligatoire pour dire de quelle série il s'agit");
+        }
+        cleCible = `libelle:${p.cibleLibelle.trim().toLowerCase()}`;
+      } else {
+        const instrument = graph.instrumentIds.has(p.cible);
+        const macro = graph.macroIndicatorIds.has(p.cible);
+        if (!instrument && !macro) {
+          throw new IntegrityError(where, `cible inconnue du catalogue « ${p.cible} » (sinon cible: null et cibleLibelle)`);
+        }
+        const unite = instrument ? graph.instrumentUnits?.get(p.cible) : graph.macroUnits?.get(p.cible);
+        if (unite !== undefined && unite !== p.unite) {
+          throw new IntegrityError(where, `unité « ${p.unite} » incohérente avec celle de la cible « ${p.cible} » (${unite})`);
+        }
+        cleCible = `id:${p.cible}`;
+      }
+      const cle = `${cleCible}|${p.periode}`;
+      if (vus.has(cle)) {
+        throw new IntegrityError(where, `doublon : même cible et même période (${p.periode}) déjà saisies`);
+      }
+      vus.add(cle);
     }
   }
 }
