@@ -7,7 +7,7 @@ import { getWriteClient } from "@/lib/supabase";
 import { REQUIRED_BLOCKS, type BlockName } from "@/lib/notes";
 
 /**
- * Les trois actions de `/triage`, en Server Actions : elles écrivent avec la clé de service,
+ * Les trois actions de `/admin/veille`, en Server Actions : elles écrivent avec la clé de service,
  * côté serveur uniquement — jamais depuis le navigateur, qui ne porte que la clé anonyme.
  */
 
@@ -20,7 +20,7 @@ function writeClient(): SupabaseClient {
 }
 
 function revalidateAfterAction(): void {
-  revalidatePath("/triage");
+  revalidatePath("/admin/veille");
   revalidatePath("/");
 }
 

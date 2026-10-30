@@ -69,7 +69,7 @@ Débloqué le 30/10 : J5.2 à J5.5 (J5.1 tranché ; J5.2 attend la chaîne `sche
 - [x] J2.1 Accès administrateur protégé — **en service le 28/10, accueil public nettoyé le 30/10** (Supabase Auth, middleware, gardes, `/connexion`, bouton « Se connecter », liens d'administration déplacés dans le pied des routes protégées). Reste hors dépôt : J9.3a et J9.3b — plateforme
 - [x] J2.2 Accueil /admin : santé des sources et files d'attente — fait le 30/10 (`app/admin`, `lib/admin/files.ts`, lecture seule, « Non mesuré » jamais zéro) — plateforme
 - [ ] J2.3 /redaction → /admin/redaction, avec redirection — plateforme
-- [ ] J2.4 /triage → /admin/veille — plateforme
+- [x] J2.4 /triage → /admin/veille — plateforme (branche `agent/plateforme/J2.4`)
 - [ ] J2.5 Guets et angles morts côté admin ; décider ce qui reste public — plateforme
 - [ ] J2.6 File « À trancher » (table `decisions`) — plateforme
 - [~] J2.7 Audit des pages publiques — **en grande partie fait le 30/10** : E5, E6, E2/E3, E1, puis E8 (retours des fiches), E9 (chiffres cités), E12 (jeton `--voile`), cibles de 44 px par pseudo-élément sans changer la hauteur de page. **E7 fait le 30/10** (sélecteur de zone à panneau : bouton « Zone : France ▾ » de 44 px, onze zones en grille, état dans `?zone=`). Reste : E10 (échelle typographique), E11 (ordre de l'accueil), E13 (emoji : à repérer au rendu, ils viennent des données), E14, T1 — design

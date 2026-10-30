@@ -53,3 +53,27 @@ describe("garde de /admin", () => {
     expect(source).not.toMatch(/use server|getWriteClient|<form|<button/);
   });
 });
+
+describe("garde de /admin/veille (ex-/triage)", () => {
+  it("le layout /admin garde la sous-route, la page aussi avant toute lecture", () => {
+    expect(lire("layout.tsx")).toMatch(/await exigerAdminPage\(\)/);
+    const source = lire("veille/page.tsx");
+    const garde = source.indexOf("await exigerAdminPage()");
+    expect(garde).toBeGreaterThan(-1);
+    expect(garde).toBeLessThan(source.indexOf("getPendingVeilleItems()"));
+  });
+
+  it("/triage garde d'abord, redirige ensuite, sans redirection de configuration", () => {
+    const page = lire("../triage/page.tsx");
+    const garde = page.indexOf("await exigerAdminPage()");
+    expect(garde).toBeGreaterThan(-1);
+    expect(garde).toBeLessThan(page.indexOf('redirect("/admin/veille")'));
+    expect(lire("../triage/layout.tsx")).toMatch(/await exigerAdminPage\(\)/);
+    // Une redirection de next.config.ts passerait avant le middleware et révélerait la route.
+    expect(lire("../../next.config.ts")).not.toMatch(/source:\s*["`]\/triage/);
+  });
+
+  it("les actions de l'ancienne adresse ont disparu", () => {
+    expect(() => lire("../triage/actions.ts")).toThrow();
+  });
+});

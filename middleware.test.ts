@@ -26,7 +26,7 @@ function estRefus(response: Response): boolean {
 describe("matcher du middleware", () => {
   const correspond = (url: string) => unstable_doesMiddlewareMatch({ config, url });
 
-  it.each(["/admin", "/redaction", "/redaction/2026-S43", "/triage", "/diagnostic"])(
+  it.each(["/admin", "/admin/veille", "/redaction", "/redaction/2026-S43", "/triage", "/diagnostic"])(
     "intercepte %s",
     (url) => {
       expect(correspond(url)).toBe(true);
@@ -69,7 +69,7 @@ describe("middleware", () => {
     resetClientsForTests();
   });
 
-  it.each(["/admin", "/redaction", "/redaction/2026-S43", "/triage", "/diagnostic"])(
+  it.each(["/admin", "/admin/veille", "/redaction", "/redaction/2026-S43", "/triage", "/diagnostic"])(
     "répond 404 sans session sur %s",
     async (chemin) => {
       getUser.mockResolvedValue({ data: { user: null }, error: new Error("pas de session") });

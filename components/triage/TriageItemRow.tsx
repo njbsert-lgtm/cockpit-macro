@@ -4,7 +4,7 @@ import { ZONE_LABELS } from "@/lib/zones";
 import { CHANNEL_LABELS } from "@/lib/veille/labels";
 import { REQUIRED_BLOCKS, BLOCK_TITLES } from "@/lib/notes";
 import { formatDateTime } from "@/lib/format";
-import { verserItem, archiverItem, ignorerItem } from "@/app/triage/actions";
+import { verserItem, archiverItem, ignorerItem } from "@/app/admin/veille/actions";
 
 const PASTILLE = "rounded-rc border border-trait bg-repos px-1.5 py-0.5 text-10-5 uppercase tracking-wide text-doux";
 const BUTTON = "min-h-11 rounded-rb border border-trait bg-repos px-3 text-12-5 text-doux hover:border-trait-f hover:text-encre";

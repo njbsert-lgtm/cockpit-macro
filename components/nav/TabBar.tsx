@@ -58,7 +58,7 @@ const TABS: Tab[] = [
  */
 function isTabActive(tab: Tab, pathname: string): boolean {
   if (tab.href === "/") {
-    return pathname === "/" || pathname.startsWith("/notes") || pathname.startsWith("/triage");
+    return pathname === "/" || pathname.startsWith("/notes");
   }
   return pathname.startsWith(tab.href);
 }

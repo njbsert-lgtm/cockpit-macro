@@ -71,6 +71,7 @@ describe("estRouteProtegee", () => {
     expect(estRouteProtegee("/administration")).toBe(false);
     expect(estRouteProtegee("/redaction")).toBe(true);
     expect(estRouteProtegee("/redaction/2026-S43")).toBe(true);
+    expect(estRouteProtegee("/admin/veille")).toBe(true);
     expect(estRouteProtegee("/triage")).toBe(true);
     expect(estRouteProtegee("/diagnostic")).toBe(true);
     expect(estRouteProtegee("/redactions")).toBe(false);
