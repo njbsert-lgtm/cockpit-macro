@@ -1,4 +1,4 @@
-import { defineConfig } from "vitest/config";
+import { configDefaults, defineConfig } from "vitest/config";
 import path from "path";
 
 export default defineConfig({
@@ -12,5 +12,8 @@ export default defineConfig({
   },
   test: {
     environment: "node",
+    // Les agents travaillent dans des worktrees git sous `.claude/worktrees/` : des copies du
+    // dépôt, qu'il ne faut ni tester ni linter depuis la racine.
+    exclude: [...configDefaults.exclude, ".claude/worktrees/**"],
   },
 });

@@ -40,7 +40,7 @@ consommation réelle (JA.4).
 ## J1 · Les marchés par driver (remplace « Ce que j'avais mal lu »)
 
 - [ ] J1.1 Spécifier le bloc : par classe d'actifs, sens et ampleur, cause sourcée, driver, « sans lien clair » admis — **À trancher** — nicolas + notes
-- [ ] J1.2 Variations hebdo par classe d'actifs (même calcul que J7.1) — Bloquant — data
+- [x] J1.2 Variations hebdo par classe d'actifs (même calcul que J7.1) — fait le 30/10 : `weeklyChange` / `weeklyChanges` dans `lib/performance.ts`, par instrument, sans agrégat de classe ; J7.1 et J1.3 les réutilisent, sans second calcul — data
 - [ ] J1.3 Pipeline de rédaction : prompt, paquet de contexte, contrôle des chiffres — notes
 - [ ] J1.4 Composant de note et rendu mobile ; amender `CLAUDE.md` et `DESIGN.md` — design
 - [ ] J1.5 Bascule à partir de la note suivante (S38–S43 gardent l'ancien bloc) — notes
