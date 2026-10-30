@@ -181,6 +181,9 @@ Ces chips sont des **ancres de section**, pas des filtres : un clic défile vers
 et un `IntersectionObserver` met à jour l'état actif au défilement
 (`rootMargin: '-100px 0px -60% 0px'`).
 
+Sur la page de lecture d'une note, la chip fait 44px de haut (pastille dessinée dans la zone
+collante) et ne porte **aucun compteur** : voir « Hiérarchie de lecture ».
+
 Comme rien n'est jamais masqué, **aucune option « Tout »** : elle n'a de sens que pour un
 filtre (voir « Filtres du fil »).
 
@@ -244,6 +247,9 @@ dépôt » — est entière un lien vers `/macro/<id>` : hauteur minimale 44 px,
 chevron `›` après le libellé. Les autres (prévisions, chiffres de marché) restent du texte, sans
 chevron : le chevron annonce la fiche, il ne se met pas partout. Le rattachement se lit dans le
 libellé (`lib/indicateur-cle.ts`) ; un `indicatorId` dans le frontmatter le force.
+
+Sur la page de lecture d'une note, la grille devient une rangée de **trois** cellules (voir
+« Hiérarchie de lecture ») ; la grille de 2 / 4 colonnes ci-dessus reste celle de l'accueil.
 
 La date d'une valeur s'écrit « le 14/10 », et non plus « au 14/10 » — ici comme dans les listes
 d'instruments mobiles. Les mentions « dernière valeur connue du … » et « valeur du … » restent
@@ -710,7 +716,7 @@ l'application, pas à la note.
 `currentColor`, texte à la couleur du canal), et le **titre, qui est la phrase de régime**, en 26px
 poids 700, `letter-spacing:-.025em`, interligne 1.14. Rien sous le titre ne la répète : pas de
 « phrase à retenir ». Puis « Comparée à 2026-S40 du … » en 11px `--tenu`, en lien. Sur une
-spéciale, le seuil déclenché en **ligne d'alerte**. Enfin la grille des **chiffres clés**.
+spéciale, le seuil déclenché en **ligne d'alerte**. Enfin les **chiffres clés** (trois, en une rangée : voir « Hiérarchie de lecture »).
 
 **Corps** — pas de carte autour : `border-left: 3px solid` à la couleur du canal,
 `padding-left: 18px`. Chaque bloc : l'emoji, sur un fond `--page` de 30px de large et 38px de
@@ -736,6 +742,70 @@ la marge ne touchent pas le bord de l'écran.
 `--tenu`.
 
 Desktop : la colonne de lecture est limitée à 640px.
+
+### Hiérarchie de lecture (J4.3, validée par Nicolas le 30/10/2026)
+
+Une note se lit en trois temps. Cette section complète « Structure » et la remplace là où elles
+divergent. Elle s'applique à la page de lecture seulement, pas à l'accueil ni au fil.
+
+**Ordre des blocs.** 1. Ce qui a changé · 2. Les marchés par driver (S45 et après ; avant, la section
+n'est pas dessinée, aucun état « vide » fabriqué) · 3. Ce qui s'est confirmé · 4. Révision des
+scénarios · 5. Ce que je surveille · puis, en fin de page, « Compléments » (ce que j'avais mal lu
+S38 à S44, récap des spéciales, fil de la semaine). Cet ordre d'affichage n'est pas l'ordre canonique
+des blocs de `CLAUDE.md` (marchés par driver remonté devant « confirmé »).
+
+**Niveau 1, jamais replié : la thèse.** Le titre (phrase de régime), puis deux éléments.
+- **Trois chiffres clés**, en une rangée de trois cellules bordées (`--trait`, rayon `--rc`), padding
+  10px 12px : libellé 11px `--tenu`, valeur 13px poids 600 `--encre` (jamais en couleur de canal),
+  date « le JJ/MM » en 11px `--tenu`. Un libellé ou une valeur trop long passe à la ligne, il n'est
+  jamais tronqué. Les trois sont proposés par le modèle et validés par Nicolas dans le portail ;
+  les autres chiffres de `keyIndicators` vont dans « Compléments ». Une cellule d'indicateur suivi
+  garde le comportement de lien de « Chiffres clés du régime ».
+- **Le mécanisme** : panneau creux `--repos`, rayon `--rc`, padding 14px 16px (même motif que le
+  panneau vide, sans titre ni bouton). Étiquette « Le mécanisme » en capitales 9.5px poids 600
+  `--tenu`, phrase en 14.5px `--encre`, points de canal en pied, **sans chip de canal**. Le texte est
+  la proposition d'angle `mecanisme` de `regimeStatementPropositions`, déjà conservée dans la note
+  publiée, **même quand une autre proposition a été retenue** ; aucun champ de frontmatter nouveau.
+  Sans proposition (notes sans propositions conservées), le panneau **disparaît**, sans
+  remplacement ni état vide.
+
+**Niveau 2, lu pour juger.**
+- **Ce qui a bougé** et **Ce qui s'est confirmé : jamais repliés**, ni la section ni aucun de leurs
+  sujets. Ce sont la lecture de la note ; la replier la cacherait. Leurs sujets gardent le
+  sous-titre et le paragraphe complets (« Un sujet, un sous-titre »). Titre de section en 17px, sans
+  chevron, sans cible de repli.
+- **Les marchés par driver** : ouvert par défaut, repliable.
+- **Révision des scénarios** : **repliée par défaut**, une ligne par driver.
+- **Ce que je surveille** : ouvert, repliable. L'« Infirmé si » de chaque guet reste visible dans
+  tous les cas (voir « Le « Infirmé si » rompt la série »).
+
+**Niveau 3, replié : « Compléments »**, une entrée repliée par bloc présent, du même motif que les
+sections repliables. Une entrée sans contenu n'est pas dessinée.
+
+**En-tête de section repliable.** `<details>` natif, `summary` de 44px de haut : titre 17px, compteur
+12px `--tenu` à droite, chevron `›` qui pivote de 90° (transition unique, `--v`). `aria-expanded` sur
+le `summary`. Le filet de canal de 3px court sur le contenu déplié et ne couvre pas l'en-tête.
+
+**Ligne de sujet repliée.** Dans une section repliable qui liste des sujets, un sujet replié est une
+ligne de 44px minimum : sous-titre 15.5px poids 700 `--encre`, puis l'affirmation en gras tronquée à
+deux lignes en 12.5px `--doux`. Dépliée, elle montre le paragraphe complet, les pièces à conviction
+et les sources. Ce motif ne s'applique à aucun sujet de « Ce qui a bougé » ni de « Ce qui s'est
+confirmé ».
+
+**Texte justifié partout, mobile compris.** La justification avec `hyphens:auto` de « Structure » vaut
+sous 768px comme au-dessus ; aucune exception aligne le corps à gauche.
+
+**Barre d'ancres.** Une chip par section présente (Bougé, Marchés, Confirmé, Scénarios, Guets,
+Compléments), emoji + mot, **sans compteur**, 44px de haut, pastille dessinée dans la zone collante
+(`top:47px`, inchangé). Aucune chip pour une section absente.
+
+**Aplats et mouvement.** Aucun nouvel aplat `--encre` : seule la chip active l'est. Aucune ombre,
+aucun dégradé, aucune animation hors la rotation du chevron.
+
+**États.** Chargement : blocs `--repos` à la forme (titre, trois cellules, panneau, lignes de
+section), sans pulsation. Vide : une section sans contenu n'est pas dessinée ; un bloc 5 vide dit
+« Aucun guet posé cette semaine ». Périmé et non suivi : « non suivi » ou « donnée absente au JJ/MM »
+sur la ligne de l'instrument, jamais un tiret. Erreur : la note est du MDX et ne dépend pas de la base.
 
 ### Vocabulaire d'emoji — fermé
 
