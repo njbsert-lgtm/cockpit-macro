@@ -27,8 +27,7 @@ J3.1 → J5.2 ; `middleware.ts` (plateforme) : J2.2 ✔ → J2.3 → J2.4. **J2.
 touchent `app/redaction/`). Prochaines tâches : design J1.4 (en cours), J4.2, J4.3 · notes J1.5, J1.7, J3.1,
 J3.2 · plateforme J2.3, J2.4, J2.6 · data J7.1 (interface avec design), migration `kind='ligne'` de
 `redaction_decisions` · veille saisie de `config/calendrier-drivers.ts`, rejeu des seuils (matière de J5.1).
-Bloqué par une décision de Nicolas : J5.1 → J5.2 à J5.5 ; J6.1 → J6.2 à J6.7 ; JT.1 → JT.2 ; E7 (sélecteur de
-zone de Macro).
+Débloqué le 30/10 : J5.2 à J5.5 (J5.1 tranché ; J5.2 attend la chaîne `schema.sql` : J2.6 → J3.1 → J5.2). E7 validé, maquette à lancer. Bloqué par une décision de Nicolas : J6.1 → J6.2 à J6.7 ; JT.1 → JT.2 ; J1.6 (affichage du bilan).
 
 ## Socle livré
 
