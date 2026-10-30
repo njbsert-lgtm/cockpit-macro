@@ -15,7 +15,7 @@ import { ROUTE_CONFIRMATION, ROUTE_CONNEXION, estRouteProtegee } from "@/lib/aut
  *
  * Deux variantes. **`barre`** : compacte, pour la barre de 47px, à partir de 768px seulement —
  * sur mobile, la barre de Macro porte déjà le sélecteur de zone, la marque et l'indicateur de
- * fraîcheur, et un quatrième élément réduit le sélecteur à quelques pixels. **`pied`** : le
+ * fraîcheur, et un quatrième élément ne tient pas à 390 px (≈ 395 px pour 354 disponibles). **`pied`** : le
  * bouton secondaire ordinaire de `DESIGN.md`, dans le pied de page, sur toutes les largeurs.
  */
 export function BoutonConnexion({ variante }: { variante: "barre" | "pied" }) {

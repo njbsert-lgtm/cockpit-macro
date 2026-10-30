@@ -667,7 +667,7 @@ le modèle en a proposé.
     `--rb`, bordure `--trait`, 12px poids 500) pour tenir dans les 47px, zone tactile de 44px.
   - **Pied de page, sur toutes les largeurs** : bouton secondaire ordinaire. Sur mobile il n'est
     pas dans la barre : celle de Macro porte déjà la marque, le sélecteur de zone et
-    l'indicateur de fraîcheur, et un quatrième élément réduit le sélecteur à quelques pixels.
+    l'indicateur de fraîcheur, et un quatrième élément ne tient pas à 390 px (≈ 395 px pour 354 disponibles).
 - Pied d'administration, sous le contenu : la navigation « Rédaction », « Triage », « Diagnostic »
   (liens de l'accueil, sans compteur), puis « Connecté · adresse » en 11px `--tenu` et un bouton
   secondaire « Se déconnecter » à 44px. En contournement local, il le dit et n'offre pas de bouton.

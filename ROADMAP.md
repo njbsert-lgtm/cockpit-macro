@@ -27,7 +27,7 @@ J3.1 → J5.2 ; `middleware.ts` (plateforme) : J2.2 ✔ → J2.3 → J2.4. **J2.
 touchent `app/redaction/`). Prochaines tâches : design J1.4 (en cours), J4.2, J4.3 · notes J1.5, J1.7, J3.1,
 J3.2 · plateforme J2.3, J2.4, J2.6 · data J7.1 (interface avec design), migration `kind='ligne'` de
 `redaction_decisions` · veille saisie de `config/calendrier-drivers.ts`, rejeu des seuils (matière de J5.1).
-Débloqué le 30/10 : J5.2 à J5.5 (J5.1 tranché ; J5.2 attend la chaîne `schema.sql` : J2.6 → J3.1 → J5.2). E7 validé, maquette à lancer. Bloqué par une décision de Nicolas : J6.1 → J6.2 à J6.7 ; JT.1 → JT.2 ; J1.6 (affichage du bilan).
+Débloqué le 30/10 : J5.2 à J5.5 (J5.1 tranché ; J5.2 attend la chaîne `schema.sql` : J2.6 → J3.1 → J5.2). Bloqué par une décision de Nicolas : J6.1 → J6.2 à J6.7 ; JT.1 → JT.2 ; J1.6 (affichage du bilan).
 
 ## Socle livré
 
@@ -72,7 +72,7 @@ Débloqué le 30/10 : J5.2 à J5.5 (J5.1 tranché ; J5.2 attend la chaîne `sche
 - [ ] J2.4 /triage → /admin/veille — plateforme
 - [ ] J2.5 Guets et angles morts côté admin ; décider ce qui reste public — plateforme
 - [ ] J2.6 File « À trancher » (table `decisions`) — plateforme
-- [~] J2.7 Audit des pages publiques — **en grande partie fait le 30/10** : E5, E6, E2/E3, E1, puis E8 (retours des fiches), E9 (chiffres cités), E12 (jeton `--voile`), cibles de 44 px par pseudo-élément sans changer la hauteur de page. Reste : **E7 (sélecteur de zone de Macro) — validé par Nicolas le 30/10** : un bouton « Zone : France ▾ » de 44 px dans la barre, qui ouvre un panneau avec les onze zones (`aria-pressed`, état toujours dans `?zone=`) ; maquette puis code, à lancer après la réinitialisation de la fenêtre de 5 h ; E10 (échelle typographique), E11 (ordre de l'accueil), E13 (emoji : à repérer au rendu, ils viennent des données), E14, T1 — design
+- [~] J2.7 Audit des pages publiques — **en grande partie fait le 30/10** : E5, E6, E2/E3, E1, puis E8 (retours des fiches), E9 (chiffres cités), E12 (jeton `--voile`), cibles de 44 px par pseudo-élément sans changer la hauteur de page. **E7 fait le 30/10** (sélecteur de zone à panneau : bouton « Zone : France ▾ » de 44 px, onze zones en grille, état dans `?zone=`). Reste : E10 (échelle typographique), E11 (ordre de l'accueil), E13 (emoji : à repérer au rendu, ils viennent des données), E14, T1 — design
 
 ## J3 · Modèle analytique
 
