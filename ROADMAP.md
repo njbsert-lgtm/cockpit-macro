@@ -119,7 +119,7 @@ Bloqué par une décision : J1.1 → J1.3, J1.4, J1.5 ; J5.1 → J5.2 à J5.5 ; 
 - [ ] J7.9 Rattacher les points d'outlook aux scénarios — notes
 - [ ] J7.10 Matrice scénarios × banques — notes (+ design)
 - [x] J7.11 Millésime sur chaque outlook — fait le 30/10 : `Outlook.millesime` (entier, obligatoire), contrôle d'intégrité (doublon banque + millésime + période refusé, 2026 et 2027 coexistent). **Tout outlook 2027 doit porter `millesime`, sinon le site répond 500 au chargement** — notes, à la saisie de J7.15 — data
-- [ ] J7.12 Sélecteur de millésime sur la page Outlook — design
+- [x] J7.12 Sélecteur de millésime sur la page Outlook — fait le 30/10 (`?millesime=`, plus récent par défaut, caché avec un seul millésime) ; le millésime n'est pas répété dans l'en-tête de `/outlook/[id]`, `periodCovered` le porte déjà — design
 - [x] J7.13 Prévisions structurées — fait le 30/10 : type `Prevision` (cible du catalogue ou hors catalogue assumé, ponctuelle ou fourchette, jamais de moyenne), champ facultatif `previsions` sur `Outlook`, contrôle d'intégrité (cible, unité, point source, doublon). **Aucune prévision saisie** : la saisie est J7.15, depuis les documents lus (pistes : S&P 500 de Morgan Stanley, taux directeur américain et croissance de HSBC) — data
 - [ ] J7.14 Vue de confrontation prévision / valeur, sans jugement — data (base) + design (interface)
 - [ ] J7.15 Outlooks 2027 (mi-novembre à début décembre ; + Goldman Sachs, Pictet) — Bloquant — notes

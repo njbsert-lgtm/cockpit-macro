@@ -1389,6 +1389,15 @@ ancienne : le logo de la banque (repli : son monogramme, tant qu'aucun logo n'es
 `public/outlooks/logos/`), le titre, la période couverte, la date, et **les thèmes de la maison**
 en pastilles à contour, chacun avec son emoji (vocabulaire propre aux outlooks, `DESIGN.md`).
 
+**Millésime.** Chaque outlook porte `millesime` (l'année de l'horizon couvert, entier, obligatoire :
+un outlook sans millésime fait lever le contrôle d'intégrité au chargement). Un **sélecteur de
+millésime** s'affiche sur `/outlook` dès qu'il en existe deux, **le plus récent par défaut**, état
+dans l'URL (`?millesime=2027`, une valeur inconnue retombe sur le défaut) ; la grille des
+positionnements et la liste de cartes ne montrent que le millésime choisi, jamais deux millésimes
+comparés. Avec un seul millésime, aucun sélecteur. Les **prévisions structurées** (`Outlook.previsions`,
+facultatif) rattachent une cible du catalogue, une valeur ou une fourchette et une période à un point
+de l'outlook ; elles se saisissent depuis le document lu, jamais depuis le condensé.
+
 **Aucune référence aux drivers ni aux tendances de Marguerite sur les écrans Outlook.** Un
 outlook est prospectif et se lit avec ses propres thèmes. `driverRefs` et `trendRefs` restent dans
 les données — contrôle d'intégrité, repérage des candidats drivers —, jamais à l'écran.
