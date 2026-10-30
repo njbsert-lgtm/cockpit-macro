@@ -2,6 +2,7 @@ import { Suspense } from "react";
 import { DEFAULT_ZONE, parseZone, ZONE_PARAM } from "@/lib/zone-param";
 import {
   ASSET_CLASS_LABELS,
+  ASSET_CLASS_ORDER,
   ASSET_CLASS_PARAM,
   formatDailyChange,
   formatInstrumentValue,
@@ -21,6 +22,8 @@ import { estNonCollectee } from "@/lib/provenance";
 import { ZONE_LABELS } from "@/lib/zones";
 import { formatDateLong } from "@/lib/format";
 import type { AssetClass, Instrument, Zone } from "@/lib/types";
+import { groupesYtd } from "@/lib/performance-ytd";
+import { YtdVue } from "@/components/marches/YtdVue";
 import { FilterRows } from "@/components/marches/FilterRows";
 import { InstrumentList, type InstrumentRow } from "@/components/marches/InstrumentList";
 import { MarchesSkeleton } from "@/components/marches/MarchesSkeleton";
@@ -198,11 +201,54 @@ async function MarchesParDriver() {
   );
 }
 
-/** Le segment « Classes d'actifs | Par driver » : un paramètre d'URL, `?vue=drivers`. */
-function VueSegment({ vue }: { vue: "classes" | "drivers" }) {
+/**
+ * La vue « YTD » (J7.1) : l'écart depuis le 1er janvier des quatre classes sur un seul écran,
+ * une ligne par instrument, « non suivi » ligne par ligne, aucune moyenne. Obligations : le
+ * repère à 10 ans de chaque pays et les deux spreads, pas les 65 maturités.
+ */
+async function MarchesYtd() {
+  await simulateLoad();
+  const instruments = ASSET_CLASS_ORDER.flatMap((c) => instrumentsFor(c, DEFAULT_ZONE));
+  const bySeries = await loadObservations(instruments.map((i) => i.id));
+  const groupes = groupesYtd(instruments, bySeries, ASSET_CLASS_ORDER);
+
+  return (
+    <div className="mx-auto max-w-colonne md:max-w-content px-4.5 py-7 md:px-6">
+      <p className="text-11 uppercase tracking-cap text-tenu">Marchés</p>
+      <h1 className="mt-1 text-27 font-semibold text-encre">Depuis le 1er janvier</h1>
+      <VueSegment vue="ytd" />
+
+      {groupes.length === 0 ? (
+        <div className="mt-5">
+          <EmptyState
+            title="Aucun instrument suivi"
+            description="Le catalogue ne porte aucun instrument. Revenez à la vue par classes d'actifs."
+          />
+        </div>
+      ) : (
+        <YtdVue
+          groupes={groupes}
+          hrefDe={(l) =>
+            `/marches/${l.instrument.assetClass}/${l.instrument.id}?${ZONE_PARAM}=${DEFAULT_ZONE}`
+          }
+        />
+      )}
+
+      <p className="mt-3 text-11 text-tenu">
+        Écart entre le dernier relevé collecté et la clôture du 31 décembre, saisie à la main. Les
+        taux et les spreads sont en points de base, les autres instruments en pourcentage. Aucune
+        moyenne : chaque instrument se lit seul.
+      </p>
+    </div>
+  );
+}
+
+/** Le segment « Classes d'actifs | Par driver | YTD » : un paramètre d'URL, `?vue=`. */
+function VueSegment({ vue }: { vue: "classes" | "drivers" | "ytd" }) {
   const options = [
     { id: "classes", label: "Classes d'actifs", href: "/marches" },
     { id: "drivers", label: "Par driver", href: "/marches?vue=drivers" },
+    { id: "ytd", label: "YTD", href: "/marches?vue=ytd" },
   ] as const;
   return (
     <div className="mt-3 inline-flex rounded-rp bg-repos p-[3px]" role="group" aria-label="Vue">
@@ -232,6 +278,13 @@ export default async function MarchesPage({
     return (
       <Suspense key="drivers" fallback={<MarchesSkeleton />}>
         <MarchesParDriver />
+      </Suspense>
+    );
+  }
+  if (params.vue === "ytd") {
+    return (
+      <Suspense key="ytd" fallback={<MarchesSkeleton />}>
+        <MarchesYtd />
       </Suspense>
     );
   }

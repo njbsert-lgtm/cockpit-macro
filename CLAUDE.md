@@ -1391,6 +1391,17 @@ Sept jours laissent passer un week-end prolongé par un jour férié, pas un moi
 connue avec sa date, en ambre ou en rouge selon la fraîcheur — c'est l'état 4 ou 5 du cahier,
 pas un vide. Le pourquoi est dans l'infobulle.
 
+### La vue YTD multi-actifs (J7.1)
+
+Un troisième volet du segment « Classes d'actifs | Par driver | YTD » (`?vue=ytd`) range les quatre
+classes à la suite, **une ligne par instrument** : l'écart depuis le 1er janvier (`ytdChange`, le même
+calcul que la liste et la fiche — `lib/performance-ytd.ts` ne fait que choisir ce que la ligne a le
+droit de dire), avec la base du 31 décembre et le dernier relevé datés. Obligations : le repère à
+10 ans de chaque pays et les deux spreads. **Aucune moyenne, aucun total par classe.** Un instrument
+sans écart calculable dit « non suivi » sur sa propre ligne — aucune source, valeur saisie à la main
+seulement, ou base du 31 décembre non saisie (la dernière valeur datée reste alors affichée) —, jamais
+un tiret ni un zéro.
+
 ### L'état dans l'URL
 
 Les deux filtres sont dans la chaîne de requête : `?classe=rates&zone=fr`. Toute vue est
