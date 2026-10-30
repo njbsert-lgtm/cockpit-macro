@@ -65,7 +65,7 @@ consommation réelle (JA.4).
 
 ## J4 · Refonte de la page Notes
 
-- [ ] J4.1 Audit de densité à 390 px — design
+- [x] J4.1 Audit de densité à 390 px — fait le 30/10 : `rapports/conformite-2026-10-30.md` (17 routes ; 4 écarts hauts, 7 moyens, 3 bas, 2 à trancher) — design
 - [ ] J4.2 Nouvelle hiérarchie : thèse, ce qui a bougé, mécanisme, marchés par driver, guets — design + notes
 - [ ] J4.3 Maquette Claude Design et amendement `DESIGN.md`, avant tout code — design
 - [ ] J4.4 Intégration : sections repliables, barre d'ancres allégée — design
