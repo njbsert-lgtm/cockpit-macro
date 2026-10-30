@@ -105,6 +105,12 @@ describe("les décisions par ligne", () => {
     expect(authorshipBlocMarches([], {})).toBe("ia-relue");
   });
 
+  it("le canal corrigé est repris par la ligne effective, sinon celui de la proposition", () => {
+    expect(ligneEffective(ligne, { action: "corriger", cause: "Autre.", canal: "dollar" }).canal).toBe("dollar");
+    expect(ligneEffective(ligne, { action: "corriger", cause: "Autre." }).canal).toBe("fonction-reaction");
+    expect(ligneEffective(ligne, { action: "refuser" }).canal).toBeNull();
+  });
+
   it("sépare les causes du modèle des causes retapées", () => {
     const { modele, corrigees } = causesAControler(MARCHES, { "rates/us10y": { action: "corriger", cause: "Retouchée." } });
     expect(modele).toBe("");

@@ -18,6 +18,7 @@ import { etatPublication } from "@/lib/redaction/etat-publication";
 import { cleChiffre } from "@/lib/redaction/figures";
 import { PREFIXE_REF_LIGNE } from "@/lib/redaction/decisions-store";
 import { lignesDuBloc, type DecisionLigne } from "@/lib/redaction/marches-rendu";
+import { CANAUX_MARCHES } from "@/lib/redaction/marches";
 import { declencherPublication } from "@/lib/redaction/github-dispatch";
 
 /**
@@ -361,10 +362,15 @@ export async function trancherLigneMarche(slug: string, cle: string, formData: F
     if (!(etat.paquet.ficheNotion?.sources ?? []).includes(emetteur)) {
       throw new Error(`émetteur « ${emetteur} » absent de la fiche — une cause ne nomme que les émetteurs que la fiche cite`);
     }
+    const canalSaisi = stringField(formData, "canal");
+    if (canalSaisi && !(CANAUX_MARCHES as readonly string[]).includes(canalSaisi)) {
+      throw new Error(`canal inconnu : « ${canalSaisi} » — les cinq canaux : ${CANAUX_MARCHES.join(", ")}`);
+    }
+    const canal = (canalSaisi || propose.ligne.canal || undefined) as DecisionLigne["canal"];
     decision =
-      cause === propose.ligne.cause && emetteur === propose.ligne.emetteur
+      cause === propose.ligne.cause && emetteur === propose.ligne.emetteur && canal === (propose.ligne.canal ?? undefined)
         ? { action: "accepter" }
-        : { action: "corriger", cause, emetteur };
+        : { action: "corriger", cause, emetteur, ...(canal ? { canal } : {}) };
   }
 
   await sauvegarderDecision(slug, "bloc", `${PREFIXE_REF_LIGNE}${cle}`, decision);

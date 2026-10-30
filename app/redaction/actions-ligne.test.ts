@@ -69,4 +69,21 @@ describe("trancherLigneMarche — une ligne à la fois", () => {
     await trancherLigneMarche("2026-S45", "iran/brent", formulaire({ action: "corriger", cause: "Une cause." }));
     expect(sauvegarder).toHaveBeenLastCalledWith("2026-S45", "bloc", "ligne:iran/brent", { action: "accepter" });
   });
+
+  it("le canal est corrigeable, validé contre les cinq canaux ; le changer seul est une correction", async () => {
+    await expect(
+      trancherLigneMarche("2026-S45", "iran/brent", formulaire({ action: "corriger", cause: "Une cause.", canal: "magie" })),
+    ).rejects.toThrow(/canal inconnu/);
+    expect(sauvegarder).not.toHaveBeenCalled();
+    await trancherLigneMarche("2026-S45", "iran/brent", formulaire({ action: "corriger", cause: "Une cause.", canal: "dollar" }));
+    expect(sauvegarder).toHaveBeenLastCalledWith("2026-S45", "bloc", "ligne:iran/brent", {
+      action: "corriger",
+      cause: "Une cause.",
+      emetteur: "Zonebourse",
+      canal: "dollar",
+    });
+    // Le canal de la proposition, resaisi à l'identique : toujours une acceptation.
+    await trancherLigneMarche("2026-S45", "iran/brent", formulaire({ action: "corriger", cause: "Une cause.", canal: "nature-choc" }));
+    expect(sauvegarder).toHaveBeenLastCalledWith("2026-S45", "bloc", "ligne:iran/brent", { action: "accepter" });
+  });
 });

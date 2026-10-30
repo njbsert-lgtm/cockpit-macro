@@ -1,4 +1,4 @@
-import type { Authorship } from "@/lib/types";
+import type { Authorship, VeilleChannel } from "@/lib/types";
 import { structureMarchesParDriver } from "@/config/suivi";
 import { cleLigne, type LigneMarche, type MarcheContexte, type MarcheDriver } from "./marches";
 import type { WeeklyResult } from "@/lib/performance";
@@ -28,6 +28,8 @@ export type DecisionLigne = {
   action: "accepter" | "corriger" | "refuser";
   cause?: string;
   emetteur?: string;
+  /** Le canal de transmission de la cause corrigée ; absent : celui de la proposition. */
+  canal?: VeilleChannel;
 };
 
 export type DecisionsLignes = Record<string, DecisionLigne>;
@@ -48,7 +50,9 @@ export function ligneEffective(ligne: LigneMarche, decision: DecisionLigne | und
   if (decision?.action === "corriger" && decision.cause?.trim()) {
     const emetteur = decision.emetteur?.trim() || ligne.emetteur;
     // Une cause sans émetteur n'est pas attribuable : elle ne se publie pas.
-    return emetteur ? { ...ligne, cause: decision.cause.trim(), emetteur } : { ...ligne, cause: null, emetteur: null, canal: null };
+    return emetteur
+      ? { ...ligne, cause: decision.cause.trim(), emetteur, canal: decision.canal ?? ligne.canal }
+      : { ...ligne, cause: null, emetteur: null, canal: null };
   }
   return ligne;
 }
