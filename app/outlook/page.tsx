@@ -6,14 +6,24 @@ import { SectionHeader } from "@/components/notes/SectionHeader";
 import { BankLogo } from "@/components/outlook/BankLogo";
 import { Positionnements } from "@/components/outlook/Positionnements";
 import { ThemePill } from "@/components/outlook/ThemePill";
+import { MillesimeSelector } from "@/components/outlook/MillesimeSelector";
+import { millesimeChoisi, millesimesDisponibles } from "@/lib/outlook-millesime";
 
 /**
  * Les outlooks des banques (maquettes 2a et 3a) : la grille des positionnements comparés, puis
  * une carte par publication, de la plus récente à la plus ancienne. Aucune référence aux drivers
  * ni aux tendances de Marguerite : un outlook est prospectif, il se lit avec ses propres thèmes.
  */
-export default function OutlookPage() {
-  const outlooks = getOutlooks();
+export default async function OutlookPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}) {
+  const tous = getOutlooks();
+  const millesimes = millesimesDisponibles(tous);
+  const millesime = millesimeChoisi(tous, (await searchParams).millesime);
+  // La grille ne compare jamais des maisons de millésimes différents.
+  const outlooks = tous.filter((o) => o.millesime === millesime);
   const plusRecente = outlooks[0];
 
   return (
@@ -25,6 +35,10 @@ export default function OutlookPage() {
           {outlooks.length} publication{outlooks.length > 1 ? "s" : ""} · la plus récente le{" "}
           {formatDateLong(plusRecente.publishedAt)}
         </p>
+      )}
+
+      {millesimes.length > 1 && millesime !== null && (
+        <MillesimeSelector millesimes={millesimes} actif={millesime} />
       )}
 
       {outlooks.length === 0 ? (

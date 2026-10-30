@@ -769,6 +769,11 @@ un texte à filet, pour que les deux écrans ne se confondent pas.
   jusqu'à 96px de large : un logotype en longueur garde ses proportions. Sans logo fourni, le
   monogramme dans le carré `--repos`. La grille des positionnements garde le monogramme : c'est
   un tableau, pas une vitrine.
+- **Sélecteur de millésime** (`/outlook`) : motif des filtres du fil (étiquette « Millésime » en
+  capitales 9.5px `--tenu`, boutons `--rp` de 44px, `aria-pressed`, défilement horizontal sans
+  barre). Le plus récent est actif par défaut et absent de l'URL ; les autres s'écrivent
+  `?millesime=2026`, et une valeur inconnue retombe sur le défaut. Un seul millésime : le
+  sélecteur n'est pas rendu. Grille et cartes ne montrent que le millésime choisi.
 - **Positionnements** : ▲ ● ▼ en `--encre`, « n.p. » en `--tenu` quand le document ne tranche
   pas. On ne déduit jamais une position que la maison n'a pas écrite.
 - **Graphique redessiné** : uniquement à partir des points cités dans le document, sans
