@@ -38,6 +38,9 @@ Tous définis une seule fois en variables CSS. Aucune valeur en dur dans un comp
   /* Fraîcheur d'une collecte — ni un contenu ni une performance */
   --perime:#C9900C;    /* ambre : le seul usage est le point de fraîcheur « périmé » */
 
+  /* Voile d'une feuille modale — le seul usage est le fond derrière la feuille de chiffre */
+  --voile:rgba(18,22,26,.16);
+
   /* Rayons */
   --rc:16px;           /* cartes */
   --rb:10px;           /* boutons, champs */
