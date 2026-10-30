@@ -23,8 +23,6 @@ export function RegimeHeader({
   chiffres,
   depuis = [],
   drivers = [],
-  pendingVeilleCount,
-  pendingRedactionCount,
   anglesMorts,
 }: {
   note: Note;
@@ -33,13 +31,6 @@ export function RegimeHeader({
   /** Les changements depuis `note.comparesTo` (`lib/depuis.ts`) ; vide, la section disparaît. */
   depuis?: LigneDepuis[];
   drivers?: DriverWithBranches[];
-  /**
-   * Omis sur la page d'une note individuelle, qui ne recharge pas la file de veille pour un
-   * bouton secondaire : afficher un « 0 » par défaut mentirait sur l'état réel de la file.
-   */
-  pendingVeilleCount?: number;
-  /** Même principe : omis plutôt que 0 quand l'appelant n'a pas chargé la liste. */
-  pendingRedactionCount?: number;
   /** Omis sur la page d'une note individuelle, qui ne charge pas la table des angles morts. */
   anglesMorts?: VueAccueil;
 }) {
@@ -86,26 +77,6 @@ export function RegimeHeader({
       <div className="mt-5 flex flex-wrap items-center gap-2">
         {drivers.length > 0 && <NavLink href="/notes/tendances">Tendances de fond</NavLink>}
         {drivers.length > 0 && <NavLink href="/notes/themes">Thèmes sous observation</NavLink>}
-        {pendingVeilleCount !== undefined && (
-          <NavLink
-            href="/triage"
-            count={pendingVeilleCount}
-            countLabel={`${pendingVeilleCount} item${pendingVeilleCount > 1 ? "s" : ""} en attente de tri`}
-          >
-            Triage
-          </NavLink>
-        )}
-        {/* N'apparaît que si un brouillon existe (DESIGN.md) — pas de notification, juste un
-            lien qui ne mentirait pas en affichant « 0 ». */}
-        {pendingRedactionCount !== undefined && pendingRedactionCount > 0 && (
-          <NavLink
-            href="/redaction"
-            count={pendingRedactionCount}
-            countLabel={`${pendingRedactionCount} brouillon${pendingRedactionCount > 1 ? "s" : ""} en attente de relecture`}
-          >
-            Rédaction
-          </NavLink>
-        )}
       </div>
     </div>
   );

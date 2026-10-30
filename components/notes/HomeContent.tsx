@@ -8,8 +8,6 @@ import {
 import { chargerChiffresVivants } from "@/lib/chiffres-vivants-load";
 import { changementsDepuis } from "@/lib/depuis";
 import { BRANCH_LABELS } from "@/lib/scenario-labels";
-import { getPendingVeilleCount } from "@/lib/veille/queries";
-import { brouillonsDisponibles } from "@/lib/redaction/portail";
 import { getReadClient } from "@/lib/supabase";
 import { lireAnglesMorts, vueAccueil } from "@/lib/angles-morts";
 import { RegimeHeader } from "./RegimeHeader";
@@ -28,9 +26,6 @@ export async function HomeContent() {
 
   const latestNote = getLatestNote();
   const drivers = getActiveDriversWithBranches();
-  const pendingVeilleCount = await getPendingVeilleCount();
-  // Synchrone, disque seulement — pas d'appel Supabase pour ce compteur.
-  const pendingRedactionCount = brouillonsDisponibles().length;
   // `null` quand la table est illisible : la page affiche « Non mesuré », jamais un zéro.
   const anglesMorts = vueAccueil(
     await lireAnglesMorts(getReadClient()),
@@ -68,8 +63,6 @@ export async function HomeContent() {
         chiffres={chiffres}
         depuis={depuis}
         drivers={drivers}
-        pendingVeilleCount={pendingVeilleCount}
-        pendingRedactionCount={pendingRedactionCount}
         anglesMorts={anglesMorts}
       />
       <div className="mx-auto max-w-colonne md:max-w-content px-4.5 py-7 md:px-6">

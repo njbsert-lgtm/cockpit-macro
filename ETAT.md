@@ -165,9 +165,8 @@ retirés (commit 5, pas encore fait), tout côté serveur.
    posées sur Vercel : après la fusion, la page est derrière la connexion.
 2. Fusion dans `main` — **pas avant le point 1**, sinon `/redaction` devient inaccessible au
    propriétaire lui-même.
-3. Commit 5 : retrait des boutons « Triage » et « Brouillon à réviser » de l'accueil public.
-4. Commit 6 : `CLAUDE.md` (le « mot de passe Vercel » n'est plus la protection), `.env.example`
-   (`ADMIN_LOCAL`, `SITE_URL` facultative), SQL du rôle dans `supabase/`.
+3. ~~Commit 5 : retrait des boutons « Triage » et « Brouillon à réviser » de l'accueil public.~~ **Fait le 30/10** : l'accueil ne lit plus la file de veille ; la navigation Rédaction · Triage · Diagnostic vit dans le pied des routes protégées.
+4. ~~Commit 6~~ `CLAUDE.md` et `.env.example` faits le 30/10 ; **reste le SQL du rôle admin à versionner dans `supabase/`**.
 
 ### Plan initial (validé le 26/10)
 

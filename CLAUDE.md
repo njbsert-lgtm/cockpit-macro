@@ -65,8 +65,8 @@ Barre d'onglets en bas sur mobile, horizontale en haut sur desktop. Jamais de ha
 | **Outlook** | Qu'est-ce que les grandes banques anticipent ? | À la publication |
 
 La veille n'a plus d'onglet : elle est un atelier interne, pas un écran qu'on consulte pour
-lui-même. La file de tri vit à `/triage`, ouverte depuis un bouton compteur sur l'onglet Notes
-(voir Onglet 4bis, plus bas).
+lui-même. La file de tri vit à `/triage`, derrière la connexion administrateur, et s'ouvre depuis
+le pied des routes protégées — **plus depuis l'accueil public** (voir Onglet 4bis, plus bas).
 
 ### La barre persistante
 
@@ -1355,9 +1355,9 @@ fabriquer un exemple.
 
 ## Onglet 4bis — La veille, en atelier interne
 
-Sans onglet dédié : la file de tri vit à `/triage`, ouverte depuis un bouton compteur sur
-l'écran d'accueil de l'onglet Notes. Ce n'est pas un écran qu'on consulte pour lui-même, c'est
-l'antichambre de la note en préparation.
+Sans onglet dédié : la file de tri vit à `/triage`, derrière la connexion administrateur, et
+s'ouvre depuis le pied des routes protégées. Ce n'est pas un écran qu'on consulte pour lui-même,
+c'est l'antichambre de la note en préparation.
 
 File des items collectés et classés « signal », en attente de tri. Groupée par jour, les jours
 de plus de trois jours repliés par défaut ; purge automatique au-delà de quinze jours.

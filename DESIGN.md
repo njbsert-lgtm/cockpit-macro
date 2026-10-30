@@ -332,10 +332,13 @@ Hauteur 44px, défilement horizontal sans barre.
 
 ### Liens de navigation de l'accueil
 
-Tendances de fond, Thèmes sous observation, Triage, Rédaction : ils mènent à un autre écran,
-donc rayon `--rp` — 13px poids 500, bordure `--trait`, fond `--page`, 44px de haut, chevron `›`.
-Un compteur éventuel est une pastille `--repos` en 11px. Rédaction n'apparaît que si un brouillon
-existe ; les autres n'ont jamais de compteur à zéro trompeur.
+Tendances de fond, Thèmes sous observation : ils mènent à un autre écran, donc rayon `--rp` —
+13px poids 500, bordure `--trait`, fond `--page`, 44px de haut, chevron `›`. Un compteur éventuel
+est une pastille `--repos` en 11px ; aucun n'affiche un zéro trompeur.
+
+**L'accueil public ne porte plus aucun lien d'administration** (« Triage », « Rédaction ») : ils
+signalaient la surface que le 404 cache. Les mêmes liens, au même motif, vivent dans le pied des
+routes protégées (voir « Connexion et pied d'administration »), sans compteur.
 
 ### Ligne d'alerte
 
@@ -501,8 +504,8 @@ Largeur : colonne de 520px sur mobile, plus large sur desktop — même dérogat
 de Notes et le mode comparaison de Macro. C'est un écran de travail, plus dense qu'un écran de
 lecture.
 
-Entrée : un bouton compteur discret sur l'accueil de Notes quand un brouillon existe, comme
-celui de `/triage`. Aucune notification.
+Entrée : depuis le pied des routes protégées, après la connexion — plus depuis l'accueil public.
+Aucune notification.
 
 #### Portail à gestes : frise, relecture dans la note, chiffres par valeur
 
@@ -580,7 +583,7 @@ réservé à la fraîcheur d'une collecte — un thème qui attend n'est pas une
 Les thèmes en attente sont triés du plus ancien au plus récent : c'est l'argument de priorisation
 de la collecte. L'état vide dit quoi faire (le geste est une proposition acceptée dans le portail).
 Entrée : un bouton « Thèmes sous observation › » sur l'accueil de Notes, au motif des boutons
-« Tendances de fond » et « Triage », **sans compteur**.
+« Tendances de fond », **sans compteur**.
 
 **La proposition dans le portail** réutilise la **carte de proposition** des révisions et des
 tendances : titre, sous-titre (émetteur, délai en jours, « témoin hors catalogue » le cas échéant),
@@ -607,7 +610,8 @@ le modèle en a proposé.
   - **Pied de page, sur toutes les largeurs** : bouton secondaire ordinaire. Sur mobile il n'est
     pas dans la barre : celle de Macro porte déjà la marque, le sélecteur de zone et
     l'indicateur de fraîcheur, et un quatrième élément réduit le sélecteur à quelques pixels.
-- Pied d'administration, sous le contenu : « Connecté · adresse » en 11px `--tenu` et un bouton
+- Pied d'administration, sous le contenu : la navigation « Rédaction », « Triage », « Diagnostic »
+  (liens de l'accueil, sans compteur), puis « Connecté · adresse » en 11px `--tenu` et un bouton
   secondaire « Se déconnecter » à 44px. En contournement local, il le dit et n'offre pas de bouton.
 
 ### Barre d'onglets

@@ -49,7 +49,7 @@ consommation réelle (JA.4).
 
 ## J2 · Back-office /admin
 
-- [~] J2.1 Accès administrateur protégé — **en service depuis le 28/10** (Supabase Auth, middleware, gardes, `/connexion`, bouton « Se connecter »). Reste : retirer « Triage » et « Rédaction » de l'accueil public, avec un lien vers `/triage` depuis `/redaction` — plateforme
+- [x] J2.1 Accès administrateur protégé — **en service le 28/10, accueil public nettoyé le 30/10** (Supabase Auth, middleware, gardes, `/connexion`, bouton « Se connecter », liens d'administration déplacés dans le pied des routes protégées). Reste hors dépôt : J9.3a et J9.3b — plateforme
 - [ ] J2.2 Accueil /admin : santé des sources et files d'attente — plateforme (+ design)
 - [ ] J2.3 /redaction → /admin/redaction, avec redirection — plateforme
 - [ ] J2.4 /triage → /admin/veille — plateforme
