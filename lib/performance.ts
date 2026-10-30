@@ -1,3 +1,4 @@
+import { fournisseurInstrument } from "@/config/providers";
 import type { Instrument, Observation } from "./types";
 
 function sortedByDate(obs: Observation[]): Observation[] {
@@ -144,4 +145,117 @@ export function dailyChange(
     toDate: to.date,
     toValue: to.value,
   };
+}
+
+// ---------------------------------------------------------------------------
+// Variation hebdomadaire par instrument — J1.2, réutilisée telle quelle par J7.1
+// ---------------------------------------------------------------------------
+
+/** Durée de la période, en jours calendaires : celle de « sur la semaine » dans le contrôle des chiffres. */
+export const WEEK_DAYS = 7;
+
+export type WeeklyUnit = "bps" | "pct";
+
+export type WeeklyChange = {
+  instrumentId: string;
+  status: "ok";
+  /** Variation recalculée : points de base si `unit` vaut `bps`, pourcentage sinon. */
+  value: number;
+  unit: WeeklyUnit;
+  fromDate: string;
+  fromValue: number;
+  toDate: string;
+  toValue: number;
+};
+
+export type WeeklyUnavailable = {
+  instrumentId: string;
+  status: "indisponible";
+  /** `non-suivi` : aucune source ne collecte l'instrument. `donnee-absente` : clôture manquante ou trou. */
+  reason: "non-suivi" | "donnee-absente";
+  /** Phrase prête à afficher : « non suivi », « donnée absente au 11/09 »… */
+  message: string;
+};
+
+export type WeeklyResult = WeeklyChange | WeeklyUnavailable;
+
+function jourMois(iso: string): string {
+  const [, m, d] = iso.split("-");
+  return `${d}/${m}`;
+}
+
+/**
+ * Variation sur la semaine d'un instrument, **recalculée** depuis deux clôtures en base — jamais
+ * reprise d'une source. Même règle que le contrôle des chiffres (`verdictVariation`) : la borne
+ * de fin est la dernière clôture à `dateFin` ou avant (la dernière tout court par défaut), la
+ * borne de début la dernière clôture à `fin − 7 jours` ou avant.
+ *
+ * Pas de trou : chaque borne doit tomber à moins de `MAX_SESSION_GAP_DAYS` jours de sa date
+ * nominale. Un week-end ou un férié passe ; une série mensuelle (Bund, OAT, cuivre) ou une
+ * collecte interrompue donne « donnée absente au JJ/MM » — la date nominale qui manque.
+ *
+ * Un taux ou un spread (`unit: "percent"`) se rend en points de base, tout le reste en %.
+ * `collecte` dit si l'instrument est réellement collecté (par défaut : un fournisseur actif).
+ */
+export function weeklyChange(
+  instrument: Pick<Instrument, "id" | "unit">,
+  obs: Observation[],
+  options: { dateFin?: string; collecte?: boolean } = {},
+): WeeklyResult {
+  const id = instrument.id;
+  const collecte = options.collecte ?? fournisseurInstrument(id) !== null;
+  if (!collecte) {
+    return { instrumentId: id, status: "indisponible", reason: "non-suivi", message: "non suivi" };
+  }
+
+  const absent = (date: string | null): WeeklyUnavailable => ({
+    instrumentId: id,
+    status: "indisponible",
+    reason: "donnee-absente",
+    message: date ? `donnée absente au ${jourMois(date)}` : "donnée absente",
+  });
+
+  const latest = latestObservation(obs);
+  // Aucune clôture : sans date de fin donnée, il n'y a pas de date à citer.
+  if (!latest) return absent(options.dateFin ?? null);
+
+  const dateFin = options.dateFin ?? latest.date;
+  const to = observationOnOrBefore(obs, dateFin);
+  if (!to || daysBetween(to.date, dateFin) > MAX_SESSION_GAP_DAYS) return absent(dateFin);
+
+  const dateDebut = addDays(to.date, -WEEK_DAYS);
+  const from = observationOnOrBefore(obs, dateDebut);
+  if (!from || daysBetween(from.date, dateDebut) > MAX_SESSION_GAP_DAYS || from.value === 0) {
+    return absent(dateDebut);
+  }
+
+  const unit: WeeklyUnit = instrument.unit === "percent" ? "bps" : "pct";
+  const absolute = to.value - from.value;
+  return {
+    instrumentId: id,
+    status: "ok",
+    value: unit === "bps" ? absolute * 100 : (absolute / Math.abs(from.value)) * 100,
+    unit,
+    fromDate: from.date,
+    fromValue: from.value,
+    toDate: to.date,
+    toValue: to.value,
+  };
+}
+
+/**
+ * Une ligne par instrument, dans l'ordre reçu — **jamais de moyenne ni d'agrégat par classe** :
+ * la moyenne simple d'indices n'est l'indice de personne. `observations` : clôtures par id.
+ */
+export function weeklyChanges(
+  instruments: Array<Pick<Instrument, "id" | "unit">>,
+  observations: Record<string, Observation[]>,
+  options: { dateFin?: string; collecte?: (id: string) => boolean } = {},
+): WeeklyResult[] {
+  return instruments.map((i) =>
+    weeklyChange(i, observations[i.id] ?? [], {
+      dateFin: options.dateFin,
+      collecte: options.collecte ? options.collecte(i.id) : undefined,
+    }),
+  );
 }
