@@ -92,13 +92,13 @@ zone de Macro).
 
 ## J5 · Moteur d'alertes et notes spéciales
 
-- [ ] J5.1 Seuils objectifs par driver — **À trancher** — nicolas + veille
-  - *30/10 : le tableau de seuils de `CLAUDE.md` est remis à Nicolas pour décision. Deux constats à trancher avec lui : (1) **les règles « écart au consensus » (inflation sous-jacente) et « décision non anticipée » (banque centrale) n'ont aucune donnée de consensus en base** — elles ne se calculent pas aujourd'hui ; (2) **six instruments du tableau ne sont rattachés à aucun driver** (Euro Stoxx 50, FTSE 100, CAC 40, Nikkei 225, Hang Seng, spread OAT − Bund) : un franchissement n'aurait pas de driver auquel s'attacher.*
+- [x] J5.1 Seuils objectifs par driver — **tranché le 30/10 par Nicolas** : actions et devises ±5 %, taux et spreads ±50 bps, Brent ±8 %, géopolitique = début ou fin de guerre, cessez-le-feu majeur ou flux physique, **résultats des dix premières capitalisations mondiales** ajoutés ; règles de consensus et de banque centrale **dormantes** (aucune donnée), instruments sans driver **sans alerte** jusqu'à J3.3. Tableau et précisions dans `CLAUDE.md`. **À valider** : le critère « réaction du titre ≥ 5 % ou guet résolu » pour les résultats, et les spreads à ±50 bps — nicolas + veille
 - [ ] J5.2 Moteur évalué après le cron, `AlertEvent` en base — veille (+ data pour la table)
 - [ ] J5.3 `AlertEvent` de type `evenement` (géopolitique et macro, passe 2) — veille
 - [ ] J5.4 Remplacer les alertes du seed — veille
 - [ ] J5.5 Notes spéciales automatisées (Étape 7) : brouillon à trois blocs, validé et publié par Nicolas — notes
 - [ ] J5.6 Détection fréquente des breaking news rattachées aux drivers (GitHub Actions, toutes les 2 h en jours ouvrés, coût API chiffré) — veille
+- [ ] J5.7 Résultats des dix premières capitalisations mondiales : (1) **liste en configuration**, relevée depuis un classement sourcé et daté, révisée chaque trimestre ; (2) **dates de résultats** saisies depuis les calendriers officiels dans `config/calendrier-drivers.ts` (aujourd'hui vide) ; (3) suivi des publications — six émetteurs sont déjà suivis par EDGAR (tous driver IA), les autres demandent une source de communiqués ; (4) si le critère « réaction du titre ≥ 5 % » est retenu, **collecter le cours de ces dix titres** (data, Twelve Data ou Alpha Vantage, palier gratuit) — veille + data (+ nicolas pour la liste)
 
 ## J6 · Assistant IA de la note
 

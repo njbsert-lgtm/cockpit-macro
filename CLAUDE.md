@@ -784,16 +784,37 @@ des **seuils objectifs**, écrits dans la configuration, pas à une impression.
 
 | Instrument / événement | Seuil | Fenêtre |
 |---|---|---|
-| **Actions** — Nasdaq 100, S&P 500, Euro Stoxx 50, FTSE 100, CAC 40, Nikkei 225, Hang Seng | ±3,0 % *(300 bps)* | 2 séances glissantes |
-| **US 10 ans** | ±40 bps | 1 semaine |
-| **Spread US 10 ans − Bund 10 ans** | ±30 bps | 2 séances glissantes |
-| **Spread OAT 10 ans − Bund 10 ans** | ±30 bps | 2 séances glissantes |
-| **EUR/USD** | ±3,0 % *(300 bps ≈ 345 pips au niveau actuel)* | 2 séances glissantes |
+| **Actions** — Nasdaq 100, S&P 500, Euro Stoxx 50, FTSE 100, CAC 40, Nikkei 225, Hang Seng | ±5,0 % *(500 bps)* | 2 séances glissantes |
+| **US 10 ans** | ±50 bps | 1 semaine |
+| **Spread US 10 ans − Bund 10 ans** | ±50 bps | 2 séances glissantes |
+| **Spread OAT 10 ans − Bund 10 ans** | ±50 bps | 2 séances glissantes |
+| **EUR/USD** | ±5,0 % *(500 bps)* | 2 séances glissantes |
 | **Brent** | ±8 % | 2 séances glissantes |
 | **Inflation sous-jacente publiée** | écart ≥ 0,3 pt au consensus | à la publication |
 | **Banque centrale majeure** | décision non anticipée ou changement de biais explicite | à l'annonce |
 | **Scénarios** | bascule de la branche dominante d'un driver | à la révision |
-| **Géopolitique** | modification d'un flux physique : fermeture, embargo appliqué, saisie | à l'événement |
+| **Géopolitique** | début ou fin d'une guerre, cessez-le-feu majeur, ou modification d'un flux physique : fermeture, embargo appliqué, saisie | à l'événement |
+| **Résultats d'une des dix premières capitalisations mondiales** | publication des résultats, avec réaction du titre ≥ 5 % à la séance suivante **ou** résolution d'un guet ouvert *(critère proposé le 30/10, à valider)* | à la publication |
+
+**Décision de Nicolas du 30/10/2026.** Seuils relevés à 5 % pour les actions et les devises, à 50 bps pour
+les taux et leurs spreads, le reste inchangé ; la géopolitique inclut le début ou la fin d'une guerre et
+un cessez-le-feu majeur ; les résultats des dix premières capitalisations mondiales s'ajoutent. Trois
+précisions de mise en œuvre :
+- **Une règle ne s'évalue que si sa donnée existe.** « Écart au consensus » et « décision non
+  anticipée » n'ont aucune donnée de consensus ni d'anticipation en base : elles restent écrites ici,
+  **dormantes** jusqu'à ce qu'une source existe (J7.6). Le Hang Seng n'a aucune source collectée, et les
+  trois indices européens passent par un ETF de repli : la règle s'évalue sur ce qui est collecté, et
+  le dit.
+- **Un instrument sans driver n'a pas d'alerte.** Euro Stoxx 50, FTSE 100, CAC 40, Nikkei 225, Hang Seng
+  et le spread OAT − Bund ne sont piloté par aucun driver : un franchissement n'aurait aucun driver
+  auquel s'attacher (« un guet sans driver n'a pas de sens »). Ils s'activent quand un driver les porte
+  (J3.3).
+- **La liste des dix premières capitalisations est de la configuration** (`config/`), relevée à la main
+  depuis un classement **sourcé et daté**, révisée chaque trimestre — jamais écrite de mémoire, jamais
+  figée dans le code : le classement change. Les dates de résultats vont dans
+  `config/calendrier-drivers.ts`, aux mêmes conditions (calendrier officiel de l'émetteur). Seuls six
+  émetteurs, tous rattachés au driver IA, sont suivis aujourd'hui (`EDGAR_TRACKED_ISSUERS`) ; les autres
+  de la liste (hors Etats-Unis, ou non soumis à EDGAR) demandent une source de communiqués.
 
 Au moins un seuil franchi, sinon ça attend le samedi. Le seuil déclenché est enregistré dans
 le champ `trigger` et affiché sur la note : le lecteur doit savoir pourquoi elle existe.
