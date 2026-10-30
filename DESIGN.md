@@ -466,8 +466,9 @@ seuil, et le libellé ne dépend jamais d'elle.
    de la passe 2 est un autre signal, déjà porté par le point de la barre.
 5. *Erreur* — table illisible (migration non appliquée, base injoignable) : l'**étiquette** « Non
    mesuré » (fond `--repos`, rayon `--rp`, capitales 9.5px, texte `--k-choc`, comme « Non
-   collecté ») à la place de la valeur, avec une phrase qui nomme la cause. **Jamais un 0** : il
-   affirmerait que la grille tient alors qu'on n'en sait rien.
+   collecté ») à la place de la valeur, **seule** : côté public, aucune cause d'exploitation (le détail
+   vit dans `/diagnostic`). **Jamais un 0** : il affirmerait que la grille tient alors qu'on n'en
+   sait rien.
 
 ### Chiffres à trancher
 
