@@ -59,7 +59,7 @@ Bloqué par une décision : J1.1 → J1.3, J1.4, J1.5 ; J5.1 → J5.2 à J5.5 ; 
 - [ ] J1.3 Pipeline de rédaction : prompt, paquet de contexte, contrôle des chiffres — notes
 - [ ] J1.4 Composant de note et rendu mobile ; amender `CLAUDE.md` et `DESIGN.md` — design
 - [ ] J1.5 Bascule à partir de la note suivante (S38–S43 gardent l'ancien bloc) — notes
-- [ ] J1.6 Bilan automatique des guets échus (confirmé, infirmé, sans signal) — notes
+- [~] J1.6 Bilan automatique des guets échus — **noyau fait le 30/10** (`bilanGuets` dans `lib/guets.ts`, champ `bilanGuets` du paquet, absent du prompt et du MDX publié). Reste : l'affichage dans le portail (en tête du bloc 5), à valider par Nicolas — notes + design
 - [ ] J1.7 Relecture du rédacteur en chef dans `note-hebdo.yml`, avis affiché dans le portail, **consultatif, jamais condition de publication** — notes (+ design pour l'affichage)
 
 ## J2 · Back-office /admin
