@@ -70,7 +70,7 @@ Bloqué par une décision : J1.1 → J1.3, J1.4, J1.5 ; J5.1 → J5.2 à J5.5 ; 
 - [ ] J2.4 /triage → /admin/veille — plateforme
 - [ ] J2.5 Guets et angles morts côté admin ; décider ce qui reste public — plateforme
 - [ ] J2.6 File « À trancher » (table `decisions`) — plateforme
-- [~] J2.7 Audit des pages publiques — **en partie fait le 30/10** : E5 (« Non mesuré » seul), E6 (rayons), E2/E3 (cibles de 44 px), E1 (`loading`, `error`, `not-found` publics). Reste : E7 (sélecteur de zone de Macro, proposition : un bouton « Zone : France ▾ » + panneau), E8 à E13, T1 — design
+- [~] J2.7 Audit des pages publiques — **en grande partie fait le 30/10** : E5, E6, E2/E3, E1, puis E8 (retours des fiches), E9 (chiffres cités), E12 (jeton `--voile`), cibles de 44 px par pseudo-élément sans changer la hauteur de page. Reste : E7 (sélecteur de zone de Macro, attend la décision de Nicolas), E10 (échelle typographique), E11 (ordre de l'accueil), E13 (emoji : à repérer au rendu, ils viennent des données), E14, T1 — design
 
 ## J3 · Modèle analytique
 
