@@ -91,7 +91,7 @@ Débloqué le 30/10 : J5.2 à J5.5 (J5.1 tranché ; J5.2 attend la chaîne `sche
 
 ## J5 · Moteur d'alertes et notes spéciales
 
-- [x] J5.1 Seuils objectifs par driver — **tranché le 30/10 par Nicolas** : actions et devises ±5 %, taux et spreads ±50 bps, Brent ±8 %, géopolitique = début ou fin de guerre, cessez-le-feu majeur ou flux physique, **résultats des dix premières capitalisations mondiales** ajoutés ; règles de consensus et de banque centrale **dormantes** (aucune donnée), instruments sans driver **sans alerte** jusqu'à J3.3. Tableau et précisions dans `CLAUDE.md`. **À valider** : le critère « réaction du titre ≥ 5 % ou guet résolu » pour les résultats, et les spreads à ±50 bps — nicolas + veille
+- [x] J5.1 Seuils objectifs par driver — **tranché le 30/10 par Nicolas** : actions et devises ±5 %, taux et spreads ±50 bps, Brent ±8 %, géopolitique = début ou fin de guerre, cessez-le-feu majeur ou flux physique, **résultats des dix premières capitalisations mondiales** ajoutés ; règles de consensus et de banque centrale **dormantes** (aucune donnée), instruments sans driver **sans alerte** jusqu'à J3.3. Tableau et précisions dans `CLAUDE.md`. Spreads à ±50 bps **confirmés par Nicolas le 30/10**. **Reste à valider** : le critère « réaction du titre ≥ 5 % ou guet résolu » pour les résultats — nicolas + veille
 - [ ] J5.2 Moteur évalué après le cron, `AlertEvent` en base — veille (+ data pour la table)
 - [ ] J5.3 `AlertEvent` de type `evenement` (géopolitique et macro, passe 2) — veille
 - [ ] J5.4 Remplacer les alertes du seed — veille
