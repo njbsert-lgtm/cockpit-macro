@@ -73,7 +73,7 @@ zone de Macro).
 - [ ] J2.4 /triage → /admin/veille — plateforme
 - [ ] J2.5 Guets et angles morts côté admin ; décider ce qui reste public — plateforme
 - [ ] J2.6 File « À trancher » (table `decisions`) — plateforme
-- [~] J2.7 Audit des pages publiques — **en grande partie fait le 30/10** : E5, E6, E2/E3, E1, puis E8 (retours des fiches), E9 (chiffres cités), E12 (jeton `--voile`), cibles de 44 px par pseudo-élément sans changer la hauteur de page. Reste : E7 (sélecteur de zone de Macro, attend la décision de Nicolas), E10 (échelle typographique), E11 (ordre de l'accueil), E13 (emoji : à repérer au rendu, ils viennent des données), E14, T1 — design
+- [~] J2.7 Audit des pages publiques — **en grande partie fait le 30/10** : E5, E6, E2/E3, E1, puis E8 (retours des fiches), E9 (chiffres cités), E12 (jeton `--voile`), cibles de 44 px par pseudo-élément sans changer la hauteur de page. Reste : **E7 (sélecteur de zone de Macro) — validé par Nicolas le 30/10** : un bouton « Zone : France ▾ » de 44 px dans la barre, qui ouvre un panneau avec les onze zones (`aria-pressed`, état toujours dans `?zone=`) ; maquette puis code, à lancer après la réinitialisation de la fenêtre de 5 h ; E10 (échelle typographique), E11 (ordre de l'accueil), E13 (emoji : à repérer au rendu, ils viennent des données), E14, T1 — design
 
 ## J3 · Modèle analytique
 
@@ -93,6 +93,7 @@ zone de Macro).
 ## J5 · Moteur d'alertes et notes spéciales
 
 - [ ] J5.1 Seuils objectifs par driver — **À trancher** — nicolas + veille
+  - *30/10 : le tableau de seuils de `CLAUDE.md` est remis à Nicolas pour décision. Deux constats à trancher avec lui : (1) **les règles « écart au consensus » (inflation sous-jacente) et « décision non anticipée » (banque centrale) n'ont aucune donnée de consensus en base** — elles ne se calculent pas aujourd'hui ; (2) **six instruments du tableau ne sont rattachés à aucun driver** (Euro Stoxx 50, FTSE 100, CAC 40, Nikkei 225, Hang Seng, spread OAT − Bund) : un franchissement n'aurait pas de driver auquel s'attacher.*
 - [ ] J5.2 Moteur évalué après le cron, `AlertEvent` en base — veille (+ data pour la table)
 - [ ] J5.3 `AlertEvent` de type `evenement` (géopolitique et macro, passe 2) — veille
 - [ ] J5.4 Remplacer les alertes du seed — veille
@@ -129,6 +130,7 @@ zone de Macro).
 - [ ] J7.16 Catalogue cible des newsletters chiffrées par driver (propositions de notes à chaque hebdo) — **À trancher** — nicolas + veille (+ notes pour les propositions)
 - [ ] J7.17 Boîte dédiée aux newsletters — **À trancher** — nicolas
 - [ ] J7.18 Ingestion des newsletters dans la veille, audit de rappel — veille
+- [ ] J7.19 Chiffres clés de l'accueil : ajouter **les taux de la BCE, l'inflation américaine et le MSCI World** — demandé par Nicolas le 30/10. État : taux BCE (`ez-policy-rate`, FRED) et inflation américaine (`us-cpi`, FRED) sont collectés ; **le MSCI World n'existe pas au catalogue** (il porte MSCI ACWI, en ETF iShares, en $/part, repère « monde développé + émergents » — pas la même chose) : source à trouver (ETF de repli via Alpha Vantage ou Twelve Data, à signaler comme approximation) ou accepter l'ACWI. Aujourd'hui les chiffres clés sont **choisis par le modèle dans le frontmatter de chaque note** (`keyIndicators`) et résolus en valeur vivante ; pour qu'ils soient toujours là, il faut un **socle fixe** de chiffres clés (configuration), affiché en plus de ceux de la note — data (source du MSCI World, `lib/chiffres-vivants*.ts`) + design (grille) + notes (paquet)
 
 ## JT · Marque Transmission
 
