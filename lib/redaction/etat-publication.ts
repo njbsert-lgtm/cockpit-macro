@@ -8,11 +8,13 @@ import {
   conditionsManquantes,
   controlerChiffresPublication,
   resoudreRegime,
+  CLE_MARCHES_CORRIGEES,
   type CleControlee,
   type ConditionManquante,
   type Decisions,
 } from "./publication";
 import type { RapportChiffres } from "./figures";
+import { causesAControler } from "./marches-rendu";
 
 export type EtatPublication = {
   manquantes: ConditionManquante[];
@@ -45,6 +47,17 @@ export function etatPublication(
     const decision = decisions.blocs[bloc];
     textesFinaux[bloc] = decision?.texte ?? extractBlockSource(note.body, bloc) ?? "";
     authorshipFinale[bloc] = decision?.authorship ?? "ia";
+  }
+
+  // « Les marchés par driver » : seules les causes sont du texte du modèle (le mouvement est écrit
+  // par le code). Une cause du modèle, relue telle quelle, est contrôlée strictement ; une cause
+  // retapée par un humain est signalée sans bloquer, comme tout texte corrigé.
+  if (note.blocks.includes("LesMarchesParDriver")) {
+    const { modele, corrigees } = causesAControler(brouillonPropose.marchesParDriver ?? [], decisions.lignes);
+    textesFinaux.LesMarchesParDriver = modele;
+    authorshipFinale.LesMarchesParDriver = "ia-relue";
+    textesFinaux[CLE_MARCHES_CORRIGEES] = corrigees;
+    authorshipFinale[CLE_MARCHES_CORRIGEES] = "ia-corrigee";
   }
 
   // La phrase de régime retenue est contrôlée sur son texte final. Une proposition du modèle
