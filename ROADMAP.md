@@ -1,4 +1,4 @@
-# Roadmap — état au 28/10/2026
+# Roadmap — état au 30/10/2026
 
 Source de vérité versionnée de la feuille de route. L'artefact visuel
 (https://claude.ai/artifact/KFT6HJ4AJpXFPUUFPkTKDY) en est l'affichage ; en cas d'écart, ce
@@ -7,6 +7,11 @@ fichier fait foi et l'orchestrateur resynchronise l'artefact. Mis à jour à cha
 Légende : `[x]` faite · `[~]` en cours · `[ ]` à faire. **À trancher** = décision de Nicolas
 avant tout code. **Bloquant** = d'autres tâches en dépendent. Le dernier champ est l'agent
 propriétaire (voir `AGENTS.md`) ; `nicolas` = décision ou action hors dépôt.
+
+**Budget de tokens hebdomadaire : à renseigner par Nicolas.** Tant qu'il manque, les rapports du
+samedi (voir `AGENTS.md`) ne donnent aucun délai, seulement l'ordre et la charge relative. Taille
+des tâches : S, M, L, ajoutée par `advisor-technique` à la première passe et calibrée sur la
+consommation réelle (JA.4).
 
 ## Socle livré
 
@@ -19,16 +24,18 @@ propriétaire (voir `AGENTS.md`) ; `nicolas` = décision ou action hors dépôt.
 
 ## JA · Organisation en agents
 
-- [~] JA.1 Agents, advisors, `AGENTS.md`, `ROADMAP.md` versionnée — orchestrateur
+- [x] JA.1 Agents, advisors, `AGENTS.md`, `ROADMAP.md` versionnée — orchestrateur
 - [ ] JA.2 Section « Organisation du développement » dans la cartographie Notion — orchestrateur
+- [ ] JA.3 Rapport hebdomadaire des agents, chaque samedi à 11 h (Paris) : fait, situation, reste, délais — routine planifiée à créer **sur accord de Nicolas** (coût en tokens chaque semaine) — orchestrateur + advisor
+- [ ] JA.4 Budget de tokens hebdomadaire et tailles S/M/L de chaque tâche, pour que les délais se calculent — **À trancher** (le budget) — nicolas + advisor
 
 ## J0 · Assainir
 
 - [x] J0.1 Remise à zéro du corpus (Étape 6.6) — Bloquant — notes
 - [x] J0.2 Contrôler trajectoires et historiques après la purge — Bloquant — notes
-- [ ] J0.3 Cuivre dans l'axe « Contrainte physique » : garder ou retirer — **À trancher** — nicolas
-- [ ] J0.4 Réécriture de l'historique Git (commit 4602cd8, ~12 Mo) — **À trancher**, accord explicite requis — nicolas
-- [ ] J0.5 Logo J.P. Morgan : fournir le fichier ou acter le logo groupe — **À trancher** — nicolas
+- [x] J0.3 Cuivre dans l'axe « Contrainte physique » : **gardé comme témoin** (26/10) — nicolas
+- [x] J0.4 Historique Git (commit 4602cd8, ~12 Mo) : **pas de réécriture** (26/10) — nicolas
+- [x] J0.5 Logo J.P. Morgan : **logo du groupe acté** (26/10) — nicolas
 
 ## J1 · Les marchés par driver (remplace « Ce que j'avais mal lu »)
 
@@ -42,7 +49,7 @@ propriétaire (voir `AGENTS.md`) ; `nicolas` = décision ou action hors dépôt.
 
 ## J2 · Back-office /admin
 
-- [ ] J2.1 Accès administrateur protégé (Supabase Auth, middleware) — Bloquant — plateforme ; plan détaillé dans `ETAT.md`, trois décisions attendues
+- [~] J2.1 Accès administrateur protégé — **en service depuis le 28/10** (Supabase Auth, middleware, gardes, `/connexion`, bouton « Se connecter »). Reste : retirer « Triage » et « Rédaction » de l'accueil public, avec un lien vers `/triage` depuis `/redaction` — plateforme
 - [ ] J2.2 Accueil /admin : santé des sources et files d'attente — plateforme (+ design)
 - [ ] J2.3 /redaction → /admin/redaction, avec redirection — plateforme
 - [ ] J2.4 /triage → /admin/veille — plateforme

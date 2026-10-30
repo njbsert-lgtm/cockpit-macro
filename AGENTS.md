@@ -86,6 +86,36 @@ ouvert ou sa matérialité est haute sans guet (→ angle mort). Silence de cinq
 driver ; un prix et un événement sur le même driver fusionnent. Détection fréquente par
 GitHub Actions (le plan Vercel Hobby n'autorise qu'un cron par jour) — tâche J5.6.
 
+## Rapport hebdomadaire : chaque samedi à 11 h, heure de Paris
+
+Chaque samedi à 11 h (Europe/Paris), l'orchestrateur remet à Nicolas un rapport sur le travail
+des agents. Il tombe **après** le brouillon de la note (samedi 8 h UTC) : Nicolas lit la note,
+puis l'état du chantier. Une seule voix, celle de l'orchestrateur ; `advisor-technique` fournit
+l'ordonnancement et le calcul des délais. Le rapport est versionné dans `rapports/AAAA-Sxx.md`.
+
+Contenu, dans cet ordre, **résultat d'abord** :
+1. **Le résultat en deux phrases** : où on en est, et la décision de Nicolas qui débloque le plus.
+2. **Ce qui a été fait**, par agent : tâches de `ROADMAP.md` cochées, branches fusionnées
+   (commits), tests ; ce qui est commencé sans être fini.
+3. **Point de situation** : compteurs par jalon (x/y), comparés à la semaine précédente.
+4. **Ce qui reste**, en trois piles : *prêt à démarrer* (les trois prochaines tâches de chaque
+   agent), *bloqué* (et par quoi), *à trancher par Nicolas* (classé par nombre de tâches
+   débloquées).
+5. **Délais** : la **prochaine étape** (quoi, quand) et la **fin de chaque jalon et de la
+   roadmap**, en fourchette. Calcul : charge restante (tâches × taille) ÷ **budget de tokens
+   hebdomadaire de Nicolas**. Seules comptent les tâches non bloquées : une tâche « À trancher »
+   non tranchée porte « délai non calculable », jamais une date. Les échéances dures (J7.11 et
+   J7.13 avant le 15/11, la note du samedi) sont listées à part.
+6. **Hypothèses et écarts** : faits, hypothèses et avis séparés ; l'écart avec les délais annoncés
+   la semaine précédente, et sa cause.
+
+Règles : chiffres tirés des fichiers et de git, jamais de mémoire ; une case cochée mais non
+fusionnée n'est pas faite ; **aucun délai sans budget de tokens renseigné** — le rapport le dit
+en tête et ne donne alors que l'ordre et la charge relative. Les tailles (S/M/L) de chaque tâche
+et leur équivalent en tokens se calibrent sur la consommation réelle des deux premiers rapports,
+elles ne se devinent pas. La routine planifiée qui produit le rapport consomme des tokens chaque
+semaine : elle se crée sur accord de Nicolas (tâche JA.3).
+
 ## Cartographie Notion : à jour à chaque changement d'architecture
 
 Fil rouge : **une personne qui n'a jamais travaillé sur Marguerite doit pouvoir se mettre au
