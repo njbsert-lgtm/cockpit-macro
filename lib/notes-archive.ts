@@ -1,5 +1,5 @@
 import type { Note } from "./types";
-import { BLOCK_TITLES, REQUIRED_BLOCKS, type BlockName } from "./note-blocks";
+import { BLOCK_TITLES, requiredBlocks, type BlockName } from "./note-blocks";
 
 /**
  * L'archive de `/notes`, groupée par mois (DESIGN.md). Logique pure, séparée du rendu :
@@ -50,7 +50,7 @@ export type BlockState = { name: BlockName; title: string; present: boolean };
  */
 export function blockStates(note: Note, blocks: BlockName[]): BlockState[] {
   const present = new Set(blocks);
-  return REQUIRED_BLOCKS[note.kind].map((name) => ({
+  return requiredBlocks(note.kind, note.isoWeek).map((name) => ({
     name,
     title: BLOCK_TITLES[name],
     present: present.has(name),

@@ -1,5 +1,6 @@
 import type { ContextePaquet, ObservationContexte } from "./context";
 import type { Brouillon } from "./schema";
+import { causesAControler } from "./marches-rendu";
 import {
   datesCitees,
   decritLePresent,
@@ -625,6 +626,9 @@ export function controlerChiffres(brouillon: Brouillon, paquet: ContextePaquet):
       (k): [string, string] => [`keyIndicators/${k.label}`, `${k.label} : ${k.value}`],
     ),
     ...Object.entries(brouillon.blocs),
+    // Les causes du bloc « Les marchés par driver » : le seul texte du modèle dans ce bloc. Le
+    // mouvement, écrit par le code, n'est pas contrôlé ici — il n'est pas une affirmation du modèle.
+    ...causesDuBloc(brouillon),
     ...brouillon.scenarioRevisions.flatMap((r) =>
       r.branches.flatMap((b): Array<[string, string]> => [
         [`scenarioRevisions/${r.driverId}/${b.branchId}/why`, b.why],
@@ -875,4 +879,12 @@ export function elementsDeDecision(
     base: avecBase ? { dateRetenue: avecBase.dateRetenue!, valeurBase: avecBase.valeurBase! } : null,
     notePrecedente: dansPrecedente,
   };
+}
+
+/** La clé sous laquelle les causes du bloc marchés sont contrôlées : celle du bloc lui-même. */
+export const BLOC_MARCHES = "LesMarchesParDriver";
+
+function causesDuBloc(brouillon: Brouillon): Array<[string, string]> {
+  const { modele } = causesAControler(brouillon.marchesParDriver ?? []);
+  return modele ? [[BLOC_MARCHES, modele]] : [];
 }

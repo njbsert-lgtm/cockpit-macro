@@ -5,6 +5,42 @@ import { MARQUEUR_DEBUT, MARQUEUR_FIN } from "./sortie-mixte";
 import { trendEstRevisee } from "@/lib/trend-labels";
 import { DEBUT_DU_SUIVI } from "@/config/suivi";
 
+const SECTION_MAL_LU = `## Le bloc « ce que j'avais mal lu »
+
+Tu ne l'écris pas. Il ne t'est pas demandé. Tu connais les textes de l'auteur, pas ses intentions : une auto-critique écrite par toi serait plausible et creuse, et détruirait ce que ce bloc existe pour capter. Le champ reste vide et l'humain le remplit.
+`;
+
+const SECTION_MARCHES = `## Le bloc « Les marchés par driver » : tu n'écris que des causes
+
+Ce bloc n'est pas dans ta réponse en prose : le code l'écrit. Pour chaque driver de la note, une ligne par instrument qu'il pilote, avec la variation de la semaine, **calculée par le code** depuis nos clôtures. Tu n'écris aucune variation, aucun niveau, aucun pourcentage ni aucun point de base de ce bloc, et tu ne reprends pas ceux du contexte.
+
+Ta part, dans la section JSON (\`marchesParDriver\`) : pour chaque instrument, **ce que la fiche dit qui explique son mouvement**, ou rien.
+
+- \`cause\` : une phrase tirée de la fiche, qui relie le driver au mouvement de cet instrument. Tu reformules, tu ne recopies pas un paragraphe. Pas de chiffre : si un chiffre de la fiche est indispensable à la cause, recopie-le littéralement, avec son émetteur dans la même phrase — il passera le même contrôle que le reste de la note.
+- \`emetteur\` : l'émetteur que la fiche nomme pour cette cause, parmi ceux qu'elle cite, jamais un autre. Une cause sans émetteur nommé n'existe pas.
+- \`canal\` : par lequel des cinq canaux de transmission la cause passe (\`taux-reel\`, \`nature-choc\`, \`fonction-reaction\`, \`dollar\`, \`positionnement\`).
+- **\`null\` partout (cause, émetteur, canal) quand la fiche n'établit aucun lien** avec ce driver. Le bloc affichera « Sans lien clair avec ce driver » : c'est une réponse admise, et **préférable à un lien forcé**. Un instrument qui a bougé sans que la fiche en dise la raison reste sans cause ; ne rapproche pas deux faits parce qu'ils sont contemporains.
+- Un instrument sans variation (« non suivi », « donnée absente ») n'a pas de cause : \`null\`.
+
+Rien dans ce bloc ne recommande ni ne prévoit : ni conseil d'investissement, ni « devrait », ni objectif de cours. Une cause dit ce qui, selon la fiche, a mû l'instrument cette semaine.
+
+Le bloc « ce que j'avais mal lu » n'existe plus dans cette note : tu n'écris rien à sa place.
+`;
+
+const JSON_MARCHES = `
+  "marchesParDriver": [
+    {
+      "driverId": "…",
+      "lignes": [
+        { "instrumentId": "…", "cause": "Ce que la fiche dit qui l'explique.", "emetteur": "Un émetteur de la fiche", "canal": "taux-reel" },
+        { "instrumentId": "…", "cause": null, "emetteur": null, "canal": null }
+      ]
+    }
+  ],`;
+
+const REGLES_JSON_MARCHES = `- \`marchesParDriver\` : un objet par driver de \`driverOrder\` qui pilote au moins un instrument, une ligne par instrument piloté — et aucun autre instrument. \`cause\`, \`emetteur\` et \`canal\` vont ensemble : tous les trois renseignés, ou tous les trois \`null\` (« Sans lien clair »). L'émetteur est l'un de ceux que la fiche cite.
+`;
+
 /**
  * Le prompt de rédaction.
  *
@@ -22,9 +58,17 @@ import { DEBUT_DU_SUIVI } from "@/config/suivi";
  * attendus dépendent du type de note et de ce que la semaine porte.
  */
 
-export function construirePromptSysteme(blocs: BlockName[], driverIds: string[]): string {
+export function construirePromptSysteme(
+  blocs: BlockName[],
+  driverIds: string[],
+  options: {
+    /** La note porte « Les marchés par driver » (hebdo à partir de la S45) au lieu du bloc 4. */
+    marches?: boolean;
+  } = {},
+): string {
+  const marches = options.marches === true;
   const exempleDrivers = driverIds.join(", ");
-  const gabaritCorps = gabarit(blocs);
+  const gabaritCorps = gabarit(blocs, marches);
 
   return `Tu rédiges le brouillon d'une note d'analyse macroéconomique et géopolitique pour un carnet personnel. Tu écris en français.
 
@@ -100,10 +144,7 @@ Lis attentivement ce paragraphe, il compte autant que les autres.
 
 Une révision inventée pour meubler est la pire chose que tu puisses produire ici : elle entre dans la trajectoire du scénario et fausse durablement la lecture.
 
-## Le bloc « ce que j'avais mal lu »
-
-Tu ne l'écris pas. Il ne t'est pas demandé. Tu connais les textes de l'auteur, pas ses intentions : une auto-critique écrite par toi serait plausible et creuse, et détruirait ce que ce bloc existe pour capter. Le champ reste vide et l'humain le remplit.
-
+${marches ? SECTION_MARCHES : SECTION_MAL_LU}
 ## Les guets
 
 Le bloc « ce que je surveille » est une liste de guets : des attentes pré-inscrites qu'un événement viendra confirmer ou infirmer. Chacun porte un libellé, ce que tu attends, le signal qui le confirmerait, celui qui l'infirmerait, une échéance et la source attendue.
@@ -236,7 +277,7 @@ ${MARQUEUR_DEBUT}
   ],
   "sources": [
     { "block": "${blocs[0]}", "sourceId": "…" }
-  ],
+  ],${marches ? JSON_MARCHES : ""}
   "driverCandidate": null,
   "redactionNotes": ""
 }
@@ -248,7 +289,7 @@ Règles de cette section, toutes vérifiées mécaniquement après ta réponse :
 - Réviser un driver, c'est réémettre ses **trois** branches d'un coup, avec une seule à \`"central"\`. Jamais une branche isolée : les deux autres garderaient une vraisemblance qui n'a plus de sens à côté.
 - \`impacts\` : exactement quatre entrées, une par classe (\`eq\`, \`fi\`, \`fx\`, \`cm\`), chacune une seule fois.
 - \`axeLibelle\` : l'angle du driver sur lequel le guet se joue — « Contournement » plutôt qu'« Ormuz » —, ou \`null\` quand le driver n'a qu'un angle.
-- \`sources\` : un identifiant d'item de veille du contexte, rattaché à un bloc de cette note. Tu n'écris jamais d'URL ; une source rattachée à un bloc absent ne s'afficherait nulle part.
+${marches ? REGLES_JSON_MARCHES : ""}- \`sources\` : un identifiant d'item de veille du contexte, rattaché à un bloc de cette note. Tu n'écris jamais d'URL ; une source rattachée à un bloc absent ne s'afficherait nulle part.
 - \`driverCandidate\` : du texte libre si un driver nouveau semble émerger, sinon \`null\`. Sa création reste une décision humaine, jamais un objet que tu émets.
 - \`redactionNotes\` : ce que tu veux signaler au relecteur et qui n'a pas sa place dans la note. Vide si rien.
 - JSON strictement valide : pas de virgule finale, pas de commentaire, pas de \`...\`.`;
@@ -260,9 +301,11 @@ Règles de cette section, toutes vérifiées mécaniquement après ta réponse :
  * l'omettre du gabarit ferait produire un fichier où il manque, et le fichier serait rejeté
  * pour une faute qu'on aurait soi-même induite.
  */
-function gabarit(blocs: BlockName[]): string {
+function gabarit(blocs: BlockName[], marches = false): string {
   const aEcrire = new Set(blocs);
-  const humain = blocs.includes("CeQuiSestConfirme"); // le bloc 4 n'existe que pour les hebdos
+  // Le bloc 4 n'existe que pour les hebdos antérieures à la S45 ; ensuite, « Les marchés par
+  // driver » le remplace et le code l'écrit : le modèle n'en voit aucun des deux dans le gabarit.
+  const humain = blocs.includes("CeQuiSestConfirme") && !marches;
 
   return BLOCK_NAMES.filter(
     (b) => aEcrire.has(b) || (b === "CeQueJavaisMalLu" && humain),
@@ -283,6 +326,7 @@ const CONSIGNE_BLOC: Record<BlockName, string> = {
   RevisionDesScenarios:
     "En prose : pour chaque driver touché, la vraisemblance a-t-elle bougé, et pourquoi ? La forme structurée est dans la section JSON, plus bas. Décliner une révision est une réponse valide, à condition de l'écrire.",
   CeQueJavaisMalLu: "",
+  LesMarchesParDriver: "",
   CeQueJeSurveille:
     "Le texte des guets — ce que tu surveilles et pourquoi. Leur forme structurée est dans la section JSON.",
   RecapDesSpeciales:
@@ -309,7 +353,9 @@ export function construirePromptUtilisateur(
       "Blocs à rédiger :",
       ...blocsAttendus.map((b) => `- \`${b}\` — ${BLOCK_TITLES[b]}`),
       "",
-      "Le bloc « ce que j'avais mal lu » ne t'est pas demandé : il reste vide.",
+      paquet.marchesParDriver
+        ? "Le bloc « Les marchés par driver » ne t'est pas demandé en prose : le code l'écrit. Tu qualifies ses lignes dans la section JSON (`marchesParDriver`)."
+        : "Le bloc « ce que j'avais mal lu » ne t'est pas demandé : il reste vide.",
     ]
       .filter((l) => l !== null)
       .join("\n"),
@@ -329,6 +375,7 @@ export function construirePromptUtilisateur(
   sections.push(rendreFiche(paquet));
   sections.push(rendreNotePrecedente(paquet));
   sections.push(rendreObservations(paquet));
+  sections.push(rendreMarches(paquet));
   sections.push(rendreScenarios(paquet));
   sections.push(rendreTendances(paquet));
   sections.push(rendreGuets(paquet));
@@ -426,6 +473,41 @@ function rendreObservations(paquet: ContextePaquet): string {
     "",
     "| id | libellé | dernière valeur | var. séance | var. depuis le 1er janvier |",
     "|---|---|---|---|---|",
+    ...lignes,
+  ].join("\n");
+}
+
+/**
+ * Les instruments de chaque driver et ce qu'ils ont fait cette semaine — **pour que le modèle
+ * sache quoi expliquer, pas pour qu'il le recopie**. La variation est écrite par le code ; le
+ * modèle propose une cause, ou « Sans lien clair ». Une ligne sans variation (non suivi, donnée
+ * absente) ne se qualifie pas.
+ */
+function rendreMarches(paquet: ContextePaquet): string {
+  const marches = paquet.marchesParDriver;
+  if (!marches) return "";
+  const lignes = marches.flatMap((d) => [
+    `## \`${d.driverId}\` — ${d.label}`,
+    ...(d.instruments.length === 0
+      ? ["Aucun instrument piloté : ce driver n'aura aucune ligne."]
+      : d.instruments.map((i) => {
+          const m = i.mesure;
+          const fait =
+            m.status === "ok"
+              ? `${m.value >= 0 ? "+" : ""}${m.value.toFixed(m.unit === "bps" ? 0 : 1)} ${m.unit === "bps" ? "bps" : "%"} du ${m.fromDate} au ${m.toDate}`
+              : `${m.message} — cause null`;
+          return `- \`${i.instrumentId}\` — ${i.label} : ${fait}`;
+        })),
+    "",
+  ]);
+  return [
+    "# Les marchés par driver — les mouvements de la semaine, à expliquer ou non",
+    "",
+    "Le code écrit ces variations dans le bloc, recalculées depuis nos clôtures. **Tu n'en reprends aucune** :",
+    "pour chaque instrument ci-dessous, tu proposes dans `marchesParDriver` ce que la fiche dit qui",
+    "l'explique (avec son émetteur et son canal), ou `null` si elle n'établit aucun lien. `null` est",
+    "préférable à un lien forcé.",
+    "",
     ...lignes,
   ].join("\n");
 }

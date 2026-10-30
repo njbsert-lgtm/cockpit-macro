@@ -24,6 +24,7 @@ const ANCRE_LIBELLE: Record<BlockName, string> = {
   CeQuiSestConfirme: "Confirmé",
   RevisionDesScenarios: "Scénarios",
   CeQueJavaisMalLu: "Mal lu",
+  LesMarchesParDriver: "Marchés",
   CeQueJeSurveille: "Surveille",
   RecapDesSpeciales: "Récap",
   LeFilDeLaSemaine: "Fil",

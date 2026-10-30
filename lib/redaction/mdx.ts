@@ -4,6 +4,7 @@ import type { Brouillon } from "./schema";
 import type { Guet } from "@/lib/types";
 import { BLOCK_NAMES, type BlockName } from "@/lib/note-blocks";
 import { REGIME_A_CHOISIR } from "@/lib/regime";
+import { avecMarchesParDriver, rendreBlocMarches } from "./marches-rendu";
 
 /**
  * Sortie structurée → fichier MDX.
@@ -18,6 +19,7 @@ const ORDRE_CANONIQUE: BlockName[] = [
   "CeQuiSestConfirme",
   "RevisionDesScenarios",
   "CeQueJavaisMalLu",
+  "LesMarchesParDriver",
   "CeQueJeSurveille",
   "RecapDesSpeciales",
   "LeFilDeLaSemaine",
@@ -135,7 +137,11 @@ export function rendreMdx(
   const guets = guetsDuBrouillon(brouillon, paquet.slug, remontes);
 
   const corps = ORDRE_CANONIQUE.filter(
-    (b) => aRediger.has(b) || b === "CeQueJavaisMalLu" || b === "LeFilDeLaSemaine",
+    (b) =>
+      aRediger.has(b) ||
+      b === "CeQueJavaisMalLu" ||
+      b === "LesMarchesParDriver" ||
+      b === "LeFilDeLaSemaine",
   )
     .filter((b) => {
       // `LeFilDeLaSemaine` est auto-porteur et réservé aux hebdos : présent seulement si des
@@ -143,12 +149,19 @@ export function rendreMdx(
       if (b === "LeFilDeLaSemaine") {
         return paquet.noteType === "hebdo" && brouillon.veilleItemRefs.length > 0;
       }
-      // Le bloc 4 n'existe que pour les hebdos, et reste vide jusqu'au portail.
-      if (b === "CeQueJavaisMalLu") return paquet.noteType === "hebdo";
+      // Le bloc 4 n'existe que pour les hebdos antérieures à la S45, et reste vide jusqu'au
+      // portail ; « Les marchés par driver » le remplace ensuite, écrit par le code.
+      if (b === "CeQueJavaisMalLu") return paquet.noteType === "hebdo" && !avecMarchesParDriver(paquet);
+      if (b === "LesMarchesParDriver") return avecMarchesParDriver(paquet);
       return true;
     })
     .map((b) => {
       if (b === "LeFilDeLaSemaine") return "<LeFilDeLaSemaine />";
+      if (b === "LesMarchesParDriver") {
+        // Reconstruit depuis les lignes validées et `weeklyChange` : le modèle n'a écrit que des causes.
+        const texte = rendreBlocMarches(brouillon.marchesParDriver ?? [], paquet.marchesParDriver ?? []);
+        return `<${b}>\n\n${texte}\n\n</${b}>`;
+      }
       const texte = b === "CeQueJavaisMalLu" ? "" : (brouillon.blocs[b] ?? "").trim();
       return `<${b}>\n\n${texte}\n\n</${b}>`;
     })

@@ -34,6 +34,7 @@ describe("chargerDecisions — dégrade sur base absente", () => {
       tendances: {},
       themes: {},
       chiffres: {},
+      lignes: {},
     });
   });
 });

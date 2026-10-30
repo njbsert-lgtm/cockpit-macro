@@ -399,6 +399,7 @@ const COURT: Record<string, string> = {
   CeQuiSestConfirme: "Confirmé",
   RevisionDesScenarios: "Scénarios",
   CeQueJavaisMalLu: "Mal lu",
+  LesMarchesParDriver: "Marchés",
   CeQueJeSurveille: "Surveille",
   RecapDesSpeciales: "Récap",
 };

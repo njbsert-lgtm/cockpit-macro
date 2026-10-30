@@ -16,6 +16,8 @@ import type { Guet } from "@/lib/types";
 import { chargerPortail } from "@/lib/redaction/portail";
 import { etatPublication } from "@/lib/redaction/etat-publication";
 import { cleChiffre } from "@/lib/redaction/figures";
+import { PREFIXE_REF_LIGNE } from "@/lib/redaction/decisions-store";
+import { lignesDuBloc, type DecisionLigne } from "@/lib/redaction/marches-rendu";
 import { declencherPublication } from "@/lib/redaction/github-dispatch";
 
 /**
@@ -67,6 +69,11 @@ export async function corrigerBloc(slug: string, bloc: string, formData: FormDat
     throw new Error(`bloc inconnu : « ${bloc} »`);
   }
   const texte = stringField(formData, "texte");
+
+  if (bloc === "LesMarchesParDriver") {
+    // Écrit par le code : il n'a pas de texte à éditer, il se tranche ligne par ligne.
+    throw new Error("« Les marchés par driver » se tranche ligne par ligne (trancherLigneMarche), jamais en bloc");
+  }
 
   if (bloc === "CeQueJavaisMalLu") {
     await sauvegarderDecision(slug, "bloc", bloc, { authorship: "humaine", texte });
@@ -300,6 +307,9 @@ export async function corrigerPhrase(slug: string, cle: string, formData: FormDa
   await exigerAdminAction();
   const { etat, verdict } = await verdictFautif(slug, cle);
   const bloc = verdict.bloc;
+  if (bloc.startsWith("LesMarchesParDriver")) {
+    throw new Error("cette phrase est la cause d'une ligne du bloc marchés : la corriger depuis sa ligne (trancherLigneMarche)");
+  }
   if (!(BLOCK_NAMES as readonly string[]).includes(bloc)) {
     throw new Error("cette phrase ne se corrige pas ici — choisissez ou écrivez la phrase de régime");
   }
@@ -314,5 +324,49 @@ export async function corrigerPhrase(slug: string, cle: string, formData: FormDa
   const texte = courant.replace(verdict.phrase, nouvelle);
   const authorship = texte.trim() === original ? "ia-relue" : "ia-corrigee";
   await sauvegarderDecision(slug, "bloc", bloc, { authorship, texte });
+  revalidateApresDecision(slug);
+}
+
+const ACTIONS_LIGNE = ["accepter", "corriger", "refuser"] as const;
+
+/**
+ * Tranche **une** ligne du bloc « Les marchés par driver » : accepter la cause proposée, la
+ * corriger, ou la refuser (la ligne reste, « Sans lien clair avec ce driver »). Aucune action ne
+ * tranche plusieurs lignes d'un coup, aucune n'est cochée par défaut.
+ *
+ * La clé est retrouvée côté serveur dans le brouillon proposé, jamais prise telle quelle d'un
+ * formulaire : on ne tranche que ce que le modèle a réellement proposé. Une cause corrigée doit
+ * nommer un émetteur que la fiche cite (celui de la proposition, ou un autre de la fiche) — une
+ * cause sans émetteur n'est pas attribuable. Une correction identique à la proposition vaut
+ * acceptation, comme pour un bloc rouvert sans modification.
+ */
+export async function trancherLigneMarche(slug: string, cle: string, formData: FormData): Promise<void> {
+  await exigerAdminAction();
+  const action = stringField(formData, "action");
+  if (!(ACTIONS_LIGNE as readonly string[]).includes(action)) {
+    throw new Error(`action de ligne inconnue : « ${action} »`);
+  }
+
+  const etat = await chargerPortail(slug);
+  if (!etat) throw new Error(`aucun brouillon chargeable pour « ${slug} »`);
+  const propose = lignesDuBloc(etat.brouillonPropose.marchesParDriver ?? []).find((l) => l.cle === cle);
+  if (!propose) throw new Error(`aucune ligne « ${cle} » dans ce brouillon`);
+
+  let decision: DecisionLigne = { action: action as DecisionLigne["action"] };
+  if (action === "corriger") {
+    const cause = stringField(formData, "cause");
+    if (!cause) throw new Error("la cause corrigée ne peut pas être vide — pour n'en retenir aucune, refuser la ligne");
+    const emetteur = stringField(formData, "emetteur") || propose.ligne.emetteur;
+    if (!emetteur) throw new Error("une cause corrigée doit nommer son émetteur, parmi ceux que la fiche cite");
+    if (!(etat.paquet.ficheNotion?.sources ?? []).includes(emetteur)) {
+      throw new Error(`émetteur « ${emetteur} » absent de la fiche — une cause ne nomme que les émetteurs que la fiche cite`);
+    }
+    decision =
+      cause === propose.ligne.cause && emetteur === propose.ligne.emetteur
+        ? { action: "accepter" }
+        : { action: "corriger", cause, emetteur };
+  }
+
+  await sauvegarderDecision(slug, "bloc", `${PREFIXE_REF_LIGNE}${cle}`, decision);
   revalidateApresDecision(slug);
 }

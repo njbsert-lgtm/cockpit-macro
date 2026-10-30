@@ -31,8 +31,12 @@ import {
   loadMacroObservations,
   isInstrumentCovered,
   isMacroCovered,
+  observationsOf,
 } from "../lib/observations";
+import { estNonCollectee } from "../lib/provenance";
+import { construireMarchesParDriver } from "../lib/redaction/marches";
 import { getInstruments, getMacroIndicators } from "../lib/data";
+import type { Observation } from "../lib/types";
 import { chercherFiche, configNotion, marquerLue } from "../lib/notion";
 import { isoWeekOf } from "../lib/iso-week";
 
@@ -64,7 +68,7 @@ if (precedente) {
   }
 }
 
-const observations = await construireObservations();
+const { observations, clotures } = await construireObservations();
 const itemsVeille = await getPendingVeilleItems().catch(() => []);
 const fiche = await recupererFiche(isoWeekOf(dateCible));
 
@@ -82,6 +86,12 @@ const paquet = construireContexte({
   tendancesCourantes: getTrends(),
   themes: getThemes(),
   estCollecte: (id) => fournisseurInstrument(id) !== null,
+  // « Les marchés par driver » : la variation de la semaine est calculée ici, par `weeklyChange`
+  // (lib/performance.ts), depuis les seules clôtures réellement collectées — jamais celles du seed.
+  marchesParDriver: construireMarchesParDriver(getDrivers(), getInstruments(), clotures, {
+    dateFin: dateCible,
+    collecte: (id) => fournisseurInstrument(id) !== null && (clotures[id]?.length ?? 0) > 0,
+  }),
 });
 
 console.log(`Note ${paquet.slug} · ${paquet.date} · se compare à ${paquet.comparesTo ?? "rien"}`);
@@ -194,7 +204,11 @@ function samediDe(isoWeek: string): string {
  * permet à une note de savoir qu'un taux directeur a bougé, et de proposer une révision de
  * scénario en conséquence (voir `Driver.macroRefs`, exposé au modèle dans le prompt).
  */
-async function construireObservations(): Promise<ObservationContexte[]> {
+async function construireObservations(): Promise<{
+  observations: ObservationContexte[];
+  /** Les clôtures collectées de chaque instrument, pour `weeklyChange`. */
+  clotures: Record<string, Observation[]>;
+}> {
   const instruments = getInstruments();
   const indicateurs = getMacroIndicators();
 
@@ -219,8 +233,17 @@ async function construireObservations(): Promise<ObservationContexte[]> {
     ytdBasis: null,
   }));
 
-  return [
-    ...construireObservationsDepuis(entreesInstruments, bySeriesInstruments, dateCible, isInstrumentCovered),
-    ...construireObservationsDepuis(entreesMacro, bySeriesMacro, dateCible, isMacroCovered),
-  ];
+  const clotures: Record<string, Observation[]> = {};
+  for (const i of instruments) {
+    if (!isInstrumentCovered(i.id)) continue;
+    clotures[i.id] = observationsOf(bySeriesInstruments, i.id).filter((o) => !estNonCollectee(o));
+  }
+
+  return {
+    observations: [
+      ...construireObservationsDepuis(entreesInstruments, bySeriesInstruments, dateCible, isInstrumentCovered),
+      ...construireObservationsDepuis(entreesMacro, bySeriesMacro, dateCible, isMacroCovered),
+    ],
+    clotures,
+  };
 }

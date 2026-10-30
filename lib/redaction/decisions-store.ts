@@ -9,6 +9,7 @@ import {
   type DecisionProposition,
   type DecisionRegime,
 } from "./publication";
+import type { DecisionLigne } from "./marches-rendu";
 
 /**
  * Une ligne par décision, jamais un blob JSON par brouillon — pour que deux onglets ouverts
@@ -21,11 +22,19 @@ import {
  */
 export type DecisionKind = "bloc" | "guet" | "revision" | "tendance" | "regime" | "theme" | "chiffre";
 
+/**
+ * Une décision de ligne du bloc « Les marchés par driver » se range sous `kind: "bloc"`, avec
+ * `ref: "ligne:<driverId>/<instrumentId>"` : une ligne par décision (deux onglets ne s'écrasent
+ * pas), et **sans migration** — la contrainte `redaction_decisions_kind_check` (schema.sql, à
+ * Data) ne connaît pas de kind `ligne`. Un kind dédié serait plus net ; c'est une demande à Data.
+ */
+export const PREFIXE_REF_LIGNE = "ligne:";
+
 export async function sauvegarderDecision(
   slug: string,
   kind: DecisionKind,
   ref: string,
-  decision: DecisionBloc | DecisionGuet | DecisionProposition | DecisionRegime | DecisionChiffre,
+  decision: DecisionBloc | DecisionGuet | DecisionProposition | DecisionRegime | DecisionChiffre | DecisionLigne,
 ): Promise<{ ok: boolean; erreur?: string }> {
   const client = getWriteClient();
   if (!client) return { ok: false, erreur: "Supabase non configuré côté écriture" };
@@ -61,7 +70,11 @@ export async function chargerDecisions(slug: string): Promise<Decisions> {
   for (const row of data as Array<{ kind: string; ref: string; decision: unknown }>) {
     switch (row.kind) {
       case "bloc":
-        decisions.blocs[row.ref as BlockName] = row.decision as DecisionBloc;
+        if (row.ref.startsWith(PREFIXE_REF_LIGNE)) {
+          decisions.lignes[row.ref.slice(PREFIXE_REF_LIGNE.length)] = row.decision as DecisionLigne;
+        } else {
+          decisions.blocs[row.ref as BlockName] = row.decision as DecisionBloc;
+        }
         break;
       case "guet":
         decisions.guets[row.ref] = row.decision as DecisionGuet;

@@ -255,6 +255,17 @@ s'en déduit comme pour les guets, et une ligne jamais ouverte (`ia`) bloque la 
 condition « le bloc 4 est renseigné » est remplacée par « chaque ligne du bloc marchés a été
 tranchée »** ; les autres conditions de publication ne changent pas.
 
+**Mise en œuvre (J1.3).** La bascule tient en une constante, `MARCHES_PAR_DRIVER_A_PARTIR_DE`
+(`config/suivi.ts`) : blocs obligatoires, ordre canonique, rédaction et conditions de publication
+en dérivent (`requiredBlocks`, `lib/note-blocks.ts`). Le paquet porte `marchesParDriver` pour tous
+les drivers actifs (`driverOrder` n'existe qu'après la réponse du modèle) ; le code ne rend que les
+drivers de `driverOrder` qui pilotent un instrument. **Refuser une ligne écarte la cause proposée,
+pas le mouvement** : la ligne reste, « Sans lien clair avec ce driver » — le chiffre est un fait que
+le code écrit, seul le lien causal est un jugement. Les décisions de ligne se rangent sous
+`redaction_decisions.kind = 'bloc'`, `ref = 'ligne:<driverId>/<instrumentId>'` (pas de migration).
+Les causes passent par le contrôle des chiffres sous la clé du bloc ; celles qu'un humain a retapées
+sont signalées sans bloquer, comme tout texte corrigé.
+
 **Ce que ce bloc ne remplace pas.** « Ce qui a changé » compare la lecture ; ce bloc compare les
 prix. Il ne dit pas si Nicolas avait raison — c'est ce que perd la note en abandonnant « Ce que j'avais
 mal lu ». Les guets et la trajectoire des scénarios restent les instruments de ce retour sur soi ; si
@@ -563,6 +574,11 @@ Vérifié mécaniquement, pas par le prompt :
 - **Citer une source absente de la fiche.** Les émetteurs cités dans la note se rattachent aux
   sources que la fiche porte, jamais à une autorité que le modèle ajoute de lui-même. C'est le
   pendant éditorial de la seconde condition du régime B.
+- **Écrire le bloc « Les marchés par driver », ou une cause que la fiche n'établit pas** (J1.3). Le
+  corps du bloc est écrit par le code ; un `<LesMarchesParDriver>` rédigé par le modèle est refusé
+  à la réception. Il ne propose que des causes, validées contre le paquet : instrument hors de
+  `Driver.instrumentRefs` du driver, cause sans émetteur ni canal, émetteur absent de la fiche,
+  cause sur un instrument sans variation — tout est renvoyé au modèle, une seule fois.
 - **Écrire au conditionnel généralisé.** Une note qui multiplie « pourrait », « semblerait »
   et « il conviendra de surveiller » n'a pas tranché. Un contrôle de style signale les
   formules d'atténuation au-delà d'un seuil par bloc. Signalement, pas blocage.

@@ -18,6 +18,12 @@ import type { ContextePaquet } from "./context";
 import type { Brouillon } from "./schema";
 import { cleChiffre, extraireVerdicts, type RapportChiffres } from "./figures";
 import { construireDeltasScenarios, construireDeltasTendances } from "./deltas";
+import {
+  authorshipBlocMarches,
+  lignesDuBloc,
+  rendreBlocMarches,
+  type DecisionsLignes,
+} from "./marches-rendu";
 
 /**
  * Le portail : les cinq conditions de publication, la reconstruction du MDX final, et le
@@ -63,12 +69,17 @@ export type Decisions = {
   themes: Record<string, DecisionProposition>;
   /** Clé : `cleChiffre` — un nombre précis dans une phrase précise d'un bloc. */
   chiffres: Record<string, DecisionChiffre>;
+  /**
+   * « Les marchés par driver » : une décision par ligne, clé `driverId/instrumentId`. Jamais en
+   * bloc — il n'existe aucun geste qui en tranche plusieurs d'un coup.
+   */
+  lignes: DecisionsLignes;
   /** Absente tant qu'aucune phrase n'est retenue — aucune des trois n'est choisie par défaut. */
   regime?: DecisionRegime;
 };
 
 export function decisionsVides(): Decisions {
-  return { blocs: {}, guets: {}, revisions: {}, tendances: {}, themes: {}, chiffres: {} };
+  return { blocs: {}, guets: {}, revisions: {}, tendances: {}, themes: {}, chiffres: {}, lignes: {} };
 }
 
 /**
@@ -78,7 +89,11 @@ export function decisionsVides(): Decisions {
  * résolution mécanique d'items déjà cités, pas une prose à faire relire.
  */
 export function blocsAAuthorshipDirecte(blocsPresents: BlockName[]): BlockName[] {
-  return blocsPresents.filter((b) => b !== "CeQueJeSurveille" && b !== "LeFilDeLaSemaine");
+  // « Les marchés par driver » se déduit de ses lignes, comme le bloc 5 de ses guets : son
+  // authorship ne se saisit jamais pour le bloc entier.
+  return blocsPresents.filter(
+    (b) => b !== "CeQueJeSurveille" && b !== "LeFilDeLaSemaine" && b !== "LesMarchesParDriver",
+  );
 }
 
 /**
@@ -183,6 +198,20 @@ export function conditionsManquantes(
     }
   }
 
+  // Condition (à partir de la S45, à la place du bloc 4) : chaque ligne du bloc « Les marchés par
+  // driver » a été tranchée — acceptée, corrigée ou refusée. Une ligne jamais ouverte bloque,
+  // y compris celle qui dit déjà « Sans lien clair » : la validation coûte à chaque ligne.
+  if (blocsPresents.includes("LesMarchesParDriver")) {
+    for (const { cle, ligne } of lignesDuBloc(brouillonPropose.marchesParDriver ?? [])) {
+      if (!decisions.lignes[cle]) {
+        manquantes.push({
+          code: `ligne:${cle}`,
+          message: `La ligne « ${ligne.instrumentId} » du bloc « ${BLOCK_TITLES.LesMarchesParDriver} » (${cle.split("/")[0]}) n'a pas été tranchée.`,
+        });
+      }
+    }
+  }
+
   // Condition : aucun bloc resté au statut `ia`. Le bloc 4 est couvert ci-dessus (il n'est
   // jamais « ia », il est vide ou renseigné) ; le bloc 5 se couvre par les guets plus bas.
   for (const bloc of blocsAAuthorshipDirecte(blocsPresents)) {
@@ -270,7 +299,14 @@ export function conditionsManquantes(
  * relâchement, le bloc 4 — qui cite typiquement une valeur de la note précédente absente du
  * vivier du jour — serait structurellement impossible à faire passer.
  */
-export type CleControlee = BlockName | "regimeStatement";
+export type CleControlee = BlockName | "regimeStatement" | typeof CLE_MARCHES_CORRIGEES;
+
+/**
+ * Les causes retapées d'un bloc « Les marchés par driver » se contrôlent sous leur propre clé :
+ * l'authorship d'une ligne n'est pas celle du bloc, et un texte qu'un humain a tapé se signale
+ * sans bloquer, comme partout. Les causes du modèle, elles, se contrôlent sous le nom du bloc.
+ */
+export const CLE_MARCHES_CORRIGEES = "LesMarchesParDriver/corrigees";
 
 export function controlerChiffresPublication(
   textesFinauxParBloc: Partial<Record<CleControlee, string>>,
@@ -308,6 +344,8 @@ export function assemblerNoteFinale(
   brouillonParse: ParsedNote,
   decisions: Decisions,
   aujourdhui: string,
+  /** Requis quand la note porte « Les marchés par driver » : le code en reconstruit le corps. */
+  marches?: { brouillon: Brouillon; paquet: ContextePaquet },
 ): NoteFinale {
   const { meta, blocks } = brouillonParse;
   const slugActuel = meta.slug;
@@ -323,6 +361,15 @@ export function assemblerNoteFinale(
   if (blocks.includes("CeQueJeSurveille")) {
     authorshipFinale.CeQueJeSurveille = authorshipBloc5(meta.guets, decisions.guets);
   }
+  if (blocks.includes("LesMarchesParDriver")) {
+    if (!marches) {
+      throw new Error("la note porte « Les marchés par driver » : le brouillon proposé et le paquet sont requis pour le reconstruire");
+    }
+    authorshipFinale.LesMarchesParDriver = authorshipBlocMarches(
+      marches.brouillon.marchesParDriver ?? [],
+      decisions.lignes,
+    );
+  }
 
   // La phrase de régime : celle qui a été retenue, jamais une des trois par défaut. Sans décision,
   // on garde ce que porte le brouillon — la phrase « à choisir » —, que `parseNote` refusera dans
@@ -336,6 +383,16 @@ export function assemblerNoteFinale(
   const corps = blocks
     .map((bloc) => {
       if (bloc === "LeFilDeLaSemaine") return "<LeFilDeLaSemaine />";
+      if (bloc === "LesMarchesParDriver" && marches) {
+        // Reconstruit par le code, décisions appliquées : une cause refusée disparaît, une cause
+        // corrigée remplace celle du modèle. Le mouvement, lui, vient toujours de `weeklyChange`.
+        const texteMarches = rendreBlocMarches(
+          marches.brouillon.marchesParDriver ?? [],
+          marches.paquet.marchesParDriver ?? [],
+          decisions.lignes,
+        );
+        return `<${bloc}>\n\n${texteMarches}\n\n</${bloc}>`;
+      }
       const texte = (textesFinaux[bloc] ?? "").trim();
       return `<${bloc}>\n\n${texte}\n\n</${bloc}>`;
     })
@@ -406,7 +463,10 @@ export function construireArtefactsPublication(
   decisions: Decisions,
   aujourdhui: string,
 ): ArtefactsPublication {
-  const note = assemblerNoteFinale(brouillonParse, decisions, aujourdhui);
+  const note = assemblerNoteFinale(brouillonParse, decisions, aujourdhui, {
+    brouillon: brouillonPropose,
+    paquet,
+  });
   relireNoteFinale(note.slug, note.mdx); // lève si structurellement invalide
 
   const driversAcceptes = new Set(

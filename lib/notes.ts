@@ -3,7 +3,7 @@ import path from "node:path";
 import matter from "gray-matter";
 import { z } from "zod";
 import type { Note, NoteKind, VeilleChannel, Zone } from "./types";
-import { DEBUT_DU_SUIVI } from "@/config/suivi";
+import { DEBUT_DU_SUIVI, structureMarchesParDriver } from "@/config/suivi";
 import { erratumSchema } from "./erratum";
 import { ANGLES_REGIME, REGIME_A_CHOISIR, RETENUS_REGIME, anglesDistincts, propositionDe } from "./regime";
 import {
@@ -11,10 +11,11 @@ import {
   BLOCK_TITLES,
   GUETS_REQUIS_A_PARTIR_DE,
   REQUIRED_BLOCKS,
+  requiredBlocks,
   type BlockName,
 } from "./note-blocks";
 
-export { BLOCK_NAMES, BLOCK_TITLES, GUETS_REQUIS_A_PARTIR_DE, REQUIRED_BLOCKS };
+export { BLOCK_NAMES, BLOCK_TITLES, GUETS_REQUIS_A_PARTIR_DE, REQUIRED_BLOCKS, requiredBlocks };
 export type { BlockName };
 
 export const NOTES_DIR = path.join(process.cwd(), "content", "notes");
@@ -47,11 +48,16 @@ const CANONICAL_ORDER: Record<NoteKind, BlockName[]> = {
   speciale: ["CeQuiAChange", "RevisionDesScenarios", "CeQueJeSurveille"],
 };
 
-/** `RecapDesSpeciales` n'est jamais exigé d'office : il dépend de la semaine (voir le corpus). */
-const ALLOWED_BLOCKS: Record<NoteKind, BlockName[]> = {
-  hebdo: CANONICAL_ORDER.hebdo,
-  speciale: CANONICAL_ORDER.speciale,
-};
+/**
+ * L'ordre canonique **d'une note donnée** : à partir de `MARCHES_PAR_DRIVER_A_PARTIR_DE`, « Les
+ * marchés par driver » prend la place de « Ce que j'avais mal lu » — et ce dernier n'est plus
+ * admis, de même que le nouveau bloc ne l'est pas avant : une note ne porte jamais les deux.
+ * `RecapDesSpeciales` n'est jamais exigé d'office : il dépend de la semaine (voir le corpus).
+ */
+function canonicalOrder(kind: NoteKind, isoWeek: string): BlockName[] {
+  if (kind === "speciale" || !structureMarchesParDriver(isoWeek)) return CANONICAL_ORDER[kind];
+  return CANONICAL_ORDER.hebdo.map((b) => (b === "CeQueJavaisMalLu" ? "LesMarchesParDriver" : b));
+}
 
 // ---------------------------------------------------------------------------
 // Erreurs
@@ -374,7 +380,7 @@ export function parseNote(slug: string, source: string): ParsedNote {
     seen.add(block);
   }
 
-  for (const required of REQUIRED_BLOCKS[fm.kind]) {
+  for (const required of requiredBlocks(fm.kind, isoWeek)) {
     if (!seen.has(required)) {
       throw new NoteValidationError(
         slug,
@@ -383,7 +389,7 @@ export function parseNote(slug: string, source: string): ParsedNote {
     }
   }
 
-  const allowed = ALLOWED_BLOCKS[fm.kind];
+  const allowed = canonicalOrder(fm.kind, isoWeek);
   for (const block of blocks) {
     if (!allowed.includes(block)) {
       throw new NoteValidationError(
@@ -470,7 +476,7 @@ export function parseNote(slug: string, source: string): ParsedNote {
     }
   }
 
-  const canonical = CANONICAL_ORDER[fm.kind].filter((b) => seen.has(b));
+  const canonical = canonicalOrder(fm.kind, isoWeek).filter((b) => seen.has(b));
   if (blocks.join(",") !== canonical.join(",")) {
     throw new NoteValidationError(
       slug,

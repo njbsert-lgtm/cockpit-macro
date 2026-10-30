@@ -2,6 +2,7 @@ import matter from "gray-matter";
 import type { Brouillon } from "./schema";
 import { extraireSortieMixte, validerReponse, type Vivier } from "./sortie-mixte";
 import { renvoiAUneNoteRetiree } from "./renvois";
+import { normaliserMarches } from "./marches";
 import { DEBUT_DU_SUIVI } from "@/config/suivi";
 import { BLOCS_SANS_LISTE, BLOCS_SOUS_TITRES, premiereListe, signalementsDuBloc } from "./style";
 
@@ -67,6 +68,20 @@ export function recevoir(brut: string, vivier: Vivier): ResultatReception {
     }
   }
 
+  // « Les marchés par driver » est écrit par le code : un modèle qui y met du texte y met, par
+  // construction, des chiffres que personne n'a calculés. Refusé comme le bloc 4 pré-rempli.
+  if (vivier.marches) {
+    const ecrit = /<LesMarchesParDriver>([\s\S]*?)<\/LesMarchesParDriver>/.exec(fichier.content);
+    if (ecrit && ecrit[1].trim().length > 0) {
+      return {
+        ok: false,
+        raison:
+          "« LesMarchesParDriver » a été rédigé : ce bloc est écrit par le code depuis les variations de la semaine. " +
+          "Retire-le du corps et ne propose que des causes dans `marchesParDriver`",
+      };
+    }
+  }
+
   const { frontmatter: fm, structure } = valide;
   return {
     ok: true,
@@ -84,6 +99,9 @@ export function recevoir(brut: string, vivier: Vivier): ResultatReception {
       trendUpdates: structure.trendUpdates,
       themesProposes: structure.themesProposes,
       guets: structure.guets,
+      ...(vivier.marches
+        ? { marchesParDriver: normaliserMarches(structure.marchesParDriver, vivier.marches.instrumentsParDriver, fm.driverOrder) }
+        : {}),
       driverCandidate: structure.driverCandidate,
       redactionNotes: structure.redactionNotes,
     },
