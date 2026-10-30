@@ -1,13 +1,34 @@
-# État du projet — au 26/10/2026
+# État du projet — au 30/10/2026
 
 Point d'entrée pour reprendre le travail. **`CLAUDE.md` (cahier des charges) et `DESIGN.md`
-(charte) font autorité** ; ce fichier dit où on en est par rapport à eux, et ce qui a été discuté
+(charte) font autorité** ; **`ROADMAP.md`** dit ce qui reste à faire et qui le fait,
+**`AGENTS.md`** dit comment on travaille ; ce fichier dit où on en est par rapport à eux, et ce qui a été discuté
 sans être fait. `CHAINE-REACTION.md`, `couche-intelligence.md` et `newsletters-veille.md` sont des
 documents de cadrage plus anciens (début octobre) : utiles pour l'historique, pas à jour.
 
-## Feuille de route — état au 26/10/2026
+## Organisation en agents (28/10/2026)
 
-Donnée par le propriétaire le 26/10, recopiée ici pour qu'une session sache où on en est. **Elle
+Le travail est désormais réparti entre cinq agents exécutants (`notes-analyse`,
+`data-marches`, `veille-alertes`, `design`, `plateforme`), deux advisors en lecture seule
+(`advisor-technique`, `redacteur-en-chef`) et un `documentaliste`, sous la conduite de la
+session principale. Règles, propriété des fichiers et circuit de livraison : **`AGENTS.md`**.
+Feuille de route versionnée, avec l'agent de chaque tâche : **`ROADMAP.md`** (elle était
+jusqu'ici seulement dans l'artefact). Points clés :
+- **Seul l'orchestrateur pousse sur `main`** ; chaque agent travaille sur `agent/<agent>/<tâche>`.
+- **Le rédacteur en chef relit chaque brouillon ; son avis est consultatif. Nicolas est le seul
+  à publier.**
+- **La cartographie Notion est mise à jour à chaque fusion qui change l'architecture**, pas
+  seulement à la revue mensuelle (liste des déclencheurs dans `AGENTS.md`).
+
+### Cartographie Notion à reporter
+
+Rien en attente. (Une session sans accès Notion consigne ici ce qu'elle n'a pas pu reporter.)
+
+## Feuille de route — copie figée du 26/10/2026
+
+**`ROADMAP.md` est la source de vérité** (statuts à jour, agent de chaque tâche) ; cette copie n'est
+plus tenue, les cases ci-dessous sont celles du 26/10. Donnée par le propriétaire le 26/10 et recopiée
+ici pour qu'une session sache où on en est. **Elle
 remplace la numérotation précédente** : l'accès administrateur, appelé « J1.1 » plus tôt dans la
 journée, est désormais **J2.1** ; J1 est le chantier « marchés par driver ». **Ordre retenu le
 26/10 : J2.1 d'abord** (les routes d'administration sont publiques), puis J1 ; le reste de J2 après. Légende : [x] faite,
@@ -198,10 +219,10 @@ rôle admin posé par le SQL fourni.
 
 ## Pratique
 
-- Travail directement sur **`main`** (les sessions précédentes y poussent ; la branche
-  `claude/nextjs-tabs-skeleton-np68r6` est ancienne et très en retard, ne pas s'y fier).
+- **Branches par agent, fusion sur `main` par l'orchestrateur seul** (voir `AGENTS.md`). La
+  branche `claude/nextjs-tabs-skeleton-np68r6` est ancienne et très en retard, ne pas s'y fier.
 - Commits atomiques en français. Avant de pousser : `npx tsc --noEmit`, `npx vitest run`
-  (1230 tests verts), `npm run lint` (0 erreur, 7 avertissements anciens).
+  (1231 tests verts), `npm run lint` (0 erreur, 7 avertissements anciens).
 - **L'environnement de développement n'a pas d'accès réseau sortant** vers les sources (FRED,
   Wikimedia…) ni vers Supabase. Tout passe par le workflow **`verification-sources.yml`**
   (déclenché via les outils GitHub) : `sonder-supabase` (lire une table, ex.
