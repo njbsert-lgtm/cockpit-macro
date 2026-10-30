@@ -199,11 +199,13 @@ export function conditionsManquantes(
   }
 
   // Condition (à partir de la S45, à la place du bloc 4) : chaque ligne du bloc « Les marchés par
-  // driver » a été tranchée — acceptée, corrigée ou refusée. Une ligne jamais ouverte bloque,
-  // y compris celle qui dit déjà « Sans lien clair » : la validation coûte à chaque ligne.
+  // driver » **où le modèle propose une cause** a été tranchée — acceptée, corrigée ou refusée.
+  // Les lignes sans cause (« non suivi », « donnée absente », « Sans lien clair ») ne portent aucun
+  // texte du modèle : elles ne bloquent pas (décision d'orchestrateur, J1.4, valable jusqu'à
+  // contre-ordre de Nicolas). Une cause qu'un humain y ajoute est tranchée par le geste même.
   if (blocsPresents.includes("LesMarchesParDriver")) {
     for (const { cle, ligne } of lignesDuBloc(brouillonPropose.marchesParDriver ?? [])) {
-      if (!decisions.lignes[cle]) {
+      if (ligne.cause !== null && !decisions.lignes[cle]) {
         manquantes.push({
           code: `ligne:${cle}`,
           message: `La ligne « ${ligne.instrumentId} » du bloc « ${BLOCK_TITLES.LesMarchesParDriver} » (${cle.split("/")[0]}) n'a pas été tranchée.`,

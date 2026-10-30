@@ -60,7 +60,9 @@ export function ligneEffective(ligne: LigneMarche, decision: DecisionLigne | und
  * examinée et la cause écartée.
  */
 export function authorshipBlocMarches(marches: MarcheDriver[], decisions: DecisionsLignes): Authorship {
-  const lignes = lignesDuBloc(marches);
+  // Une ligne sans cause du modèle n'a aucun texte du modèle à relire (décision d'orchestrateur,
+  // J1.4) : elle ne compte que si un humain y a ajouté la sienne.
+  const lignes = lignesDuBloc(marches).filter((l) => l.ligne.cause !== null || decisions[l.cle] !== undefined);
   if (lignes.length === 0) return "ia-relue";
   const actions = lignes.map((l) => decisions[l.cle]?.action);
   if (actions.some((a) => a === undefined)) return "ia";
