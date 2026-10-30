@@ -248,23 +248,19 @@ inconnu bloque). Le corps MDX du bloc est **reconstruit par le code** depuis ces
 `weeklyChange`, comme l'ordre canonique du reste de la note. Le sous-titre de chaque driver est son
 nom (« ### Taux directeurs »).
 
-**Validation, ligne par ligne.** Dans `/redaction`, chaque ligne s'accepte, se corrige (la cause) ou
-se refuse **individuellement** ; aucune n'est cochée par défaut, aucun bouton ne les accepte toutes.
-Une ligne acceptée telle quelle porte `ia-relue`, corrigée `ia-corrigee` ; l'`authorship` du bloc
-s'en déduit comme pour les guets, et une ligne jamais ouverte (`ia`) bloque la publication. **La
-condition « le bloc 4 est renseigné » est remplacée par « chaque ligne du bloc marchés a été
-tranchée »** ; les autres conditions de publication ne changent pas.
-
-**Mise en œuvre (J1.3).** La bascule tient en une constante, `MARCHES_PAR_DRIVER_A_PARTIR_DE`
-(`config/suivi.ts`) : blocs obligatoires, ordre canonique, rédaction et conditions de publication
-en dérivent (`requiredBlocks`, `lib/note-blocks.ts`). Le paquet porte `marchesParDriver` pour tous
-les drivers actifs (`driverOrder` n'existe qu'après la réponse du modèle) ; le code ne rend que les
-drivers de `driverOrder` qui pilotent un instrument. **Refuser une ligne écarte la cause proposée,
-pas le mouvement** : la ligne reste, « Sans lien clair avec ce driver » — le chiffre est un fait que
-le code écrit, seul le lien causal est un jugement. Les décisions de ligne se rangent sous
-`redaction_decisions.kind = 'bloc'`, `ref = 'ligne:<driverId>/<instrumentId>'` (pas de migration).
-Les causes passent par le contrôle des chiffres sous la clé du bloc ; celles qu'un humain a retapées
-sont signalées sans bloquer, comme tout texte corrigé.
+**Validation, ligne par ligne — seulement là où le modèle affirme quelque chose.** Dans `/redaction`, chaque
+ligne **dont le modèle propose une cause** s'accepte, se corrige (la cause, son émetteur choisi parmi les
+sources de la fiche, le canal) ou se refuse **individuellement** ; aucune n'est cochée par défaut, aucun
+bouton ne les accepte toutes. « Refuser » écarte la cause : la ligne reste, avec « Sans lien clair avec
+ce driver », le chiffre étant un fait calculé par le code. Une ligne acceptée telle quelle porte
+`ia-relue`, corrigée `ia-corrigee` ; l'`authorship` du bloc s'en déduit comme pour les guets, et une ligne
+à cause jamais ouverte (`ia`) bloque la publication. **Les lignes sans cause** (« non suivi », « donnée
+absente », « Sans lien clair ») ne portent aucun texte écrit par le modèle : elles s'affichent repliées
+dans « Sans cause proposée (N) », ne bloquent pas, et se déplient pour y **ajouter une cause de sa main**
+(la ligne passe `humaine` et devient alors une ligne à trancher). **La condition « le bloc 4 est
+renseigné » est remplacée par « chaque ligne à cause proposée a été tranchée »** ; les autres conditions
+de publication ne changent pas. Décision d'orchestrateur du 30/10/2026, que Nicolas peut défaire : exiger
+une décision sur des lignes où le modèle n'affirme rien serait de la friction sans protection.
 
 **Ce que ce bloc ne remplace pas.** « Ce qui a changé » compare la lecture ; ce bloc compare les
 prix. Il ne dit pas si Nicolas avait raison — c'est ce que perd la note en abandonnant « Ce que j'avais
