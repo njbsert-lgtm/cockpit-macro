@@ -60,7 +60,7 @@ Zones communes et leur propriétaire unique :
    rédaction dans la page Notion **dans la même session**.
 
 Deux agents ne travaillent jamais en même temps sur le même fichier. En parallèle, des
-couloirs différents seulement.
+couloirs différents seulement. **Le nombre d'agents en parallèle est laissé à l'appréciation de l'orchestrateur (décision de Nicolas, 30/10), trois au plus en pratique** : il le fixe selon la taille des tâches et surtout l'absence de recouvrement de fichiers, de branche de base et de schéma (`supabase/schema.sql` n'a qu'un auteur à la fois), et fusionne une branche à la fois.
 
 ## Publication d'une note : l'advisor relit, Nicolas décide
 
