@@ -118,7 +118,7 @@ Bloqué par une décision : J1.1 → J1.3, J1.4, J1.5 ; J5.1 → J5.2 à J5.5 ; 
 - [ ] J7.8 Graphiques originaux des outlooks (`imageGraphique`) — notes
 - [ ] J7.9 Rattacher les points d'outlook aux scénarios — notes
 - [ ] J7.10 Matrice scénarios × banques — notes (+ design)
-- [ ] J7.11 Millésime sur chaque outlook — Bloquant, **avant le 15/11** — data
+- [x] J7.11 Millésime sur chaque outlook — fait le 30/10 : `Outlook.millesime` (entier, obligatoire), contrôle d'intégrité (doublon banque + millésime + période refusé, 2026 et 2027 coexistent). **Tout outlook 2027 doit porter `millesime`, sinon le site répond 500 au chargement** — notes, à la saisie de J7.15 — data
 - [ ] J7.12 Sélecteur de millésime sur la page Outlook — design
 - [ ] J7.13 Prévisions structurées (cible rattachée à une série, valeur, horizon) — **avant le 15/11** — data
 - [ ] J7.14 Vue de confrontation prévision / valeur, sans jugement — data (base) + design (interface)
