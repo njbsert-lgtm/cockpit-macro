@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
+  bilanGuets,
   budgetDisponible,
   estExpire,
   expirer,
@@ -142,5 +143,83 @@ describe("partitionnerRemontes", () => {
     const { ouverts, expires } = partitionnerRemontes(remontes);
     expect(ouverts.map((g) => g.id)).toEqual(["a"]);
     expect(expires.map((g) => g.id)).toEqual(["b"]);
+  });
+});
+
+describe("bilanGuets", () => {
+  const AUJ = "2026-09-26";
+  const DEPUIS = "2026-09-19";
+
+  it("reprend un guet confirmé avec sa pièce", () => {
+    const b = bilanGuets(
+      [guet({ statut: "confirme", echeance: "2026-09-23", resoluPar: "v1", resoluLe: "2026-09-23" })],
+      DEPUIS,
+      AUJ,
+    );
+    expect(b.confirmes).toHaveLength(1);
+    expect(b.confirmes[0].texte).toContain("Confirmé le 23/09/2026 (pièce v1)");
+    expect(b.infirmes).toHaveLength(0);
+  });
+
+  it("reprend un guet infirmé", () => {
+    const b = bilanGuets([guet({ statut: "infirme", resoluPar: "v2", resoluLe: "2026-09-22" })], DEPUIS, AUJ);
+    expect(b.infirmes).toHaveLength(1);
+    expect(b.confirmes).toHaveLength(0);
+  });
+
+  it("un guet expiré sans signal n'est ni confirmé ni infirmé", () => {
+    const b = bilanGuets([guet({ statut: "expire", echeance: "2026-09-22" })], DEPUIS, AUJ);
+    expect(b.sansSignal).toHaveLength(1);
+    expect(b.confirmes).toHaveLength(0);
+    expect(b.infirmes).toHaveLength(0);
+    expect(b.sansSignal[0].texte).toContain("sans signal");
+  });
+
+  it("un guet ouvert à échéance dépassée est sans signal, sans être muté", () => {
+    const g = guet({ statut: "ouvert", echeance: "2026-09-22" });
+    expect(bilanGuets([g], DEPUIS, AUJ).sansSignal).toHaveLength(1);
+    expect(g.statut).toBe("ouvert");
+  });
+
+  it("un guet sans échéance n'entre jamais au bilan tant qu'il est ouvert", () => {
+    const b = bilanGuets([guet({ statut: "ouvert", echeance: null })], DEPUIS, AUJ);
+    expect(b).toEqual({ confirmes: [], infirmes: [], sansSignal: [] });
+  });
+
+  it("l'échéance du jour n'est pas encore échue (comme estExpire)", () => {
+    expect(bilanGuets([guet({ echeance: AUJ })], DEPUIS, AUJ).sansSignal).toHaveLength(0);
+    expect(bilanGuets([guet({ echeance: "2026-09-25" })], DEPUIS, AUJ).sansSignal).toHaveLength(1);
+  });
+
+  it("exclut l'antérieur à la dernière note, les sans-objet et l'à-venir", () => {
+    const b = bilanGuets(
+      [
+        guet({ id: "a", statut: "expire", echeance: DEPUIS }),
+        guet({ id: "b", statut: "sans-objet", echeance: "2026-09-22" }),
+        guet({ id: "c", statut: "ouvert", echeance: "2026-10-01" }),
+        guet({ id: "d", statut: "confirme", resoluLe: "2026-09-10", resoluPar: "v" }),
+      ],
+      DEPUIS,
+      AUJ,
+    );
+    expect(b).toEqual({ confirmes: [], infirmes: [], sansSignal: [] });
+  });
+
+  it("un verdict sans pièce de veille le dit, sans en inventer une", () => {
+    const b = bilanGuets([guet({ statut: "confirme", resoluPar: null, resoluLe: null })], DEPUIS, AUJ);
+    expect(b.confirmes[0].texte).toContain("aucune pièce de veille enregistrée");
+  });
+
+  it("les guets remontés comptent dans le plafond de trois", () => {
+    const remontes = guetsARemonter(
+      [
+        guet({ id: "a", echeance: null }),
+        guet({ id: "b", echeance: "2026-09-22" }),
+        guet({ id: "c", statut: "confirme" }),
+      ],
+      AUJ,
+    );
+    expect(remontes.map((g) => g.id)).toEqual(["a", "b"]);
+    expect(budgetDisponible(remontes)).toBe(1);
   });
 });
