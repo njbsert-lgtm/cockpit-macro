@@ -55,6 +55,12 @@ export type VerdictChiffre = {
   phrase: string;
   /** Posé à la publication : le nombre a été gardé explicitement, après examen. */
   garde?: boolean;
+  /**
+   * Bloc « Les marchés par driver » : la clé de la ligne (`driverId/instrumentId`) dont la cause
+   * porte ce nombre. Un tel nombre ne se corrige pas par `corrigerPhrase` mais depuis sa ligne
+   * (`trancherLigneMarche`) ; il peut toujours être gardé (`garderChiffre`).
+   */
+  ligne?: string;
 };
 
 /** Clé stable d'un nombre dans un texte : bloc, nombre tel qu'écrit, et phrase qui le porte. */
@@ -733,6 +739,8 @@ export type OccurrenceValeur = {
   verdicts: VerdictChiffre[];
   /** Tous les nombres de l'occurrence sont gardés. */
   garde: boolean;
+  /** Clé de la ligne du bloc marchés qui porte la phrase, quand c'en est une (voir `VerdictChiffre.ligne`). */
+  ligne?: string;
 };
 
 export type GroupeValeur = {
@@ -829,7 +837,13 @@ export function grouperParValeur(tous: VerdictChiffre[]): GroupeValeur[] {
       groupes.set(cle, groupe);
     }
     const garde = o.verdicts.every((v) => v.garde === true);
-    groupe.occurrences.push({ bloc: premier.bloc, phrase: premier.phrase, verdicts: o.verdicts, garde });
+    groupe.occurrences.push({
+      bloc: premier.bloc,
+      phrase: premier.phrase,
+      verdicts: o.verdicts,
+      garde,
+      ...(premier.ligne ? { ligne: premier.ligne } : {}),
+    });
     if (!garde) groupe.restantes += 1;
   }
 

@@ -158,6 +158,23 @@ export function rendreBlocMarches(
 }
 
 /**
+ * La clé de la ligne (`driverId/instrumentId`) dont la cause — telle qu'elle sera publiée, décisions
+ * appliquées — contient la phrase d'un verdict de chiffres. Les chiffres d'une cause se règlent
+ * depuis leur ligne (`trancherLigneMarche`), pas par `corrigerPhrase` : le portail s'en sert pour
+ * renvoyer le nombre à sa ligne. `null` : aucune ligne ne porte cette phrase.
+ */
+export function ligneDeLaPhrase(marches: MarcheDriver[], decisions: DecisionsLignes, phrase: string): string | null {
+  const cherchee = phrase.trim();
+  if (!cherchee) return null;
+  for (const { cle, ligne } of lignesDuBloc(marches)) {
+    const effective = ligneEffective(ligne, decisions[cle]);
+    if (effective.cause === null || effective.emetteur === null) continue;
+    if (`${sansPointFinal(effective.cause)} (${effective.emetteur}).`.includes(cherchee)) return cle;
+  }
+  return null;
+}
+
+/**
  * Les causes à passer au contrôle des chiffres — **une phrase par ligne**, l'émetteur dans la même
  * phrase : c'est là que le régime B cherche l'attribution, et c'est là qu'un instrument nommé
  * bascule un nombre en régime A, où il lui faut une date. Le mouvement écrit par le code n'en fait

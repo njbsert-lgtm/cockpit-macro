@@ -11,6 +11,7 @@ import {
   type Decisions,
 } from "./publication";
 import { etatPublication } from "./etat-publication";
+import { grouperParValeur } from "./figures";
 import { REGIMES_TEST } from "./regime-fixture";
 import type { ContextePaquet, ObservationContexte } from "./context";
 import type { Brouillon } from "./schema";
@@ -152,6 +153,25 @@ describe("le contrôle des chiffres, à la publication, sur les causes", () => {
     const etat = etatPublication(note(b), b, d, PAQUET);
     expect(etat.rapportChiffres.bloque).toBe(true);
     expect(etat.rapportChiffres.bloquants?.map((v) => v.verdict)).toEqual(["sans-date"]);
+  });
+
+  it("un nombre non conforme d'une cause porte la clé de sa ligne ; les autres blocs n'en portent pas", () => {
+    const b = brouillon(CAUSE_SANS_DATE);
+    const d: Decisions = { ...decisionsVides(), lignes: { "iran/brent": { action: "accepter" } } };
+    const { rapportChiffres } = etatPublication(note(b), b, d, PAQUET);
+    const fautifs = rapportChiffres.verdicts.filter((v) => v.verdict !== "conforme");
+    expect(fautifs.length).toBeGreaterThan(0);
+    expect(fautifs.every((v) => v.bloc === "LesMarchesParDriver" && v.ligne === "iran/brent")).toBe(true);
+    expect(rapportChiffres.bloquants?.every((v) => v.ligne === "iran/brent")).toBe(true);
+    // Une cause retapée (clé « …/corrigees ») est renvoyée à sa ligne de la même façon.
+    const corrigee: Decisions = {
+      ...decisionsVides(),
+      lignes: { "iran/brent": { action: "corriger", cause: "Le Brent cote 102,96 $ après la frappe", emetteur: "Zonebourse" } },
+    };
+    const retapee = etatPublication(note(b), b, corrigee, PAQUET).rapportChiffres.verdicts.filter((v) => v.verdict === "sans-date");
+    expect(retapee.map((v) => [v.bloc, v.ligne])).toEqual([["LesMarchesParDriver/corrigees", "iran/brent"]]);
+    // Regroupé par valeur, l'occurrence garde le renvoi.
+    expect(grouperParValeur(rapportChiffres.verdicts).flatMap((g) => g.occurrences).every((o) => o.ligne === "iran/brent")).toBe(true);
   });
 
   it("refuser la cause lève le blocage : il n'y a plus de phrase du modèle", () => {

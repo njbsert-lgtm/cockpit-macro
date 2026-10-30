@@ -14,7 +14,7 @@ import {
   type Decisions,
 } from "./publication";
 import type { RapportChiffres } from "./figures";
-import { causesAControler } from "./marches-rendu";
+import { causesAControler, ligneDeLaPhrase } from "./marches-rendu";
 
 export type EtatPublication = {
   manquantes: ConditionManquante[];
@@ -69,12 +69,25 @@ export function etatPublication(
     authorshipFinale.regimeStatement = regime.choix === "propre" ? "humaine" : "ia-relue";
   }
 
-  const rapportChiffres = controlerChiffresPublication(
+  const rapportBrut = controlerChiffresPublication(
     textesFinaux,
     authorshipFinale,
     paquet,
     decisions.chiffres,
   );
+
+  // Les nombres d'une cause du bloc marchés sont renvoyés à leur ligne : `corrigerPhrase` les refuse.
+  const marches = brouillonPropose.marchesParDriver ?? [];
+  const rattacher = (v: (typeof rapportBrut.verdicts)[number]) => {
+    if (!v.bloc.startsWith("LesMarchesParDriver")) return v;
+    const ligne = ligneDeLaPhrase(marches, decisions.lignes, v.phrase);
+    return ligne ? { ...v, ligne } : v;
+  };
+  const rapportChiffres: RapportChiffres = {
+    ...rapportBrut,
+    verdicts: rapportBrut.verdicts.map(rattacher),
+    ...(rapportBrut.bloquants ? { bloquants: rapportBrut.bloquants.map(rattacher) } : {}),
+  };
 
   return { manquantes, rapportChiffres, pret: manquantes.length === 0 && !rapportChiffres.bloque };
 }
