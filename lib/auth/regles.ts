@@ -12,7 +12,7 @@
 export const ROLE_ADMIN = "admin";
 
 /** Les routes d'administration. Le `matcher` de `middleware.ts` doit les couvrir, et elles seules. */
-export const ROUTES_PROTEGEES = ["/redaction", "/triage", "/diagnostic"] as const;
+export const ROUTES_PROTEGEES = ["/admin", "/redaction", "/triage", "/diagnostic"] as const;
 
 /** Où l'on se connecte, et où le lien magique ramène. Jamais protégées : elles ouvrent la porte. */
 export const ROUTE_CONNEXION = "/connexion";
