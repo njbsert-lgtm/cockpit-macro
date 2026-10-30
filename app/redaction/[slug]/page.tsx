@@ -1,3 +1,4 @@
+import { exigerAdminPage } from "@/lib/auth/session";
 import { extractBlockSource } from "@/lib/notes";
 import { getDriver, getTrend } from "@/lib/content";
 import { TREND_STATUS_LABEL } from "@/lib/trend-labels";
@@ -48,6 +49,8 @@ export default async function RedactionSlugPage({
 }: {
   params: Promise<{ slug: string }>;
 }) {
+  // Le layout ne suffit pas : Next rend page et layout en parallèle.
+  await exigerAdminPage();
   const { slug } = await params;
   const etat = await chargerPortail(slug);
 

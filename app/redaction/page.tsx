@@ -1,3 +1,4 @@
+import { exigerAdminPage } from "@/lib/auth/session";
 import Link from "next/link";
 import { readFileSync } from "node:fs";
 import path from "node:path";
@@ -8,6 +9,8 @@ import { EmptyState } from "@/components/states/EmptyState";
 import { formatDateShort } from "@/lib/format";
 
 export default async function RedactionPage() {
+  // Le layout ne suffit pas : Next rend page et layout en parallèle.
+  await exigerAdminPage();
   const slugs = brouillonsDisponibles();
   const brouillons = slugs.flatMap((slug) => {
     try {

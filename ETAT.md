@@ -1,4 +1,4 @@
-# État du projet — au 28/10/2026
+# État du projet — au 30/10/2026
 
 Point d'entrée pour reprendre le travail. **`CLAUDE.md` (cahier des charges) et `DESIGN.md`
 (charte) font autorité** ; **`ROADMAP.md`** dit ce qui reste à faire et qui le fait,
@@ -24,11 +24,153 @@ jusqu'ici seulement dans l'artefact). Points clés :
 
 Rien en attente. (Une session sans accès Notion consigne ici ce qu'elle n'a pas pu reporter.)
 
-## Prochain chantier : J2.1 — accès administrateur protégé (plan validé à demander)
+## Feuille de route — copie figée du 26/10/2026
 
-*Numérotation alignée sur `ROADMAP.md` : ce chantier s'appelait « J1.1 » dans la version du
-26/10 de ce fichier ; dans la roadmap, J1.1 est la spécification du bloc « marchés par
-driver ». Agent : `plateforme`.*
+**`ROADMAP.md` est la source de vérité** (statuts à jour, agent de chaque tâche) ; cette copie n'est
+plus tenue, les cases ci-dessous sont celles du 26/10. Donnée par le propriétaire le 26/10 et recopiée
+ici pour qu'une session sache où on en est. **Elle
+remplace la numérotation précédente** : l'accès administrateur, appelé « J1.1 » plus tôt dans la
+journée, est désormais **J2.1** ; J1 est le chantier « marchés par driver ». **Ordre retenu le
+26/10 : J2.1 d'abord** (les routes d'administration sont publiques), puis J1 ; le reste de J2 après. Légende : [x] faite,
+[~] en cours, [ ] à faire. Une case ne se coche qu'une fois le travail poussé et vérifié.
+
+### J0 Assainir (5/5)
+- [x] J0.1 Remise à zéro du corpus (Étape 6.6)
+- [x] J0.2 Contrôler trajectoires et historiques après la purge
+- [x] J0.3 Cuivre dans l'axe « Contrainte physique » : **gardé comme témoin** (décidé le 26/10) ;
+  il reste hors des instruments pilotés du driver IA
+- [x] J0.4 Historique Git (commit `4602cd8`, ~12 Mo) : **pas de réécriture** (décidé le 26/10)
+- [x] J0.5 Logo J.P. Morgan : **logo du groupe acté** (décidé le 26/10)
+
+### J1 Les marchés par driver (0/6)
+- [ ] J1.1 Spécifier le bloc — à trancher
+- [ ] J1.2 Variations hebdo par classe d'actifs
+- [ ] J1.3 Pipeline de rédaction
+- [ ] J1.4 Composant de note et rendu mobile
+- [ ] J1.5 Bascule à partir de la note suivante
+- [ ] J1.6 Bilan automatique des guets échus
+
+### J2 Back-office /admin (0/7)
+- [~] J2.1 Accès administrateur protégé — commits 1 à 4 faits le 26/10, sur la branche de session ;
+  réglages Supabase et fusion dans `main` à faire (voir ci-dessous)
+- [ ] J2.2 Accueil /admin : santé des sources et files d'attente
+- [ ] J2.3 /redaction → /admin/redaction
+- [ ] J2.4 /triage → /admin/veille
+- [ ] J2.5 Guets et angles morts côté admin
+- [ ] J2.6 File « À trancher »
+- [ ] J2.7 Audit des pages publiques
+
+### J3 Modèle analytique (0/3)
+- [ ] J3.1 `Guet.axeLibelle` → `Axe.id`
+- [ ] J3.2 Angles morts dans le paquet de contexte de rédaction
+- [ ] J3.3 Circuit de promotion d'un driver — à trancher
+
+### J4 Refonte de la page Notes (0/6)
+- [ ] J4.1 Audit de densité à 390 px
+- [ ] J4.2 Nouvelle hiérarchie
+- [ ] J4.3 Maquette Claude Design et amendement `DESIGN.md`
+- [ ] J4.4 Intégration : sections repliables, barre d'ancres allégée
+- [ ] J4.5 Liste des notes : filtres driver et axe, recherche
+- [ ] J4.6 Export PDF d'une note
+
+### J5 Moteur d'alertes (0/5)
+- [ ] J5.1 Spécifier les seuils objectifs par driver — à trancher
+- [ ] J5.2 Moteur évalué après le cron, `AlertEvent` en base
+- [ ] J5.3 `AlertEvent` de type `evenement`
+- [ ] J5.4 Remplacer les alertes du seed
+- [ ] J5.5 Notes spéciales automatisées (Étape 7)
+
+### J6 Assistant IA de la note (0/7)
+- [ ] J6.1 Spécifier le périmètre — à trancher
+- [ ] J6.2 Paquet de contexte
+- [ ] J6.3 Route API côté serveur
+- [ ] J6.4 Interface : feuille mobile et questions suggérées par section
+- [ ] J6.5 Réponses ancrées
+- [ ] J6.6 Journal des questions dans /admin
+- [ ] J6.7 Jeu d'évaluation de 20 questions types
+
+### J7 Sources et outlooks (0/10)
+- [ ] J7.1 Vue YTD multi-actifs dans Marchés
+- [ ] J7.2 Bund et OAT quotidiens
+- [ ] J7.3 Brent à terme ICE via une sonde Twelve Data
+- [ ] J7.4 10 ans Inde et Chine, Hang Seng
+- [ ] J7.5 Brancher l'INSEE
+- [ ] J7.6 12 indicateurs non suivis : arbitrer — à trancher
+- [ ] J7.7 Collecte des outlooks
+- [ ] J7.8 Graphiques originaux des outlooks (`imageGraphique`)
+- [ ] J7.9 Rattacher les points d'outlook aux scénarios
+- [ ] J7.10 Matrice scénarios × banques
+
+### J8 Newsletter (0/9)
+- [ ] J8.1 Stratégie newsletter — à trancher
+- [ ] J8.2 Cadre minimal avant le premier envoi externe
+- [ ] J8.3 Choix de l'outil d'envoi — à trancher
+- [ ] J8.4 Domaine d'envoi et délivrabilité
+- [ ] J8.5 Inscription et désinscription
+- [ ] J8.6 Gabarit de la note hebdo
+- [ ] J8.7 Envoi branché sur `publier-note.yml`
+- [ ] J8.8 Gabarit et envoi de la note spéciale
+- [ ] J8.9 Mesure : abonnés, ouvertures, clics, désinscriptions
+
+### J9 Ouverture et freemium (0/7)
+- [ ] J9.1 Cadre réglementaire et employeur
+- [ ] J9.2 Stratégie freemium — à trancher
+- [ ] J9.3 Authentification des utilisateurs
+- [ ] J9.3a Connexion par Google à l'ouverture au public (fournisseur OAuth Supabase + client Google
+  Cloud). Le rôle admin reste posé à la main dans `app_metadata` : une inscription publique ne
+  doit jamais le donner. Lève `shouldCreateUser: false` et la déconnexion des non-admins de
+  `lib/auth/connexion.ts`, écrits pour un compte unique.
+- [ ] J9.3b Lien magique utilisable depuis tous les navigateurs. Aujourd'hui (modèle par défaut de
+  Supabase, flux PKCE) il ne s'ouvre que dans le navigateur qui l'a demandé. Correctif : SMTP
+  personnalisé (même chantier que J8.3 / J8.4), puis modèle d'e-mail
+  `{{ .SiteURL }}/auth/confirmer?token_hash={{ .TokenHash }}&type=email` — déjà accepté par
+  `/auth/confirmer`. Bloquant avant toute ouverture au public.
+- [ ] J9.4 Droits par niveau
+- [ ] J9.5 Paiement et abonnements
+- [ ] J9.6 CGU, mentions légales, confidentialité, avertissement
+- [ ] J9.7 Mesure : inscriptions, conversion, rétention
+
+**Vérifié dans le code le 26/10** : ni `app/admin/` ni `middleware.ts` n'existent ; `/redaction`,
+`/triage` et `/diagnostic` restent publics à qui connaît l'URL. `axe_id` existe en sortie de
+passe 2 (veille), mais `Guet.axeLibelle` n'est pas rattaché (J3.1). Aucune case n'est cochée au-delà
+de ce que la feuille de route donne.
+
+## J2.1 — accès administrateur protégé (en cours)
+
+**Fait le 26/10** sur `claude/roadmap-tracking-mr00y4`, **pas encore dans `main`**. Les trois
+décisions sont prises selon les choix par défaut : `/diagnostic` protégé, boutons de l'accueil
+retirés (commit 5, pas encore fait), tout côté serveur.
+- (1) `89f7f82` session serveur (`lib/auth/session.ts`, `server-only`), règles pures
+  (`lib/auth/regles.ts`), contournement local verrouillé, build en échec si `ADMIN_LOCAL` hors dev.
+  **Écart au plan** : `server-only` n'est pas dans `lib/supabase.ts`, que les scripts `tsx` et les
+  workflows importent (le paquet lève hors de Next) ; le test de frontière
+  (`lib/auth/frontiere.test.ts`) couvre le risque à sa place.
+- (2) `466d65b` `middleware.ts` + tests (404 sans session, matcher limité aux trois routes).
+- (3) `fbbd479` gardes dans les layouts, les pages et les 13 Server Actions ; le test parcourt
+  toutes les actions exportées sans les nommer.
+- (4) `87e504e` `/connexion`, `/auth/confirmer` (`token_hash` ou `code`), déconnexion.
+- Vérifié sur un build de production : `/redaction`, `/triage`, `/diagnostic` → 404 au corps
+  identique à une adresse inconnue ; `/`, `/notes` → 200 ; `/api/cron/collect` non intercepté.
+  En dev avec `ADMIN_LOCAL=1` : 200 sur `localhost`, 404 avec un hôte forgé.
+
+**Reste, dans l'ordre :**
+1. ~~**Réglages Supabase par le propriétaire**~~ **faits le 28/10** (inscriptions fermées, compte,
+   rôle admin vérifié, Site URL et Redirect URL). **Le modèle d'e-mail n'a pas été changé** : Supabase
+   l'interdit sans SMTP personnalisé ; on garde le modèle par défaut (flux `code`, lien à ouvrir dans
+   le navigateur qui l'a demandé) jusqu'à J9.3b. `/diagnostic` du 28/10 : 5 variables, lecture et
+   écriture en base vertes. Rappel de la liste d'origine : : inscriptions fermées, compte créé,
+   rôle posé par SQL, Site URL et Redirect URLs (`https://<projet>.vercel.app/auth/confirmer`),
+   gabarit « Magic Link » en `{{ .SiteURL }}/auth/confirmer?token_hash={{ .TokenHash }}&type=email`.
+   Vérifier sur `/diagnostic` **avant la fusion** que `SUPABASE_URL` et `SUPABASE_ANON_KEY` sont
+   posées sur Vercel : après la fusion, la page est derrière la connexion.
+2. Fusion dans `main` — **pas avant le point 1**, sinon `/redaction` devient inaccessible au
+   propriétaire lui-même.
+3. Commit 5 : retrait des boutons « Triage » et « Brouillon à réviser » de l'accueil public.
+4. Commit 6 : `CLAUDE.md` (le « mot de passe Vercel » n'est plus la protection), `.env.example`
+   (`ADMIN_LOCAL`, `SITE_URL` facultative), SQL du rôle dans `supabase/`.
+
+### Plan initial (validé le 26/10)
+
 
 **Demande (26/10).** Supabase Auth, un rôle admin, un middleware Next sur les routes
 d'administration. Un seul compte, lien magique. `/redaction` et `/triage` protégés **dès
@@ -68,9 +210,8 @@ n'est pas en place). Plan avant le code, commits séparés.
   (5) retrait des entrées publiques de l'accueil ; (6) `CLAUDE.md`, `.env.example`, SQL du rôle,
   `ETAT.md`.
 
-**Trois décisions attendues avant de coder :** protéger aussi `/diagnostic` ? retirer de
-l'accueil public les boutons « Triage » et « Brouillon à réviser » (ils signalent la surface que
-le 404 cache) ? accepter le montage tout serveur sans `NEXT_PUBLIC_` ?
+**Trois décisions (prises le 26/10) :** `/diagnostic` protégé ; boutons « Triage » et « Brouillon
+à réviser » retirés de l'accueil public ; montage tout serveur sans `NEXT_PUBLIC_`.
 
 **À faire dans le tableau de bord Supabase (hors dépôt), avant le commit 4** : Site URL et
 `https://<domaine>/auth/confirmer` dans les Redirect URLs ; inscriptions par e-mail fermées ;
@@ -81,7 +222,7 @@ rôle admin posé par le SQL fourni.
 - **Branches par agent, fusion sur `main` par l'orchestrateur seul** (voir `AGENTS.md`). La
   branche `claude/nextjs-tabs-skeleton-np68r6` est ancienne et très en retard, ne pas s'y fier.
 - Commits atomiques en français. Avant de pousser : `npx tsc --noEmit`, `npx vitest run`
-  (1158 tests verts), `npm run lint` (0 erreur, 7 avertissements anciens).
+  (1231 tests verts), `npm run lint` (0 erreur, 7 avertissements anciens).
 - **L'environnement de développement n'a pas d'accès réseau sortant** vers les sources (FRED,
   Wikimedia…) ni vers Supabase. Tout passe par le workflow **`verification-sources.yml`**
   (déclenché via les outils GitHub) : `sonder-supabase` (lire une table, ex.
@@ -109,13 +250,13 @@ prolonge les dates.
 **Notes et rédaction assistée (Étape 6, paliers 1 à 5 faits).** Guets, pipeline
 (`lib/redaction/`, `npm run note:draft`, `note:probe`), portail `/redaction`, workflow
 `note-hebdo.yml` **planifié** (samedi 8 h UTC) puis `publier-note.yml`, fiche Notion comme
-matière principale, contrôle des chiffres à deux régimes. Notes réelles publiées : S38 à S42.
+matière principale, contrôle des chiffres à deux régimes. Notes réelles publiées : S38 à S43 (S43 publiée le 26/10).
 
 **Remise à zéro du corpus (Étape 6.6) — entièrement soldée le 24/10/2026** (purge du 19/10, errata du 20/10 et du 24/10, voir plus bas). Les neuf notes de développement
 S24, S26, S26-E1, S27, S28, S28-E1, S29, S31, S32 et tout ce qui en dérivait ont été retirés :
 20 versions de scénario (`content/scenarios.ts`), 13 entrées d'historique de tendance
 (`content/tendances.ts`), les liens « promue en note » de deux alertes d'exemple du seed.
-Restent les notes réelles S38 à S42, les versions que le pipeline a écrites
+Restent les notes réelles S38 à S43, les versions que le pipeline a écrites
 (`content/generated/`) et la version taux issue de la S38. **Rien n'est reconstitué pour S33 à
 S37 : un trou reste un trou.** Cadre posé (option « A », décidée le 19/10) :
 - `config/suivi.ts` : début du suivi (S38), note comparée de la S38 (S32, retirée), liste des
@@ -210,8 +351,7 @@ par bloc) où **rien ne verrouille la navigation** ; relecture d'un bloc dans la
 note, chiffres non conformes surlignés avec bulle (garder / corriger), barre d'emoji collante,
 « Aperçu publié » ; écran « Chiffres à trancher » regroupé par valeur (`grouperParValeur`), un
 geste par occurrence. Seule la publication reste conditionnée. Faux positifs du contrôle des
-chiffres relevés sur la S43 : issue #2, non corrigés. Brouillon S43 : état présent en base
-(`brouillons_contexte`, 24/10), aucune décision prise.
+chiffres relevés sur la S43 : issue #2, non corrigés. La S43 a été publiée depuis ce portail le 26/10 (commit `754eea8`).
 
 ## Décisions récentes (19/10/2026)
 
@@ -224,34 +364,31 @@ chiffres relevés sur la S43 : issue #2, non corrigés. Brouillon S43 : état pr
 
 ## Discuté, pas encore fait
 
+Chaque point porte entre crochets la ligne de la feuille de route qui le reprend.
+
 **Ouvert dans la dernière session (19/10)**
-1. **Source du Brent à terme (ICE).** Proposé : sonder Twelve Data / Alpha Vantage ; à défaut un
+1. **[J7.3] Source du Brent à terme (ICE).** Proposé : sonder Twelve Data / Alpha Vantage ; à défaut un
    ETF (BNO) — en $/part, donc une approximation à signaler. Non commencé.
-2. **Cuivre dans l'axe « Contrainte physique »** : le garder comme témoin ou le retirer aussi ?
-   Question posée, sans réponse (J0.3).
-3. **Historique Git** : le premier passage de `logos-outlooks.yml` a commité ~12 Mo de photos
-   (commit `4602cd8`), retirées ensuite mais présentes dans l'historique de `main`. Réécriture
-   proposée, **en attente d'accord** — ne pas la faire sans.
-4. **Logo J.P. Morgan** : c'est celui du groupe (JPMorganChase) ; la marque « J.P. Morgan » de
-   la banque privée n'existe pas en SVG sur Commons. À remplacer si l'utilisateur fournit le
-   fichier.
-5. Outlook : aucune capture de graphique original (`imageGraphique`) fournie ; explications
+2. ~~Cuivre dans l'axe « Contrainte physique »~~ — soldé (J0.3) : gardé comme témoin.
+3. ~~Historique Git~~ — soldé (J0.4) : pas de réécriture, `4602cd8` reste dans l'historique.
+4. ~~Logo J.P. Morgan~~ — soldé (J0.5) : le logo du groupe (JPMorganChase) est acté.
+5. [J7.8] Outlook : aucune capture de graphique original (`imageGraphique`) fournie ; explications
    limitées au contenu des condensés (pour aller plus loin, relire les PDF).
 
 **Prévu par `CLAUDE.md`, non fait**
-6. **Moteur d'alertes (Étape 4)** : non commencé. Les alertes affichées viennent du seed
+6. **[J5] Moteur d'alertes (Étape 4)** : non commencé. Les alertes affichées viennent du seed
    (`nonCollecte`). Pas de notes spéciales automatisées (Étape 7) ni d'`AlertEvent` de type
    `evenement`.
-7. **Angles morts dans le paquet de contexte** : le compteur se lit, mais n'alimente pas encore
+7. **[J3.2] Angles morts dans le paquet de contexte** : le compteur se lit, mais n'alimente pas encore
    la rédaction.
-8. **`Guet.axeLibelle` → `Axe.id`** : rattachement des guets aux axes, non fait.
-9. **Circuit de promotion d'un driver** (candidat → observation → actif) : à spécifier.
-10. **Étape 4, confort** : recherche dans les notes, export PDF d'une note.
-11. **Alertes d'exemple du seed** (`alertEvents`, deux alertes d'août) : toujours des exemples
+8. **[J3.1] `Guet.axeLibelle` → `Axe.id`** : rattachement des guets aux axes, non fait.
+9. **[J3.3] Circuit de promotion d'un driver** (candidat → observation → actif) : à spécifier.
+10. **[J4.5, J4.6] Étape 4, confort** : recherche dans les notes, export PDF d'une note.
+11. **[J5.4] Alertes d'exemple du seed** (`alertEvents`, deux alertes d'août) : toujours des exemples
     écrits à la main, affichés « non collecté » sur les fiches Nasdaq 100 et spread OAT-Bund. Leur
     lien vers des notes S32 inexistantes a été retiré (statut ramené à « nouveau ») ; elles
     disparaîtront avec le moteur d'alertes réel.
-12. **Données manquantes** : 12 indicateurs non suivis (six PMI propriétaires, balances
+12. **[J7.2, J7.4, J7.5, J7.6] Données manquantes** : 12 indicateurs non suivis (six PMI propriétaires, balances
     courantes US/JP/CN, solde budgétaire UK, salaires JP et zone euro) ; Bund/OAT et donc les
     spreads seulement en mensuel ; points à 10 ans Inde/Chine au seed ; Hang Seng sans source ;
     INSEE non branchée.

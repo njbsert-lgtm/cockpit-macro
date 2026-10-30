@@ -54,7 +54,7 @@ export function FreshnessPanel({
         type="button"
         onClick={() => setOpen((o) => !o)}
         aria-expanded={open}
-        className="flex shrink-0 items-center gap-1.5 rounded-rp bg-repos px-2.5 py-1.5 text-11 text-doux transition-colors hover:text-encre"
+        className="flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-rp bg-repos px-2.5 py-1.5 text-11 text-doux transition-colors hover:text-encre"
       >
         <FreshnessDot tier={tier} />
         {/* La date entière n'a pas sa place dans une barre de 47px sur mobile : le point

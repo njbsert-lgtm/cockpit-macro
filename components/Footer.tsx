@@ -1,3 +1,5 @@
+import { BoutonConnexion } from "@/components/persistent-bar/BoutonConnexion";
+
 /**
  * DESIGN.md ne prévoit aucune surface sombre : le pied passe sur le fond de page, séparé par
  * un simple trait. L'étiquette reste en `--tenu` : un avertissement légal n'est pas un canal,
@@ -11,6 +13,7 @@ export function Footer() {
         <p className="mt-1.5 max-w-[82ch] text-12-5 text-doux">
           Support d&rsquo;analyse personnel, pas un conseil en investissement.
         </p>
+        <BoutonConnexion variante="pied" />
       </div>
     </footer>
   );

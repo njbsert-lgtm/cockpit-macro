@@ -2,6 +2,7 @@ import { Suspense } from "react";
 import Link from "next/link";
 import { ZoneSelector } from "./ZoneSelector";
 import { FreshnessIndicator } from "./FreshnessIndicator";
+import { BoutonConnexion } from "./BoutonConnexion";
 import { TabBarDesktop } from "@/components/nav/TabBar";
 
 /**
@@ -30,6 +31,7 @@ export function PersistentBar() {
           <Suspense fallback={null}>
             <FreshnessIndicator />
           </Suspense>
+          <BoutonConnexion variante="barre" />
         </div>
       </div>
     </header>
