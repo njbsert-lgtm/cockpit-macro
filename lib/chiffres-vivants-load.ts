@@ -1,7 +1,8 @@
 import type { Note } from "./types";
 import { getInstrument, getInstruments, getMacroIndicator } from "./data";
 import { loadMacroObservations, loadObservations, observationsOf } from "./observations";
-import { construireChiffre, resoudreCible, type ChiffreVivant } from "./chiffres-vivants";
+import { construireChiffre, resoudreCible, socleManquant, type ChiffreVivant } from "./chiffres-vivants";
+import { SOCLE_CHIFFRES_CLES } from "@/config/chiffres-cles-socle";
 import { mappingForInstrument, mappingForMacro } from "@/config/fred-series";
 
 /** « FRED · DGS10 » quand la série FRED est connue, le nom de la source sinon. */
@@ -13,11 +14,29 @@ function libelleSource(kind: "macro" | "instrument", id: string, source: string 
 
 /** Les chiffres clés d'une note, chacun relié à sa dernière observation collectée. */
 export async function chargerChiffresVivants(note: Note): Promise<ChiffreVivant[]> {
+  return chargerListe(note, note.keyIndicators);
+}
+
+/**
+ * Les chiffres clés de l'accueil : ceux de la note, puis le socle fixe (J7.19) pour ce que la
+ * note ne couvre pas. Réservé à l'accueil — les citations d'une note s'alignent sur ses seuls
+ * `keyIndicators`.
+ */
+export async function chargerChiffresAccueil(note: Note): Promise<ChiffreVivant[]> {
   const catalogue = {
     indicateurExiste: (id: string) => getMacroIndicator(id) !== null,
     instruments: getInstruments(),
   };
-  const cibles = note.keyIndicators.map((c) => resoudreCible(c, note, catalogue));
+  const socle = socleManquant(note.keyIndicators, SOCLE_CHIFFRES_CLES, note, catalogue);
+  return chargerListe(note, [...note.keyIndicators, ...socle]);
+}
+
+async function chargerListe(note: Note, chiffres: Note["keyIndicators"]): Promise<ChiffreVivant[]> {
+  const catalogue = {
+    indicateurExiste: (id: string) => getMacroIndicator(id) !== null,
+    instruments: getInstruments(),
+  };
+  const cibles = chiffres.map((c) => resoudreCible(c, note, catalogue));
   const macroIds = cibles.filter((c) => c?.kind === "macro").map((c) => c!.id);
   // La Fed publie une fourchette : la borne basse accompagne la borne haute.
   if (macroIds.includes("us-policy-rate")) macroIds.push("us-policy-rate-lower");
@@ -28,7 +47,7 @@ export async function chargerChiffresVivants(note: Note): Promise<ChiffreVivant[
     instrumentIds.length ? loadObservations(instrumentIds) : Promise.resolve(new Map()),
   ]);
 
-  return note.keyIndicators.map((chiffre, i) => {
+  return chiffres.map((chiffre, i) => {
     const cible = cibles[i];
     const observations = cible
       ? observationsOf(cible.kind === "macro" ? macro : marches, cible.id)

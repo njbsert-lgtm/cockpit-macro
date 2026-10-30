@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { construireChiffre, dateDansLaValeur, instrumentDepuisLibelle, libelleDate } from "./chiffres-vivants";
+import { construireChiffre, dateDansLaValeur, instrumentDepuisLibelle, libelleDate, socleManquant } from "./chiffres-vivants";
+import { SOCLE_CHIFFRES_CLES } from "@/config/chiffres-cles-socle";
 import type { Instrument, MacroIndicator, Observation } from "./types";
 
 const instruments = [
@@ -116,5 +117,39 @@ describe("construireChiffre", () => {
     expect(c.actuel).toBeNull();
     expect(c.href).toBeNull();
     expect(c.valeurNote).toBe("80 $");
+  });
+});
+
+describe("socleManquant (J7.19)", () => {
+  const catalogue = { indicateurExiste: () => true, instruments };
+
+  it("ajoute le taux BCE et l'inflation US, en « non suivi » tant que rien n'est collecté", () => {
+    const ajoutes = socleManquant([], SOCLE_CHIFFRES_CLES, { instrumentRefs: [] }, catalogue);
+    expect(ajoutes.map((c) => c.indicatorId)).toEqual(["ez-policy-rate", "us-cpi"]);
+    expect(ajoutes.every((c) => c.value === "non suivi")).toBe(true);
+    const c = construireChiffre({
+      chiffre: ajoutes[0],
+      note: { date: "2026-10-17" },
+      cible: { kind: "macro", id: "ez-policy-rate" },
+      indicateur: { id: "ez-policy-rate", zone: "ez", unit: "percent", frequency: "business-daily" } as MacroIndicator,
+      observations: [],
+      source: null,
+    });
+    expect(c.actuel).toBeNull();
+    expect(c.valeurNote).toBe("non suivi");
+  });
+
+  it("ne double pas un chiffre que la note porte déjà", () => {
+    const ajoutes = socleManquant(
+      [{ label: "BCE — facilité de dépôt", value: "2,00 %", indicatorId: "ez-policy-rate" }],
+      SOCLE_CHIFFRES_CLES,
+      { instrumentRefs: [] },
+      catalogue,
+    );
+    expect(ajoutes.map((c) => c.indicatorId)).toEqual(["us-cpi"]);
+  });
+
+  it("ne porte aucun MSCI World : seul l'ACWI est collecté", () => {
+    expect(JSON.stringify(SOCLE_CHIFFRES_CLES).toLowerCase()).not.toContain("world");
   });
 });

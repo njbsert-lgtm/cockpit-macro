@@ -66,6 +66,32 @@ export function resoudreCible(
   return instrument ? { kind: "instrument", id: instrument } : null;
 }
 
+/**
+ * Les chiffres du socle fixe que la note ne couvre pas déjà : un chiffre de la note qui désigne
+ * la même cible l'emporte (pas de doublon). « non suivi » ne vaut que tant qu'aucune
+ * observation n'est rattachée ; ce n'est jamais une valeur.
+ */
+export function socleManquant(
+  chiffresNote: Note["keyIndicators"],
+  socle: ReadonlyArray<{ label: string; cible: Cible }>,
+  note: Pick<Note, "instrumentRefs">,
+  catalogue: Parameters<typeof resoudreCible>[2],
+): Note["keyIndicators"] {
+  const deja = new Set(
+    chiffresNote
+      .map((c) => resoudreCible(c, note, catalogue))
+      .filter((c): c is Cible => c !== null)
+      .map((c) => `${c.kind}:${c.id}`),
+  );
+  return socle
+    .filter((s) => !deja.has(`${s.cible.kind}:${s.cible.id}`))
+    .map((s) => ({
+      label: s.label,
+      value: "non suivi",
+      indicatorId: s.cible.kind === "macro" ? s.cible.id : undefined,
+    }));
+}
+
 /** « au 15/10 » dans la valeur écrite d'un chiffre : la date à laquelle la note l'a lu. */
 export function dateDansLaValeur(valeur: string, dateNote: string): string {
   const m = /\b(?:au|le)\s+(\d{1,2})\/(\d{1,2})\b/.exec(valeur);

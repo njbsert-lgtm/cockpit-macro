@@ -5,7 +5,7 @@ import {
   getNoteBody,
   getScenarioVersions,
 } from "@/lib/content";
-import { chargerChiffresVivants } from "@/lib/chiffres-vivants-load";
+import { chargerChiffresAccueil } from "@/lib/chiffres-vivants-load";
 import { changementsDepuis } from "@/lib/depuis";
 import { BRANCH_LABELS } from "@/lib/scenario-labels";
 import { getReadClient } from "@/lib/supabase";
@@ -46,7 +46,7 @@ export async function HomeContent() {
     );
   }
 
-  const chiffres = await chargerChiffresVivants(latestNote);
+  const chiffres = await chargerChiffresAccueil(latestNote);
   const depuis = changementsDepuis({
     note: latestNote,
     body: getNoteBody(latestNote.slug),
