@@ -4,7 +4,7 @@ Source de vérité versionnée de la feuille de route. L'artefact visuel
 (https://claude.ai/artifact/KFT6HJ4AJpXFPUUFPkTKDY) en est l'affichage ; en cas d'écart, ce
 fichier fait foi et l'orchestrateur resynchronise l'artefact. Mis à jour à chaque fusion.
 
-Légende : `[x]` faite · `[~]` en cours · `[ ]` à faire. **À trancher** = décision de Nicolas
+**Avancement au 30/10 (fin de journée) : 21 faites, 4 en cours, 64 à faire, sur 89.** Légende : `[x]` faite · `[~]` en cours · `[ ]` à faire. **À trancher** = décision de Nicolas
 avant tout code. **Bloquant** = d'autres tâches en dépendent. Le dernier champ est l'agent
 propriétaire (voir `AGENTS.md`) ; `nicolas` = décision ou action hors dépôt.
 
@@ -20,13 +20,15 @@ J4.1 ≈ 166 000) : **S** < 80 000 (un module ou une config, ses tests, ni inter
 S : J7.11, J3.2, J2.4, J2.7 (réduit), J7.12, J1.5 · M : J7.13, J7.1, J1.7, J3.1, J2.3, J2.6, J4.2,
 J4.3, J1.4 · L : J1.3, J5.2, J7.15. À recaler après deux rapports hebdomadaires.
 
-**Ordre de travail (advisor-technique, 30/10).** Trois agents exécutants au plus à la fois, deux si
-l'un est en L ; aucune tâche L le vendredi soir. Chaînes à livrer **en série**, un seul auteur :
-`lib/types.ts` et `supabase/schema.sql` (data) : J7.11 → J7.13 → J2.6 → J3.1 → J5.2 ; `middleware.ts`
-(plateforme) : J2.2 → J2.3 → J2.4. Prochaines tâches : data J7.11, J7.13, J7.1 (calcul) · notes J1.7,
-J3.1, J3.2 · plateforme J2.3, J2.4, J2.6 · design J2.7 réduit, J4.2, J4.3, J7.12 · veille saisie de
-`config/calendrier-drivers.ts`, rejeu des seuils (matière de J5.1).
-Bloqué par une décision : J1.1 → J1.3, J1.4, J1.5 ; J5.1 → J5.2 à J5.5 ; J6.1 → J6.2 à J6.7 ; JT.1 → JT.2.
+**Ordre de travail (advisor-technique, 30/10, mis à jour en fin de journée).** Trois agents exécutants au
+plus à la fois, deux si l'un est en grande tâche ; aucune tâche L le vendredi soir. Chaînes à livrer
+**en série**, un seul auteur : `lib/types.ts` et `supabase/schema.sql` (data) : J7.11 ✔ → J7.13 ✔ → J2.6 →
+J3.1 → J5.2 ; `middleware.ts` (plateforme) : J2.2 ✔ → J2.3 → J2.4. **J2.3 attend la fusion de J1.4** (les deux
+touchent `app/redaction/`). Prochaines tâches : design J1.4 (en cours), J4.2, J4.3 · notes J1.5, J1.7, J3.1,
+J3.2 · plateforme J2.3, J2.4, J2.6 · data J7.1 (interface avec design), migration `kind='ligne'` de
+`redaction_decisions` · veille saisie de `config/calendrier-drivers.ts`, rejeu des seuils (matière de J5.1).
+Bloqué par une décision de Nicolas : J5.1 → J5.2 à J5.5 ; J6.1 → J6.2 à J6.7 ; JT.1 → JT.2 ; E7 (sélecteur de
+zone de Macro).
 
 ## Socle livré
 
@@ -57,8 +59,8 @@ Bloqué par une décision : J1.1 → J1.3, J1.4, J1.5 ; J5.1 → J5.2 à J5.5 ; 
 - [x] J1.1 Spécifier le bloc — **tranché le 30/10 par Nicolas** : « Les marchés par driver » **remplace** « Ce que j'avais mal lu » à partir de la S45 ; chiffres écrits par le code (`weeklyChange`), cause proposée par le modèle avec émetteur, « sans lien clair » admis, validation ligne par ligne. Spécification dans `CLAUDE.md` — nicolas
 - [x] J1.2 Variations hebdo par classe d'actifs (même calcul que J7.1) — fait le 30/10 : `weeklyChange` / `weeklyChanges` dans `lib/performance.ts`, par instrument, sans agrégat de classe ; J7.1 et J1.3 les réutilisent, sans second calcul — data
 - [x] J1.3 Pipeline de rédaction du bloc « Les marchés par driver » — fait le 30/10 (six paliers, `agent/notes/J1.3`) : structure d'une hebdo versionnée par semaine ISO (`MARCHES_PAR_DRIVER_A_PARTIR_DE = 2026-S45`, notes S38 à S44 inchangées, prompt système S44 identique à l'octet près), schéma Zod, paquet, prompt, rendu MDX par le code, logique de validation ligne par ligne. **Jamais exercé sur une vraie fiche** : `note:draft --dry-run` sur la S45 reste à faire (J1.5) — notes
-- [ ] J1.4 Composant de note et rendu mobile ; amender `CLAUDE.md` et `DESIGN.md` — design
-- [ ] J1.5 Bascule à partir de la note suivante (S38–S43 gardent l'ancien bloc) — notes
+- [~] J1.4 Composant de note et rendu mobile, portail ligne par ligne ; amender `CLAUDE.md` et `DESIGN.md` — **en cours le 30/10** (`agent/design/J1.4`), la S45 ne peut être lue ni relue sans lui — design
+- [~] J1.5 Bascule à partir de la note suivante — **posée par une constante** (`MARCHES_PAR_DRIVER_A_PARTIR_DE = 2026-S45`, J1.3 ; S38 à S44 gardent « Ce que j'avais mal lu »). Reste : un `note:draft --dry-run` sur la vraie fiche S45, et le contrôle à la première publication — notes
 - [~] J1.6 Bilan automatique des guets échus — **noyau fait le 30/10** (`bilanGuets` dans `lib/guets.ts`, champ `bilanGuets` du paquet, absent du prompt et du MDX publié). Reste : l'affichage dans le portail (en tête du bloc 5), à valider par Nicolas — notes + design
 - [ ] J1.7 Relecture du rédacteur en chef dans `note-hebdo.yml`, avis affiché dans le portail, **consultatif, jamais condition de publication** — notes (+ design pour l'affichage)
 

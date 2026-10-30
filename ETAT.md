@@ -22,7 +22,19 @@ jusqu'ici seulement dans l'artefact). Points clés :
 
 ### Cartographie Notion à reporter
 
-Rien en attente. (Une session sans accès Notion consigne ici ce qu'elle n'a pas pu reporter.)
+**À reporter, non fait au 30/10** (changements d'architecture fusionnés depuis la dernière revue ;
+règle de `AGENTS.md`) :
+- **Routes et accès** (§ chaîne de production, § garde-fous) : accès administrateur Supabase Auth,
+  middleware à liste positive, gardes dans les layouts et chaque Server Action, `/connexion`,
+  `/auth/confirmer`, `/admin` (santé des sources et files d'attente), pied d'administration ; l'accueil
+  public ne porte plus aucun lien d'administration.
+- **Modèle analytique** (§ modèle, § anatomie d'une note) : **« Les marchés par driver » remplace « Ce que
+  j'avais mal lu » à partir de la S45** (structure versionnée par semaine ISO, chiffres écrits par le code,
+  validation ligne par ligne) ; `bilanGuets` dans le paquet ; `Outlook.millesime` et le type `Prevision`.
+- **Données** (§ chaîne de production) : `weeklyChange` / `weeklyChanges` (`lib/performance.ts`).
+- **Organisation** (§ 12) : agents, advisors, `AGENTS.md`, `ROADMAP.md`, rapport hebdomadaire du samedi.
+- Glossaire (§ 10) : *millésime*, *prévision structurée*, *marchés par driver*, *bilan des guets*.
+Tâche JA.2 : l'orchestrateur n'a pas encore écrit dans la page Notion (pas de session dédiée).
 
 ## Feuille de route — copie figée du 26/10/2026
 
@@ -135,7 +147,7 @@ journée, est désormais **J2.1** ; J1 est le chantier « marchés par driver »
 passe 2 (veille), mais `Guet.axeLibelle` n'est pas rattaché (J3.1). Aucune case n'est cochée au-delà
 de ce que la feuille de route donne.
 
-## J2.1 — accès administrateur protégé (en cours)
+## J2.1 — accès administrateur protégé (soldé le 30/10)
 
 **Fait le 26/10** sur `claude/roadmap-tracking-mr00y4`, **pas encore dans `main`**. Les trois
 décisions sont prises selon les choix par défaut : `/diagnostic` protégé, boutons de l'accueil
