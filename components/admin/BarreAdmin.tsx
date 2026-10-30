@@ -17,6 +17,7 @@ export function BarreAdmin({ session }: { session: SessionAdmin }) {
         <NavLink href="/admin">Accueil</NavLink>
         <NavLink href="/redaction">Rédaction</NavLink>
         <NavLink href="/admin/veille">Veille</NavLink>
+        <NavLink href="/admin/decisions">À trancher</NavLink>
         <NavLink href="/diagnostic">Diagnostic</NavLink>
       </nav>
       <div className="mt-3 flex items-center justify-between gap-3">

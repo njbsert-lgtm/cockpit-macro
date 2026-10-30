@@ -28,6 +28,7 @@ vi.mock("@/lib/supabase", async (importOriginal) => ({
 const MODULES = {
   "app/redaction/actions.ts": () => import("@/app/redaction/actions"),
   "app/admin/veille/actions.ts": () => import("@/app/admin/veille/actions"),
+  "app/admin/decisions/actions.ts": () => import("@/app/admin/decisions/actions"),
 };
 
 const RACINE = path.resolve(import.meta.dirname, "../..");
