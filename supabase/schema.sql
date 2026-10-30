@@ -225,6 +225,14 @@ alter table redaction_decisions drop constraint if exists redaction_decisions_ki
 alter table redaction_decisions add constraint redaction_decisions_kind_check
   check (kind in ('bloc', 'guet', 'revision', 'tendance', 'bloc4', 'regime', 'theme', 'chiffre'));
 
+-- `ligne` : une ligne du bloc « Les marchés par driver » (J1.3), tranchée une à une. Même
+-- patron : on retire la contrainte puis on la repose élargie ; rejouable sans effet.
+-- Retour arrière (seulement si aucune ligne `ligne` n'existe) : rejouer la contrainte
+-- ci-dessus sans `'ligne'`, après `delete from redaction_decisions where kind = 'ligne';`.
+alter table redaction_decisions drop constraint if exists redaction_decisions_kind_check;
+alter table redaction_decisions add constraint redaction_decisions_kind_check
+  check (kind in ('bloc', 'guet', 'revision', 'tendance', 'bloc4', 'regime', 'theme', 'chiffre', 'ligne'));
+
 -- File « À trancher » (J2.6) : les décisions que Nicolas doit prendre, formulées pour un non-
 -- développeur. `id` est la référence de la feuille de route (ex. 'J3.3'). `bloque` liste les
 -- tâches qui attendent la réponse. Contrairement à `redaction_decisions`, la table n'est PAS
