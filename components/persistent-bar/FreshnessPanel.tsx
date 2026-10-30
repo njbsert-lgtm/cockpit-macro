@@ -46,7 +46,9 @@ export function FreshnessPanel({
   const oldest = summary[0];
   // Les sources dont la collecte a pris du retard : dites en clair dans la barre, sur mobile
   // aussi — la fraîcheur se suit par source, c'est donc elles qu'on compte.
-  const enRetard = summary.filter((s) => s.fetchedAt && s.tier !== "frais").length;
+  const enRetard = summary.filter(
+    (s) => s.fetchedAt && s.tier !== "frais",
+  ).length;
 
   return (
     <div className="relative" ref={containerRef}>
@@ -54,23 +56,29 @@ export function FreshnessPanel({
         type="button"
         onClick={() => setOpen((o) => !o)}
         aria-expanded={open}
-        className="flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-rp bg-repos px-2.5 py-1.5 text-11 text-doux transition-colors hover:text-encre"
+        className="group flex min-h-11 shrink-0 items-center whitespace-nowrap text-11 text-doux transition-colors hover:text-encre"
       >
-        <FreshnessDot tier={tier} />
-        {/* La date entière n'a pas sa place dans une barre de 47px sur mobile : le point
+        <span className="flex items-center gap-1.5 rounded-rp bg-repos px-2.5 py-1.5">
+          <FreshnessDot tier={tier} />
+          {/* La date entière n'a pas sa place dans une barre de 47px sur mobile : le point
             porte l'alerte, le panneau porte le détail. */}
-        {enRetard > 0 ? (
-          <span>
-            {enRetard} source{enRetard > 1 ? "s" : ""} en retard
-          </span>
-        ) : oldest?.fetchedAt ? (
-          <>
-            <span className="hidden sm:inline">Données au {formatDateTime(oldest.fetchedAt)}</span>
-            <span className="sm:hidden">Collecte {formatDateTime(oldest.fetchedAt).slice(-5)}</span>
-          </>
-        ) : (
-          <span>{oldest ? "Jamais collecté" : "Aucune source"}</span>
-        )}
+          {enRetard > 0 ? (
+            <span>
+              {enRetard} source{enRetard > 1 ? "s" : ""} en retard
+            </span>
+          ) : oldest?.fetchedAt ? (
+            <>
+              <span className="hidden sm:inline">
+                Données au {formatDateTime(oldest.fetchedAt)}
+              </span>
+              <span className="sm:hidden">
+                Collecte {formatDateTime(oldest.fetchedAt).slice(-5)}
+              </span>
+            </>
+          ) : (
+            <span>{oldest ? "Jamais collecté" : "Aucune source"}</span>
+          )}
+        </span>
       </button>
 
       {open && (
@@ -79,7 +87,9 @@ export function FreshnessPanel({
             Fraîcheur par source
           </p>
           {summary.length === 0 ? (
-            <p className="text-13 text-tenu">Aucune source suivie pour l&rsquo;instant.</p>
+            <p className="text-13 text-tenu">
+              Aucune source suivie pour l&rsquo;instant.
+            </p>
           ) : (
             <ul className="flex flex-col gap-2">
               {summary.map((s) => (

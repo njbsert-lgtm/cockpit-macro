@@ -805,7 +805,10 @@ un texte à filet, pour que les deux écrans ne se confondent pas.
 - Focus visible partout : `outline: 2px solid var(--k-taux); outline-offset: 2px`
 - Toute rangée défilante masque sa barre de défilement mais laisse voir le bord de
   l'élément suivant.
-- Cibles tactiles : 44px de hauteur minimum sur tout contrôle principal.
+- Cibles tactiles : 44px de hauteur minimum sur tout contrôle principal. Quand le visuel est plus petit
+  (bouton de fraîcheur de la barre de 47px, pastille visible de 29px), la zone cliquable fait 44px et
+  la pastille est dessinée dedans. Un en-tête de section qui mène ailleurs est cliquable sur toute sa
+  ligne, 44px de haut.
 - Rôles ARIA : `role="tablist"` et `aria-selected` sur les segments
   et la barre d'onglets, `aria-current` sur les chips d'ancre, `aria-expanded` sur les
   dépliants.

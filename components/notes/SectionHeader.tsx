@@ -20,7 +20,7 @@ export function SectionHeader({
   href?: string;
 }) {
   const heading = href ? (
-    <Link href={href} className="group inline-flex items-baseline gap-1 text-encre">
+    <Link href={href} className="group flex min-h-11 min-w-0 flex-1 items-center gap-1 text-encre">
       <h2 className="text-17 font-semibold tracking-titre">{title}</h2>
       <span
         aria-hidden="true"
@@ -35,7 +35,7 @@ export function SectionHeader({
 
   return (
     <div>
-      <div className="flex items-baseline justify-between gap-3">
+      <div className="flex items-center justify-between gap-3">
         {heading}
         {count && <span className="shrink-0 text-12 text-tenu">{count}</span>}
       </div>
