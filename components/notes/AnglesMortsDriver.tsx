@@ -25,10 +25,6 @@ export function AnglesMortsDriver({ vue }: { vue: VueDriver }) {
       {vue.etat === "illisible" && (
         <div className="mt-3 rounded-rb bg-repos px-3.5 py-3">
           <NonMesureBadge />
-          <p className="mt-2 text-12 text-doux">
-            La table des angles morts n&rsquo;est pas lisible — migration non appliquée ou base
-            injoignable. Le compteur ne dit rien plutôt que zéro.
-          </p>
         </div>
       )}
 

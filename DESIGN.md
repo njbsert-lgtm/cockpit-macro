@@ -83,6 +83,9 @@ Trois rayons, aucune exception.
 - `--rb` pour ce qui **déclenche une action** : boutons, champs.
 - `--rc` pour ce qui **contient** : cartes, blocs, panneaux.
 
+- **Surlignage en ligne** (un chiffre cité, un `<mark>` du portail) : `--rb`. Il désigne un nombre
+  que l'on ouvre ou que l'on tranche, il ne contient rien et ne change pas de vue.
+
 Un lecteur apprend ce code sans qu'on le lui explique, à condition qu'il ne souffre
 aucune exception. N'introduisez pas de quatrième rayon — un angle droit en est un.
 
@@ -466,8 +469,9 @@ seuil, et le libellé ne dépend jamais d'elle.
    de la passe 2 est un autre signal, déjà porté par le point de la barre.
 5. *Erreur* — table illisible (migration non appliquée, base injoignable) : l'**étiquette** « Non
    mesuré » (fond `--repos`, rayon `--rp`, capitales 9.5px, texte `--k-choc`, comme « Non
-   collecté ») à la place de la valeur, avec une phrase qui nomme la cause. **Jamais un 0** : il
-   affirmerait que la grille tient alors qu'on n'en sait rien.
+   collecté ») à la place de la valeur, **seule** : côté public, aucune cause d'exploitation (le détail
+   vit dans `/diagnostic`). **Jamais un 0** : il affirmerait que la grille tient alors qu'on n'en
+   sait rien.
 
 ### Chiffres à trancher
 
@@ -790,6 +794,12 @@ un texte à filet, pour que les deux écrans ne se confondent pas.
 5. **Erreur** — la valeur en `--encre`, puis le point `--baisse` et « dernière valeur connue du
    … · source : … » en 11px. Jamais un tiret, jamais un zéro.
 
+**Au niveau de la route** (`app/loading.tsx`, `app/error.tsx`, `app/not-found.tsx`) : chargement en
+blocs `--repos` à la forme d'une page (titre, cartes) ; erreur et adresse inconnue en panneau vide
+(`--repos`, `--rc`), titre en `--encre`, un seul bouton secondaire (« Réessayer », « Retour aux
+notes »). Côté public, ni message d'exception, ni identifiant, ni statut technique. Le corps du 404
+est le même pour une adresse inconnue et une route protégée refusée.
+
 ---
 
 ## Interaction
@@ -801,7 +811,10 @@ un texte à filet, pour que les deux écrans ne se confondent pas.
 - Focus visible partout : `outline: 2px solid var(--k-taux); outline-offset: 2px`
 - Toute rangée défilante masque sa barre de défilement mais laisse voir le bord de
   l'élément suivant.
-- Cibles tactiles : 44px de hauteur minimum sur tout contrôle principal.
+- Cibles tactiles : 44px de hauteur minimum sur tout contrôle principal. Quand le visuel est plus petit
+  (bouton de fraîcheur de la barre de 47px, pastille visible de 29px), la zone cliquable fait 44px et
+  la pastille est dessinée dedans. Un en-tête de section qui mène ailleurs est cliquable sur toute sa
+  ligne, 44px de haut.
 - Rôles ARIA : `role="tablist"` et `aria-selected` sur les segments
   et la barre d'onglets, `aria-current` sur les chips d'ancre, `aria-expanded` sur les
   dépliants.

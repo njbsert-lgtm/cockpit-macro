@@ -210,7 +210,7 @@ function Segment({
       onClick={onToucher}
       aria-expanded={actif}
       aria-label={`${segment.texte} — chiffre à trancher, ${segment.reproche}`}
-      className={`rounded-sm bg-k-choc/25 px-0.5 font-semibold text-encre ${actif ? "ring-1 ring-k-choc" : ""}`}
+      className={`rounded-rb bg-k-choc/25 px-0.5 font-semibold text-encre ${actif ? "ring-1 ring-k-choc" : ""}`}
     >
       {segment.texte}
     </button>

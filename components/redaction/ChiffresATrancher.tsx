@@ -9,7 +9,7 @@ function PhraseSurlignee({ phrase, ecrit }: { phrase: string; ecrit: string }) {
   return (
     <>
       {phrase.slice(0, i)}
-      <mark className="rounded-sm bg-k-choc/25 px-0.5 font-semibold text-encre">{ecrit}</mark>
+      <mark className="rounded-rb bg-k-choc/25 px-0.5 font-semibold text-encre">{ecrit}</mark>
       {phrase.slice(i + ecrit.length)}
     </>
   );
