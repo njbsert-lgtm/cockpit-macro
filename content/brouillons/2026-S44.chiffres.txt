@@ -1,0 +1,25 @@
+24 chiffre(s) — régime A : 8, régime B : 16 · 11 non conforme(s) — publication bloquée
+  ✗ [B] 3,75         regimeStatement/fait — ni en base, ni littéralement dans la fiche
+  ✗ [B] 4,00         regimeStatement/fait — ni en base, ni littéralement dans la fiche
+  ✓ [A] 123,1        regimeStatement/contradiction — brent au 27/10 — base 123,1 (27/10)
+  ✗ [B] 3,75         keyIndicators/Fed funds — ni en base, ni littéralement dans la fiche
+  ✗ [B] 4,00         keyIndicators/Fed funds — ni en base, ni littéralement dans la fiche
+  ✗ [B] 2,50         keyIndicators/BCE (dépôt) — ni en base, ni littéralement dans la fiche
+  ✓ [A] 123,1        keyIndicators/Brent — brent au 27/10 — base 123,1 (27/10)
+  ✓ [A] 4,98         keyIndicators/US 10 ans — us10y au 29/10 — base 4,98 (29/10)
+  ✓ [A] 29 402,51    keyIndicators/Nasdaq 100 — ndx au 29/10 — base 29402,51 (29/10)
+  ✗ [B] 3,75         CeQuiAChange — ni en base, ni littéralement dans la fiche
+  ✗ [B] 4,00         CeQuiAChange — ni en base, ni littéralement dans la fiche
+  ✗ [B] 2,50         CeQuiAChange — ni en base, ni littéralement dans la fiche
+  ✗ [B] 1,23         CeQuiAChange — ni en base, ni littéralement dans la fiche
+  ✓ [A] 123,1        CeQuiAChange — brent au 27/10 — base 123,1 (27/10)
+  ✓ [B] 3 600        CeQuiAChange — Apollo
+  ✓ [A] 1,38         CeQuiAChange — ndx — sur la séance — base -1,38 % (du 28/10 au 29/10)
+  ✗ [A] 29,5         CeQuiAChange — arrondi trop grossier — la base porte -1,38 %, une décimale de moins au plus
+  ✗ [B] 4,98         CeQuiAChange — ni en base, ni littéralement dans la fiche
+  ✓ [B] 1,1          CeQuiSestConfirme — BNP Paribas
+  ✓ [B] -0,1         CeQuiSestConfirme — BNP Paribas
+  ✓ [B] +0,1         CeQuiSestConfirme — BNP Paribas
+  ✓ [B] 8,2          CeQuiSestConfirme — BNP Paribas
+  ✓ [B] 80           CeQuiSestConfirme — brief.eco
+  ✓ [A] 123,1        RevisionDesScenarios — brent au 27/10 — base 123,1 (27/10)
